@@ -206,7 +206,7 @@ void set_random_perks() "Subroutine: Set Random Perks"
 {
 	if (CountOf(current_perks_huds_list))
 	{
-		DestroyInWorldText(FirstOf(current_perks_huds_list));
+		DestroyInWorldText(current_perks_huds_list[0]);
 		DestroyInWorldText(current_perks_huds_list[1]);
 	}
 	current_perks_huds_list = [];
@@ -215,7 +215,7 @@ void set_random_perks() "Subroutine: Set Random Perks"
 		current_perks = ArraySlice(RandomizedArray(RemoveFromArray([12, 13], current_perks)), 0, 2);
 		for (temp_1 = 0; 2; 1)
 		{
-			temp_2 = buy_menu_base_pos - (temp_1 ? 25 : 2.5) * buy_menu_left_up_forward[1] - 112.5 * FirstOf(buy_menu_left_up_forward);
+			temp_2 = buy_menu_base_pos - (temp_1 ? 25 : 2.5) * buy_menu_left_up_forward[1] - 112.5 * buy_menu_left_up_forward[0];
 			if (current_perks[temp_1] == 12)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Hero Talent 1\n      $1600", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().Talent1 ? Color.Gray : Color.Purple, Spectators.DefaultVisibility);
@@ -232,7 +232,7 @@ void set_random_perks() "Subroutine: Set Random Perks"
 		current_perks = ArraySlice(RandomizedArray(RemoveFromArray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], current_perks)), 0, 2);
 		for (temp_1 = 0; 2; 1)
 		{
-			temp_2 = buy_menu_base_pos - (temp_1 ? 25 : 2.5) * buy_menu_left_up_forward[1] - 112.5 * FirstOf(buy_menu_left_up_forward);
+			temp_2 = buy_menu_base_pos - (temp_1 ? 25 : 2.5) * buy_menu_left_up_forward[1] - 112.5 * buy_menu_left_up_forward[0];
 			if (current_perks[temp_1] == 0)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Mystery Swap\n     500$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_mystery_swap ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
@@ -412,9 +412,9 @@ void buy_active_ability() "Subroutine: Buy Active Ability"
 	else if (temp_1 == 8)
 	{
 		active_ab_var = [];
-		CreateBeamEffect(CountOf(active_ab_var) ? AllPlayers(Team.All) : [], BeamType.BadBeam, EventPlayer(), FirstOf(active_ab_var), Color.Purple, EffectRev.VisibleToPositionAndRadius);
+		CreateBeamEffect(CountOf(active_ab_var) ? AllPlayers(Team.All) : [], BeamType.BadBeam, EventPlayer(), active_ab_var[0], Color.Purple, EffectRev.VisibleToPositionAndRadius);
 		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
-		CreateBeamEffect(CountOf(active_ab_var) > 1 ? AllPlayers(Team.All) : [], BeamType.BadBeam, FirstOf(active_ab_var), active_ab_var[1], Color.Purple, EffectRev.VisibleToPositionAndRadius);
+		CreateBeamEffect(CountOf(active_ab_var) > 1 ? AllPlayers(Team.All) : [], BeamType.BadBeam, active_ab_var[0], active_ab_var[1], Color.Purple, EffectRev.VisibleToPositionAndRadius);
 		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
 		CreateBeamEffect(CountOf(active_ab_var) > 2 ? AllPlayers(Team.All) : [], BeamType.BadBeam, active_ab_var[1], active_ab_var[2], Color.Purple, EffectRev.VisibleToPositionAndRadius);
 		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
@@ -449,7 +449,7 @@ void nwp_teleport() "Subroutine: Nearest Walkable Position Teleport"
 {
 	if (temp_1 == [])
 	{
-		Teleport(EventPlayer(), FirstOf(SortedArray(nodes, DistanceBetween(EventPlayer(), ArrayElement()))));
+		Teleport(EventPlayer(), SortedArray(nodes, DistanceBetween(EventPlayer(), ArrayElement()))[0]);
 	}
 	else
 	{
@@ -503,7 +503,7 @@ void teleport_to_free_spawn() "Subroutine: Teleport to free Spawn"
 				temp_2[temp_1] = 1;
 			}
 		}
-		temp_1 = FirstOf(SortedArray(spawn_pos_list, temp_2[CurrentArrayIndex()] + RandomReal(0, 0.5)));
+		temp_1 = SortedArray(spawn_pos_list, temp_2[CurrentArrayIndex()] + RandomReal(0, 0.5))[0];
 		nav_idx = spawn_nearest_node_idx_list[IndexOfArrayValue(spawn_pos_list, temp_1)];
 		nav_pos = nodes[nav_idx];
 		is_nav_reachable_node = true;
@@ -618,17 +618,17 @@ void start_facing() "Subroutine: Start Facing"
 void find_chase_target() "Subroutine: Find Chase Target"
 {
 	AbortIf(is_ignoring_other_targets);
-	target = FirstOf(SortedArray(FilteredArray(combatants, !ArrayElement().downed_start_t && !ArrayElement().active_ab_is_cloaked && !(ArrayElement().is_invisible && DistanceBetween(EventPlayer(), ArrayElement()) > 2.4)), DistanceBetween(EventPlayer(), ArrayElement())));
+	target = SortedArray(FilteredArray(combatants, !ArrayElement().downed_start_t && !ArrayElement().active_ab_is_cloaked && !(ArrayElement().is_invisible && DistanceBetween(EventPlayer(), ArrayElement()) > 2.4)), DistanceBetween(EventPlayer(), ArrayElement()))[0];
 }
 
 void update_target_nav() "Subroutine: Update Target Nav"
 {
 	target.last_nav_update_t = TotalTimeElapsed();
 	temp_1 = EyePosition(target) + target.eye_offset;
-	target.best_nav_idx = IndexOfArrayValue(nodes, FirstOf(SortedArray(FilteredArray(RemoveFromArray(nodes, elevator_nodes), IsInLineOfSight(ArrayElement() + Vector(0, 1.5, 0), temp_1, BarrierLOS.NoBarriersBlock)), DistanceBetween(target, ArrayElement()) + AbsoluteValue(YOf(PositionOf(target)) - YOf(ArrayElement())))));
+	target.best_nav_idx = IndexOfArrayValue(nodes, SortedArray(FilteredArray(RemoveFromArray(nodes, elevator_nodes), IsInLineOfSight(ArrayElement() + Vector(0, 1.5, 0), temp_1, BarrierLOS.NoBarriersBlock)), DistanceBetween(target, ArrayElement()) + AbsoluteValue(YOf(PositionOf(target)) - YOf(ArrayElement())))[0]);
 	if (target.best_nav_idx == -1)
 	{
-		target.best_nav_idx = IndexOfArrayValue(nodes, FirstOf(SortedArray(RemoveFromArray(nodes, elevator_nodes), DistanceBetween(target, ArrayElement()))));
+		target.best_nav_idx = IndexOfArrayValue(nodes, SortedArray(RemoveFromArray(nodes, elevator_nodes), DistanceBetween(target, ArrayElement()))[0]);
 	}
 }
 

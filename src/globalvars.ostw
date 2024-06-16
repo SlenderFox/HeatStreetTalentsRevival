@@ -1,86 +1,84 @@
-globalvar define gamemode;
-globalvar define is_hard_mode_enabled;
 globalvar define Special_Thanks;
-globalvar define wave_number;
-globalvar define enable_normal_spawns;
-globalvar define special_spawns_count;
-globalvar define tier_4_spawns_block_end_t;
-globalvar define last_spawn_phase_end_t;
-globalvar define upgrade_count;
-globalvar define boss_list_1;
-globalvar define boss_list_2;
-globalvar define objective_phase_number;
-globalvar define objective_progress;
-globalvar define enable_objective_enemy_spawn;
-globalvar define iv_dom_objective_pos;
-globalvar define iv_dom_objective_all_pos_list;
-globalvar define hvt_dom_objective_killed_count;
-globalvar define hvt_call_reinforcements_end_t;
-globalvar define dom_point_A_contesters;
-globalvar define dom_point_B_contesters;
-globalvar define is_infrasight_on;
+globalvar Any gamemode; // Both number and array
+globalvar Boolean is_hard_mode_enabled;
+globalvar Number wave_number;
+globalvar Boolean enable_normal_spawns;
+globalvar Number special_spawns_count;
+globalvar Number tier_4_spawns_block_end_t;
+globalvar Number last_spawn_phase_end_t;
+globalvar Number upgrade_count;
+globalvar Hero[] boss_list_1;
+globalvar Hero[] boss_list_2;
+globalvar Number objective_phase_number; // Could be an enum
+globalvar Any objective_progress; // Both number and 2d array of numbers
+globalvar Number enable_objective_enemy_spawn; // 0-2
+globalvar Vector iv_dom_objective_pos;
+globalvar Vector[] iv_dom_objective_all_pos_list;
+globalvar Number hvt_dom_objective_killed_count; // Often used as boolean
+globalvar Number hvt_call_reinforcements_end_t;
+globalvar Player[] dom_point_A_contesters;
+globalvar Player[] dom_point_B_contesters;
+globalvar Boolean is_infrasight_on;
 globalvar Player combatants;
-globalvar define combatants_count;
-globalvar define progress_bar_strings;
-globalvar define game_or_mutator_start_huds;
-globalvar define is_load_limit_reached;
-globalvar define is_waiting_to_remove_bot;
-globalvar define temp_1;
-globalvar define temp_2;
-globalvar define player_spawn_pos;
-globalvar define player_spawn_facing;
-globalvar define ability_shop_pos;
-globalvar define buy_menu_left_up_forward;
-globalvar define buy_menu_cam_pos;
-globalvar define buy_menu_base_pos;
+globalvar Number combatants_count;
+globalvar String[] progress_bar_strings;
+globalvar Number[] game_or_mutator_start_huds; // Holds TextIDs *2
+globalvar Boolean is_load_limit_reached;
+globalvar Boolean is_waiting_to_remove_bot;
+globalvar Any temp_1; // Use local vars
+globalvar Any temp_2; // Use local vars
+globalvar Vector player_spawn_pos;
+globalvar Vector player_spawn_facing;
+globalvar Vector ability_shop_pos;
+globalvar Vector[] buy_menu_left_up_forward;
+globalvar Vector buy_menu_cam_pos;
+globalvar Vector buy_menu_base_pos;
 globalvar Vector[] spawn_pos_list;
 globalvar Number[] spawn_nearest_node_idx_list;
 globalvar Vector[] nodes;
-globalvar define nodes_count;
-globalvar define edges;
-globalvar define distance_matrix;
-globalvar define elevator_nodes;
-globalvar define is_map_cg;
-globalvar define char_string;
-globalvar define aim_offset;
-globalvar define is_victory_declared;
-globalvar define is_mutator_activation_disabled;
-globalvar define is_mutator_mode_enabled;
-globalvar define money_amount;
-globalvar define money_mult;
-globalvar define diff_health_mult;
-globalvar define diff_damage_mult;
-globalvar define current_perks;
-globalvar define current_perks_huds_list;
-globalvar define mutators_list;
-globalvar define is_gmut_enabled;
-globalvar define gmut_storm_raging;
-globalvar define gmut_sympathy_gains;
-globalvar define gmut_adaptive_shield;
-globalvar define gmut_fortified;
-globalvar define mut_amped;
-globalvar define mut_hardwired;
-globalvar define mut_promotion;
-globalvar define mut_advanced_medkit;
-globalvar define mut_lock_n_load;
-globalvar define mut_emp_rounds;
-globalvar define mut_heartburn;
-globalvar define mut_deep_wounds;
-globalvar define mut_gear_upgrade;
-globalvar define mut_reinforcements;
-globalvar define mut_mutation;
-globalvar define mut_expendable;
-globalvar define mut_swan_song;
-globalvar define mut_fully_loaded;
-globalvar define mut_bulletproof;
-globalvar define gmut_list;
-globalvar define is_apocalyptic;
-globalvar define mut_count;
-globalvar define i;
-globalvar define mut_artful_dodger;
-globalvar define mut_counterstrike;
-globalvar define mut_yakuza;
-globalvar define gmut_salvation;
-globalvar define mut_low_blow;
-globalvar define gazed___;
-globalvar define length;
+globalvar Number nodes_count;
+globalvar Number[][] edges;
+globalvar String[] distance_matrix;
+globalvar define elevator_nodes; // Unknown, only set to empty array
+globalvar Boolean is_map_cg;
+globalvar String char_string; // Probably used for navigation
+globalvar Vector aim_offset;
+globalvar Boolean is_victory_declared;
+globalvar Boolean is_mutator_activation_disabled; // Useless
+globalvar Boolean is_mutator_mode_enabled;
+globalvar Number money_amount;
+globalvar Number money_mult;
+globalvar Number diff_health_mult;
+globalvar Number diff_damage_mult;
+globalvar Number[] current_perks; // Could be an enum
+globalvar Number[] current_perks_huds_list;
+globalvar Number[] mutators_list; // 0 to 19
+globalvar Boolean is_gmut_enabled;
+globalvar Boolean gmut_storm_raging;
+globalvar Boolean gmut_sympathy_gains;
+globalvar Boolean gmut_adaptive_shield;
+globalvar Boolean gmut_fortified;
+globalvar Boolean mut_amped;
+globalvar Boolean mut_hardwired;
+globalvar Boolean mut_promotion;
+globalvar Boolean mut_advanced_medkit;
+globalvar Boolean mut_lock_n_load;
+globalvar Boolean mut_emp_rounds;
+globalvar Boolean mut_heartburn;
+globalvar Boolean mut_deep_wounds;
+globalvar Boolean mut_gear_upgrade;
+globalvar Boolean mut_reinforcements;
+globalvar Boolean mut_mutation;
+globalvar Boolean mut_expendable;
+globalvar Boolean mut_swan_song;
+globalvar Boolean mut_fully_loaded;
+globalvar Boolean mut_bulletproof;
+globalvar Number[] gmut_list; // 0 to 3
+globalvar Boolean is_apocalyptic;
+globalvar Number mut_count;
+globalvar Boolean mut_artful_dodger;
+globalvar Boolean mut_counterstrike;
+globalvar Boolean mut_yakuza;
+globalvar Boolean gmut_salvation;
+globalvar Boolean mut_low_blow;
+globalvar Number length; // Could be an enum

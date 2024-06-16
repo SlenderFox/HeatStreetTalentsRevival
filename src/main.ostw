@@ -1,4 +1,4 @@
-import "../customGameSettings.jsonc";
+import "../customGameSettings.lobby";
 import "subroutines.ostw";
 
 rule: "Mod by LemonAid#11644, Original mode by Shingen#21859"
@@ -52,7 +52,7 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 	money_mult = WorkshopSettingInteger("Settings", "Money Generation Scalar (in Percent)", 100, 100, 500, 1);
 	# 0=15w, 1=22w
 	length = WorkshopSettingCombo("Settings", "Game Length", 0, ["15 Waves", "22 Waves"], 2);
-	CreateHudText(AllPlayers(Team.All), null, null, <"<0> Difficulty<1>", ["Easy", "Normal", "Hard", "Apocalyptic"][temp_1], money_mult == 100 ? "" : <", +<0>% money", money_mult - 100>>, Location.Right, -100, null, null, Color.Orange, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
+	CreateHudText(AllPlayers(), null, null, <"<0> Difficulty<1>", ["Easy", "Normal", "Hard", "Apocalyptic"][temp_1], money_mult == 100 ? "" : <", +<0>% money", money_mult - 100>>, Location.Right, -100, null, null, Color.Orange, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
 	money_mult /= 100;
 	if (temp_1 == 0)
 	{
@@ -73,16 +73,15 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 	}
 	else
 	{
-		is_apocalyptic = 1;
+		is_apocalyptic = true;
 		money_mult *= 1.4;
 		diff_health_mult = 1.5;
 		diff_damage_mult = 1.25;
 		mut_count = 5;
 	}
-	gazed___ = 1;
 	# 0=On, 1=Off
-	is_mutator_activation_disabled = 0;
-	if (is_mutator_activation_disabled == 0)
+	is_mutator_activation_disabled = false;
+	if (!is_mutator_activation_disabled)
 	{
 		is_mutator_mode_enabled = true;
 		money_mult *= 2;
@@ -99,7 +98,7 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 	gmut_list = MappedArray(gmut_list, CurrentArrayIndex());
 	if (is_hard_mode_enabled || is_apocalyptic)
 	{
-		for (i = -1; 3; 1)
+		for (Number i! = -1; 3; 1)
 		{
 			MinWait();
 			mut_add_mutator();
@@ -113,34 +112,34 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 	}
 	else
 	{
-		CreateHudText(AllPlayers(Team.All), "\n\n\n\n\n\n\n\n\n\n\n\n\n\n     This Map is not supported! Restart and choose a valid map.     \n\n\n\n\n\n\n\n\n\n\n\n\n\n", null, null, Location.Top, -1000, Color.Yellow, null, null, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
+		CreateHudText(AllPlayers(), "\n\n\n\n\n\n\n\n\n\n\n\n\n\n     This Map is not supported! Restart and choose a valid map.     \n\n\n\n\n\n\n\n\n\n\n\n\n\n", null, null, Location.Top, -1000, Color.Yellow, null, null, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
 	}
 	nodes_count = CountOf(nodes);
 	buy_menu_left_up_forward[1] = DirectionFromAngles(HorizontalAngleFromDirection(buy_menu_left_up_forward[2]), VerticalAngleFromDirection(buy_menu_left_up_forward[2]) - 90);
 	buy_menu_left_up_forward[0] = CrossProduct(buy_menu_left_up_forward[1], buy_menu_left_up_forward[2]);
-	buy_menu_base_pos = buy_menu_cam_pos - 9 * buy_menu_left_up_forward[1] + 142 * buy_menu_left_up_forward[2];
+	buy_menu_base_pos = buy_menu_cam_pos - (9 * buy_menu_left_up_forward[1]) + (142 * buy_menu_left_up_forward[2]);
 	# Workaround: Need to reduce Slots because of spectator bug
 	if (NumberOfSlots(Team.Team1) > 8)
 	{
-		CreateHudText(AllPlayers(Team.All), "\n\n\n\n\n\n\n\n\n\n\n\n\n\n     Too many player slots! Set Max Team 1 Players to 5 or lower and restart.     \n\n\n\n\n\n\n\n\n\n\n\n\n\n", null, null, Location.Top, -1000, Color.Yellow, null, null, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
+		CreateHudText(AllPlayers(), "\n\n\n\n\n\n\n\n\n\n\n\n\n\n     Too many player slots! Set Max Team 1 Players to 5 or lower and restart.     \n\n\n\n\n\n\n\n\n\n\n\n\n\n", null, null, Location.Top, -1000, Color.Yellow, null, null, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
 	}
 	# Create HUDs
-	CreateHudText(AllPlayers(Team.All), null, null, <"Heat Street: Talents - 3.4.6 | KFVAY - Chateau Guillard)​ ​-​ ​<0><1>", ["Invasion", "High Value Target", "Domination"][gamemode], MatchTime() ? <"<0><1><2>", MatchTime() > 10 ? "0:" : "", RoundToInteger(RoundToInteger(10 * MatchTime(), Rounding.Up) / 10, Rounding.Down), MatchTime() > 10 ? "" : <".<0>", RoundToInteger(10 * MatchTime(), Rounding.Up) % 10>> : "">, Location.Top, -100, null, null, Color.White, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
+	CreateHudText(AllPlayers(), null, null, <"Heat Street: Talents - 3.4.6 | KFVAY - Chateau Guillard)​ ​-​ ​<0><1>", ["Invasion", "High Value Target", "Domination"][gamemode], MatchTime() ? <"<0><1><2>", MatchTime() > 10 ? "0:" : "", RoundToInteger(RoundToInteger(10 * MatchTime(), Rounding.Up) / 10, Rounding.Down), MatchTime() > 10 ? "" : <".<0>", RoundToInteger(10 * MatchTime(), Rounding.Up) % 10>> : "">, Location.Top, -100, null, null, Color.White, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
 	if (length == 0)
 	{
-		CreateHudText(AllPlayers(Team.All), <"Wave <0>/15 ", wave_number>, null, null, Location.Top, -99, Color.White, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
+		CreateHudText(AllPlayers(), <"Wave <0>/15 ", wave_number>, null, null, Location.Top, -99, Color.White, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
 	}
 	else if (length == 1)
 	{
-		CreateHudText(AllPlayers(Team.All), <"Wave <0>/22 ", wave_number>, null, null, Location.Top, -99, Color.White, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
+		CreateHudText(AllPlayers(), <"Wave <0>/22 ", wave_number>, null, null, Location.Top, -99, Color.White, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
 	}
 	if (gamemode == 2)
 	{
-		CreateHudText(AllPlayers(Team.All), null, objective_phase_number == 1 ? "" : "\n\n\n", null, Location.Top, -98, null, Color.White, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
+		CreateHudText(AllPlayers(), null, objective_phase_number == 1 ? "" : "\n\n\n", null, Location.Top, -98, null, Color.White, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
 	}
 	else
 	{
-		CreateHudText(AllPlayers(Team.All), null, objective_phase_number == 1 || objective_phase_number == 2 ? "" : "\n\n\n", null, Location.Top, -98, null, Color.White, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
+		CreateHudText(AllPlayers(), null, objective_phase_number == 1 || objective_phase_number == 2 ? "" : "\n\n\n", null, Location.Top, -98, null, Color.White, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
 	}
 	CreateHudText(FilteredArray(combatants, DistanceBetween(ArrayElement(), ability_shop_pos) > 2), <"\n<0>\n\n Press <1> to Start \n", ["   Invasion", "High Value Target", "    Domination"][gamemode], InputBindingString(Button.Interact)>, null, null, Location.Top, -92, Color.White, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
 	game_or_mutator_start_huds[0] = LastTextID();
@@ -149,10 +148,10 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 	CreateHudText(FilteredArray(combatants, !ArrayElement().downed_start_t && (ArrayElement().is_changing_heroes || objective_phase_number == 0 && !ArrayElement().in_buy_menu_start_t)), <"\n\n\n    You can change Heroes now\n\n Hold <0> to open the Hero menu \n", InputBindingString(Button.Reload)>, null, null, Location.Top, -90, Color.Yellow, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
 	CreateHudText(FilteredArray(combatants, ArrayElement().downed_start_t), null, null, <"Waiting for revival. Press <0> to spectate the next player.", InputBindingString(Button.Jump)>, Location.Top, -70, null, null, Color.Yellow, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
 	CreateHudText(LocalPlayer(), null, null, LocalPlayer().Tut_Active ? "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" : <"Press [<0>] + [<1>] to toggle hud", InputBindingString(Button.Crouch), InputBindingString(Button.Reload)>, Location.Left, 9, null, null, Color.Orange, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
-	CreateProgressBarHudText(LocalPlayer().downed_start_t ? LocalPlayer().revive_timer : IsTrueForAny(combatants, ArrayContains(ArrayElement().revivers, LocalPlayer())) ? LocalPlayer() : [], LocalPlayer().downed_start_t ? LocalPlayer().revive_timer : LastOf(SortedArray(FilteredArray(combatants, ArrayContains(ArrayElement().revivers, LocalPlayer())), ArrayElement().revive_timer)).revive_timer, LocalPlayer().downed_start_t ? "You are being revived" : <"Reviving <0>", CountOf(FilteredArray(combatants, ArrayContains(ArrayElement().revivers, LocalPlayer()))) > 1 ? <"<0> Teammates", CountOf(FilteredArray(combatants, ArrayContains(ArrayElement().revivers, LocalPlayer())))> : FirstOf(FilteredArray(combatants, ArrayContains(ArrayElement().revivers, LocalPlayer())))>, Location.Top, -60, LocalPlayer().downed_start_t ? LocalPlayer().is_revive_slow : IsTrueForAll(combatants, !ArrayContains(ArrayElement().revivers, LocalPlayer()) || ArrayElement().is_revive_slow) ? Color.Orange : Color.SkyBlue, Color.White, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
-	CreateHudText(is_infrasight_on ? AllPlayers(Team.All) : [], <"<0> Enemies have improved aim!", AbilityIconString(Hero.Widowmaker, Button.Ultimate)>, null, null, Location.Top, -50, Color.Violet, null, null, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
+	CreateProgressBarHudText(LocalPlayer().downed_start_t ? LocalPlayer().revive_timer : IsTrueForAny(combatants, ArrayContains(ArrayElement().revivers, LocalPlayer())) ? LocalPlayer() : [], LocalPlayer().downed_start_t ? LocalPlayer().revive_timer : LastOf(SortedArray(FilteredArray(combatants, ArrayContains(ArrayElement().revivers, LocalPlayer())), ArrayElement().revive_timer)).revive_timer, LocalPlayer().downed_start_t ? "You are being revived" : <"Reviving <0>", CountOf(FilteredArray(combatants, ArrayContains(ArrayElement().revivers, LocalPlayer()))) > 1 ? <"<0> Teammates", CountOf(FilteredArray(combatants, ArrayContains(ArrayElement().revivers, LocalPlayer())))> : FilteredArray(combatants, ArrayContains(ArrayElement().revivers, LocalPlayer()))[0]>, Location.Top, -60, LocalPlayer().downed_start_t ? LocalPlayer().is_revive_slow : IsTrueForAll(combatants, !ArrayContains(ArrayElement().revivers, LocalPlayer()) || ArrayElement().is_revive_slow) ? Color.Orange : Color.SkyBlue, Color.White, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
+	CreateHudText(is_infrasight_on ? AllPlayers() : [], <"<0> Enemies have improved aim!", AbilityIconString(Hero.Widowmaker, Button.Ultimate)>, null, null, Location.Top, -50, Color.Violet, null, null, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
 	CreateHudText(IsTrueForAny(PlayersOnHero(Hero.Soldier76, Team.Team2), ArrayElement().ab_var_1 && ArrayElement().target == LocalPlayer()) ? LocalPlayer() : [], <"<0> Locked on!", AbilityIconString(Hero.Soldier76, Button.Ultimate)>, null, null, Location.Top, -49, CustomColor(245 + 10 * SineFromRadians(4 * TotalTimeElapsed()), 205 + 50 * SineFromRadians(4 * TotalTimeElapsed()), 200 * SineFromRadians(4 * TotalTimeElapsed()), 255), null, null, HudTextRev.VisibleToAndColor, Spectators.DefaultVisibility);
-	CreateHudText(AllPlayers(Team.All), null, null, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", Location.Top, -1, null, null, Color.White, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
+	CreateHudText(AllPlayers(), null, null, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", Location.Top, -1, null, null, Color.White, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
 	CreateHudText(AllPlayers(Team.Team2), <"Server Load: <0>, Average: <1>, Peak: <2>", ServerLoad(), ServerLoadAverage(), ServerLoadPeak()>, null, null, Location.Left, -110, is_waiting_to_remove_bot ? Color.Yellow : Color.White, null, null, HudTextRev.VisibleToStringAndColor, Spectators.DefaultVisibility);
 	CreateHudText([], null, "Mod by Lemonaid:\nChateau Guillard: KFVAY\nKanezaka: H4H7K\nDorado: NNNS6\nEichenwalde: MH9DN\nHollywood: K3235\nMalevento: 8GRV8\\Rout", "____\nCredits to:\n Shingen\n SgtMoody\nDevelopful\n", Location.Left, -1000, Color.White, Color.LimeGreen, Color.Green, HudTextRev.VisibleTo, Spectators.VisibleAlways);
 	# Create Sombra Stealth Timer IWT
@@ -167,36 +166,36 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 	StartHealingModification(FilteredArray(combatants, NormalizedHealth(ArrayElement()) <= 0.5 && ArrayElement().last_damage_taken_t + 2.5 > TotalTimeElapsed()), FilteredArray(combatants, ArrayElement().ab_priority == 3), 140, HealingModificationRev.ReceiversDamagersAndDamagePercent);
 	# Nemesis: Your Nemesis IWT
 	CreateInWorldText(LocalPlayer().nemesis_killer ? LocalPlayer() : [], "Your Nemesis", LocalPlayer().nemesis_killer, 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndPosition, Color.Team2, Spectators.DefaultVisibility);
-	CreateEffect(AllPlayers(Team.All), Effect.Ring, Color.SkyBlue, ability_shop_pos, 2, EffectRev.VisibleTo);
-	CreateInWorldText(AllPlayers(Team.All), "Ability Shop", ability_shop_pos, 1.5, Clipping.DoNotClip, InworldTextRev.VisibleTo, Color.SkyBlue, Spectators.DefaultVisibility);
+	CreateEffect(AllPlayers(), Effect.Ring, Color.SkyBlue, ability_shop_pos, 2, EffectRev.VisibleTo);
+	CreateInWorldText(AllPlayers(), "Ability Shop", ability_shop_pos, 1.5, Clipping.DoNotClip, InworldTextRev.VisibleTo, Color.SkyBlue, Spectators.DefaultVisibility);
 	CreateHudText(!LocalPlayer().is_combatant || LocalPlayer().downed_start_t || LocalPlayer().in_buy_menu_start_t || LocalPlayer().is_changing_heroes ? [] : LocalPlayer(), DistanceBetween(LocalPlayer(), ability_shop_pos) <= 2 ? MatchTime() ? <"Press <0> to buy Abilities", InputBindingString(Button.Interact)> : <"\n Press <0> to buy Abilities \n", InputBindingString(Button.Interact)> : LocalPlayer().can_use_drop_in_buy_menu || MatchTime() ? <"Hold <0> to buy Abilities", InputBindingString(Button.Interact)> : "", null, null, Location.Top, -80, Color.Green, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
 	# Create Buy Menu IWTs, on scale 2.5 1 space is 8.5 pixels
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃", buy_menu_base_pos - 21 * buy_menu_left_up_forward[1] + 90 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleTo, Color.White, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃", buy_menu_base_pos - 21 * buy_menu_left_up_forward[1] - 90 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleTo, Color.White, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Refund", buy_menu_base_pos + 45 * buy_menu_left_up_forward[1] + 90 * FirstOf(buy_menu_left_up_forward), 3, Clipping.DoNotClip, InworldTextRev.VisibleTo, Color.Green, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃", buy_menu_base_pos - 21 * buy_menu_left_up_forward[1] + 90 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleTo, Color.White, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃", buy_menu_base_pos - 21 * buy_menu_left_up_forward[1] - 90 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleTo, Color.White, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Refund", buy_menu_base_pos + 45 * buy_menu_left_up_forward[1] + 90 * buy_menu_left_up_forward[0], 3, Clipping.DoNotClip, InworldTextRev.VisibleTo, Color.Green, Spectators.DefaultVisibility);
 	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), <"[<0>] <1>", InputBindingString(Button.Melee), LocalPlayer().is_showing_active_abilities ? "Show passive Abilities" : "Show active Abilities">, buy_menu_base_pos + 45 * buy_menu_left_up_forward[1], 3, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.Green, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), <"[<0>] Leave", InputBindingString(Button.Interact)>, buy_menu_base_pos + 45 * buy_menu_left_up_forward[1] - 90 * FirstOf(buy_menu_left_up_forward), 3, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.Green, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().ab_priority ? "Priority A\n  Swap" : "Priority A\n 1200$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] + 112.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().ab_priority ? Color.Yellow : CustomColor(0, 134, 171, 255), Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().ab_priority ? "Priority B\n  Swap" : "Priority B\n 1200$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] + 112.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().ab_priority ? Color.Yellow : CustomColor(0, 134, 171, 255), Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().ab_priority ? "Priority C\n  Swap" : "Priority C\n 1200$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] + 112.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().ab_priority ? Color.Yellow : CustomColor(0, 134, 171, 255), Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Stim Infusion\n    Swap" : "Stim Infusion\n   1200$" : LocalPlayer().ab_headhunter ? "Headhunter II\n  800$" : "Headhunter I\n  800$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] + 67.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : LocalPlayer().ab_headhunter < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Smoke Bomb\n    Swap" : "Smoke Bomb\n   1200$" : LocalPlayer().ab_antigens ? "Antigens II\n   600$" : "Antigens I\n   600$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] + 67.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : LocalPlayer().ab_antigens < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? "" : LocalPlayer().ab_quick_fix ? "Quick Fix II\n  700$" : "Quick Fix I\n  700$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] + 67.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().ab_quick_fix < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Cloak\n Swap" : "Cloak\n1200$" : LocalPlayer().ab_charged ? "Charged II\n  700$" : "Charged I\n  700$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] + 22.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : LocalPlayer().ab_charged < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Resurgence\n   Swap" : "Resurgence\n  1200$" : LocalPlayer().ab_haste ? "Haste II\n  800$" : "Haste I\n  800$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] + 22.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : LocalPlayer().ab_haste < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? "" : LocalPlayer().ab_heavy_impact ? "Heavy Impact II\n  1000$" : "Heavy Impact I\n  1000$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] + 22.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().ab_heavy_impact < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Feint\nSwap" : "Feint\n1200$" : LocalPlayer().ab_second_wind ? "Second Wind II\n   1000$" : "Second Wind I\n   1000$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] - 22.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : LocalPlayer().ab_second_wind < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Tear Gas\n Swap" : "Tear Gas\n   1200$" : LocalPlayer().ab_triage ? "Triage II\n  700$" : "Triage I\n  700$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] - 22.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : LocalPlayer().ab_triage < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? "" : LocalPlayer().ab_resilience ? "Resilience II\n   800$" : "Resilience I\n   800$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] - 22.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().ab_resilience < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Frenzy\n  Swap" : "Frenzy\n 1200$" : "+5% Health\n   500$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] - 67.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : Color.Green, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Chain Hack\n   Swap" : "Chain Hack\n  1200$" : "+5% Damage\n  500$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] - 67.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : Color.Green, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? "" : "+5% Healing\n  500$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] - 67.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.Green, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Limited offer!", buy_menu_base_pos + 22.5 * buy_menu_left_up_forward[1] - 112.5 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.White, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), <"[<0>] Leave", InputBindingString(Button.Interact)>, buy_menu_base_pos + 45 * buy_menu_left_up_forward[1] - 90 * buy_menu_left_up_forward[0], 3, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.Green, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().ab_priority ? "Priority A\n  Swap" : "Priority A\n 1200$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] + 112.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().ab_priority ? Color.Yellow : CustomColor(0, 134, 171, 255), Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().ab_priority ? "Priority B\n  Swap" : "Priority B\n 1200$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] + 112.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().ab_priority ? Color.Yellow : CustomColor(0, 134, 171, 255), Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().ab_priority ? "Priority C\n  Swap" : "Priority C\n 1200$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] + 112.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().ab_priority ? Color.Yellow : CustomColor(0, 134, 171, 255), Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Stim Infusion\n    Swap" : "Stim Infusion\n   1200$" : LocalPlayer().ab_headhunter ? "Headhunter II\n  800$" : "Headhunter I\n  800$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] + 67.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : LocalPlayer().ab_headhunter < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Smoke Bomb\n    Swap" : "Smoke Bomb\n   1200$" : LocalPlayer().ab_antigens ? "Antigens II\n   600$" : "Antigens I\n   600$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] + 67.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : LocalPlayer().ab_antigens < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? "" : LocalPlayer().ab_quick_fix ? "Quick Fix II\n  700$" : "Quick Fix I\n  700$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] + 67.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().ab_quick_fix < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Cloak\n Swap" : "Cloak\n1200$" : LocalPlayer().ab_charged ? "Charged II\n  700$" : "Charged I\n  700$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] + 22.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : LocalPlayer().ab_charged < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Resurgence\n   Swap" : "Resurgence\n  1200$" : LocalPlayer().ab_haste ? "Haste II\n  800$" : "Haste I\n  800$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] + 22.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : LocalPlayer().ab_haste < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? "" : LocalPlayer().ab_heavy_impact ? "Heavy Impact II\n  1000$" : "Heavy Impact I\n  1000$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] + 22.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().ab_heavy_impact < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Feint\nSwap" : "Feint\n1200$" : LocalPlayer().ab_second_wind ? "Second Wind II\n   1000$" : "Second Wind I\n   1000$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] - 22.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : LocalPlayer().ab_second_wind < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Tear Gas\n Swap" : "Tear Gas\n   1200$" : LocalPlayer().ab_triage ? "Triage II\n  700$" : "Triage I\n  700$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] - 22.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : LocalPlayer().ab_triage < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? "" : LocalPlayer().ab_resilience ? "Resilience II\n   800$" : "Resilience I\n   800$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] - 22.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().ab_resilience < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Frenzy\n  Swap" : "Frenzy\n 1200$" : "+5% Health\n   500$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] - 67.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : Color.Green, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? "Chain Hack\n   Swap" : "Chain Hack\n  1200$" : "+5% Damage\n  500$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] - 67.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().is_showing_active_abilities ? LocalPlayer().active_ab_number ? Color.Yellow : Color.Green : Color.Green, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), LocalPlayer().is_showing_active_abilities ? "" : "+5% Healing\n  500$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] - 67.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.Green, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Limited offer!", buy_menu_base_pos + 22.5 * buy_menu_left_up_forward[1] - 112.5 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.White, Spectators.DefaultVisibility);
 	CreateInWorldText(LocalPlayer().in_buy_menu_start_t && LocalPlayer().is_showing_active_abilities ? LocalPlayer() : [], <"Hold or double tap <0> to use your active ability\n", InputBindingString(Button.Melee)>, buy_menu_base_pos - 25 * buy_menu_left_up_forward[1], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.White, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), <"Press <0> to buy\n", InputBindingString(Button.PrimaryFire)>, buy_menu_base_pos - 74 * buy_menu_left_up_forward[1] - 55 * FirstOf(buy_menu_left_up_forward), 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.White, Spectators.DefaultVisibility);
+	CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), <"Press <0> to buy\n", InputBindingString(Button.PrimaryFire)>, buy_menu_base_pos - 74 * buy_menu_left_up_forward[1] - 55 * buy_menu_left_up_forward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.White, Spectators.DefaultVisibility);
 	# Create Ability Entities and Cursor
 	CreateInWorldText(LocalPlayer().in_buy_menu_start_t ? LocalPlayer() : [], <"<0>$\n", RoundToInteger(money_mult * money_amount - LocalPlayer().money_spent_amount, Rounding.Down)>, buy_menu_base_pos - 74 * buy_menu_left_up_forward[1], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.White, Spectators.DefaultVisibility);
-	CreateInWorldText(LocalPlayer().in_buy_menu_start_t ? LocalPlayer() : [], "▲", UpdateEveryFrame(buy_menu_base_pos - (4 + VerticalFacingAngleOf(LocalPlayer())) * buy_menu_left_up_forward[1] + HorizontalFacingAngleOf(LocalPlayer()) * FirstOf(buy_menu_left_up_forward)), 4, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndColor, CustomColor(245 + 10 * SineFromRadians(4 * TotalTimeElapsed()), 205 + 50 * SineFromRadians(4 * TotalTimeElapsed()), 200 * SineFromRadians(4 * TotalTimeElapsed()), 255), Spectators.DefaultVisibility);
+	CreateInWorldText(LocalPlayer().in_buy_menu_start_t ? LocalPlayer() : [], "▲", UpdateEveryFrame(buy_menu_base_pos - (4 + VerticalFacingAngleOf(LocalPlayer())) * buy_menu_left_up_forward[1] + HorizontalFacingAngleOf(LocalPlayer()) * buy_menu_left_up_forward[0]), 4, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndColor, CustomColor(245 + 10 * SineFromRadians(4 * TotalTimeElapsed()), 205 + 50 * SineFromRadians(4 * TotalTimeElapsed()), 200 * SineFromRadians(4 * TotalTimeElapsed()), 255), Spectators.DefaultVisibility);
 	# Use Update Every Frame to avoid showing the String when the cursor is out of bounds, resulting in 0
 	CreateInWorldText(UpdateEveryFrame(LocalPlayer().in_buy_menu_start_t && AbsoluteValue(HorizontalFacingAngleOf(LocalPlayer())) < 135 && AbsoluteValue(VerticalFacingAngleOf(LocalPlayer()) + 11.25) < 45 ? LocalPlayer() : []), UpdateEveryFrame(VerticalFacingAngleOf(LocalPlayer()) < -33.75 ? ["Leave Buy Menu\n", LocalPlayer().is_showing_active_abilities ? "Swap to the passive abilities page\n" : "Swap to the active abilities page\n", "Refund your money\n"][RoundToInteger((HorizontalFacingAngleOf(LocalPlayer()) + 135) / 90, Rounding.Down)] : [VerticalFacingAngleOf(LocalPlayer()) < -11.25 ? "The limited offer changes every wave\n" : ["Mystery Swap: Periodically swap to a random hero with a free ult\n         Health, damage and healing is increased by 20%", "Bulletstorm: Your weapon can hold unlimited ammo\n", "Die Hard: Your health regeneration delay is halved\n", <"Brass Knuckles: While using quick melee you are immune to Cloakers' charge attack\n<0>", "     Your quick melee attack knocks enemies down (15 second cooldown)">, "Vampiric: Heal for 30% of all dealt damage\n", "Crash N' Dash: Regenerate health while moving faster than 8 meters per second\n", "Golden Hour: You can be revived twice as fast\n", "Supercharge: Healing allies slowly charges their ultimate\n", "Nemesis: After going down automatically revive yourself when your killer dies\n", "Spec Ops: Gain 50 armour and immunity to grenadier smokes\n", "Sharpshooter: Deal 50% more damage to enemies that are further than 20 meters away\n", "Shockproof: Gain +15% speed and pass through enemies. \nBecome immune and deflect Taser electrocution attempts", <"<0>: <1>", LocalPlayer().talent_text[1], LocalPlayer().talent_text[2]>, <"<0>: <1>", LocalPlayer().talent_text[3], LocalPlayer().talent_text[4]>][current_perks[VerticalFacingAngleOf(LocalPlayer()) >= 11.25]], (LocalPlayer().is_showing_active_abilities ? ["Frenzy: Become invincible and force enemies to target you\n", <"          Chain Hack: Hack and electrocute an enemy\n<0>", "Can jump to nearby enemies up to 3 times with a shorter duration after each jump">, ""] : ["Increase your health by 5%\n", "Increase your damage by 5%\n", "Increase your healing by 5%\n"])[RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)], (LocalPlayer().is_showing_active_abilities ? ["Feint: Dodge and dash into any direction, creating an explosion from start to finish", "Tear Gas: Launch a grenade that releases lingering noxious gas\n                 Enemies in the gas get stunned", ""] : [LocalPlayer().ab_second_wind ? "Second Wind II: Revive yourself when downed. Can only happen once every 60 seconds" : "Second Wind I: Revive yourself when downed. Can only happen once every 90 seconds", LocalPlayer().ab_triage ? "Triage II: Heal 50% more to players under 50% health\n" : "Triage I: Heal 25% more to players under 50% health\n", LocalPlayer().ab_resilience ? "Resilience II: Receive 20% less damage\nReceive 60% less knockback and inflict 60% more" : "Resilience I: Receive 20% less damage\nReceive 30% less knockback and inflict 30% more"])[RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)], (LocalPlayer().is_showing_active_abilities ? ["Cloak: Become invisible and freeze nearby enemies when you become visible again\n", "   Resurgence: Heal yourself for 300 health per second\nIf you are at full health, heal a nearby injured ally instead", ""] : [LocalPlayer().ab_charged ? "Charged II: Ultimates cost 30% less\n" : "Charged I: Ultimates cost 15% less\n", LocalPlayer().ab_haste ? "Haste II: Ability cooldown is reduced by 50%\nDoes not affect abilities with multiple charges" : "Haste I: Ability cooldown is reduced by 25%\nDoes not affect abilities with multiple charges", LocalPlayer().ab_heavy_impact ? "Heavy Impact II: Every hit has a chance to stun the enemy for 2 seconds\n" : "Heavy Impact I: Every hit has a chance to stun the enemy for 1 second\n"])[RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)], (LocalPlayer().is_showing_active_abilities ? ["Stim Infusion: Instantly start health regeneration\nGain +100% damage, +100% healing and +50% speed", "      Smoke Bomb: Create a smoke screen\nEnemies are less accurate when targeting allies in the smoke", ""] : [LocalPlayer().ab_headhunter ? "Headhunter II: Critical hits deal 60% more damage\n" : "Headhunter I: Critical hits deal 30% more damage\n", LocalPlayer().ab_antigens ? "Antigens II: Receive 40% more healing and a natural overtime heal" : "Antigens I: Receive 20% more healing and a natural overtime heal", LocalPlayer().ab_quick_fix ? "Quick Fix II: Eliminations restore 100 HP and shortly increase speed by 30%\n" : "Quick Fix I: Eliminations restore 50 HP and shortly increase speed by 15%\n"])[RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)], ["    Priority A: Enemies are more likely to target you\nEnemies targeting you take 25% more and deal 25% less damage", <"         Priority B: Enemies are less likely to target you\n<0>", "Gain +20% damage and speed if you did not take damage in the last 3 seconds">, <"  Priority C: Enemies are much less likely to target you\n<0>", "Heal 40% more to allies in combat. Heal for 25% of dealt healing">][RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)]][RoundToInteger((HorizontalFacingAngleOf(LocalPlayer()) + 135) / 45, Rounding.Down)]), buy_menu_base_pos - 55 * buy_menu_left_up_forward[1], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.White, Spectators.DefaultVisibility);
 	# Skip Assembling Heroes
@@ -326,10 +325,10 @@ if (DistanceBetween(EventPlayer(), Vector(XOf(nav_pos), YOf(PositionOf(EventPlay
 }
 
 rule: "Global (First Wave): Create Mutator Start HUD, Scale Values, Set Level"
-if (wave_number == false)
+if (wave_number == 0)
 if (IsTrueForAny(combatants, IsButtonHeld(ArrayElement(), Button.Interact) && DistanceBetween(ArrayElement(), ability_shop_pos) > 2) == true)
 {
-	DestroyHudText(FirstOf(game_or_mutator_start_huds));
+	DestroyHudText(game_or_mutator_start_huds[0]);
 	DestroyHudText(game_or_mutator_start_huds[1]);
 	EnableMusic();
 	wave_number = 1;
@@ -362,9 +361,9 @@ if (NumberOfLivingPlayers(Team.Team2) == 0)
 	{
 		async! declare_victory();
 	}
-	objective_phase_number = false;
+	objective_phase_number = 0;
 	(<Player>FilteredArray(combatants, ArrayElement().downed_start_t && ArrayElement().downed_start_t + 0.1 < TotalTimeElapsed())).downed_start_t = false;
-	BigMessage(AllPlayers(Team.All), "Wave cleared!");
+	BigMessage(AllPlayers(), "Wave cleared!");
 	money_amount += (wave_number >= 2 ? 30 : 45) + 25 * wave_number;
 	set_random_perks();
 	if (is_mutator_mode_enabled && wave_number % 2 == 1 || is_apocalyptic)
@@ -469,7 +468,7 @@ if (NumberOfPlayers(Team.Team2) > 7)
 if (ServerLoadAverage() >= 255)
 {
 	is_load_limit_reached = true;
-	if (!is_waiting_to_remove_bot && wave_number)
+	if (!is_waiting_to_remove_bot && wave_number > 0)
 	{
 		WaitUntil(ServerLoadAverage() < 255, 4);
 		if (ServerLoadAverage() >= 255)
@@ -538,11 +537,11 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
 	temp_1 = [RoundToInteger((HorizontalFacingAngleOf(EventPlayer()) + 135) / 45, Rounding.Down), RoundToInteger((VerticalFacingAngleOf(EventPlayer()) + 56.25) / 22.5, Rounding.Down)];
 	if (temp_1[1] == 0)
 	{
-		if (FirstOf(temp_1) <= 1)
+		if (temp_1[0] <= 1)
 		{
 			leave_buy_menu();
 		}
-		else if (FirstOf(temp_1) <= 3)
+		else if (temp_1[0] <= 3)
 		{
 			is_showing_active_abilities = !is_showing_active_abilities;
 		}
@@ -622,7 +621,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
 	}
 	else
 	{
-		if (FirstOf(temp_1) == 0)
+		if (temp_1[0] == 0)
 		{
 			if (temp_1[1] >= 2)
 			{
@@ -743,7 +742,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
 						if (temp_2)
 						{
 							perk_nemesis = true;
-							CreateBeamEffect(nemesis_killer ? AllPlayers(Team.All) : [], BeamType.BadBeam, PositionOf(EventPlayer()), nemesis_killer, Color.Black, EffectRev.VisibleToPositionAndRadius);
+							CreateBeamEffect(nemesis_killer ? AllPlayers() : [], BeamType.BadBeam, PositionOf(EventPlayer()), nemesis_killer, Color.Black, EffectRev.VisibleToPositionAndRadius);
 							nemesis_beam_effect = LastCreatedEntity();
 							update_ab_string_and_play_sound();
 						}
@@ -822,7 +821,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
 				}
 			}
 		}
-		else if (FirstOf(temp_1) == 1)
+		else if (temp_1[0] == 1)
 		{
 			if (is_showing_active_abilities)
 			{
@@ -852,7 +851,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
 					{
 						ab_damage_bonus += 5;
 						Damage_Dealt += 5;
-						SetDamageDealt(EventPlayer(), Damage_Dealt);
+						SetDamageDealt(EventPlayer(), Damage_Dealt[0]);
 					}
 					else
 					{
@@ -863,7 +862,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
 				}
 			}
 		}
-		else if (FirstOf(temp_1) == 2)
+		else if (temp_1[0] == 2)
 		{
 			if (is_showing_active_abilities)
 			{
@@ -924,7 +923,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
 				}
 			}
 		}
-		else if (FirstOf(temp_1) == 3)
+		else if (temp_1[0] == 3)
 		{
 			if (is_showing_active_abilities)
 			{
@@ -982,7 +981,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
 				}
 			}
 		}
-		else if (FirstOf(temp_1) == 4)
+		else if (temp_1[0] == 4)
 		{
 			if (is_showing_active_abilities)
 			{
@@ -1023,7 +1022,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
 							StopHealingModification(heal_mod[1]);
 							StopHealOverTime(heal_mod[2]);
 							ab_antigens = ab_antigens ? 2 : 1;
-							StartHealingModification(EventPlayer(), AllPlayers(Team.All), 100 + 20 * ab_antigens, HealingModificationRev.ReceiversDamagersAndDamagePercent);
+							StartHealingModification(EventPlayer(), AllPlayers(), 100 + 20 * ab_antigens, HealingModificationRev.ReceiversDamagersAndDamagePercent);
 							heal_mod[1] = LastHealingModificationID();
 							StartHealOverTime(EventPlayer(), null, 9999, MaxHealth(EventPlayer()) * 0.01 * ab_antigens);
 							heal_mod[2] = LastHealOverTime();
@@ -1102,8 +1101,8 @@ if (HasSpawned(EventPlayer()) == true)
 	healing_dealt_percent = 100;
 	SetHealingReceived(EventPlayer(), 85 + 2.5 * upgrade_count);
 	update_combatants();
-	CreateEffect(downed_start_t ? AllPlayers(Team.All) : [], Effect.Ring, Color.Yellow, EventPlayer(), 3, EffectRev.VisibleTo);
-	CreateIcon(downed_start_t ? RemoveFromArray(AllPlayers(Team.All), EventPlayer()) : [], EventPlayer(), Icon.Skull, IconRev.VisibleTo, Color.Yellow, true);
+	CreateEffect(downed_start_t ? AllPlayers() : [], Effect.Ring, Color.Yellow, EventPlayer(), 3, EffectRev.VisibleTo);
+	CreateIcon(downed_start_t ? RemoveFromArray(AllPlayers(), EventPlayer()) : [], EventPlayer(), Icon.Skull, IconRev.VisibleTo, Color.Yellow, true);
 	# Workaround: Normalized Health sometimes doesn't reevaluate, so force with TTE
 	CreateHudText(AllPlayers(Team.Team1), <"<0><1>", HeroIconString(HeroOf(EventPlayer())), downed_start_t && revive_timer ? progress_bar_strings[RoundToInteger(revive_timer / 10, Rounding.Down)] : "">, <"<0><1><2>", EventPlayer(), ab_priority ? ["(A)", "(B)", "(C)"][ab_priority - 1] : "", in_buy_menu_start_t ? "(In Shop)" : "">, <"<0><1>", downed_start_t ? revive_timer ? "Being Revived" : "Downed" : is_changing_heroes ? "Changing Heroes" : <"<0> HP", RoundToInteger(Health(EventPlayer()), Rounding.Up)>, <", <0>$", RoundToInteger(money_mult * money_amount - money_spent_amount, Rounding.Down)>>, Location.Left, LocalPlayer() == EventPlayer() ? -1 : SlotOf(EventPlayer()), downed_start_t ? Color.Red : is_changing_heroes || NormalizedHealth(EventPlayer()) >= 0.5 ? LocalPlayer() == EventPlayer() ? Color.Green : Color.SkyBlue : Color.Orange, downed_start_t ? Color.Red : is_changing_heroes || NormalizedHealth(EventPlayer()) >= 0.5 ? LocalPlayer() == EventPlayer() ? Color.Green : Color.SkyBlue : Color.Orange, downed_start_t ? Color.Red : is_changing_heroes || NormalizedHealth(EventPlayer()) >= 0.5 ? LocalPlayer() == EventPlayer() ? Color.Green : Color.SkyBlue : Color.Orange, HudTextRev.VisibleToSortOrderStringAndColor, Spectators.DefaultVisibility);
 	# Stats
@@ -1114,10 +1113,10 @@ if (HasSpawned(EventPlayer()) == true)
 	CreateHudText(is_combatant ? EventPlayer() : [], null, spectated_player.ab_bought_abilities_string, null, Location.Left, 10, null, Color.Green, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
 	CreateHudText(spectated_player.Talent1 ? EventPlayer() : [], "", spectated_player.talent_text[2], <"<0>\n━━━━", spectated_player.talent_text[1]>, Location.Left, 11, Color.Blue, Color.White, Color.SkyBlue, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
 	CreateHudText(spectated_player.Talent2 ? EventPlayer() : [], "", spectated_player.talent_text[4], <"<0>\n━━━━", spectated_player.talent_text[3]>, Location.Left, 12, Color.Blue, Color.White, Color.SkyBlue, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
-	CreateHudText(spectated_player.active_ab_number ? EventPlayer() : [], AbilityIconString([Hero.Ana, Hero.Sombra, Hero.Soldier76, Hero.Reaper, Hero.Cassidy, Hero.Baptiste, Hero.Sigma, Hero.Sombra][spectated_player.active_ab_number - 1], [Button.Ultimate, Button.Ability1, Button.Ability1, Button.Ability1, Button.Ability2, Button.Ability1, Button.Ultimate, Button.SecondaryFire][spectated_player.active_ab_number - 1]), <"Hold or double tap <0>", InputBindingString(Button.Melee)>, <"<0>: <1>", ["Stim Infusion", "Cloak", "Feint", "Frenzy", "Smoke Bomb", "Resurgence", "Tear Gas", "Chain Hack"][spectated_player.active_ab_number - 1], spectated_player.active_ab_cooldown ? RoundToInteger(MagnitudeOf(spectated_player.active_ab_cooldown), Rounding.Up) : "Ready">, Location.Left, 13, spectated_player.active_ab_cooldown < 0 ? Color.Green : HasStatus(spectated_player, Status.Hacked) || HasStatus(spectated_player, Status.Stunned) ? Color.Red : spectated_player.active_ab_cooldown ? Color.Gray : Color.Green, Color.Orange, spectated_player.active_ab_cooldown < 0 ? Color.Green : HasStatus(spectated_player, Status.Hacked) || HasStatus(spectated_player, Status.Stunned) ? Color.Red : spectated_player.active_ab_cooldown ? Color.Gray : Color.Green, HudTextRev.VisibleToStringAndColor, Spectators.DefaultVisibility);
+	CreateHudText(spectated_player.active_ab_number ? EventPlayer() : [], AbilityIconString([Hero.Ana, Hero.Sombra, Hero.Soldier76, Hero.Reaper, Hero.Cassidy, Hero.Baptiste, Hero.Sigma, Hero.Sombra][spectated_player.active_ab_number - 1], [Button.Ultimate, Button.Ability1, Button.Ability1, Button.Ability1, Button.Ability2, Button.Ability1, Button.Ultimate, Button.SecondaryFire][spectated_player.active_ab_number - 1]), <"Hold or double tap <0>", InputBindingString(Button.Melee)>, <"<0>: <1>", ["Stim Infusion", "Cloak", "Feint", "Frenzy", "Smoke Bomb", "Resurgence", "Tear Gas", "Chain Hack"][spectated_player.active_ab_number - 1], spectated_player.active_ab_cooldown ? RoundToInteger(spectated_player.active_ab_cooldown, Rounding.Up) : "Ready">, Location.Left, 13, spectated_player.active_ab_cooldown < 0 ? Color.Green : HasStatus(spectated_player, Status.Hacked) || HasStatus(spectated_player, Status.Stunned) ? Color.Red : spectated_player.active_ab_cooldown ? Color.Gray : Color.Green, Color.Orange, spectated_player.active_ab_cooldown < 0 ? Color.Green : HasStatus(spectated_player, Status.Hacked) || HasStatus(spectated_player, Status.Stunned) ? Color.Red : spectated_player.active_ab_cooldown ? Color.Gray : Color.Green, HudTextRev.VisibleToStringAndColor, Spectators.DefaultVisibility);
 	CreateEffect(Smoked_Screen && !perk_special_operator ? EventPlayer() : [], Effect.Sphere, Color.White, EventPlayer(), 5, EffectRev.VisibleToPositionAndRadius);
-	CreateEffect(HasStatus(EventPlayer(), Status.Invincible) ? AllPlayers(Team.All) : [], Effect.BaptisteImmortalityFieldProtectedEffect, Team.Team2, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
-	if (wave_number)
+	CreateEffect(HasStatus(EventPlayer(), Status.Invincible) ? AllPlayers() : [], Effect.BaptisteImmortalityFieldProtectedEffect, Team.Team2, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
+	if (wave_number > 0)
 	{
 		StartForcingPlayerOutlines(FilteredArray(AllPlayers(Team.Team2), ArrayElement().is_living_boss), EventPlayer(), true, Color.Yellow, OutlineType.Always);
 		can_use_drop_in_buy_menu = true;
@@ -1147,6 +1146,7 @@ Team.Team1
 	WaitUntil(MagnitudeOf(ThrottleOf(EventPlayer())) > 0, 99999);
 	temp_1 = [-1, false, 1];
 	is_controller_player = !(ArrayContains(temp_1, XOf(ThrottleOf(EventPlayer()))) && ArrayContains(temp_1, ZOf(ThrottleOf(EventPlayer()))));
+	// What in the fuck
 	mercy_res_button = is_controller_player ? Button.SecondaryFire : Button.Ability2;
 }
 
@@ -1175,7 +1175,7 @@ if (IsButtonHeld(EventPlayer(), Button.Reload) == true)
 	ab_var_1 = PositionOf(EventPlayer());
 	ab_var_2 = EyePosition(EventPlayer());
 	ab_var_3 = FacingDirectionOf(EventPlayer());
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Yellow, ab_var_1, 1);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Yellow, ab_var_1, 1);
 	StartCamera(EventPlayer(), RayCastHitPosition(ab_var_2, ab_var_2 - 8.25 * DirectionFromAngles(HorizontalAngleFromDirection(ab_var_3), 20), null, null, false) + 0.25 * DirectionFromAngles(HorizontalAngleFromDirection(ab_var_3), 20), ab_var_2, 0);
 	ClearStatus(EventPlayer(), Status.Unkillable);
 	Kill(EventPlayer(), null);
@@ -1208,7 +1208,7 @@ if (is_changing_heroes == false)
 	if (!downed_start_t)
 	{
 		DisableMessages(EventPlayer());
-		SmallMessage(AllPlayers(Team.All), <"<0> was downed!", EventPlayer()>);
+		SmallMessage(AllPlayers(), <"<0> was downed!", EventPlayer()>);
 		death_cam_target = EyePosition(EventPlayer()) + 1000 * DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()), 0);
 		StartCamera(EventPlayer(), RayCastHitPosition(EyePosition(spectated_player), EyePosition(spectated_player) - (death_cam_target ? 6.25 * DirectionTowards(EyePosition(spectated_player), death_cam_target) : 8.25 * DirectionFromAngles(HorizontalFacingAngleOf(spectated_player), 20)), null, null, false) + 0.25 * (death_cam_target ? DirectionTowards(EyePosition(spectated_player), death_cam_target) : DirectionFromAngles(HorizontalFacingAngleOf(spectated_player), 20)), EyePosition(spectated_player), death_cam_target ? 10 : 20);
 		for (temp_1 = 0; combatants_count; 1)
@@ -1319,7 +1319,7 @@ if (downed_start_t + 1 < TotalTimeElapsed())
 		revive_timer += (is_hard_mode_enabled || is_apocalyptic ? 0.667 : 1) * (perk_golden_hour ? 2 : 1) * (is_revive_slow ? 2.5 : 5);
 		if (revive_timer >= 100)
 		{
-			SmallMessage(AllPlayers(Team.All), <"<0> has been revived!", EventPlayer()>);
+			SmallMessage(AllPlayers(), <"<0> has been revived!", EventPlayer()>);
 			downed_start_t = false;
 		}
 	}
@@ -1351,7 +1351,7 @@ if (downed_start_t == false)
 	EnableMessages(EventPlayer());
 	StopCamera(EventPlayer());
 	enable_player();
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BuffImpactSound, Color.White, EventPlayer(), 200);
+	PlayEffect(AllPlayers(), PlayEffect.BuffImpactSound, Color.White, EventPlayer(), 200);
 	SetPlayerHealth(EventPlayer(), 100000);
 	spectated_player = EventPlayer();
 	revivers = [];
@@ -1458,8 +1458,8 @@ if (IsButtonHeld(EventPlayer(), Button.Melee) == true)
 		active_ab_is_cloaked = false;
 		Damage(PlayersWithinRadius(EyePosition(EventPlayer()), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 99);
 		SetStatus(PlayersWithinRadius(EyePosition(EventPlayer()), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Frozen, 4);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.Aqua, EyePosition(EventPlayer()), 10);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
+		PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Aqua, EyePosition(EventPlayer()), 10);
+		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
 		active_ab_cooldown = 20;
 	}
 	else if (active_ab_number == 3)
@@ -1468,16 +1468,16 @@ if (IsButtonHeld(EventPlayer(), Button.Melee) == true)
 		temp_1 = PlayersWithinRadius(EyePosition(EventPlayer()), 6, Team.Team2, RadiusLOS.Surfaces);
 		Damage(temp_1, EventPlayer(), 100);
 		ApplyImpulse(EventPlayer(), ThrottleOf(EventPlayer()) != Vector(0, 0, 0) ? ThrottleOf(EventPlayer()) : Forward(), 25, Relative.ToPlayer, ContraryMotion.Cancel);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Black, EyePosition(EventPlayer()), 6);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
+		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Black, EyePosition(EventPlayer()), 6);
+		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
 		SetGravity(EventPlayer(), 0);
 		SetStatus(EventPlayer(), null, Status.PhasedOut, 0.7);
 		Wait(0.6, WaitBehavior.IgnoreCondition);
 		SetGravity(EventPlayer(), 100);
 		temp_1 = PlayersWithinRadius(EyePosition(EventPlayer()), 6, Team.Team2, RadiusLOS.Surfaces);
 		Damage(temp_1, EventPlayer(), 100);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Black, EyePosition(EventPlayer()), 6);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
+		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Black, EyePosition(EventPlayer()), 6);
+		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
 		active_ab_cooldown = 10;
 		Wait(1, WaitBehavior.IgnoreCondition);
 	}
@@ -1513,7 +1513,7 @@ if (IsButtonHeld(EventPlayer(), Button.Melee) == true)
 			}
 			if (NormalizedHealth(EventPlayer()) == 1)
 			{
-				Heal(FirstOf(SortedArray(FilteredArray(PlayersWithinRadius(EventPlayer(), 15, Team.Team1, RadiusLOS.Off), ArrayElement().is_combatant && !ArrayElement().downed_start_t && NormalizedHealth(ArrayElement()) != 1), NormalizedHealth(ArrayElement()))), null, 75);
+				Heal(SortedArray(FilteredArray(PlayersWithinRadius(EventPlayer(), 15, Team.Team1, RadiusLOS.Off), ArrayElement().is_combatant && !ArrayElement().downed_start_t && NormalizedHealth(ArrayElement()) != 1), NormalizedHealth(ArrayElement()))[0], null, 75);
 			}
 			Wait(0.25, WaitBehavior.IgnoreCondition);
 		}
@@ -1522,8 +1522,8 @@ if (IsButtonHeld(EventPlayer(), Button.Melee) == true)
 	else if (active_ab_number == 7)
 	{
 		active_ab_var = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + 100 * FacingDirectionOf(EventPlayer()), AllPlayers(Team.Team2), null, true);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.White, active_ab_var, 8);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.White, active_ab_var, 200);
+		PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.White, active_ab_var, 8);
+		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, active_ab_var, 200);
 		for (active_ab_cooldown = -6; 0; 1)
 		{
 			temp_1 = FilteredArray(AllLivingPlayers(Team.Team2), !HasStatus(ArrayElement(), Status.PhasedOut) && !HasStatus(ArrayElement(), Status.Stunned) && DistanceBetween(active_ab_var, EyePosition(ArrayElement())) <= 8);
@@ -1546,7 +1546,7 @@ if (IsButtonHeld(EventPlayer(), Button.Melee) == true)
 			ModifyVariable(active_ab_var, Operation.AppendToArray, temp_1);
 			for (temp_2 = 4; 1; -1)
 			{
-				temp_1 = FirstOf(SortedArray(FilteredArray(RemoveFromArray(AllLivingPlayers(Team.Team2), active_ab_var), !HasStatus(ArrayElement(), Status.PhasedOut) && !ArrayElement().iv_is_portal && IsInLineOfSight(temp_1, ArrayElement(), BarrierLOS.NoBarriersBlock)), DistanceBetween(temp_1, ArrayElement())));
+				temp_1 = SortedArray(FilteredArray(RemoveFromArray(AllLivingPlayers(Team.Team2), active_ab_var), !HasStatus(ArrayElement(), Status.PhasedOut) && !ArrayElement().iv_is_portal && IsInLineOfSight(temp_1, ArrayElement(), BarrierLOS.NoBarriersBlock)), DistanceBetween(temp_1, ArrayElement()))[0];
 				if (temp_1)
 				{
 					SetStatus(temp_1, EventPlayer(), Status.Hacked, temp_2);
@@ -1698,8 +1698,8 @@ if (ab_second_wind == true)
 if (downed_start_t == true)
 if (downed_start_t + 0.9 < TotalTimeElapsed())
 {
-	SmallMessage(AllPlayers(Team.All), <"<0> received a second wind!", EventPlayer()>);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Green, EventPlayer(), 1);
+	SmallMessage(AllPlayers(), <"<0> received a second wind!", EventPlayer()>);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Green, EventPlayer(), 1);
 	SetStatus(EventPlayer(), null, Status.PhasedOut, 3.5);
 	downed_start_t = false;
 	Wait(120 - 30 * ab_second_wind, WaitBehavior.IgnoreCondition);
@@ -1761,8 +1761,8 @@ if (IsDead(nemesis_killer) == true)
 {
 	Wait(0.2, WaitBehavior.AbortWhenFalse);
 	AbortIf(!downed_start_t);
-	SmallMessage(AllPlayers(Team.All), <"<0>'s Nemesis was killed!", EventPlayer()>);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Green, EventPlayer(), 1);
+	SmallMessage(AllPlayers(), <"<0>'s Nemesis was killed!", EventPlayer()>);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Green, EventPlayer(), 1);
 	downed_start_t = false;
 }
 
@@ -1831,9 +1831,9 @@ if (is_living_boss == true)
 {
 	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
 	WaitUntil(Health(EventPlayer()) <= 1, 99999);
-	CreateEffect(AllPlayers(Team.All), Effect.EchoCloningEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(AllPlayers(), Effect.EchoCloningEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
 	Effects_[1] = LastCreatedEntity();
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Violet, EventPlayer(), 1);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Violet, EventPlayer(), 1);
 	SetStatus(EventPlayer(), null, Status.Stunned, 1);
 	WaitUntil(IsDead(EventPlayer()), 5);
 	ClearStatus(EventPlayer(), Status.Unkillable);
@@ -2021,9 +2021,9 @@ if (HasStatus(EventPlayer(), Status.Stunned) == false)
 	ab_player = LastOf(SortedArray(FilteredArray(PlayersWithinRadius(EventPlayer(), 10, Team.Team1, RadiusLOS.Off), ArrayElement().is_combatant && ArrayElement().downed_start_t && ArrayElement().downed_start_t + 0.1 < TotalTimeElapsed() && IsInViewAngle(EventPlayer(), ArrayElement(), 45)), DotProduct(FacingDirectionOf(EventPlayer()), DirectionTowards(EyePosition(EventPlayer()), ArrayElement()))));
 	if (ab_player)
 	{
-		SmallMessage(AllPlayers(Team.All), <"<0> has been resurrected by <1>!", ab_player, EventPlayer()>);
+		SmallMessage(AllPlayers(), <"<0> has been resurrected by <1>!", ab_player, EventPlayer()>);
 		ab_player.downed_start_t = false;
-		PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.SkyBlue, ab_player, 1);
+		PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.SkyBlue, ab_player, 1);
 		temp_1 = (is_hard_mode_enabled || is_apocalyptic ? 1.5 : 1) * [30, 33.333, 40][ab_haste];
 		SetAbilityCooldown(EventPlayer(), Button.Ability2, temp_1);
 		# Workaround: Set Cooldown for Controller Players
@@ -2052,6 +2052,7 @@ if (IsFiringSecondary(EventPlayer()) == true)
 	LoopIfConditionIsTrue();
 }
 
+//> Outdated
 rule: "Team 1 Sombra: Stealth (Invisibility 1, detectable), end after 20 seconds"
 Event.OngoingPlayer
 Team.Team1
@@ -2131,7 +2132,7 @@ Team.Team2
 	# Workaround: Create Boss Health Bars
 	if (SlotOf(EventPlayer()) == 0 || gamemode == 2 && SlotOf(EventPlayer()) <= 3)
 	{
-		CreateProgressBarInWorldText(!iv_is_portal && is_living_boss ? AllPlayers(Team.All) : [], 100 * NormalizedHealth(EventPlayer()) + 0 * TotalTimeElapsed(), "", EventPlayer(), 0.5, Clipping.ClipAgainstSurfaces, Color.Red, Color.Blue, ProgressBarWorldEvaluation.VisibleToAndValues, Spectators.DefaultVisibility);
+		CreateProgressBarInWorldText(!iv_is_portal && is_living_boss ? AllPlayers() : [], 100 * NormalizedHealth(EventPlayer()) + 0 * TotalTimeElapsed(), "", EventPlayer(), 0.5, Clipping.ClipAgainstSurfaces, Color.Red, Color.Blue, ProgressBarWorldEvaluation.VisibleToAndValues, Spectators.DefaultVisibility);
 	}
 }
 
@@ -2139,7 +2140,7 @@ rule: "Team 2 (Death): Field Resurrection"
 Event.OnDeath
 Team.Team2
 {
-	AbortIf(!wave_number);
+	AbortIf(wave_number == 0);
 	fear_end_t = false;
 	ClearStatus(EventPlayer(), Status.Hacked);
 	if (SlotOf(EventPlayer()) == 1 && (objective_phase_number == 1 || objective_phase_number == 2))
@@ -2148,11 +2149,11 @@ Team.Team2
 		{
 			if (hvt_dom_objective_killed_count)
 			{
-				BigMessage(AllPlayers(Team.All), "HVT subdued!");
+				BigMessage(AllPlayers(), "HVT subdued!");
 			}
 			else
 			{
-				BigMessage(AllPlayers(Team.All), "HVT subdued! Gained bonus health");
+				BigMessage(AllPlayers(), "HVT subdued! Gained bonus health");
 			}
 			hvt_dom_objective_killed_count += 1;
 			objective_phase_number = 2;
@@ -2182,7 +2183,7 @@ Team.Team2
 			temp_1.ab_var_2 = TotalTimeElapsed();
 			PressButton(temp_1, Button.Ability1);
 			Resurrect(EventPlayer());
-			PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Green, EventPlayer(), 1);
+			PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Green, EventPlayer(), 1);
 			if (HeroOf(EventPlayer()) == Hero.Orisa)
 			{
 				# Disable Fortify so that Orisa can be knocked down
@@ -2201,7 +2202,7 @@ Team.Team2
 		temp_1.gmut_var = true;
 		for (temp_2 = 0; CountOf(temp_1); 1)
 		{
-			PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Red, temp_1[temp_2], 1);
+			PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Red, temp_1[temp_2], 1);
 		}
 		gmut_var = false;
 	}
@@ -2210,7 +2211,7 @@ Team.Team2
 		money_amount += 40;
 		if (hvt_dom_objective_killed_count)
 		{
-			BigMessage(AllPlayers(Team.All), "Killed both guards! Gained bonus health");
+			BigMessage(AllPlayers(), "Killed both guards! Gained bonus health");
 			enable_normal_spawns = true;
 			call_reinforcements();
 			async! play_incoming_sound_twice();
@@ -2218,11 +2219,11 @@ Team.Team2
 		}
 		else
 		{
-			BigMessage(AllPlayers(Team.All), "Killed a guard!");
+			BigMessage(AllPlayers(), "Killed a guard!");
 		}
 		hvt_dom_objective_killed_count += 1;
 	}
-	StopForcingPlayerOutlines(EventPlayer(), AllPlayers(Team.All));
+	StopForcingPlayerOutlines(EventPlayer(), AllPlayers());
 	StopFacing(EventPlayer());
 	StopThrottleInDirection(EventPlayer());
 	is_living_boss = false;
@@ -2339,7 +2340,7 @@ if ((base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 |
 		else
 		{
 			StartForcingDummyBotName(EventPlayer(), "Cloaker");
-			CreateEffect(AllPlayers(Team.All), Effect.EchoCloningEffect, EvaluateOnce(TotalTimeElapsed() + 0.5) >= TotalTimeElapsed() || ab_var_1 || ab_var_2 ? Color.Team1 : Color.Team2, EventPlayer(), 1, EffectRev.VisibleToAndColor);
+			CreateEffect(AllPlayers(), Effect.EchoCloningEffect, EvaluateOnce(TotalTimeElapsed() + 0.5) >= TotalTimeElapsed() || ab_var_1 || ab_var_2 ? Color.Team1 : Color.Team2, EventPlayer(), 1, EffectRev.VisibleToAndColor);
 			ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
 			combat_pathfinding_type = 9;
 			ab_var_3 = true;
@@ -2380,7 +2381,7 @@ if ((base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 |
 					iv_is_portal = true;
 					is_pathfinding_disabled = true;
 					objective_phase_number = 1;
-					BigMessage(AllPlayers(Team.All), "Portal Opened!");
+					BigMessage(AllPlayers(), "Portal Opened!");
 				}
 			}
 			else
@@ -2390,7 +2391,7 @@ if ((base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 |
 				hvt_dom_objective_killed_count = false;
 				is_using_boss_aggression = true;
 				gmut_fortified_bypass_end_t = false;
-				BigMessage(AllPlayers(Team.All), "High Value Target located!");
+				BigMessage(AllPlayers(), "High Value Target located!");
 			}
 		}
 		else if (gamemode == 2 && objective_phase_number == 0)
@@ -2409,7 +2410,7 @@ if ((base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 |
 			if (enable_objective_enemy_spawn <= 0)
 			{
 				objective_phase_number = 1;
-				BigMessage(AllPlayers(Team.All), "Control Points located!");
+				BigMessage(AllPlayers(), "Control Points located!");
 			}
 		}
 		else if (special_spawns_count > 0)
@@ -2417,12 +2418,12 @@ if ((base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 |
 			special_spawns_count -= 1;
 			if (tier_4_spawns_block_end_t >= TotalTimeElapsed() || wave_number < 5)
 			{
-				ForcePlayerHero(EventPlayer(), FirstOf(SortedArray(FilteredArray([Hero.Roadhog, mut_yakuza ? Hero.Hanzo : false, mut_yakuza ? Hero.Genji : false, mut_yakuza ? Hero.Kiriko : false, wave_number >= 2 ? Hero.Sigma : false, wave_number >= 2 ? Hero.Orisa : false, wave_number >= 3 ? Hero.Dva : false, wave_number >= 3 ? Hero.Tracer : false, wave_number >= 4 ? Hero.Ana : false, wave_number >= 4 ? Hero.Mei : false, wave_number >= 6 ? Hero.WreckingBall : false], ArrayElement()), RandomReal(0, 0.5) + IsHeroBeingPlayed(ArrayElement(), Team.Team2))));
+				ForcePlayerHero(EventPlayer(), SortedArray(FilteredArray([Hero.Roadhog, mut_yakuza ? Hero.Hanzo : false, mut_yakuza ? Hero.Genji : false, mut_yakuza ? Hero.Kiriko : false, wave_number >= 2 ? Hero.Sigma : false, wave_number >= 2 ? Hero.Orisa : false, wave_number >= 3 ? Hero.Dva : false, wave_number >= 3 ? Hero.Tracer : false, wave_number >= 4 ? Hero.Ana : false, wave_number >= 4 ? Hero.Mei : false, wave_number >= 6 ? Hero.WreckingBall : false], ArrayElement()), RandomReal(0, 0.5) + IsHeroBeingPlayed(ArrayElement(), Team.Team2))[0]);
 			}
 			else
 			{
 				tier_4_spawns_block_end_t = TotalTimeElapsed() + 10;
-				ForcePlayerHero(EventPlayer(), FirstOf(SortedArray(FilteredArray([Hero.Hanzo, Hero.Genji, Hero.Kiriko, wave_number >= 10 ? Hero.Reinhardt : false], ArrayElement()), RandomReal(0, 0.5) + NumberOfHeroes(ArrayElement(), Team.Team2))));
+				ForcePlayerHero(EventPlayer(), SortedArray(FilteredArray([Hero.Hanzo, Hero.Genji, Hero.Kiriko, wave_number >= 10 ? Hero.Reinhardt : false], ArrayElement()), RandomReal(0, 0.5) + NumberOfHeroes(ArrayElement(), Team.Team2))[0]);
 			}
 		}
 		else
@@ -2430,15 +2431,15 @@ if ((base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 |
 			temp_1 = base_tier + (mut_promotion && RandomInteger(1, 100) <= 20);
 			if (temp_1 == 1)
 			{
-				ForcePlayerHero(EventPlayer(), FirstOf(SortedArray(FilteredArray([Hero.Cassidy, wave_number >= 3 ? Hero.Brigitte : false], ArrayElement()), RandomReal(0, 0.5) + IsHeroBeingPlayed(ArrayElement(), Team.Team2))));
+				ForcePlayerHero(EventPlayer(), SortedArray(FilteredArray([Hero.Cassidy, wave_number >= 3 ? Hero.Brigitte : false], ArrayElement()), RandomReal(0, 0.5) + IsHeroBeingPlayed(ArrayElement(), Team.Team2))[0]);
 			}
 			else if (temp_1 == 2)
 			{
-				ForcePlayerHero(EventPlayer(), FirstOf(SortedArray(FilteredArray([Hero.Widowmaker, Hero.Baptiste, Hero.Zarya, Hero.Pharah, wave_number >= 5 ? Hero.Echo : false, wave_number >= 7 ? Hero.Sombra : false, wave_number >= 11 ? Hero.Reaper : false, wave_number >= 8 ? Hero.Lucio : false], ArrayElement()), RandomReal(0, 0.5) + IsHeroBeingPlayed(ArrayElement(), Team.Team2))));
+				ForcePlayerHero(EventPlayer(), SortedArray(FilteredArray([Hero.Widowmaker, Hero.Baptiste, Hero.Zarya, Hero.Pharah, wave_number >= 5 ? Hero.Echo : false, wave_number >= 7 ? Hero.Sombra : false, wave_number >= 11 ? Hero.Reaper : false, wave_number >= 8 ? Hero.Lucio : false], ArrayElement()), RandomReal(0, 0.5) + IsHeroBeingPlayed(ArrayElement(), Team.Team2))[0]);
 			}
 			else
 			{
-				ForcePlayerHero(EventPlayer(), FirstOf(SortedArray(FilteredArray([Hero.Roadhog, Hero.WreckingBall, Hero.Mei, wave_number >= 6 ? Hero.Orisa : false, wave_number >= 4 ? Hero.Sigma : false, wave_number >= 8 ? Hero.Tracer : false, wave_number >= 9 ? Hero.Ana : false, wave_number >= 9 ? Hero.Dva : false], ArrayElement()), RandomReal(0, 0.5) + IsHeroBeingPlayed(ArrayElement(), Team.Team2))));
+				ForcePlayerHero(EventPlayer(), SortedArray(FilteredArray([Hero.Roadhog, Hero.WreckingBall, Hero.Mei, wave_number >= 6 ? Hero.Orisa : false, wave_number >= 4 ? Hero.Sigma : false, wave_number >= 8 ? Hero.Tracer : false, wave_number >= 9 ? Hero.Ana : false, wave_number >= 9 ? Hero.Dva : false], ArrayElement()), RandomReal(0, 0.5) + IsHeroBeingPlayed(ArrayElement(), Team.Team2))[0]);
 			}
 		}
 		# Selected Hero is the same as current Hero
@@ -2478,13 +2479,13 @@ if ((base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 |
 			can_dodge = false;
 			if (HeroOf(EventPlayer()) == Hero.Sombra)
 			{
-				CreateBeamEffect(ab_player ? AllPlayers(Team.All) : [], BeamType.BadBeam, EventPlayer(), ab_player, Color.Red, EffectRev.VisibleToPositionAndRadius);
+				CreateBeamEffect(ab_player ? AllPlayers() : [], BeamType.BadBeam, EventPlayer(), ab_player, Color.Red, EffectRev.VisibleToPositionAndRadius);
 				ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
 			}
 			if (HeroOf(EventPlayer()) == Hero.Kiriko)
 			{
 				is_ranged = true;
-				CreateEffect(ab_var_1 ? AllPlayers(Team.All) : [], Effect.Sphere, Color.Turquoise, EventPlayer(), ab_var_1, EffectRev.VisibleToPositionAndRadius);
+				CreateEffect(ab_var_1 ? AllPlayers() : [], Effect.Sphere, Color.Turquoise, EventPlayer(), ab_var_1, EffectRev.VisibleToPositionAndRadius);
 				ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
 			}
 		}
@@ -2559,7 +2560,7 @@ if ((base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 |
 				is_mutated = true;
 				health_percent = 2.5;
 				Damage_Dealt = 1.3;
-				CreateEffect(AllPlayers(Team.All), Effect.WinstonPrimalRageEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
+				CreateEffect(AllPlayers(), Effect.WinstonPrimalRageEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
 				ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
 			}
 			else
@@ -2614,10 +2615,10 @@ if ((base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 |
 		StartThrottleInDirection(EventPlayer(), VectorTowards(EventPlayer(), nav_pos), (Slowed_until >= TotalTimeElapsed() ? 0.3 : 1) * (DistanceBetween(EventPlayer(), Vector(XOf(nav_pos), YOf(PositionOf(EventPlayer())), ZOf(nav_pos))) >= 0.5), Relative.ToWorld, ThrottleBehavior.ReplaceExistingThrottle, ThrottleRev.DirectionAndMagnitude);
 	}
 	# health_percent value in percent, health does not scale during a bot's live
-	health_percent *= diff_health_mult * (is_mutator_mode_enabled ? 1.1 : 1) * (100 + 5 * (wave_number - 1 + Max(0, wave_number - 9))) * (0.111 + 0.222 * combatants_count);
-	SetMaxHealth(EventPlayer(), health_percent);
+	health_percent[0] *= diff_health_mult * (is_mutator_mode_enabled ? 1.1 : 1) * (100 + 5 * (wave_number - 1 + Max(0, wave_number - 9))) * (0.111 + 0.222 * combatants_count);
+	SetMaxHealth(EventPlayer(), health_percent[0]);
 	# Damage_Dealt value as a factor, damage can scale during a bot's live
-	Damage_Dealt *= diff_damage_mult;
+	Damage_Dealt[0] *= diff_damage_mult;
 	SetDamageDealt(EventPlayer(), Damage_Dealt * (mut_emp_rounds ? 2 : 1) * (20 + 9.25 * (wave_number - 1 + Max(0, wave_number - 9))) * (0.111 + 0.222 * combatants_count) * 9 / NumberOfPlayers(Team.Team2));
 	SetHealingReceived(EventPlayer(), iv_is_portal ? 0 : diff_health_mult * (is_living_boss ? 0.5 : 1) * (is_mutator_mode_enabled ? 1.1 : 1) * (100 + 4 * (wave_number - 1 + Max(0, wave_number - 9))) * (0.111 + 0.222 * combatants_count));
 	SetKnockbackReceived(EventPlayer(), is_fortified ? 60 : 100);
@@ -2655,12 +2656,12 @@ if ((base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 |
 	}
 	is_alive = true;
 	AbortIf(!is_living_boss);
-	StartForcingPlayerOutlines(EventPlayer(), AllPlayers(Team.All), true, Color.Yellow, OutlineType.Always);
+	StartForcingPlayerOutlines(EventPlayer(), AllPlayers(), true, Color.Yellow, OutlineType.Always);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	if (is_alive)
 	{
 		# Workaround: Sometimes outlines don't appear when set too early
-		StartForcingPlayerOutlines(EventPlayer(), AllPlayers(Team.All), true, Color.Yellow, OutlineType.Always);
+		StartForcingPlayerOutlines(EventPlayer(), AllPlayers(), true, Color.Yellow, OutlineType.Always);
 	}
 	LoopIfConditionIsTrue();
 }
@@ -2716,10 +2717,10 @@ if (is_nav_reachable_node == false)
 		{
 			SetMoveSpeed(EventPlayer(), mut_amped ? 115 : 100);
 		}
-		nav_pos = FirstOf(SortedArray(FilteredArray(nodes, IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock)), DistanceBetween(EventPlayer(), ArrayElement())));
+		nav_pos = SortedArray(FilteredArray(nodes, IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock)), DistanceBetween(EventPlayer(), ArrayElement()))[0];
 		if (nav_pos == false)
 		{
-			nav_pos = FirstOf(SortedArray(nodes, DistanceBetween(EventPlayer(), ArrayElement())));
+			nav_pos = SortedArray(nodes, DistanceBetween(EventPlayer(), ArrayElement()))[0];
 		}
 		nav_idx = IndexOfArrayValue(nodes, nav_pos);
 		is_nav_reachable_node = true;
@@ -2748,7 +2749,7 @@ if (DistanceBetween(EventPlayer(), nav_pos) <= 1)
 			}
 			else
 			{
-				nav_idx = FirstOf(SortedArray(edges[nav_idx], RandomReal(0, 0.5) + IndexOfStringChar(char_string, CharInString(distance_matrix[RoundToInteger((ArrayElement() * nodes_count + dom_nav_guard_idx) / 128, Rounding.Down)], (ArrayElement() * nodes_count + dom_nav_guard_idx) % 128))));
+				nav_idx = SortedArray(edges[nav_idx], RandomReal(0, 0.5) + IndexOfStringChar(char_string, CharInString(distance_matrix[RoundToInteger((ArrayElement() * nodes_count + dom_nav_guard_idx) / 128, Rounding.Down)], (ArrayElement() * nodes_count + dom_nav_guard_idx) % 128)))[0];
 				nav_pos = nodes[nav_idx];
 			}
 		}
@@ -2767,7 +2768,7 @@ if (DistanceBetween(EventPlayer(), nav_pos) <= 1)
 			}
 			else
 			{
-				nav_idx = FirstOf(SortedArray(edges[nav_idx], (is_aggressive && fear_end_t < TotalTimeElapsed() ? 1 : -1) * (RandomReal(0, 0.5) + IndexOfStringChar(char_string, CharInString(distance_matrix[RoundToInteger((ArrayElement() * nodes_count + target.best_nav_idx) / 128, Rounding.Down)], (ArrayElement() * nodes_count + target.best_nav_idx) % 128)))));
+				nav_idx = SortedArray(edges[nav_idx], (is_aggressive && fear_end_t < TotalTimeElapsed() ? 1 : -1) * (RandomReal(0, 0.5) + IndexOfStringChar(char_string, CharInString(distance_matrix[RoundToInteger((ArrayElement() * nodes_count + target.best_nav_idx) / 128, Rounding.Down)], (ArrayElement() * nodes_count + target.best_nav_idx) % 128))))[0];
 				nav_pos = nodes[nav_idx];
 			}
 		}
@@ -2903,7 +2904,7 @@ if (is_using_combat_pathfinding == true)
 					temp_1 = RemoveFromArray(FilteredArray(PlayersWithinRadius(EventPlayer(), 3, Team.Team2, RadiusLOS.Off), ArrayElement().is_alive), EventPlayer());
 					if (CountOf(temp_1))
 					{
-						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionTowards(FirstOf(SortedArray(temp_1, DistanceBetween(EventPlayer(), ArrayElement()))), EventPlayer());
+						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionTowards(SortedArray(temp_1, DistanceBetween(EventPlayer(), ArrayElement()))[0], EventPlayer());
 						find_wp_near_nav();
 					}
 					else
@@ -2991,7 +2992,7 @@ if (is_alive == true)
 		}
 		else
 		{
-			temp_1 = FirstOf(SortedArray(FilteredArray(combatants, !ArrayElement().downed_start_t && !ArrayElement().active_ab_is_cloaked && !(ArrayElement().is_invisible && DistanceBetween(EventPlayer(), ArrayElement()) > 2.4) && IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(ArrayElement()) + ArrayElement().eye_offset, BarrierLOS.NoBarriersBlock)), [1, 0.25, 2, 4][ArrayElement().ab_priority] * (ArrayElement() == target ? 0.25 : 1) * DistanceBetween(EventPlayer(), ArrayElement()) + (!is_ranged && ArrayElement().is_flying ? 500 : 0) + (HasStatus(ArrayElement(), Status.Asleep) ? 1000 : 0) + (HasStatus(ArrayElement(), Status.Invincible) || HasStatus(ArrayElement(), Status.PhasedOut) ? 2000 : 0) + (ArrayElement().active_ab_is_frenzied ? -5000 : 0)));
+			temp_1 = SortedArray(FilteredArray(combatants, !ArrayElement().downed_start_t && !ArrayElement().active_ab_is_cloaked && !(ArrayElement().is_invisible && DistanceBetween(EventPlayer(), ArrayElement()) > 2.4) && IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(ArrayElement()) + ArrayElement().eye_offset, BarrierLOS.NoBarriersBlock)), [1, 0.25, 2, 4][ArrayElement().ab_priority] * (ArrayElement() == target ? 0.25 : 1) * DistanceBetween(EventPlayer(), ArrayElement()) + (!is_ranged && ArrayElement().is_flying ? 500 : 0) + (HasStatus(ArrayElement(), Status.Asleep) ? 1000 : 0) + (HasStatus(ArrayElement(), Status.Invincible) || HasStatus(ArrayElement(), Status.PhasedOut) ? 2000 : 0) + (ArrayElement().active_ab_is_frenzied ? -5000 : 0))[0];
 		}
 		if (temp_1)
 		{
@@ -3206,20 +3207,20 @@ if (fear_end_t >= TotalTimeElapsed())
 	is_target_in_los = 0;
 	if (is_living_boss)
 	{
-		StartForcingPlayerOutlines(EventPlayer(), AllPlayers(Team.All), true, Color.Violet, OutlineType.Always);
+		StartForcingPlayerOutlines(EventPlayer(), AllPlayers(), true, Color.Violet, OutlineType.Always);
 	}
 	else
 	{
-		StartForcingPlayerOutlines(EventPlayer(), AllPlayers(Team.All), true, Color.Violet, OutlineType.Default);
+		StartForcingPlayerOutlines(EventPlayer(), AllPlayers(), true, Color.Violet, OutlineType.Default);
 	}
 	WaitUntil(fear_end_t < TotalTimeElapsed(), 99999);
 	if (is_living_boss)
 	{
-		StartForcingPlayerOutlines(EventPlayer(), AllPlayers(Team.All), true, Color.Yellow, OutlineType.Always);
+		StartForcingPlayerOutlines(EventPlayer(), AllPlayers(), true, Color.Yellow, OutlineType.Always);
 	}
 	else
 	{
-		StopForcingPlayerOutlines(EventPlayer(), AllPlayers(Team.All));
+		StopForcingPlayerOutlines(EventPlayer(), AllPlayers());
 	}
 }
 
@@ -3231,11 +3232,11 @@ if (is_gmut_enabled == true)
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	if (gmut_storm_raging)
 	{
-		CreateEffect(gmut_var ? AllPlayers(Team.All) : [], Effect.AnaNanoBoostedEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
+		CreateEffect(gmut_var ? AllPlayers() : [], Effect.AnaNanoBoostedEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
 	}
 	if (gmut_adaptive_shield)
 	{
-		CreateEffect(gmut_var == 1 ? AllPlayers(Team.All) : [], Effect.WreckingBallAdaptiveShieldTargetEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
+		CreateEffect(gmut_var == 1 ? AllPlayers() : [], Effect.WreckingBallAdaptiveShieldTargetEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
 	}
 	if (gmut_fortified)
 	{
@@ -3262,7 +3263,7 @@ if (NormalizedHealth(EventPlayer()) <= 0.5)
 	temp_1 = CountOf(FilteredArray(combatants, DistanceBetween(EventPlayer(), ArrayElement()) <= 8 && IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.EnemyBarriersBlock)));
 	if (temp_1)
 	{
-		PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Blue, EventPlayer(), 1);
+		PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Blue, EventPlayer(), 1);
 		AddHealthPoolToPlayer(EventPlayer(), HealthType.Shields, 0.75 * temp_1 / combatants_count * MaxHealth(EventPlayer()), false, false);
 		HP_Pool[3] = LastCreatedHealthPool();
 		gmut_var = 1;
@@ -3282,10 +3283,10 @@ Team.Team2
 if (gmut_sympathy_gains == true)
 if (iv_is_portal == false)
 {
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Black, EventPlayer(), 1);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Black, EventPlayer(), 1);
 	Wait(0.15, WaitBehavior.AbortWhenFalse);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.White, PositionOf(EventPlayer()), 1);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Yellow, PositionOf(EventPlayer()), real_tier * 8 + 6);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.White, PositionOf(EventPlayer()), 1);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Yellow, PositionOf(EventPlayer()), real_tier * 8 + 6);
 	Heal(PlayersWithinRadius(EventPlayer(), real_tier * 4 + 3, Team.Team2, RadiusLOS.Off), null, Min(MaxHealth(EventPlayer()) * 0.3, 500));
 }
 
@@ -3333,7 +3334,7 @@ if (is_living_boss == false)
 {
 	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
 	WaitUntil(Health(EventPlayer()) <= 1, 99999);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Purple, PositionOf(EventPlayer()), 1);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Purple, PositionOf(EventPlayer()), 1);
 	SetStatus(EventPlayer(), null, Status.Stunned, 1.333);
 	SetStatus(EventPlayer(), null, Status.Invincible, 0.1);
 	Heal(EventPlayer(), null, MaxHealth(EventPlayer()) * 0.05);
@@ -3479,7 +3480,7 @@ if (is_target_in_los >= 4)
 	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), target)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	PressButton(EventPlayer(), Button.Ability1);
-	if (DistanceBetween(EventPlayer(), FirstOf(SortedArray(FilteredArray(AllLivingPlayers(Team.Team1), IsInViewAngle(EventPlayer(), ArrayElement(), 45)), ArrayElement()))) <= 4)
+	if (DistanceBetween(EventPlayer(), SortedArray(FilteredArray(AllLivingPlayers(Team.Team1), IsInViewAngle(EventPlayer(), ArrayElement(), 45)), ArrayElement())[0]) <= 4)
 	{
 		PressButton(EventPlayer(), Button.SecondaryFire);
 		Wait(0.7, WaitBehavior.IgnoreCondition);
@@ -3531,8 +3532,8 @@ if ((is_alive && NormalizedHealth(EventPlayer()) <= 0.5) == is_aggressive)
 	ChaseVariableOverTime(ab_var_1, 0, 3, TimeChaseReevaluation.DestinationAndDuration);
 	Wait(3, WaitBehavior.IgnoreCondition);
 	StopChasingVariable(ab_var_1);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Turquoise, PositionOf(EventPlayer()), 1);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadPickupEffect, Color.White, PositionOf(EventPlayer()), 200);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Turquoise, PositionOf(EventPlayer()), 1);
+	PlayEffect(AllPlayers(), PlayEffect.BadPickupEffect, Color.White, PositionOf(EventPlayer()), 200);
 	MinWait();
 	SkipIf(HasStatus(EventPlayer(), Status.Stunned), 1);
 	teleport_to_free_spawn();
@@ -3590,7 +3591,7 @@ Player.WreckingBall
 if (is_target_in_los >= 4)
 if (DistanceBetween(EventPlayer(), target) <= 2.4)
 {
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.White, EventPlayer(), 1);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.White, EventPlayer(), 1);
 	SetUltimateCharge(EventPlayer(), 100);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	StartDamageOverTime(EventPlayer(), null, 9999, MaxHealth(EventPlayer()) * 0.05);
@@ -3722,20 +3723,20 @@ if (NormalizedHealth(EventPlayer()) <= 0.5)
 	ab_var_3 = true;
 	if (real_tier == 3)
 	{
-		for (p_i = 5; 0; -1)
+		for (Number i! = 5; 0; -1)
 		{
-			PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.White, EventPlayer(), 0.1);
+			PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.White, EventPlayer(), 0.1);
 			if (IsDead(EventPlayer()))
 			{
-				p_i = 0;
+				i = 0;
 				break;
 			}
 			Wait(0.2, WaitBehavior.IgnoreCondition);
 		}
 		PlayersWithinRadius(EyePosition(EventPlayer()), 7, Team.Team1, RadiusLOS.Surfaces).Smoked_Screen = true;
-		PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.White, EventPlayer(), 7);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Gray, EventPlayer(), 7);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
+		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.White, EventPlayer(), 7);
+		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Gray, EventPlayer(), 7);
+		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
 	}
 	else
 	{
@@ -3749,9 +3750,9 @@ Team.Team1
 if (Smoked_Screen == true)
 if (downed_start_t == false)
 {
-	StartForcingPlayerOutlines(AllPlayers(Team.All), EventPlayer(), false, Color.White, OutlineType.Default);
+	StartForcingPlayerOutlines(AllPlayers(), EventPlayer(), false, Color.White, OutlineType.Default);
 	WaitUntil(IsDead(EventPlayer()), 4);
-	StopForcingPlayerOutlines(AllPlayers(Team.All), EventPlayer());
+	StopForcingPlayerOutlines(AllPlayers(), EventPlayer());
 	Smoked_Screen = false;
 	StartForcingPlayerOutlines(FilteredArray(AllPlayers(Team.Team2), ArrayElement().is_living_boss), EventPlayer(), true, Color.Yellow, OutlineType.Always);
 }
@@ -3949,10 +3950,10 @@ if (DistanceBetween(EventPlayer(), target) <= 40)
 			PressButton(EventPlayer(), Button.Ability1);
 			WaitUntil(!IsUsingAbility1(EventPlayer()), 99999);
 		}
-		nav_pos = FirstOf(SortedArray(FilteredArray(nodes, IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock)), 2 * DistanceBetween(EventPlayer(), ArrayElement()) - VerticalAngleTowards(EventPlayer(), ArrayElement())));
+		nav_pos = SortedArray(FilteredArray(nodes, IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock)), 2 * DistanceBetween(EventPlayer(), ArrayElement()) - VerticalAngleTowards(EventPlayer(), ArrayElement()))[0];
 		if (nav_pos == false)
 		{
-			nav_pos = FirstOf(SortedArray(nodes, DistanceBetween(EventPlayer(), ArrayElement())));
+			nav_pos = SortedArray(nodes, DistanceBetween(EventPlayer(), ArrayElement()))[0];
 		}
 		is_flying = false;
 		ab_var_1 = true;
@@ -4128,7 +4129,7 @@ if ((wave_number >= 13 || is_living_boss) == true)
 	LoopIf(HasStatus(EventPlayer(), Status.Hacked) || HasStatus(EventPlayer(), Status.Stunned));
 	LoopIf(DistanceBetween(EventPlayer(), target) >= 12);
 	LoopIf(!IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(target), BarrierLOS.NoBarriersBlock));
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Purple, EventPlayer(), 1);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Purple, EventPlayer(), 1);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	SetUltimateCharge(EventPlayer(), 100);
 	PressButton(EventPlayer(), Button.Ultimate);
@@ -4187,8 +4188,8 @@ if ((ab_player.tased_end_t < TotalTimeElapsed() || ab_var_2 || Health(EventPlaye
 	{
 		Damage(EventPlayer(), ab_player, 50);
 		SetStatus(FilteredArray(PlayersWithinRadius(EyePosition(EventPlayer()), 10, Team.Team2, RadiusLOS.Surfaces), !HasStatus(ArrayElement(), Status.PhasedOut)), null, Status.Hacked, 2);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Purple, EventPlayer(), 10);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
+		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Purple, EventPlayer(), 10);
+		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
 	}
 	ab_player.tased_end_t = false;
 	ab_player = null;
@@ -5290,12 +5291,12 @@ Event.OngoingPlayer
 Team.Team2
 Player.Slot0
 {
-	CreateProgressBarHudText(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers(Team.All) : [], objective_phase_number == 1 ? 200 * NormalizedHealth(EventPlayer()) : objective_progress, objective_phase_number == 1 ? "Destroy the Portal" : "Portal closing", Location.Top, -97, objective_phase_number == 1 ? special_spawns_count > 0 ? Color.Blue : CustomColor(Max(200, 255 - (TotalTimeElapsed() - ab_var_2) * 165), Max(0, 255 - (TotalTimeElapsed() - ab_var_2) * 765), Max(19, 255 - (TotalTimeElapsed() - ab_var_2) * 708), 255) : Color.Yellow, Color.White, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
-	CreateIcon(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers(Team.All) : [], iv_dom_objective_pos + 2 * Up(), Icon.ExclamationMark, IconRev.VisibleToAndPosition, Color.Yellow, true);
-	CreateInWorldText(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers(Team.All) : [], objective_phase_number == 1 ? "Destroy the Portal" : "Portal closing", iv_dom_objective_pos + 1.7 * Up(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndString, Color.Yellow, Spectators.DefaultVisibility);
-	CreateEffect(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers(Team.All) : [], Effect.Sphere, objective_phase_number == 1 ? Color.Red : Color.Yellow, iv_dom_objective_pos + 1.11 * Up(), 0.85 + (objective_phase_number == 1 ? 0 : 0.3 * SineFromRadians(6 * TotalTimeElapsed())), EffectRev.VisibleToPositionRadiusAndColor);
-	CreateEffect(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers(Team.All) : [], Effect.BadAura, Color.Red, iv_dom_objective_pos + 1.11 * Up(), 1, EffectRev.VisibleToPositionAndRadius);
-	CreateEffect(objective_phase_number == 1 && (ab_var_2 >= TotalTimeElapsed() || special_spawns_count > 0) ? AllPlayers(Team.All) : [], Effect.LightShaft, Color.White, iv_dom_objective_pos - 2 * Up(), 1, EffectRev.VisibleToPositionAndRadius);
+	CreateProgressBarHudText(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers() : [], objective_phase_number == 1 ? 200 * NormalizedHealth(EventPlayer()) : objective_progress, objective_phase_number == 1 ? "Destroy the Portal" : "Portal closing", Location.Top, -97, objective_phase_number == 1 ? special_spawns_count > 0 ? Color.Blue : CustomColor(Max(200, 255 - (TotalTimeElapsed() - ab_var_2) * 165), Max(0, 255 - (TotalTimeElapsed() - ab_var_2) * 765), Max(19, 255 - (TotalTimeElapsed() - ab_var_2) * 708), 255) : Color.Yellow, Color.White, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
+	CreateIcon(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers() : [], iv_dom_objective_pos + 2 * Up(), Icon.ExclamationMark, IconRev.VisibleToAndPosition, Color.Yellow, true);
+	CreateInWorldText(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers() : [], objective_phase_number == 1 ? "Destroy the Portal" : "Portal closing", iv_dom_objective_pos + 1.7 * Up(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndString, Color.Yellow, Spectators.DefaultVisibility);
+	CreateEffect(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers() : [], Effect.Sphere, objective_phase_number == 1 ? Color.Red : Color.Yellow, iv_dom_objective_pos + 1.11 * Up(), 0.85 + (objective_phase_number == 1 ? 0 : 0.3 * SineFromRadians(6 * TotalTimeElapsed())), EffectRev.VisibleToPositionRadiusAndColor);
+	CreateEffect(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers() : [], Effect.BadAura, Color.Red, iv_dom_objective_pos + 1.11 * Up(), 1, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(objective_phase_number == 1 && (ab_var_2 >= TotalTimeElapsed() || special_spawns_count > 0) ? AllPlayers() : [], Effect.LightShaft, Color.White, iv_dom_objective_pos - 2 * Up(), 1, EffectRev.VisibleToPositionAndRadius);
 }
 
 rule: "IV Team 2 Torbjörn: Start Portal Mode, Open (Phase 1), Breakpoint End Time (2), Set Health to half to remove armour"
@@ -5339,9 +5340,9 @@ if (NormalizedHealth(EventPlayer()) <= 0.333)
 	objective_phase_number = 2;
 	iv_defend_portal();
 	upgrade_health_and_healing();
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Red, iv_dom_objective_pos + 1.11 * Up(), 10);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
-	BigMessage(AllPlayers(Team.All), "Portal is closing! Gained bonus health");
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Red, iv_dom_objective_pos + 1.11 * Up(), 10);
+	PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
+	BigMessage(AllPlayers(), "Portal is closing! Gained bonus health");
 	StopForcingPlayerPosition(EventPlayer());
 	EnableMovementCollisionWithEnvironment(EventPlayer());
 	Wait(0.25, WaitBehavior.IgnoreCondition);
@@ -5390,13 +5391,13 @@ Event.OngoingPlayer
 Team.Team2
 Player.Slot1
 {
-	CreateProgressBarHudText(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers(Team.All) : [], objective_phase_number == 1 ? 100 * NormalizedHealth(EventPlayer()) : (downed_start_t ? objective_progress : revive_timer) / 1.5, objective_phase_number == 1 ? "Subdue the High Value Target" : downed_start_t ? ArrayContains(revivers, LocalPlayer()) ? "Capturing..." : "Capture the High Value Target" : "High Value Target is being revived", Location.Top, -97, objective_phase_number == 1 ? CustomColor(Max(200, 255 - (TotalTimeElapsed() - hvt_call_reinforcements_end_t) * 165), Max(0, 255 - (TotalTimeElapsed() - hvt_call_reinforcements_end_t) * 765), Max(19, 255 - (TotalTimeElapsed() - hvt_call_reinforcements_end_t) * 708), 255) : downed_start_t ? downed_start_t == 2 ? Color.Green : Color.Blue : Color.Red, objective_phase_number == 1 ? Color.Blue : downed_start_t ? Color.Blue : Color.Yellow, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
-	CreateIcon(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers(Team.All) : [], EventPlayer(), Icon.ExclamationMark, IconRev.VisibleTo, Color.Yellow, true);
-	CreateInWorldText(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers(Team.All) : [], hvt_call_reinforcements_end_t >= TotalTimeElapsed() ? "Calling Reinforcements" : objective_phase_number == 1 ? "Subdue Target" : "Capture Target", EventPlayer(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.Yellow, Spectators.DefaultVisibility);
-	CreateEffect(objective_phase_number == 2 ? AllPlayers(Team.All) : [], Effect.Ring, downed_start_t ? downed_start_t == 2 ? Color.Green : Color.White : Color.Red, PositionOf(EventPlayer()) + 0.65 * Up(), 10, EffectRev.VisibleToPositionRadiusAndColor);
-	CreateEffect(objective_phase_number == 2 ? AllPlayers(Team.All) : [], Effect.Ring, downed_start_t ? downed_start_t == 2 ? Color.Green : Color.White : Color.Red, PositionOf(EventPlayer()) + 0.65 * Down(), 10, EffectRev.VisibleToPositionRadiusAndColor);
-	CreateEffect(objective_phase_number == 2 ? AllPlayers(Team.All) : [], Effect.Ring, downed_start_t ? downed_start_t == 2 ? Color.Green : Color.White : Color.Red, PositionOf(EventPlayer()), (TotalTimeElapsed() % 1.333 < 0.666) * 15 * TotalTimeElapsed() % 10, EffectRev.VisibleToPositionRadiusAndColor);
-	CreateEffect(hvt_call_reinforcements_end_t >= TotalTimeElapsed() ? AllPlayers(Team.All) : [], Effect.LightShaft, Color.White, UpdateEveryFrame(PositionOf(EventPlayer())), 1, EffectRev.VisibleToPositionAndRadius);
+	CreateProgressBarHudText(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers() : [], objective_phase_number == 1 ? 100 * NormalizedHealth(EventPlayer()) : (downed_start_t ? objective_progress : revive_timer) / 1.5, objective_phase_number == 1 ? "Subdue the High Value Target" : downed_start_t ? ArrayContains(revivers, LocalPlayer()) ? "Capturing..." : "Capture the High Value Target" : "High Value Target is being revived", Location.Top, -97, objective_phase_number == 1 ? CustomColor(Max(200, 255 - (TotalTimeElapsed() - hvt_call_reinforcements_end_t) * 165), Max(0, 255 - (TotalTimeElapsed() - hvt_call_reinforcements_end_t) * 765), Max(19, 255 - (TotalTimeElapsed() - hvt_call_reinforcements_end_t) * 708), 255) : downed_start_t ? downed_start_t == 2 ? Color.Green : Color.Blue : Color.Red, objective_phase_number == 1 ? Color.Blue : downed_start_t ? Color.Blue : Color.Yellow, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
+	CreateIcon(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers() : [], EventPlayer(), Icon.ExclamationMark, IconRev.VisibleTo, Color.Yellow, true);
+	CreateInWorldText(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers() : [], hvt_call_reinforcements_end_t >= TotalTimeElapsed() ? "Calling Reinforcements" : objective_phase_number == 1 ? "Subdue Target" : "Capture Target", EventPlayer(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.Yellow, Spectators.DefaultVisibility);
+	CreateEffect(objective_phase_number == 2 ? AllPlayers() : [], Effect.Ring, downed_start_t ? downed_start_t == 2 ? Color.Green : Color.White : Color.Red, PositionOf(EventPlayer()) + 0.65 * Up(), 10, EffectRev.VisibleToPositionRadiusAndColor);
+	CreateEffect(objective_phase_number == 2 ? AllPlayers() : [], Effect.Ring, downed_start_t ? downed_start_t == 2 ? Color.Green : Color.White : Color.Red, PositionOf(EventPlayer()) + 0.65 * Down(), 10, EffectRev.VisibleToPositionRadiusAndColor);
+	CreateEffect(objective_phase_number == 2 ? AllPlayers() : [], Effect.Ring, downed_start_t ? downed_start_t == 2 ? Color.Green : Color.White : Color.Red, PositionOf(EventPlayer()), (TotalTimeElapsed() % 1.333 < 0.666) * 15 * TotalTimeElapsed() % 10, EffectRev.VisibleToPositionRadiusAndColor);
+	CreateEffect(hvt_call_reinforcements_end_t >= TotalTimeElapsed() ? AllPlayers() : [], Effect.LightShaft, Color.White, UpdateEveryFrame(PositionOf(EventPlayer())), 1, EffectRev.VisibleToPositionAndRadius);
 }
 
 rule: "HVT Team 2 Slot 1: HVT subdued fallback"
@@ -5452,8 +5453,8 @@ if (objective_phase_number == 2)
 		ClearStatus(EventPlayer(), Status.KnockedDown);
 		ClearStatus(EventPlayer(), Status.PhasedOut);
 		ClearStatus(EventPlayer(), Status.Invincible);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Yellow, PositionOf(EventPlayer()), 1);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.White, PositionOf(EventPlayer()), 200);
+		PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Yellow, PositionOf(EventPlayer()), 1);
+		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, PositionOf(EventPlayer()), 200);
 		Teleport(EventPlayer(), 1000 * Down());
 		start_kill_remaining_phase();
 		objective_progress = false;
@@ -5463,7 +5464,7 @@ if (objective_phase_number == 2)
 		objective_phase_number = 1;
 		objective_progress = false;
 		gmut_fortified_bypass_end_t = false;
-		BigMessage(AllPlayers(Team.All), "The HVT has been revived!");
+		BigMessage(AllPlayers(), "The HVT has been revived!");
 		SetPlayerHealth(EventPlayer(), 0.6 * MaxHealth(EventPlayer()));
 		ClearStatus(EventPlayer(), Status.KnockedDown);
 		ClearStatus(EventPlayer(), Status.PhasedOut);
@@ -5489,7 +5490,7 @@ if (NormalizedHealth(EventPlayer()) > 0.5)
 	}
 	else
 	{
-		PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Red, EventPlayer(), 1);
+		PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Red, EventPlayer(), 1);
 		hvt_call_reinforcements_end_t = TotalTimeElapsed() + 10;
 		SetDamageReceived(EventPlayer(), 5);
 		SetPlayerHealth(EventPlayer(), 0.5 * MaxHealth(EventPlayer()));
@@ -5524,13 +5525,13 @@ Event.OngoingPlayer
 Team.Team2
 Player.Slot2
 {
-	CreateProgressBarHudText(objective_phase_number == 1 ? AllPlayers(Team.All) : [], ArrayContains(dom_point_A_contesters, LocalPlayer()) ? FirstOf(objective_progress) : ArrayContains(dom_point_B_contesters, LocalPlayer()) ? objective_progress[1] : 0.25 * (100 * ((PlayersInSlot(2, Team.Team2).is_living_boss ? 1 - NormalizedHealth(PlayersInSlot(2, Team.Team2)) : 1) + (PlayersInSlot(3, Team.Team2).is_living_boss ? 1 - NormalizedHealth(PlayersInSlot(3, Team.Team2)) : 1)) + FirstOf(objective_progress) + objective_progress[1]), ArrayContains(dom_point_A_contesters, LocalPlayer()) ? PlayersInSlot(2, Team.Team2).is_living_boss ? "Kill the Guard to unlock this point" : "Capturing..." : ArrayContains(dom_point_B_contesters, LocalPlayer()) ? PlayersInSlot(3, Team.Team2).is_living_boss ? "Kill the Guard to unlock the point" : "Capturing..." : IsTrueForAny(AllPlayers(Team.Team2), ArrayElement().is_living_boss) ? "Kill the guards and capture the points" : "Capture the points", Location.Top, -97, ArrayContains(dom_point_A_contesters, LocalPlayer()) || ArrayContains(dom_point_B_contesters, LocalPlayer()) ? Color.Green : Color.Blue, ArrayContains(dom_point_A_contesters, LocalPlayer()) && PlayersInSlot(2, Team.Team2).is_living_boss || ArrayContains(dom_point_B_contesters, LocalPlayer()) && PlayersInSlot(3, Team.Team2).is_living_boss ? Color.Yellow : Color.Blue, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
-	CreateEffect(objective_phase_number == 1 && FirstOf(objective_progress) < 100 ? AllPlayers(Team.All) : [], Effect.Ring, PlayersInSlot(2, Team.Team2).is_living_boss ? Color.Red : CountOf(dom_point_A_contesters) ? Color.Green : Color.White, FirstOf(iv_dom_objective_pos), 3, EffectRev.VisibleToPositionRadiusAndColor);
-	CreateEffect(objective_phase_number == 1 && objective_progress[1] < 100 ? AllPlayers(Team.All) : [], Effect.Ring, PlayersInSlot(3, Team.Team2).is_living_boss ? Color.Red : CountOf(dom_point_B_contesters) ? Color.Green : Color.White, iv_dom_objective_pos[1], 3, EffectRev.VisibleToPositionRadiusAndColor);
-	CreateIcon(objective_phase_number == 1 && FirstOf(objective_progress) < 100 ? AllPlayers(Team.All) : [], FirstOf(iv_dom_objective_pos) + 2 * Up(), Icon.ExclamationMark, IconRev.VisibleToPositionAndColor, PlayersInSlot(2, Team.Team2).is_living_boss ? Color.Orange : Color.Yellow, true);
-	CreateIcon(objective_phase_number == 1 && objective_progress[1] < 100 ? AllPlayers(Team.All) : [], iv_dom_objective_pos[1] + 2 * Up(), Icon.ExclamationMark, IconRev.VisibleToPositionAndColor, PlayersInSlot(3, Team.Team2).is_living_boss ? Color.Orange : Color.Yellow, true);
-	CreateInWorldText(objective_phase_number == 1 && FirstOf(objective_progress) < 100 ? AllPlayers(Team.All) : [], PlayersInSlot(2, Team.Team2).is_living_boss ? "Kill Guard" : "Capture point", PlayersInSlot(2, Team.Team2).is_living_boss ? PlayersInSlot(2, Team.Team2) : FirstOf(iv_dom_objective_pos) + 1.7 * Up(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndString, Color.Yellow, Spectators.DefaultVisibility);
-	CreateInWorldText(objective_phase_number == 1 && objective_progress[1] < 100 ? AllPlayers(Team.All) : [], PlayersInSlot(3, Team.Team2).is_living_boss ? "Kill Guard" : "Capture point", PlayersInSlot(3, Team.Team2).is_living_boss ? PlayersInSlot(3, Team.Team2) : iv_dom_objective_pos[1] + 1.7 * Up(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndString, Color.Yellow, Spectators.DefaultVisibility);
+	CreateProgressBarHudText(objective_phase_number == 1 ? AllPlayers() : [], ArrayContains(dom_point_A_contesters, LocalPlayer()) ? objective_progress[0] : ArrayContains(dom_point_B_contesters, LocalPlayer()) ? objective_progress[1] : 0.25 * (100 * ((PlayersInSlot(2, Team.Team2).is_living_boss ? 1 - NormalizedHealth(PlayersInSlot(2, Team.Team2)) : 1) + (PlayersInSlot(3, Team.Team2).is_living_boss ? 1 - NormalizedHealth(PlayersInSlot(3, Team.Team2)) : 1)) + objective_progress[0] + objective_progress[1]), ArrayContains(dom_point_A_contesters, LocalPlayer()) ? PlayersInSlot(2, Team.Team2).is_living_boss ? "Kill the Guard to unlock this point" : "Capturing..." : ArrayContains(dom_point_B_contesters, LocalPlayer()) ? PlayersInSlot(3, Team.Team2).is_living_boss ? "Kill the Guard to unlock the point" : "Capturing..." : IsTrueForAny(AllPlayers(Team.Team2), ArrayElement().is_living_boss) ? "Kill the guards and capture the points" : "Capture the points", Location.Top, -97, ArrayContains(dom_point_A_contesters, LocalPlayer()) || ArrayContains(dom_point_B_contesters, LocalPlayer()) ? Color.Green : Color.Blue, ArrayContains(dom_point_A_contesters, LocalPlayer()) && PlayersInSlot(2, Team.Team2).is_living_boss || ArrayContains(dom_point_B_contesters, LocalPlayer()) && PlayersInSlot(3, Team.Team2).is_living_boss ? Color.Yellow : Color.Blue, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
+	CreateEffect(objective_phase_number == 1 && objective_progress[0] < 100 ? AllPlayers() : [], Effect.Ring, PlayersInSlot(2, Team.Team2).is_living_boss ? Color.Red : CountOf(dom_point_A_contesters) ? Color.Green : Color.White, iv_dom_objective_pos[0], 3, EffectRev.VisibleToPositionRadiusAndColor);
+	CreateEffect(objective_phase_number == 1 && objective_progress[1] < 100 ? AllPlayers() : [], Effect.Ring, PlayersInSlot(3, Team.Team2).is_living_boss ? Color.Red : CountOf(dom_point_B_contesters) ? Color.Green : Color.White, iv_dom_objective_pos[1], 3, EffectRev.VisibleToPositionRadiusAndColor);
+	CreateIcon(objective_phase_number == 1 && objective_progress[0] < 100 ? AllPlayers() : [], iv_dom_objective_pos[0] + 2 * Up(), Icon.ExclamationMark, IconRev.VisibleToPositionAndColor, PlayersInSlot(2, Team.Team2).is_living_boss ? Color.Orange : Color.Yellow, true);
+	CreateIcon(objective_phase_number == 1 && objective_progress[1] < 100 ? AllPlayers() : [], iv_dom_objective_pos[1] + 2 * Up(), Icon.ExclamationMark, IconRev.VisibleToPositionAndColor, PlayersInSlot(3, Team.Team2).is_living_boss ? Color.Orange : Color.Yellow, true);
+	CreateInWorldText(objective_phase_number == 1 && objective_progress[0] < 100 ? AllPlayers() : [], PlayersInSlot(2, Team.Team2).is_living_boss ? "Kill Guard" : "Capture point", PlayersInSlot(2, Team.Team2).is_living_boss ? PlayersInSlot(2, Team.Team2) : iv_dom_objective_pos[0] + 1.7 * Up(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndString, Color.Yellow, Spectators.DefaultVisibility);
+	CreateInWorldText(objective_phase_number == 1 && objective_progress[1] < 100 ? AllPlayers() : [], PlayersInSlot(3, Team.Team2).is_living_boss ? "Kill Guard" : "Capture point", PlayersInSlot(3, Team.Team2).is_living_boss ? PlayersInSlot(3, Team.Team2) : iv_dom_objective_pos[1] + 1.7 * Up(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndString, Color.Yellow, Spectators.DefaultVisibility);
 }
 
 rule: "DOM Team 2 Slot 2: Contest Control Point A"
@@ -5538,18 +5539,18 @@ Event.OngoingPlayer
 Team.Team2
 Player.Slot2
 if (objective_phase_number == 1)
-if (FirstOf(objective_progress) < 100)
+if (objective_progress[0] < 100)
 {
-	dom_point_A_contesters = FilteredArray(combatants, !ArrayElement().downed_start_t && !(ArrayElement().is_invisible % 3) && DistanceBetween(FirstOf(iv_dom_objective_pos), Vector(XOf(PositionOf(ArrayElement())), YOf(FirstOf(iv_dom_objective_pos)), ZOf(PositionOf(ArrayElement())))) <= 3 && AbsoluteValue(YOf(PositionOf(FirstOf(iv_dom_objective_pos))) - YOf(PositionOf(ArrayElement()))) <= 3 && IsInLineOfSight(FirstOf(iv_dom_objective_pos) + Up(), ArrayElement(), BarrierLOS.NoBarriersBlock));
+	dom_point_A_contesters = FilteredArray(combatants, !ArrayElement().downed_start_t && !(ArrayElement().is_invisible % 3) && DistanceBetween(iv_dom_objective_pos[0], Vector(XOf(PositionOf(ArrayElement())), YOf(iv_dom_objective_pos[0]), ZOf(PositionOf(ArrayElement())))) <= 3 && AbsoluteValue(YOf(PositionOf(iv_dom_objective_pos[0])) - YOf(PositionOf(ArrayElement()))) <= 3 && IsInLineOfSight(iv_dom_objective_pos[0] + Up(), ArrayElement(), BarrierLOS.NoBarriersBlock));
 	if (!PlayersInSlot(2, Team.Team2).is_living_boss && CountOf(dom_point_A_contesters))
 	{
 		objective_progress[0] += 2;
 		Wait(0.25, WaitBehavior.IgnoreCondition);
 		objective_progress[0] += 2;
-		if (FirstOf(objective_progress) >= 100)
+		if (objective_progress[0] >= 100)
 		{
-			PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Yellow, FirstOf(iv_dom_objective_pos), 3);
-			PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.White, FirstOf(iv_dom_objective_pos), 200);
+			PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Yellow, iv_dom_objective_pos[0], 3);
+			PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, iv_dom_objective_pos[0], 200);
 			dom_point_A_contesters = [];
 			money_amount += 70;
 			if (objective_progress[1] >= 100)
@@ -5586,11 +5587,11 @@ if (objective_progress[1] < 100)
 		objective_progress[1] += 2;
 		if (objective_progress[1] >= 100)
 		{
-			PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.Yellow, iv_dom_objective_pos[1], 3);
-			PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.White, iv_dom_objective_pos[1], 200);
+			PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Yellow, iv_dom_objective_pos[1], 3);
+			PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, iv_dom_objective_pos[1], 200);
 			dom_point_B_contesters = [];
 			money_amount += 70;
-			if (FirstOf(objective_progress) >= 100)
+			if (objective_progress[0] >= 100)
 			{
 				objective_phase_number = 2;
 				enable_normal_spawns = true;
@@ -6086,7 +6087,7 @@ Player.Ana
 if (Talent1 == true)
 if (IsUsingAbility2(EventPlayer()) == true)
 {
-	for (p_i = 0; 4; 1)
+	for (Number i! = 0; 4; 1)
 	{
 		Wait(0.03, WaitBehavior.IgnoreCondition);
 		SetAbilityCooldown(EventPlayer(), Button.Ability2, false);
@@ -6104,12 +6105,12 @@ Player.Ana
 {
 	AbortIf(!Talent2);
 	AbortIf(EventAbility() != Button.Ability1);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.Black, Victim(), 2);
+	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Black, Victim(), 2);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	WaitUntil(!HasStatus(Victim(), Status.Asleep), 5);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.Black, EyePosition(Victim()), 150);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.Black, Victim(), 6);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Black, Victim(), 12);
+	PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.Black, EyePosition(Victim()), 150);
+	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Black, Victim(), 6);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Black, Victim(), 12);
 	Damage(PlayersWithinRadius(Victim(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 150);
 	SetStatus(PlayersWithinRadius(EyePosition(Victim()), 6, Team.Team2, RadiusLOS.Surfaces), null, Status.Hacked, 1.5);
 }
@@ -6136,7 +6137,7 @@ if (IsUsingUltimate(EventPlayer()) == true)
 if (Talent2 == true)
 {
 	StartDamageOverTime(PlayersWithinRadius(EventPlayer(), 12, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 1, 100);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Orange, EventPlayer(), 24);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, EventPlayer(), 24);
 	Wait(1, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
 }
@@ -6206,9 +6207,9 @@ if (IsUsingAbility1(EventPlayer()) == true)
 	Ability_Projectile1 = EyePosition(EventPlayer());
 	Ability_End = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 50, AllPlayers(Team.Team2), EventPlayer(), true);
 	ChaseVariableAtRate(Ability_Projectile1, Ability_End, 40, RateChaseReevaluation.DestinationAndRate);
-	CreateEffect(AllPlayers(Team.All), Effect.Sphere, Color.Violet, Ability_Projectile1, 0.6, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(AllPlayers(), Effect.Sphere, Color.Violet, Ability_Projectile1, 0.6, EffectRev.VisibleToPositionAndRadius);
 	Effects_[1] = LastCreatedEntity();
-	CreateEffect(AllPlayers(Team.All), Effect.GoodAura, Color.Violet, Ability_Projectile1, 0.6, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(AllPlayers(), Effect.GoodAura, Color.Violet, Ability_Projectile1, 0.6, EffectRev.VisibleToPositionAndRadius);
 	Effects_[2] = LastCreatedEntity();
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	Ability_Countdown = HealthOfType(EventPlayer(), HealthType.Shields);
@@ -6217,10 +6218,10 @@ if (IsUsingAbility1(EventPlayer()) == true)
 	DestroyEffect(Effects_[1]);
 	DestroyEffect(Effects_[2]);
 	Damage(PlayersWithinRadius(Ability_Projectile1, Min(10, 1.5 + Ability_Countdown * 0.017), Team.Team2, RadiusLOS.Off), EventPlayer(), Min(200, 100 + Ability_Countdown / 5));
-	PlayEffect(AllPlayers(Team.All), PlayEffect.DebuffImpactSound, Color.Violet, Ability_Projectile1, 150);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Violet, Ability_Projectile1, Min(10, 1.5 + Ability_Countdown * 0.017));
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.Purple, Ability_Projectile1, Min(10, 1.5 + Ability_Countdown * 0.017));
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Violet, Ability_Projectile1, Min(20, 3 + Ability_Countdown * 0.017));
+	PlayEffect(AllPlayers(), PlayEffect.DebuffImpactSound, Color.Violet, Ability_Projectile1, 150);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Violet, Ability_Projectile1, Min(10, 1.5 + Ability_Countdown * 0.017));
+	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Purple, Ability_Projectile1, Min(10, 1.5 + Ability_Countdown * 0.017));
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Violet, Ability_Projectile1, Min(20, 3 + Ability_Countdown * 0.017));
 }
 
 rule: "Ashe: Black Gunpowder"
@@ -6241,9 +6242,9 @@ Team.Team1
 Player.Ashe
 if (Talent2 == true)
 {
-	PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.Orange, EyePosition(Victim()), 120);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.Orange, Victim(), 5);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadPickupEffect, Color.Yellow, Victim(), 5);
+	PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.Orange, EyePosition(Victim()), 120);
+	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Orange, Victim(), 5);
+	PlayEffect(AllPlayers(), PlayEffect.BadPickupEffect, Color.Yellow, Victim(), 5);
 	StartDamageOverTime(PlayersWithinRadius(Victim(), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 3, 15);
 	SetStatus(PlayersWithinRadius(Victim(), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Burning, 3);
 	Damage(PlayersWithinRadius(Victim(), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 30);
@@ -6272,7 +6273,7 @@ Player.Widowmaker
 	AbortIf(NormalizedHealth(Victim()) > 0.3);
 	AbortIf(Victim().is_living_boss);
 	AbortIf(Victim().iv_is_portal);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadPickupEffect, Color.Violet, Victim(), 3);
+	PlayEffect(AllPlayers(), PlayEffect.BadPickupEffect, Color.Violet, Victim(), 3);
 	Damage(Victim(), EventPlayer(), 10000);
 	Damage(PlayersWithinRadius(Victim(), 3, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), EventDamage());
 }
@@ -6290,7 +6291,7 @@ if (SpeedOf(EventPlayer()) >= 20)
 		CreateProjectile(ProjectileType.RamattraRavenousVortexSphere, EventPlayer(), null, Up(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 2, 4, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0.05, 15, 3, 8, 1, 100);
 		Wait(0.15, WaitBehavior.IgnoreCondition);
 	}
-	for (p_i = 0; 4; 1)
+	for (Number i! = 0; 4; 1)
 	{
 		Wait(0.15, WaitBehavior.IgnoreCondition);
 		CreateProjectile(ProjectileType.RamattraRavenousVortexSphere, EventPlayer(), null, Up(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 2, 4, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0.05, 15, 3, 8, 1, 100);
@@ -6304,8 +6305,8 @@ Player.Torbjorn
 if (Talent1 == true)
 if ((IsUsingAbility2(EventPlayer()) || IsUsingUltimate(EventPlayer())) == true)
 {
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), 11);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), 12);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), 11);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), 12);
 	StartDamageOverTime(RemoveFromArray(PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer()), EventPlayer(), 3, 20);
 	SetStatus(RemoveFromArray(PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer()), EventPlayer(), Status.Burning, 3);
 	Damage(PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 15);
@@ -6323,7 +6324,7 @@ Player.Torbjorn
 	AbortIf(Weapon(EventPlayer()) != 2);
 	AbortIf(DistanceBetween(EventPlayer(), Victim()) > 2.5);
 	Damage(Victim(), EventPlayer(), EventDamage() * 0.4);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Orange, Victim(), 0.25);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Orange, Victim(), 0.25);
 }
 
 rule: "[Torbjorn] Foundry - Bonus Speed"
@@ -6345,7 +6346,7 @@ Player.Reinhardt
 {
 	AbortIf(!Talent1);
 	AbortIf(EventAbility() != Button.Ability2);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.Orange, Victim(), 5);
+	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Orange, Victim(), 5);
 	StartDamageOverTime(PlayersWithinRadius(Victim(), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 5, 20);
 	SetStatus(PlayersWithinRadius(Victim(), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Burning, 5);
 }
@@ -6359,11 +6360,11 @@ if (IsUsingUltimate(EventPlayer()) == true)
 if (IsOnGround(EventPlayer()) == true)
 {
 	SetStatus(PlayersWithinRadius(EventPlayer(), 20, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.KnockedDown, 2.5);
-	for (p_i = 0; 3; 1)
+	for (Number i! = 0; 3; 1)
 	{
 		Wait(0.032, WaitBehavior.IgnoreCondition);
-		Damage(PlayersWithinRadius(EventPlayer(), p_i * 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 50);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), p_i * 20);
+		Damage(PlayersWithinRadius(EventPlayer(), i * 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 50);
+		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), i * 20);
 	}
 	Wait(5, WaitBehavior.IgnoreCondition);
 }
@@ -6375,9 +6376,9 @@ Player.Brigitte
 if (Talent1 == true)
 if (Ability_Available == true)
 {
-	CreateEffect(AllPlayers(Team.All), Effect.EchoCloningEffect, Team.Team1, EventPlayer(), 0.4, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(AllPlayers(), Effect.EchoCloningEffect, Team.Team1, EventPlayer(), 0.4, EffectRev.VisibleToPositionAndRadius);
 	Effects_[1] = LastCreatedEntity();
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Orange, EyePosition(EventPlayer()), 15);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, EyePosition(EventPlayer()), 15);
 	Heal(PlayersWithinRadius(EventPlayer(), 15, Team.Team1, RadiusLOS.Off), EventPlayer(), 200);
 	Damage_Dealt += 150;
 	Move_Speed += 75;
@@ -6412,9 +6413,9 @@ Player.Brigitte
 if (Talent2 == true)
 if (IsUsingAbility1(EventPlayer()) == true)
 {
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosionSound, Color.Green, Victim(), 100);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Orange, Victim(), 2.5);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadPickupEffect, Color.Orange, Victim(), 2.5);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosionSound, Color.Green, Victim(), 100);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Orange, Victim(), 2.5);
+	PlayEffect(AllPlayers(), PlayEffect.BadPickupEffect, Color.Orange, Victim(), 2.5);
 	Damage(PlayersWithinRadius(Victim(), 2.5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 100);
 	SetStatus(PlayersWithinRadius(Victim(), 2.5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Stunned, 1.5);
 }
@@ -6475,7 +6476,7 @@ if (IsUsingAbility1(EventPlayer()) == true)
 		Damage(FilteredArray(PlayersWithinRadius(EventPlayer(), 4, Team.Team2, RadiusLOS.Surfaces), !HasStatus(ArrayElement(), Status.KnockedDown)), EventPlayer(), 35);
 		SetStatus(PlayersWithinRadius(EventPlayer(), 4, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.KnockedDown, 0.8);
 		ApplyImpulse(PlayersWithinRadius(EventPlayer(), 4, Team.Team2, RadiusLOS.Surfaces), Normalize(VelocityOf(EventPlayer())) + DirectionTowards(EventPlayer(), ThrottleOf(EventPlayer())) + Up() * 1.1, 7.5, Relative.ToWorld, ContraryMotion.Cancel);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Yellow, PositionOf(EventPlayer()), 0.15);
+		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Yellow, PositionOf(EventPlayer()), 0.15);
 	}
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
@@ -6488,7 +6489,7 @@ Player.Mercy
 if (Talent2 == true)
 if (IsUsingUltimate(EventPlayer()) == true)
 {
-	CreateEffect(AllPlayers(Team.All), Effect.Orb, Color.Yellow, Ability_Projectile1, 1, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(AllPlayers(), Effect.Orb, Color.Yellow, Ability_Projectile1, 1, EffectRev.VisibleToPositionAndRadius);
 	Effects_[1] = LastCreatedEntity();
 	Ability_Projectile1 = EyePosition(EventPlayer());
 	ChaseVariableAtRate(Ability_Projectile1, Ability_End, 100, RateChaseReevaluation.DestinationAndRate);
@@ -6496,9 +6497,9 @@ if (IsUsingUltimate(EventPlayer()) == true)
 	WaitUntil(!Talent2 || Ability_End == Ability_Projectile1, 1);
 	DestroyEffect(Effects_[1]);
 	StopChasingVariable(Ability_Countdown);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosionSound, Color.Green, Ability_Projectile1, 100);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Yellow, Ability_Projectile1, 6);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodPickupEffect, Color.White, Ability_Projectile1, 6);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosionSound, Color.Green, Ability_Projectile1, 100);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Yellow, Ability_Projectile1, 6);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.White, Ability_Projectile1, 6);
 	Damage(PlayersWithinRadius(Ability_Projectile1, 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 150);
 	Heal(PlayersWithinRadius(Ability_Projectile1, 6, Team.Team1, RadiusLOS.Surfaces), EventPlayer(), 150);
 	Wait(1.5, WaitBehavior.IgnoreCondition);
@@ -6514,10 +6515,10 @@ if (Talent1 == true)
 {
 	Heal(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 1);
 	Damage(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 25);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Red, PositionOf(EventPlayer()), 20);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Yellow, PositionOf(EventPlayer()), 18);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Green, PositionOf(EventPlayer()), 16);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Aqua, PositionOf(EventPlayer()), 14);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Red, PositionOf(EventPlayer()), 20);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Yellow, PositionOf(EventPlayer()), 18);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Green, PositionOf(EventPlayer()), 16);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Aqua, PositionOf(EventPlayer()), 14);
 	SetEnvironmentCreditPlayer(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer());
 }
 
@@ -6558,7 +6559,7 @@ Team.Team2
 if (Chain_Reaction_On == true)
 {
 	Wait(0.1, WaitBehavior.IgnoreCondition);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.Aqua, EventPlayer(), 3);
+	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Aqua, EventPlayer(), 3);
 	//Damage(EventPlayer(), PlayersOnHero(Hero.Tracer, Team.Team1), 200);
 	# Picks the first person on tracer (bad)
 	Damage(EventPlayer(), PlayersOnHero(Hero.Tracer, Team.Team1)[0], 200);
@@ -6608,7 +6609,7 @@ if (Talent2 == true)
 	Move_Speed += 30;
 	AddHealthPoolToPlayer(AllPlayers(Team.Team1), HealthType.Shields, Min(200, MaxHealth(EventPlayer()) * 0.25), false, false);
 	HP_Pool[6] = LastCreatedHealthPool();
-	CreateEffect(AllPlayers(Team.All), Effect.AnaNanoBoostedEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(AllPlayers(), Effect.AnaNanoBoostedEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
 	Effects_[1] = LastCreatedEntity();
 	WaitUntil(!Talent2 || IsDead(EventPlayer()), 10);
 	DestroyEffect(Effects_[1]);
@@ -6625,7 +6626,7 @@ if (Talent1 == true)
 if (IsFiringPrimary(EventPlayer()) == true)
 if (IsUsingAbility2(EventPlayer()) == true)
 {
-	for (p_i = 0; 2; 1)
+	for (Number i! = 0; 2; 1)
 	{
 		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EyePosition(EventPlayer()) + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 70, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 110, 5, 0, 1, 5);
 		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EyePosition(EventPlayer()) + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 70, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 110, 5, 0, 1, 5);
@@ -6649,7 +6650,7 @@ Player.Hanzo
 if (Talent2 == true)
 if (Ability_Countdown > 0)
 {
-	CreateEffect(AllPlayers(Team.All), Effect.WinstonPrimalRageEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(AllPlayers(), Effect.WinstonPrimalRageEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
 	Effects_[1] = LastCreatedEntity();
 	WaitUntil(IsDead(EventPlayer()) || !Ability_Countdown || !Talent2, 99999);
 	Ability_Countdown = false;
@@ -6674,8 +6675,8 @@ Player.Echo
 if (Talent1 == true)
 if (IsUsingAbility1(EventPlayer()) == true)
 {
-	CreateHomingProjectile(ProjectileType.EchoStickyBomb, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(-0.5, false, false), EventPlayer(), LocalVector.Rotation), Down(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 30, 1, 1.5, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0, 20, 5, 0, FirstOf(SortedArray(FilteredArray(AllPlayers(Team.Team2), IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock) && ArrayElement().is_alive), DistanceBetween(EventPlayer(), ArrayElement()))), 1);
-	CreateHomingProjectile(ProjectileType.EchoStickyBomb, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(0.5, false, false), EventPlayer(), LocalVector.Rotation), Down(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 30, 1, 1.5, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0, 20, 5, 0, FirstOf(SortedArray(FilteredArray(AllPlayers(Team.Team2), IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock) && ArrayElement().is_alive), DistanceBetween(EventPlayer(), ArrayElement()))), 1);
+	CreateHomingProjectile(ProjectileType.EchoStickyBomb, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(-0.5, false, false), EventPlayer(), LocalVector.Rotation), Down(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 30, 1, 1.5, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0, 20, 5, 0, SortedArray(FilteredArray(AllPlayers(Team.Team2), IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock) && ArrayElement().is_alive), DistanceBetween(EventPlayer(), ArrayElement()))[0], 1);
+	CreateHomingProjectile(ProjectileType.EchoStickyBomb, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(0.5, false, false), EventPlayer(), LocalVector.Rotation), Down(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 30, 1, 1.5, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0, 20, 5, 0, SortedArray(FilteredArray(AllPlayers(Team.Team2), IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock) && ArrayElement().is_alive), DistanceBetween(EventPlayer(), ArrayElement()))[0], 1);
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
 }
@@ -6691,7 +6692,7 @@ Player.Echo
 	AbortIf(NormalizedHealth(Victim()) <= 0.5);
 	AbortIf(NormalizedHealth(Victim()) > 0.9);
 	Damage(Victim(), EventPlayer(), EventDamage() * 3);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Violet, Victim(), 0.5);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Violet, Victim(), 0.5);
 }
 
 rule: "[Lucio] Chord Cadence"
@@ -6717,7 +6718,7 @@ if (Talent1 == true)
 if (IsFiringPrimary(EventPlayer()) == true)
 if (IsUsingAbility2(EventPlayer()) == true)
 {
-	for (p_i = 0; 4; 1)
+	for (Number i! = 0; 4; 1)
 	{
 		CreateProjectile(ProjectileType.LucioSonicAmplifier, EventPlayer(), EyePosition(EventPlayer()) + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1)), Relative.ToWorld, ModifyHealthType.Damage, OppositeTeamOf(TeamOf(EventPlayer())), 20, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 50, 5, 0, 0, 0);
 		CreateProjectile(ProjectileType.LucioSonicAmplifier, EventPlayer(), EyePosition(EventPlayer()) + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1)), Relative.ToWorld, ModifyHealthType.Damage, OppositeTeamOf(TeamOf(EventPlayer())), 20, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 50, 5, 0, 0, 0);
@@ -6757,9 +6758,9 @@ Player.Dva
 if (IsFiringSecondary(EventPlayer()) == true)
 if (Talent1 == true)
 {
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 2, 0.15);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 5, 0.15);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 8, 0.15);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 2, 0.15);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 5, 0.15);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 8, 0.15);
 	Wait(0.3, WaitBehavior.IgnoreCondition);
 	Damage(PlayersWithinRadius(EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 2, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), 20);
 	Damage(PlayersWithinRadius(EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 5, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), 20);
@@ -6780,7 +6781,7 @@ if (Talent2 == true)
 	Damage(Victim(), EventPlayer(), 30);
 	SetStatus(Victim(), null, Status.Burning, 3);
 	StartDamageOverTime(Victim(), EventPlayer(), 3, 35);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Red, Victim(), 1);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Red, Victim(), 1);
 }
 
 rule: "Zarya- Combusta-bubble - Detect Barrier Target"
@@ -6791,11 +6792,11 @@ if (Talent1 == true)
 if (IsUsingAbility2(EventPlayer()) == true)
 {
 	Wait(0.025, WaitBehavior.IgnoreCondition);
-	Ability_End = FirstOf(FilteredArray(PlayersWithinRadius(EventPlayer(), 30, Team.Team1, RadiusLOS.Surfaces), HasStatus(ArrayElement(), Status.Invincible) && IsAlive(ArrayElement()) && IsInViewAngle(EventPlayer(), ArrayElement(), 103)));
+	Ability_End = FilteredArray(PlayersWithinRadius(EventPlayer(), 30, Team.Team1, RadiusLOS.Surfaces), HasStatus(ArrayElement(), Status.Invincible) && IsAlive(ArrayElement()) && IsInViewAngle(EventPlayer(), ArrayElement(), 103))[0];
 	WaitUntil(!IsUsingAbility2(EventPlayer()), 2);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.Orange, Ability_End, 120);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.Orange, EyePosition(Ability_End), 6);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadPickupEffect, Color.Yellow, EyePosition(Ability_End), 6);
+	PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.Orange, Ability_End, 120);
+	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Orange, EyePosition(Ability_End), 6);
+	PlayEffect(AllPlayers(), PlayEffect.BadPickupEffect, Color.Yellow, EyePosition(Ability_End), 6);
 	Damage(PlayersWithinRadius(EyePosition(Ability_End), 6, Team.Team2, RadiusLOS.Surfaces), Ability_End, 100);
 }
 
@@ -6808,9 +6809,9 @@ if (IsUsingAbility1(EventPlayer()) == true)
 {
 	Wait(0.1, WaitBehavior.AbortWhenFalse);
 	WaitUntil(!IsUsingAbility1(EventPlayer()), 2);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.Orange, EventPlayer(), 120);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.Orange, EyePosition(EventPlayer()), 6);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadPickupEffect, Color.Yellow, EyePosition(EventPlayer()), 6);
+	PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.Orange, EventPlayer(), 120);
+	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Orange, EyePosition(EventPlayer()), 6);
+	PlayEffect(AllPlayers(), PlayEffect.BadPickupEffect, Color.Yellow, EyePosition(EventPlayer()), 6);
 	Damage(PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 100);
 }
 
@@ -6839,7 +6840,7 @@ if (Victim().iv_is_portal == false)
 if (Victim() != EventPlayer())
 {
 	Damage(Victim(), EventPlayer(), 60);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.Gray, Victim(), 1);
+	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Gray, Victim(), 1);
 	AbortIf(NormalizedHealth(Victim()) > 0.5);
 	SetStatus(Victim(), null, Status.Hacked, 1);
 }
@@ -6855,15 +6856,15 @@ if (Ammo(EventPlayer(), false) % 6 == false)
 	SetProjectileSpeed(EventPlayer(), 125);
 	Ability_End = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 100, AllLivingPlayers(Team.All), EventPlayer(), true);
 	Ability_Projectile1 = EyePosition(EventPlayer());
-	CreateEffect(AllPlayers(Team.All), Effect.BadAura, Color.Orange, Ability_Projectile1, 1, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(AllPlayers(), Effect.BadAura, Color.Orange, Ability_Projectile1, 1, EffectRev.VisibleToPositionAndRadius);
 	Effects_[7] = LastCreatedEntity();
 	ChaseVariableAtRate(Ability_Projectile1, Ability_End, 35, RateChaseReevaluation.DestinationAndRate);
 	WaitUntil(!Talent2 || Ability_Projectile1 == Ability_End, 99999);
 	DestroyEffect(Effects_[7]);
-	for (p_i = 0; 6; 1)
+	for (Number i! = 0; 6; 1)
 	{
-		PlayEffect(AllPlayers(Team.All), PlayEffect.BadPickupEffect, Color.Orange, Ability_Projectile1 + Vector(RandomReal(-1.5, 1.5), RandomReal(-0.5, 0.5), RandomReal(-1.5, 1.5)), 1);
-		PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.Team1, Ability_Projectile1, 25);
+		PlayEffect(AllPlayers(), PlayEffect.BadPickupEffect, Color.Orange, Ability_Projectile1 + Vector(RandomReal(-1.5, 1.5), RandomReal(-0.5, 0.5), RandomReal(-1.5, 1.5)), 1);
+		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.Team1, Ability_Projectile1, 25);
 		Damage(PlayersWithinRadius(Ability_Projectile1, 4, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 20);
 		Wait(0.1, WaitBehavior.IgnoreCondition);
 	}
@@ -6902,7 +6903,7 @@ Player.Roadhog
 if (Talent1 == true)
 if (IsAlive(EventPlayer()) == true)
 {
-	CreateEffect(AllPlayers(Team.All), Effect.Ring, Color.Violet, EventPlayer(), 8, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(AllPlayers(), Effect.Ring, Color.Violet, EventPlayer(), 8, EffectRev.VisibleToPositionAndRadius);
 	Effects_[1] = LastCreatedEntity();
 	WaitUntil(!Talent1 || IsDead(EventPlayer()), 99999);
 	DestroyEffect(Effects_[1]);
@@ -6955,7 +6956,7 @@ if (Talent1 == true)
 {
 	StartDamageOverTime(PlayersWithinRadius(EventPlayer(), 3, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 2, 25);
 	StartHealOverTime(PlayersWithinRadius(EventPlayer(), 3, Team.Team1, RadiusLOS.Surfaces), EventPlayer(), 2, 40);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Black, PositionOf(EventPlayer()), 6);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Black, PositionOf(EventPlayer()), 6);
 	Wait(0.2, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
 }
@@ -6989,7 +6990,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
 if (AbilityResource(EventPlayer(), Button.PrimaryFire) > 8)
 {
 	SetAbilityResource(EventPlayer(), Button.PrimaryFire, AbilityResource(EventPlayer(), Button.PrimaryFire) - 15);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Purple, EyePosition(EventPlayer()), 10);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Purple, EyePosition(EventPlayer()), 10);
 	Damage(PlayersWithinRadius(EyePosition(EventPlayer()), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 35);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
@@ -7006,8 +7007,8 @@ if (IsUsingAbility1(EventPlayer()) == true)
 	WaitUntil(!IsUsingAbility1(EventPlayer()), 99999);
 	Damage(PlayersWithinRadius(EyePosition(EventPlayer()), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 35);
 	SetStatus(PlayersWithinRadius(EyePosition(EventPlayer()), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Frozen, 2);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.SkyBlue, PositionOf(EventPlayer()), 20);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Aqua, PositionOf(EventPlayer()) + Vector(0, 1, false), 20);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.SkyBlue, PositionOf(EventPlayer()), 20);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Aqua, PositionOf(EventPlayer()) + Vector(0, 1, false), 20);
 }
 
 rule: "[Mei] Fractical Strike"
@@ -7021,7 +7022,7 @@ if (IsFiringSecondary(EventPlayer()) == true)
 	Wait(0.3, WaitBehavior.IgnoreCondition);
 	Damage_Dealt += 60;
 	AbortIfConditionIsFalse();
-	for (p_i = 0; 5; 1)
+	for (Number i! = 0; 5; 1)
 	{
 		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(false, -0.25, false), EventPlayer(), LocalVector.Rotation), DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 75, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 115, 5, 0, 0, 5);
 		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(false, -0.25, false), EventPlayer(), LocalVector.Rotation), DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 75, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 115, 5, 0, 0, 5);
@@ -7050,8 +7051,8 @@ if (IsUsingAbility1(EventPlayer()) == true)
 	WaitUntil(IsOnGround(EventPlayer()), 99999);
 	AbortIf(IsDead(EventPlayer()));
 	Damage(PlayersWithinRadius(EventPlayer(), 7.5, Team.Team2, RadiusLOS.SurfacesAndAllBarriers), EventPlayer(), 30);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.White, PositionOf(EventPlayer()), 15);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Gray, PositionOf(EventPlayer()), 14);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.White, PositionOf(EventPlayer()), 15);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Gray, PositionOf(EventPlayer()), 14);
 	SetStatus(PlayersWithinRadius(EventPlayer(), 7.5, Team.Team2, RadiusLOS.SurfacesAndAllBarriers), EventPlayer(), Status.Stunned, 1);
 }
 
@@ -7064,7 +7065,7 @@ if (Talent1 == true)
 {
 	Wait(0.1, WaitBehavior.AbortWhenFalse);
 	CancelPrimaryAction(EventPlayer());
-	CreateEffect(AllPlayers(Team.All), Effect.ReaperWraithFormEffect, Color.Team1, EventPlayer(), true, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(AllPlayers(), Effect.ReaperWraithFormEffect, Color.Team1, EventPlayer(), true, EffectRev.VisibleToPositionAndRadius);
 	Effects_[1] = LastCreatedEntity();
 	Damage_Dealt += 30;
 	Move_Speed += 50;
@@ -7099,7 +7100,7 @@ if (IsUsingAbility1(EventPlayer()) == true)
 	Ability_Active = 1 + TotalTimeElapsed();
 	WaitUntil(AbilityCooldown(EventPlayer(), Button.Ability1) > 1 || IsButtonHeld(EventPlayer(), Button.Jump), 1);
 	AbortIf(Ability_Active < TotalTimeElapsed());
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Turquoise, PositionOf(EventPlayer()), 12);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Turquoise, PositionOf(EventPlayer()), 12);
 	Damage(PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 75);
 }
 
@@ -7111,7 +7112,7 @@ Player.Sojourn
 	AbortIf(!Talent2);
 	AbortIf(EventAbility() != Button.SecondaryFire);
 	AbortIf(!EventWasCriticalHit());
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(Victim()), 4);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(Victim()), 4);
 	Damage(PlayersWithinRadius(Victim(), 4, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), EventDamage());
 }
 
@@ -7132,6 +7133,7 @@ Team.Team1
 Player.Soldier76
 if (Talent1 == true)
 {
+	//> So fucking wrong
 	Ability_Projectile1 = Ability_Available;
 	Ability_Countdown = Ability_End;
 }
@@ -7170,9 +7172,9 @@ Player.Baptiste
 if (IsUsingAbility1(EventPlayer()) == true)
 if (Talent1 == true)
 {
-	for (p_i = 0; 3; 1)
+	for (Number i! = 0; 3; 1)
 	{
-		PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Purple, PositionOf(EventPlayer()), 20);
+		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Purple, PositionOf(EventPlayer()), 20);
 		Damage(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 25);
 		StartDamageOverTime(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 5, 30);
 		Wait(0.2, WaitBehavior.IgnoreCondition);
@@ -7276,7 +7278,7 @@ if (EventAbility() == Button.Melee)
 {
 	SetStatus(Victim(), EventPlayer(), Status.Stunned, 1);
 	Damage(Victim(), EventPlayer(), 40);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, Color.Purple, Victim(), 0.25);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Purple, Victim(), 0.25);
 }
 
 rule: "[Sombra] Cyberattack"
@@ -7291,9 +7293,9 @@ if (IsUsingAbility2(EventPlayer()) == true)
 	AbortIf(IsDead(EventPlayer()));
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	Damage(PlayersWithinRadius(EventPlayer(), 8, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 50);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosionSound, Color.White, EyePosition(EventPlayer()), 20000);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.Purple, EyePosition(EventPlayer()), 8);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Violet, EyePosition(EventPlayer()), 16);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosionSound, Color.White, EyePosition(EventPlayer()), 20000);
+	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Purple, EyePosition(EventPlayer()), 8);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Violet, EyePosition(EventPlayer()), 16);
 	SetStatus(PlayersWithinRadius(EyePosition(EventPlayer()), 8, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Hacked, 2);
 }
 
@@ -7320,14 +7322,14 @@ if (IsUsingAbility1(EventPlayer()) == true)
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	WaitUntil(IsOnGround(EventPlayer()) || !IsUsingAbility1(EventPlayer()), 1000);
 	AbortIf(!IsUsingAbility1(EventPlayer()));
-	for (p_i = -5; 5; 1)
+	for (Number i! = -5; 5; 1)
 	{
-		CreateProjectile(ProjectileType.ReinhardtFireStrike, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + p_i * 5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 1, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 40, 4, 0, 0, 0);
+		CreateProjectile(ProjectileType.ReinhardtFireStrike, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + i * 5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 1, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 40, 4, 0, 0, 0);
 		Wait(0.025, WaitBehavior.IgnoreCondition);
 	}
-	for (p_i = 5; -5; -1)
+	for (Number i! = 5; -5; -1)
 	{
-		CreateProjectile(ProjectileType.ReinhardtFireStrike, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + p_i * 5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 1, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 40, 4, 0, 0, 0);
+		CreateProjectile(ProjectileType.ReinhardtFireStrike, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + i * 5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 1, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 40, 4, 0, 0, 0);
 		Wait(0.025, WaitBehavior.IgnoreCondition);
 	}
 }
@@ -7356,7 +7358,7 @@ if (IsUsingUltimate(EventPlayer()) == true)
 if (Talent1 == true)
 {
 	Wait(0.2, WaitBehavior.IgnoreCondition);
-	for (p_i = 0; 5; 1)
+	for (Number i! = 0; 5; 1)
 	{
 		Wait(1, WaitBehavior.AbortWhenFalse);
 		PlayEffect(EventPlayer(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 15);
@@ -7411,9 +7413,9 @@ Player.WreckingBall
 if (Talent2 == true)
 if (IsUsingAbility2(EventPlayer()) == true)
 {
-	for (p_i = false; 4; 1)
+	for (Number i! = false; 4; 1)
 	{
-		PlayEffect(AllPlayers(Team.All), PlayEffect.RingExplosion, Color.Purple, PositionOf(EventPlayer()), 20);
+		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Purple, PositionOf(EventPlayer()), 20);
 		Damage(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 25);
 		SetStatus(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Hacked, 2);
 		Wait(0.1, WaitBehavior.IgnoreCondition);
@@ -7466,7 +7468,7 @@ if (EventAbility() == Button.Ability2)
 {
 	Damage(Victim(), EventPlayer(), 75);
 	SetStatus(Victim(), EventPlayer(), Status.Frozen, 1.5);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.GoodExplosion, Color.Gray, Victim(), 1);
+	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Gray, Victim(), 1);
 }
 
 rule: "Ramattra: Vile Dominance"
