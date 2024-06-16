@@ -1,0 +1,385 @@
+settings
+{
+	main
+	{
+		Description: "☆ Heat Street: TALENTS Chateau Guillard! by LemonAid#11644\n★ [KFVAY] - Fight for survival against an overwhelming force. Your enemies are numerous and hunting you down. Can you survive all waves? The AI is able to play 25 different heroes, some of which have new abilities. PvE game mode suited for 1 to 5 players. \n☆ Version 3.4.6 from the classic version, featuring new enemies, abilities, and talents for every hero!\n★ Credits to: Shingen and SgtMoody\n☆ Join our Discord! discord.gg/WJr3gFC"
+		Mode Name: "Heat Street: Talents - Chateau"
+	}
+
+	lobby
+	{
+		Map Rotation: After A Game
+		Max Team 1 Players: 5
+		Max Team 2 Players: 0
+		Return To Lobby: Never
+		Use Experimental Update If Available: Yes
+	}
+
+	modes
+	{
+		Team Deathmatch
+		{
+			enabled maps
+			{
+				Château Guillard 972777519512063901
+			}
+		}
+
+		General
+		{
+			Game Mode Start: Immediately
+			Hero Limit: Off
+			Kill Cam: Off
+			Kill Feed: Off
+			Score To Win: 1
+			Spawn Health Packs: Enabled
+		}
+	}
+
+	heroes
+	{
+		Team 1
+		{
+			Ultimate Generation: 50%
+			Ultimate Generation - Combat: 90%
+
+			Baptiste
+			{
+				Ultimate Duration: 125%
+			}
+
+			Brigitte
+			{
+				Damage Dealt: 115%
+			}
+
+			Hanzo
+			{
+				Damage Dealt: 75%
+			}
+
+			Junker Queen
+			{
+				Ultimate Generation Rampage: 60%
+			}
+
+			Kiriko
+			{
+				Damage Dealt: 115%
+			}
+
+			Mercy
+			{
+				Damage Dealt: 115%
+				Ultimate Generation Valkyrie: 40%
+			}
+
+			Moira
+			{
+				Damage Dealt: 115%
+				Ultimate Generation Coalescence: 40%
+			}
+
+			Widowmaker
+			{
+				Ultimate Duration: 120%
+			}
+
+			Wrecking Ball
+			{
+				Ultimate Generation Minefield: 50%
+			}
+
+			Zarya
+			{
+				Ultimate Generation Graviton Surge: 40%
+			}
+
+			Zenyatta
+			{
+				Damage Dealt: 120%
+				Healing Dealt: 150%
+				Ultimate Generation Transcendence: 60%
+			}
+		}
+
+		Team 2
+		{
+			Ammunition Clip Size Scalar: 200%
+
+			Ana
+			{
+				Biotic Grenade Cooldown Time: 10%
+				Damage Dealt: 60%
+				Healing Dealt: 150%
+				Health: 150%
+				Sleep Dart Cooldown Time: 10%
+			}
+
+			Baptiste
+			{
+				Damage Dealt: 46%
+				Healing Dealt: 10%
+				Immortality Field Cooldown Time: 10%
+				Projectile Speed: 0%
+				Regenerative Burst Cooldown Time: 10%
+			}
+
+			Bastion
+			{
+				Damage Dealt: 62%
+				Damage Received: 70%
+				Health: 500%
+				Infinite Ultimate Duration: On
+			}
+
+			Brigitte
+			{
+				Barrier Shield Recharge Rate: 200%
+				Damage Dealt: 31%
+				Health: 125%
+				Shield Bash: Off
+				Whip Shot Cooldown Time: 10%
+			}
+
+			Cassidy
+			{
+				Combat Roll Cooldown Time: 10%
+				Damage Dealt: 23%
+				Health: 89%
+				Magnetic Grenade Cooldown Time: 10%
+			}
+
+			D.Va
+			{
+				Boosters Cooldown Time: 10%
+				Damage Dealt: 35%
+				Defense Matrix Recharge Rate: 200%
+				Health: 60%
+			}
+
+			Echo
+			{
+				Damage Dealt: 29%
+				Flight Cooldown Time: 0%
+				Focusing Beam Cooldown Time: 10%
+				Sticky Bombs Cooldown Time: 10%
+				Ultimate Ability Duplicate: Off
+			}
+
+			Genji
+			{
+				Damage Dealt: 91%
+				Deflect Cooldown Time: 10%
+				Health: 333%
+				Infinite Ultimate Duration: On
+				Swift Strike Cooldown Time: 10%
+			}
+
+			Hanzo
+			{
+				Damage Dealt: 75%
+				Health: 333%
+				Lunge Cooldown Time: 10%
+				Storm Arrows Cooldown Time: 10%
+				Storm Arrows Quantity: 12
+			}
+
+			Kiriko
+			{
+				Damage Dealt: 134%
+				Healing Dealt: 150%
+				Healing Received: 10%
+				Health: 400%
+				Protection Suzu Cooldown Time: 10%
+				Swift Step Cooldown Time: 10%
+				Swift Step Distance Scalar: 300%
+			}
+
+			Lúcio
+			{
+				Amp It Up Cooldown Time: 125%
+				Damage Dealt: 35%
+				Healing Dealt: 167%
+				Healing Received: 25%
+				Health: 126%
+				Movement Speed: 110%
+				Soundwave Cooldown Time: 125%
+				Soundwave Knockback Scalar: 85%
+			}
+
+			Mei
+			{
+				Cryo-Freeze Cooldown Time: 250%
+				Damage Dealt: 35%
+				Healing Received: 200%
+				Health: 222%
+				No Ammunition Requirement: On
+				Quick Melee: Off
+				Spawn With Ultimate Ready: On
+				Weapon Freeze Duration Scalar: 120%
+			}
+
+			Orisa
+			{
+				Damage Dealt: 30%
+				Energy Javelin Cooldown Time: 10%
+				Fortify Cooldown Time: 0%
+				Javelin Spin Cooldown Time: 10%
+			}
+
+			Pharah
+			{
+				Concussive Blast Cooldown Time: 40%
+				Concussive Blast Knockback Scalar: 75%
+				Damage Dealt: 25%
+				Health: 111%
+				Hover Jets Recharge Rate: 300%
+				Hover Jets Vertical Speed Scalar: 81%
+				Jump Jet Acceleration Scalar: 60%
+				Jump Jet Cooldown Time: 100%
+			}
+
+			Reaper
+			{
+				Damage Dealt: 23%
+				Wraith Form Cooldown Time: 10%
+			}
+
+			Reinhardt
+			{
+				Charge Cooldown Time: 10%
+				Damage Dealt: 136%
+				Damage Received: 75%
+				Fire Strike Cooldown Time: 10%
+				Healing Received: 50%
+				Health: 333%
+				Projectile Speed: 150%
+			}
+
+			Roadhog
+			{
+				Chain Hook Cooldown Time: 10%
+				Damage Dealt: 75%
+				Damage Received: 90%
+				Whole Hog Knockback Scalar: 150%
+			}
+
+			Sigma
+			{
+				Accretion Cooldown Time: 10%
+				Accretion Knockback Scalar: 125%
+				Damage Dealt: 47%
+				Health: 111%
+				Kinetic Grasp Cooldown Time: 10%
+			}
+
+			Soldier: 76
+			{
+				Biotic Field Cooldown Time: 10%
+				Damage Dealt: 84%
+				Healing Dealt: 125%
+				Health: 300%
+				Helix Rockets Cooldown Time: 0%
+				Helix Rockets Knockback Scalar: 80%
+				Projectile Speed: 150%
+				Ultimate Duration: 125%
+			}
+
+			Sombra
+			{
+				Damage Dealt: 42%
+				Projectile Gravity: 0%
+				Translocator Cooldown Time: 10%
+				Virus Cooldown Time: 10%
+			}
+
+			Torbjörn
+			{
+				Damage Dealt: 60%
+				Damage Received: 50%
+				Deploy Turret Cooldown Time: 0%
+				Health: 500%
+				Infinite Ultimate Duration: On
+				No Ammunition Requirement: On
+				Overload Cooldown Time: 10%
+				Overload Duration Scalar: 500%
+				Projectile Gravity: 500%
+				Projectile Speed: 250%
+				Spawn With Ultimate Ready: On
+			}
+
+			Tracer
+			{
+				Blink Cooldown Time: 150%
+				Damage Dealt: 51%
+				Health: 150%
+				Projectile Gravity: 500%
+				Projectile Speed: 0%
+			}
+
+			Widowmaker
+			{
+				Damage Dealt: 63%
+				Grappling Hook Cooldown Time: 10%
+				Health: 125%
+				Ultimate Ability Infra-Sight: Off
+				Ultimate Duration: 120%
+				Venom Mine Cooldown Time: 10%
+			}
+
+			Wrecking Ball
+			{
+				Damage Dealt: 89%
+				Health: 250%
+				Infinite Ultimate Duration: On
+				Movement Speed: 50%
+				Projectile Speed: 150%
+				Roll Always Active: On
+			}
+
+			Zarya
+			{
+				Damage Dealt: 18%
+				Health: 93%
+				Particle Barrier Cooldown Time: 10%
+				Projected Barrier Cooldown Time: 10%
+				Projectile Gravity: 40%
+				Ultimate Generation Graviton Surge: 40%
+			}
+
+			enabled heroes
+			{
+				Ashe
+				Doomfist
+				Junkrat
+				Mercy
+				Symmetra
+				Winston
+				Zenyatta
+			}
+		}
+
+		General
+		{
+			disabled heroes
+			{
+				Venture
+			}
+		}
+	}
+
+	workshop
+	{
+		Cool people: [3]
+		Difficulty: [1]
+		Game Length: [1]
+	}
+
+	extensions
+	{
+		Buff Status Effects
+		Projectiles
+		Spawn More Dummy Bots
+	}
+}

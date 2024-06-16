@@ -1,0 +1,27 @@
+settings
+{
+	heroes
+	{
+		General
+		{
+			Baptiste
+			{
+				Projectile Gravity: 500%
+			}
+		}
+	}
+}
+
+settings
+{
+	heroes
+	{
+		General
+		{
+			Kiriko
+			{
+				Projectile Gravity: 500%
+			}
+		}
+	}
+}

@@ -1,0 +1,162 @@
+// Broken
+rule("Team 1 (Spawn): Player Init, Create Effects, Set Is Combatant")
+{
+	event
+	{
+		Ongoing - Each Player;
+		Team 1;
+		All;
+	}
+
+	conditions
+	{
+		Has Spawned(Event Player) == True;
+	}
+
+	actions
+	{
+		"Fail-Safe if player somehow despawned (Like Echo duplicating D.Va)"
+		Abort If(Event Player.is_combatant);
+		Small Message(Event Player, Custom String("*******​ ​***********​ PvE: Talents​ | 3.4.6 ​***​ LemonAid"));
+		"Triage: Players to Players Healing Increase"
+		Start Healing Modification(Filtered Array(Global.combatants, Normalized Health(Current Array Element) <= 0.500), Event Player,
+			100 + 25 * Event Player.ab_triage, Receivers Healers and Healing Percent);
+		Event Player.is_combatant = True;
+		Event Player.spectated_player = Event Player;
+		Event Player.ab_bought_abilities_string = Custom String("");
+		Event Player.health_percent = 100;
+		Event Player.healing_dealt_percent = 100;
+		Set Healing Received(Event Player, 85 + 2.500 * Global.upgrade_count);
+		Call Subroutine(update_combatants);
+		Create Effect(Event Player.downed_start_t ? All Players(All Teams) : Empty Array, Ring, Color(Yellow), Event Player, 3,
+			Visible To);
+		Create Icon(Event Player.downed_start_t ? Remove From Array(All Players(All Teams), Event Player) : Empty Array, Event Player,
+			Skull, Visible To, Color(Yellow), True);
+		"Workaround: Normalized Health sometimes doesn't reevaluate, so force with TTE"
+		Create HUD Text(All Players(Team 1), Custom String("{0}{1}", Hero Icon String(Hero Of(Event Player)),
+			Event Player.downed_start_t && Event Player.revive_timer ? Global.progress_bar_strings[Round To Integer(
+			Event Player.revive_timer / 10, Down)] : Custom String("")), Custom String("{0}{1}{2}", Event Player,
+			Event Player.ab_priority ? Array(Custom String(" (A)"), Custom String(" (B)"), Custom String(" (C)"))
+			[Event Player.ab_priority - 1] : Custom String(""), Event Player.in_buy_menu_start_t ? Custom String(" (In Shop)")
+			: Custom String("")), Custom String("{0}{1}", Event Player.downed_start_t ? (Event Player.revive_timer ? Custom String(
+			"Being Revived") : Custom String("Downed")) : (Event Player.is_changing_heroes ? Custom String("Changing Heroes")
+			: Custom String("{0} HP", Round To Integer(Health(Event Player), Up))), Custom String(", {0}$", Round To Integer(
+			Global.money_mult * Global.money_amount - Event Player.money_spent_amount, Down))), Left,
+			Local Player == Event Player ? -1 : Slot Of(Event Player), Event Player.downed_start_t ? Color(Red) : (
+			Event Player.is_changing_heroes || Normalized Health(Event Player) >= 0.500 ? (Local Player == Event Player ? Color(Green)
+			: Color(Sky Blue)) : Color(Orange)), Event Player.downed_start_t ? Color(Red) : (
+			Event Player.is_changing_heroes || Normalized Health(Event Player) >= 0.500 ? (Local Player == Event Player ? Color(Green)
+			: Color(Sky Blue)) : Color(Orange)), Event Player.downed_start_t ? Color(Red) : (
+			Event Player.is_changing_heroes || Normalized Health(Event Player) >= 0.500 ? (Local Player == Event Player ? Color(Green)
+			: Color(Sky Blue)) : Color(Orange)), Visible To Sort Order String and Color, Default Visibility);
+		"Stats"
+		Event Player.Damage_Received = 100;
+		Event Player.Damage_Dealt = 100;
+		Event Player.Move_Speed = 100;
+		"Ability lists"
+		Create HUD Text(Event Player.is_combatant ? Event Player : Empty Array, Null,
+			Event Player.spectated_player.ab_bought_abilities_string, Null, Left, 10, Null, Color(Green), Null, Visible To and String,
+			Default Visibility);
+		Create HUD Text(Event Player.spectated_player.Talent1 ? Event Player : Empty Array, Custom String(" "),
+			Event Player.spectated_player.talent_text[2], Custom String("{0}\n━━━━", Event Player.spectated_player.talent_text[1]), Left,
+			11, Color(Blue), Color(White), Color(Sky Blue), Visible To and String, Default Visibility);
+		Create HUD Text(Event Player.spectated_player.Talent2 ? Event Player : Empty Array, Custom String(" "),
+			Event Player.spectated_player.talent_text[4], Custom String("{0}\n━━━━", Event Player.spectated_player.talent_text[3]), Left,
+			12, Color(Blue), Color(White), Color(Sky Blue), Visible To and String, Default Visibility);
+		Create HUD Text(Event Player.spectated_player.active_ab_number ? Event Player : Empty Array, Ability Icon String(Array(Hero(Ana),
+			Hero(Sombra), Hero(Soldier: 76), Hero(Reaper), Hero(Cassidy), Hero(Baptiste), Hero(Sigma), Hero(Sombra))
+			[Event Player.spectated_player.active_ab_number - 1], Array(Button(Ultimate), Button(Ability 1), Button(Ability 1), Button(
+			Ability 1), Button(Ability 2), Button(Ability 1), Button(Ultimate), Button(Secondary Fire))
+			[Event Player.spectated_player.active_ab_number - 1]), Custom String("Hold or double tap {0}", Input Binding String(Button(
+			Melee))), Custom String("{0}: {1}", Array(Custom String("Stim Infusion"), Custom String("Cloak"), Custom String("Feint"),
+			Custom String("Frenzy"), Custom String("Smoke Bomb"), Custom String("Resurgence"), Custom String("Tear Gas"), Custom String(
+			"Chain Hack"))[Event Player.spectated_player.active_ab_number - 1],
+			Event Player.spectated_player.active_ab_cooldown ? Round To Integer(Magnitude Of(
+			Event Player.spectated_player.active_ab_cooldown), Up) : Custom String("Ready")), Left, 13,
+			Event Player.spectated_player.active_ab_cooldown < 0 ? Color(Green) : (Has Status(Event Player.spectated_player, Hacked)
+			|| Has Status(Event Player.spectated_player, Stunned) ? Color(Red) : (Event Player.spectated_player.active_ab_cooldown ? Color(
+			Gray) : Color(Green))), Color(Orange), Event Player.spectated_player.active_ab_cooldown < 0 ? Color(Green) : (Has Status(
+			Event Player.spectated_player, Hacked) || Has Status(Event Player.spectated_player, Stunned) ? Color(Red) : (
+			Event Player.spectated_player.active_ab_cooldown ? Color(Gray) : Color(Green))), Visible To String and Color,
+			Default Visibility);
+		Create Effect(Event Player.Smoked_Screen && !Event Player.perk_special_operator ? Event Player : Empty Array, Sphere, Color(White),
+			Event Player, 5, Visible To Position and Radius);
+		Create Effect(Has Status(Event Player, Invincible) ? All Players(All Teams) : Empty Array,
+			Baptiste Immortality Field Protected Effect, Team 2, Event Player, 1, Visible To Position and Radius);
+		If(Global.wave_number);
+			Start Forcing Player Outlines(Filtered Array(All Players(Team 2), Current Array Element.is_living_boss), Event Player, True, Color(
+				Yellow), Always);
+			Event Player.can_use_drop_in_buy_menu = True;
+			"Double not"
+			Wait Until(!!Event Player.in_buy_menu_start_t, 15);
+			Event Player.can_use_drop_in_buy_menu = False;
+			If(Event Player.in_buy_menu_start_t);
+				Event Player.active_ab_is_cloaked = True;
+				Set Status(Event Player, Null, Phased Out, 30);
+				Wait Until(!Event Player.in_buy_menu_start_t, 30);
+				Event Player.active_ab_is_cloaked = False;
+				Clear Status(Event Player, Phased Out);
+			End;
+		Else;
+			Teleport(Event Player, Global.player_spawn_pos);
+			Wait(0.200, Ignore Condition);
+			Set Facing(Event Player, Global.player_spawn_facing, To World);
+	}
+}
+
+// Broken
+rule("Team 2 Soldier (Cloaker): Tactical Visor")
+{
+	event
+	{
+		Ongoing - Each Player;
+		Team 2;
+		Soldier: 76;
+	}
+
+	conditions
+	{
+		Event Player.real_tier == 4;
+		Event Player.is_target_in_los >= 5;
+		Event Player.target.is_flying == False;
+		Distance Between(Event Player, Event Player.target) <= 40;
+	}
+
+	actions
+	{
+		Wait(0.500, Ignore Condition);
+		If(Count Of(Filtered Array(Global.combatants, Current Array Element.downed_start_t)) <= (Global.combatants_count >= 4 ? 1 : 0)
+			&& Random Integer(1, 100) > 50);
+			Set Ultimate Charge(Event Player, 100);
+			Press Button(Event Player, Button(Ultimate));
+			If(Is Using Ultimate(Event Player));
+				Disable Movement Collision With Players(Event Player);
+				Global.temp_1 = Distance Between(Event Player, Event Player.target) <= 10 ? 2 : 1.500;
+				Set Status(Event Player, Null, Rooted, Global.temp_1);
+				Event Player.is_ignoring_other_targets = True;
+				Event Player.ab_var_1 = 1;
+				"Double not"
+				Wait Until(!!(
+					Event Player.target.downed_start_t || !Event Player.target.is_combatant || Event Player.target.active_ab_is_cloaked || !(
+					Event Player.target.is_invisible && Distance Between(Event Player, Event Player.target) > 2.400)
+					|| !Event Player.ab_var_1 || !Is Using Ultimate(Event Player) || Has Status(Event Player, Stunned)
+					|| Event Player.fear_end_t >= Total Time Elapsed), Global.temp_1 + 0.050);
+				Event Player.ab_var_1 = 2;
+				"Double not"
+				Wait Until(!!(
+					Event Player.target.downed_start_t || !Event Player.target.is_combatant || Event Player.target.active_ab_is_cloaked || !(
+					Event Player.target.is_invisible && Distance Between(Event Player, Event Player.target) > 2.400)
+					|| !Event Player.ab_var_1 || !Is Using Ultimate(Event Player) || Has Status(Event Player, Stunned)
+					|| Event Player.fear_end_t >= Total Time Elapsed), 99999);
+				Event Player.is_ignoring_other_targets = False;
+				Event Player.ab_var_1 = False;
+				Enable Movement Collision With Players(Event Player);
+				Wait Until(!Is Using Ultimate(Event Player), 99999);
+				Wait(12, Ignore Condition);
+			End;
+		Else;
+			Wait(4, Ignore Condition);
+		End;
+		Loop If Condition Is True;
+	}
+}
