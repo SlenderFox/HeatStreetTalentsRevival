@@ -1,0 +1,240 @@
+import "playervars.ostw";
+import "subroutines.ostw";
+
+rule: "Team 1 (Ability): Priority C"
+Event.OnHealingDealt
+Team.Team1
+{
+	AbortIf(!ab_priority == 3);
+	AbortIf(Healee() == EventPlayer());
+	AbortIf(!EventHealing());
+	SetPlayerHealth(EventPlayer(), Health(EventPlayer()) + 0.4 * EventHealing());
+}
+
+rule: "Team 1 (Ability): Charged"
+Event.OngoingPlayer
+Team.Team1
+if (ab_charged == true)
+if (UltimateChargePercent(EventPlayer()) < ab_charged * 15)
+{
+	SetUltimateCharge(EventPlayer(), ab_charged * 15);
+	# Workaround: Sets Ultimate Charge to a higher value for duplicating Echo
+	if (IsDuplicating(EventPlayer()))
+	{
+		MinWait();
+		SetUltimateCharge(EventPlayer(), ab_charged * 15);
+	}
+}
+
+rule: "Team 1 (Ability): Haste Primary Fire"
+Event.OngoingPlayer
+Team.Team1
+if (ab_haste == true)
+if (AbilityCooldown(EventPlayer(), Button.PrimaryFire) > 0.1)
+{
+	SetAbilityCooldown(EventPlayer(), Button.PrimaryFire, (1 - 0.25 * ab_haste) * AbilityCooldown(EventPlayer(), Button.PrimaryFire));
+}
+
+rule: "Team 1 (Ability): Haste Secondary Fire"
+Event.OngoingPlayer
+Team.Team1
+if (ab_haste == true)
+if (AbilityCooldown(EventPlayer(), Button.SecondaryFire) > 0.1)
+{
+	SetAbilityCooldown(EventPlayer(), Button.SecondaryFire, (1 - 0.25 * ab_haste) * AbilityCooldown(EventPlayer(), Button.SecondaryFire));
+}
+
+rule: "Team 1 (Ability): Haste Ability 1"
+Event.OngoingPlayer
+Team.Team1
+if (ab_haste == true)
+if (AbilityCooldown(EventPlayer(), Button.Ability1) > 0.1)
+{
+	SetAbilityCooldown(EventPlayer(), Button.Ability1, (1 - 0.25 * ab_haste) * AbilityCooldown(EventPlayer(), Button.Ability1));
+}
+
+rule: "Team 1 (Ability): Haste Ability 2"
+Event.OngoingPlayer
+Team.Team1
+if (ab_haste == true)
+if (AbilityCooldown(EventPlayer(), Button.Ability2) > 0.1)
+{
+	SetAbilityCooldown(EventPlayer(), Button.Ability2, (1 - 0.25 * ab_haste) * AbilityCooldown(EventPlayer(), Button.Ability2));
+}
+
+rule: "Team 1 (Ability): Haste Jump"
+Event.OngoingPlayer
+Team.Team1
+if (ab_haste == true)
+if (AbilityCooldown(EventPlayer(), Button.Jump) > 0.1)
+{
+	SetAbilityCooldown(EventPlayer(), Button.Jump, (1 - 0.25 * ab_haste) * AbilityCooldown(EventPlayer(), Button.Jump));
+}
+
+rule: "Team 1 (Ability): Haste Crouch"
+Event.OngoingPlayer
+Team.Team1
+if (ab_haste == true)
+if (AbilityCooldown(EventPlayer(), Button.Crouch) > 0.1)
+{
+	SetAbilityCooldown(EventPlayer(), Button.Crouch, (1 - 0.25 * ab_haste) * AbilityCooldown(EventPlayer(), Button.Crouch));
+}
+
+rule: "Team 1 (Ability): Headhunter"
+Event.OnDamageDealt
+Team.Team1
+{
+	AbortIf(!ab_headhunter);
+	AbortIf(!EventWasCriticalHit());
+	Damage(Victim(), EventPlayer(), ab_headhunter * 30 / Damage_Dealt * EventDamage());
+}
+
+rule: "Team 1 (Ability): Priority B"
+Event.OngoingPlayer
+Team.Team1
+if (ab_priority == 2)
+if (last_damage_taken_t + 3 < TotalTimeElapsed())
+{
+	Damage_Dealt += 20;
+	Move_Speed += 20;
+	WaitUntil(last_damage_taken_t + 3 >= TotalTimeElapsed() || perk_mystery_swap == TotalTimeElapsed() + 90, 99999);
+	Damage_Dealt -= 20;
+	Move_Speed -= 20;
+}
+
+rule: "Team 1 (Ability): Quick Fix"
+Event.OnElimination
+Team.Team1
+if (ab_quick_fix == true)
+{
+	Heal(EventPlayer(), null, ab_quick_fix * 50);
+	if (!current_quick_fix_speed_bonus)
+	{
+		current_quick_fix_speed_bonus = ab_quick_fix * 15;
+		Move_Speed += current_quick_fix_speed_bonus;
+	}
+	Wait(5, WaitBehavior.RestartWhenTrue);
+	Move_Speed -= current_quick_fix_speed_bonus;
+	current_quick_fix_speed_bonus = false;
+}
+
+rule: "Team 1 (Ability): Second Wind"
+Event.OngoingPlayer
+Team.Team1
+if (ab_second_wind == true)
+if (downed_start_t == true)
+if (downed_start_t + 0.9 < TotalTimeElapsed())
+{
+	SmallMessage(AllPlayers(), <"<0> received a second wind!", EventPlayer()>);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Green, EventPlayer(), 1);
+	SetStatus(EventPlayer(), null, Status.PhasedOut, 3.5);
+	downed_start_t = false;
+	Wait(120 - 30 * ab_second_wind, WaitBehavior.IgnoreCondition);
+}
+
+rule: "Team 1 (Perk): Mystery Swap"
+Event.OngoingPlayer
+Team.Team1
+if (perk_mystery_swap != false)
+if (perk_mystery_swap < TotalTimeElapsed())
+if (downed_start_t == false)
+{
+	Wait(1, WaitBehavior.AbortWhenFalse);
+	AbortIfConditionIsFalse();
+	if (Talent1)
+	{
+		Swapped_Talent_Array[1] = true;
+		Talent1 = false;
+	}
+	if (Talent2)
+	{
+		Swapped_Talent_Array[2] = true;
+		Talent2 = false;
+	}
+	perk_mystery_swap = TotalTimeElapsed() + 90;
+	Wait(0.2, WaitBehavior.IgnoreCondition);
+	ForcePlayerHero(EventPlayer(), RandomValueInArray(RemoveFromArray(AllHeroes(), HeroOf(EventPlayer()))));
+	is_invisible = false;
+	last_damage_taken_t = 0;
+	Wait(0.1, WaitBehavior.IgnoreCondition);
+	if (Swapped_Talent_Array[1])
+	{
+		Swapped_Talent_Array[1] = false;
+		Talent1 = true;
+	}
+	if (Swapped_Talent_Array[2])
+	{
+		Swapped_Talent_Array[2] = false;
+		Talent2 = true;
+	}
+	SetUltimateCharge(EventPlayer(), 100);
+	update_ab_string_and_play_sound();
+}
+
+rule: "Team 1 (Perk): Bulletstorm"
+Event.OngoingPlayer
+Team.Team1
+if (perk_bulletstorm == true)
+if ((Ammo(EventPlayer(), false) < MaxAmmo(EventPlayer(), false) || Ammo(EventPlayer(), 1) < MaxAmmo(EventPlayer(), 1)) == true)
+{
+	SetAmmo(EventPlayer(), false, 1000);
+	SetAmmo(EventPlayer(), 1, 1000);
+}
+
+rule: "Team 1 (Perk): Nemesis"
+Event.OngoingPlayer
+Team.Team1
+if (IsDead(nemesis_killer) == true)
+{
+	Wait(0.2, WaitBehavior.AbortWhenFalse);
+	AbortIf(!downed_start_t);
+	SmallMessage(AllPlayers(), <"<0>'s Nemesis was killed!", EventPlayer()>);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Green, EventPlayer(), 1);
+	downed_start_t = false;
+}
+
+rule: "Team 1 (Perk): Brass Knuckles"
+Event.PlayerDealtKnockback
+Team.Team1
+{
+	AbortIf(!perk_brass_knuckles);
+	AbortIf(EventAbility() != Button.Melee);
+	AbortIf(Victim().iv_is_portal);
+	AbortIf(IsDead(Victim()));
+	Victim().gmut_fortified_bypass_end_t = Max(TotalTimeElapsed() + 1.75, Victim().gmut_fortified_bypass_end_t);
+	SetStatus(Victim(), EventPlayer(), Status.KnockedDown, Victim().is_fortified ? 1.75 : 2.5);
+	AbortIf(!HasStatus(Victim(), Status.Stunned));
+	Wait(0.25, WaitBehavior.RestartWhenTrue);
+	Wait(15, WaitBehavior.IgnoreCondition);
+	SmallMessage(EventPlayer(), "Brass Knuckles Ready");
+}
+
+rule: "Team 1 (Perk): Crash N' Dash"
+Event.OngoingPlayer
+Team.Team1
+if (perk_crash_n_dash == true)
+if (SpeedOf(EventPlayer()) >= 8)
+{
+	Heal(EventPlayer(), null, 10);
+	Wait(0.2, WaitBehavior.IgnoreCondition);
+	LoopIfConditionIsTrue();
+}
+
+rule: "Team 1 (Perk): Vampiric Heal"
+Event.OnDamageDealt
+Team.Team1
+{
+	AbortIf(!perk_vampiric);
+	Heal(EventPlayer(), null, EventDamage() * 0.3);
+}
+
+rule: "Team 1 (Perk): Supercharge"
+Event.OnHealingDealt
+Team.Team1
+{
+	AbortIf(!perk_super_charge);
+	AbortIf(Healee() == EventPlayer());
+	AbortIf(!EventHealing());
+	SetUltimateCharge(Healee(), UltimateChargePercent(Healee()) + 1 + EventHealing() * 0.03);
+	Wait(0.75, WaitBehavior.IgnoreCondition);
+}

@@ -1,0 +1,122 @@
+import "globalvars.ostw";
+import "subroutines.ostw";
+
+rule: "IV Team 2 Slot 0: Create Portal Entities"
+Event.OngoingPlayer
+Team.Team2
+Player.Slot0
+{
+	CreateProgressBarHudText(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers() : [], objective_phase_number == 1 ? 200 * NormalizedHealth(EventPlayer()) : objective_progress, objective_phase_number == 1 ? "Destroy the Portal" : "Portal closing", Location.Top, -97, objective_phase_number == 1 ? special_spawns_count > 0 ? Color.Blue : CustomColor(Max(200, 255 - (TotalTimeElapsed() - ab_var_2) * 165), Max(0, 255 - (TotalTimeElapsed() - ab_var_2) * 765), Max(19, 255 - (TotalTimeElapsed() - ab_var_2) * 708), 255) : Color.Yellow, Color.White, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
+	CreateIcon(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers() : [], iv_dom_objective_pos + 2 * Up(), Icon.ExclamationMark, IconRev.VisibleToAndPosition, Color.Yellow, true);
+	CreateInWorldText(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers() : [], objective_phase_number == 1 ? "Destroy the Portal" : "Portal closing", iv_dom_objective_pos + 1.7 * Up(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndString, Color.Yellow, Spectators.DefaultVisibility);
+	CreateEffect(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers() : [], Effect.Sphere, objective_phase_number == 1 ? Color.Red : Color.Yellow, iv_dom_objective_pos + 1.11 * Up(), 0.85 + (objective_phase_number == 1 ? 0 : 0.3 * SineFromRadians(6 * TotalTimeElapsed())), EffectRev.VisibleToPositionRadiusAndColor);
+	CreateEffect(objective_phase_number == 1 || objective_phase_number == 2 ? AllPlayers() : [], Effect.BadAura, Color.Red, iv_dom_objective_pos + 1.11 * Up(), 1, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(objective_phase_number == 1 && (ab_var_2 >= TotalTimeElapsed() || special_spawns_count > 0) ? AllPlayers() : [], Effect.LightShaft, Color.White, iv_dom_objective_pos - 2 * Up(), 1, EffectRev.VisibleToPositionAndRadius);
+}
+
+rule: "IV Team 2 Torbjörn: Start Portal Mode, Open (Phase 1), Breakpoint End Time (2), Set Health to half to remove armour"
+Event.OngoingPlayer
+Team.Team2
+Player.Torbjorn
+{
+	iv_dom_objective_pos = RandomValueInArray(RemoveFromArray(iv_dom_objective_all_pos_list, iv_dom_objective_pos));
+	StartForcingPlayerPosition(EventPlayer(), iv_dom_objective_pos, false);
+	DisableMovementCollisionWithEnvironment(EventPlayer(), true);
+	SetInvisible(EventPlayer(), InvisibleTo.All);
+	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
+	SetPlayerHealth(EventPlayer(), 0.5 * MaxHealth(EventPlayer()));
+}
+
+rule: "IV Team 2: Force portal to shoot lava"
+Event.OngoingPlayer
+Team.Team2
+Player.Torbjorn
+if (IsUsingUltimate(EventPlayer()) == true)
+{
+	SetFacing(EventPlayer(), DirectionTowards(EyePosition(EventPlayer()), Vector(RandomInteger(-500, 500), RandomInteger(-500, 500), RandomInteger(-500, 500))), Relative.ToWorld);
+	PressButton(EventPlayer(), Button.PrimaryFire);
+	Wait(0.25, WaitBehavior.IgnoreCondition);
+	LoopIfConditionIsTrue();
+}
+
+rule: "IV Team 2 Torbjörn: Health reaches Breakpoint, Is Dead -> Portal Closing (Phase 2)"
+Event.OngoingPlayer
+Team.Team2
+Player.Torbjorn
+if (NormalizedHealth(EventPlayer()) <= 0.333)
+{
+	SetPlayerHealth(EventPlayer(), 0.333 * MaxHealth(EventPlayer()));
+	iv_defend_portal();
+	WaitUntil(NormalizedHealth(EventPlayer()) <= 0.166, 99999);
+	SetPlayerHealth(EventPlayer(), 0.166 * MaxHealth(EventPlayer()));
+	iv_defend_portal();
+	ClearStatus(EventPlayer(), Status.Unkillable);
+	WaitUntil(IsDead(EventPlayer()), 99999);
+	objective_phase_number = 2;
+	iv_defend_portal();
+	upgrade_health_and_healing();
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Red, iv_dom_objective_pos + 1.11 * Up(), 10);
+	PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
+	BigMessage(AllPlayers(), "Portal is closing! Gained bonus health");
+	StopForcingPlayerPosition(EventPlayer());
+	EnableMovementCollisionWithEnvironment(EventPlayer());
+	Wait(0.25, WaitBehavior.IgnoreCondition);
+	Teleport(EventPlayer(), 1000 * Down());
+	SetInvisible(EventPlayer(), InvisibleTo.None);
+}
+
+rule: "IV Team 2 Slot 0: Portal Closing (Phase 2) -> Kill remaining (Phase 3)"
+Event.OngoingPlayer
+Team.Team2
+Player.Slot0
+if (objective_phase_number == 2)
+{
+	for (objective_progress = 100; 25; -1)
+	{
+		Wait(0.096, WaitBehavior.IgnoreCondition);
+	}
+	enable_normal_spawns = true;
+	async! play_incoming_sound_twice();
+	for (objective_progress = 25; 10; -1)
+	{
+		Wait(0.096, WaitBehavior.IgnoreCondition);
+	}
+	enable_objective_enemy_spawn = true;
+	for (objective_progress = 10; 0; -1)
+	{
+		Wait(0.096, WaitBehavior.IgnoreCondition);
+	}
+	start_kill_remaining_phase();
+}
+
+rule: "IV Team 2 Torbjörn: Set Breakpoint Damage Reduction"
+Event.OngoingPlayer
+Team.Team2
+Player.Torbjorn
+if (objective_phase_number == 1)
+if ((ab_var_2 >= TotalTimeElapsed() || special_spawns_count > 0) == true)
+{
+	SetDamageReceived(EventPlayer(), 5);
+	WaitUntil(!(objective_phase_number == 1 && (ab_var_2 >= TotalTimeElapsed() || special_spawns_count > 0)), 99999);
+	SetDamageReceived(EventPlayer(), 50);
+}
+
+rule: "IV Team 1 Moira: Biotic Grasp on Portal Simulation"
+Event.OngoingPlayer
+Team.Team1
+Player.Moira
+if (gamemode == false)
+if (objective_phase_number == 1)
+if (IsFiringSecondary(EventPlayer()) == true)
+{
+	if (DistanceBetween(EyePosition(EventPlayer()), iv_dom_objective_pos + 1.11 * Up()) <= 20 && IsInLineOfSight(EyePosition(EventPlayer()), iv_dom_objective_pos + 1.11 * Up(), BarrierLOS.NoBarriersBlock))
+	{
+		# If Facing ray intersects sphere
+		if (DistanceBetween(iv_dom_objective_pos + 1.11 * Up(), EyePosition(EventPlayer()) + Max(0, DotProduct(FacingDirectionOf(EventPlayer()), VectorTowards(EyePosition(EventPlayer()), iv_dom_objective_pos + 1.11 * Up()))) * FacingDirectionOf(EventPlayer())) <= 0.85)
+		{
+			Damage(PlayersInSlot(0, Team.Team2), EventPlayer(), 9.6);
+		}
+	}
+	Wait(0.192, WaitBehavior.IgnoreCondition);
+	LoopIfConditionIsTrue();
+}

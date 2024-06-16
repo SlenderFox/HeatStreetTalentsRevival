@@ -1,0 +1,1349 @@
+import "globalvars.ostw";
+import "playervars.ostw";
+import "subroutines.ostw";
+
+rule: "[Tutorial] Close HUD"
+Event.OngoingPlayer
+if (Tut_Active == true)
+if (IsButtonHeld(EventPlayer(), Button.Reload) == true)
+if (IsButtonHeld(EventPlayer(), Button.Crouch) == true)
+if (IsAlive(EventPlayer()) == true)
+{
+	Wait(0.25, WaitBehavior.IgnoreCondition);
+	Tut_Active = false;
+	SmallMessage(EventPlayer(), <"press <0> + <1> to toggle hero changes", InputBindingString(Button.Crouch), InputBindingString(Button.Reload)>);
+}
+
+rule: "[Tutorial] Open HUD"
+Event.OngoingPlayer
+if (Tut_Active == false)
+if (IsButtonHeld(EventPlayer(), Button.Reload) == true)
+if (IsButtonHeld(EventPlayer(), Button.Crouch) == true)
+if (IsAlive(EventPlayer()) == true)
+{
+	Wait(0.25, WaitBehavior.IgnoreCondition);
+	Tut_Active = true;
+}
+
+rule: "Team 1: Player Damage Automater (+-)"
+Event.OngoingPlayer
+Team.Team1
+if (Damage_Dealt[true] != Damage_Dealt[false])
+{
+	Damage_Dealt[true] = Damage_Dealt[false];
+	SetDamageDealt(EventPlayer(), Damage_Dealt[true]);
+}
+
+rule: "Team 1: Player HP Automater (+-)"
+Event.OngoingPlayer
+Team.Team1
+if (health_percent[true] != health_percent[false])
+{
+	health_percent[true] = health_percent[false];
+	SetMaxHealth(EventPlayer(), health_percent[true]);
+}
+
+rule: "Team 1: Player Resistance Automater (+-)"
+Event.OngoingPlayer
+Team.Team1
+if (Damage_Received[true] != Damage_Received[false])
+{
+	Damage_Received[true] = Damage_Received[false];
+	SetDamageReceived(EventPlayer(), Damage_Received[true]);
+}
+
+rule: "Team 1: Player Move Speed Automater (+-)"
+Event.OngoingPlayer
+Team.Team1
+if (Move_Speed[true] != Move_Speed[false])
+{
+	Move_Speed[true] = Move_Speed[false];
+	SetMoveSpeed(EventPlayer(), Move_Speed[true]);
+}
+
+rule: "Team 1: Player Healing Automater (+-)"
+Event.OngoingPlayer
+Team.Team1
+if (healing_dealt_percent[true] != healing_dealt_percent[false])
+{
+	healing_dealt_percent[true] = healing_dealt_percent[false];
+	SetHealingDealt(EventPlayer(), healing_dealt_percent[true]);
+}
+
+rule: "Team 1: Protect from One-shots if health is over 50%"
+Event.OngoingPlayer
+Team.Team1
+if (NormalizedHealth(EventPlayer()) >= 0.5)
+{
+	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
+	WaitUntil(NormalizedHealth(EventPlayer()) < 0.5, 99999);
+	Wait(0.4, WaitBehavior.RestartWhenTrue);
+	LoopIfConditionIsTrue();
+	ClearStatus(EventPlayer(), Status.Unkillable);
+}
+
+rule: "Team 1 Button: Interact, Open / Leave Buy Menu"
+Event.OngoingPlayer
+Team.Team1
+if (IsButtonHeld(EventPlayer(), Button.Interact) == true)
+{
+	if (in_buy_menu_start_t)
+	{
+		leave_buy_menu();
+	}
+	else if (DistanceBetween(EventPlayer(), ability_shop_pos) <= 2)
+	{
+		open_buy_menu();
+	}
+	else if (can_use_drop_in_buy_menu || MatchTime())
+	{
+		Wait(0.4, WaitBehavior.AbortWhenFalse);
+		open_buy_menu();
+	}
+	Wait(0.05, WaitBehavior.IgnoreCondition);
+}
+
+rule: "Team 1: Leave Buy Menu when downed, health low, stunned or tased"
+Event.OngoingPlayer
+Team.Team1
+if (in_buy_menu_start_t == true)
+if ((downed_start_t || NormalizedHealth(EventPlayer()) < 0.5 || HasStatus(EventPlayer(), Status.Stunned) || tased_end_t >= TotalTimeElapsed()) == true)
+{
+	leave_buy_menu();
+	AbortIf(NormalizedHealth(EventPlayer()) > 0.4);
+	SetPlayerHealth(EventPlayer(), 0.4 * MaxHealth(EventPlayer()));
+}
+
+rule: "Team 1: Toggle Show active Ability"
+Event.OngoingPlayer
+Team.Team1
+if (in_buy_menu_start_t == true)
+if (IsButtonHeld(EventPlayer(), Button.Melee) == true)
+{
+	AbortIf(in_buy_menu_start_t + 0.1 >= TotalTimeElapsed());
+	is_showing_active_abilities = !is_showing_active_abilities;
+}
+
+rule: "Team 1: Buy Ability"
+Event.OngoingPlayer
+Team.Team1
+if (in_buy_menu_start_t == true)
+if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
+{
+	AbortIf(in_buy_menu_start_t + 0.1 >= TotalTimeElapsed() || AbsoluteValue(HorizontalFacingAngleOf(EventPlayer())) >= 135 || AbsoluteValue(VerticalFacingAngleOf(EventPlayer()) + 11.25) >= 45 || tased_end_t >= TotalTimeElapsed());
+	# Grid coordinates of selected panel
+	temp_1 = [RoundToInteger((HorizontalFacingAngleOf(EventPlayer()) + 135) / 45, Rounding.Down), RoundToInteger((VerticalFacingAngleOf(EventPlayer()) + 56.25) / 22.5, Rounding.Down)];
+	if (temp_1[1] == 0)
+	{
+		if (temp_1[0] <= 1)
+		{
+			leave_buy_menu();
+		}
+		else if (temp_1[0] <= 3)
+		{
+			is_showing_active_abilities = !is_showing_active_abilities;
+		}
+		else
+		{
+			if (money_spent_amount)
+			{
+				remove_active_ability();
+				money_spent_amount = false;
+				ab_headhunter = false;
+				ab_quick_fix = false;
+				ab_charged = false;
+				ab_heavy_impact = false;
+				ab_second_wind = false;
+				ab_triage = false;
+				if (ab_resilience)
+				{
+					ab_resilience = false;
+					Damage_Received += 20;
+				}
+				SetKnockbackDealt(EventPlayer(), 100);
+				SetKnockbackReceived(EventPlayer(), 100);
+				ab_antigens = false;
+				StopHealingModification(heal_mod[1]);
+				StopHealOverTime(heal_mod[2]);
+				StopDamageModification(damage_mod[11]);
+				StopDamageModification(damage_mod[12]);
+				ab_haste = false;
+				ab_priority = false;
+				health_percent -= ab_health_bonus;
+				ab_health_bonus = false;
+				Damage_Dealt -= ab_damage_bonus;
+				ab_damage_bonus = false;
+				healing_dealt_percent -= ab_healing_bonus;
+				ab_healing_bonus = false;
+				perk_bulletstorm = false;
+				perk_die_hard = false;
+				perk_brass_knuckles = false;
+				perk_vampiric = false;
+				perk_crash_n_dash = false;
+				perk_golden_hour = false;
+				perk_super_charge = false;
+				if (perk_nemesis)
+				{
+					DestroyEffect(nemesis_beam_effect);
+					perk_nemesis = false;
+				}
+				if (perk_special_operator)
+				{
+					RemoveHealthPoolFromPlayer(HP_Pool[2]);
+					perk_special_operator = false;
+				}
+				perk_sharpshooter = false;
+				StopDamageModification(damage_mod[10]);
+				Talent1 = false;
+				Talent2 = false;
+				if (perk_mystery_swap)
+				{
+					health_percent -= 20;
+					Damage_Dealt -= 20;
+					healing_dealt_percent -= 20;
+					StopForcingHero(EventPlayer());
+					perk_mystery_swap = false;
+				}
+				if (perk_shockproof)
+				{
+					EnableMovementCollisionWithPlayers(EventPlayer());
+					Move_Speed -= 15;
+					MinWait();
+					perk_shockproof = false;
+				}
+				SmallMessage(EventPlayer(), "Money Refunded");
+				update_ab_string_and_play_sound();
+				Abort();
+			}
+		}
+	}
+	else
+	{
+		if (temp_1[0] == 0)
+		{
+			if (temp_1[1] >= 2)
+			{
+				temp_2 = current_perks[temp_1[1] >= 3];
+				if (temp_2 == 0)
+				{
+					if (!perk_mystery_swap)
+					{
+						temp_2 = 500;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							health_percent += 20;
+							Damage_Dealt += 20;
+							healing_dealt_percent += 20;
+							perk_mystery_swap = TotalTimeElapsed() + 90;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_2 == 1)
+				{
+					if (!perk_bulletstorm)
+					{
+						temp_2 = 1000;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							perk_bulletstorm = true;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_2 == 2)
+				{
+					if (!perk_die_hard)
+					{
+						temp_2 = 700;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							perk_die_hard = true;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_2 == 3)
+				{
+					if (!perk_brass_knuckles)
+					{
+						temp_2 = 700;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							perk_brass_knuckles = true;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_2 == 4)
+				{
+					if (!perk_vampiric)
+					{
+						temp_2 = 1000;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							perk_vampiric = true;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_2 == 5)
+				{
+					if (!perk_crash_n_dash)
+					{
+						temp_2 = 700;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							perk_crash_n_dash = true;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_2 == 6)
+				{
+					if (!perk_golden_hour)
+					{
+						temp_2 = 1000;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							perk_golden_hour = true;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_2 == 7)
+				{
+					if (!perk_super_charge)
+					{
+						temp_2 = 700;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							perk_super_charge = true;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_2 == 8)
+				{
+					if (!perk_nemesis)
+					{
+						temp_2 = 800;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							perk_nemesis = true;
+							CreateBeamEffect(nemesis_killer ? AllPlayers() : [], BeamType.BadBeam, PositionOf(EventPlayer()), nemesis_killer, Color.Black, EffectRev.VisibleToPositionAndRadius);
+							nemesis_beam_effect = LastCreatedEntity();
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_2 == 9)
+				{
+					if (!perk_special_operator)
+					{
+						temp_2 = 600;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							AddHealthPoolToPlayer(EventPlayer(), HealthType.Armor, 50, true, true);
+							HP_Pool[2] = LastCreatedHealthPool();
+							perk_special_operator = true;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_2 == 10)
+				{
+					if (!perk_sharpshooter)
+					{
+						temp_2 = 900;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							perk_sharpshooter = true;
+							StartDamageModification(FilteredArray(AllPlayers(Team.Team2), DistanceBetween(EventPlayer(), ArrayElement()) > 20), EventPlayer(), 150, DamageModificationRev.ReceiversDamagersAndDamagePercent);
+							damage_mod[10] = LastDamageModificationID();
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_2 == 11)
+				{
+					if (!perk_shockproof)
+					{
+						temp_2 = 700;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							DisableMovementCollisionWithPlayers(EventPlayer());
+							Move_Speed += 15;
+							perk_shockproof = true;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_2 == 12)
+				{
+					if (!Talent1)
+					{
+						temp_2 = 1600;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							Talent1 = true;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_2 == 13)
+				{
+					if (!Talent2)
+					{
+						temp_2 = 1600;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							Talent2 = true;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+			}
+		}
+		else if (temp_1[0] == 1)
+		{
+			if (is_showing_active_abilities)
+			{
+				if (temp_1[1] == 1)
+				{
+					temp_1 = 4;
+					buy_active_ability();
+				}
+				else if (temp_1[1] == 2)
+				{
+					temp_1 = 8;
+					buy_active_ability();
+				}
+			}
+			else
+			{
+				temp_2 = 500;
+				check_if_enough_money();
+				if (temp_2)
+				{
+					if (temp_1[1] == 1)
+					{
+						ab_health_bonus += 5;
+						health_percent += 5;
+					}
+					else if (temp_1[1] == 2)
+					{
+						ab_damage_bonus += 5;
+						Damage_Dealt += 5;
+						SetDamageDealt(EventPlayer(), Damage_Dealt[0]);
+					}
+					else
+					{
+						ab_healing_bonus += 5;
+						healing_dealt_percent += 5;
+					}
+					update_ab_string_and_play_sound();
+				}
+			}
+		}
+		else if (temp_1[0] == 2)
+		{
+			if (is_showing_active_abilities)
+			{
+				if (temp_1[1] == 1)
+				{
+					temp_1 = 3;
+					buy_active_ability();
+				}
+				else if (temp_1[1] == 2)
+				{
+					temp_1 = 7;
+					buy_active_ability();
+				}
+			}
+			else
+			{
+				if (temp_1[1] == 1)
+				{
+					if (ab_second_wind < 2)
+					{
+						temp_2 = 1000;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							ab_second_wind = ab_second_wind ? 2 : 1;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_1[1] == 2)
+				{
+					if (ab_triage < 2)
+					{
+						temp_2 = 700;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							ab_triage = ab_triage ? 2 : 1;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else
+				{
+					if (ab_resilience < 2)
+					{
+						temp_2 = 800;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							ab_resilience = ab_resilience ? 2 : 1;
+							Damage_Received -= 20;
+							SetKnockbackDealt(EventPlayer(), 100 + 30 * ab_resilience);
+							SetKnockbackReceived(EventPlayer(), 100 - 30 * ab_resilience);
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+			}
+		}
+		else if (temp_1[0] == 3)
+		{
+			if (is_showing_active_abilities)
+			{
+				if (temp_1[1] == 1)
+				{
+					temp_1 = 2;
+					buy_active_ability();
+				}
+				else if (temp_1[1] == 2)
+				{
+					temp_1 = 6;
+					buy_active_ability();
+				}
+			}
+			else
+			{
+				if (temp_1[1] == 1)
+				{
+					if (ab_charged < 2)
+					{
+						temp_2 = 700;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							ab_charged = ab_charged ? 2 : 1;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_1[1] == 2)
+				{
+					if (ab_haste < 2)
+					{
+						temp_2 = 800;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							ab_haste = ab_haste ? 2 : 1;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else
+				{
+					if (ab_heavy_impact < 2)
+					{
+						temp_2 = 1000;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							ab_heavy_impact = ab_heavy_impact ? 2 : 1;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+			}
+		}
+		else if (temp_1[0] == 4)
+		{
+			if (is_showing_active_abilities)
+			{
+				if (temp_1[1] == 1)
+				{
+					temp_1 = 1;
+					buy_active_ability();
+				}
+				else if (temp_1[1] == 2)
+				{
+					temp_1 = 5;
+					buy_active_ability();
+				}
+			}
+			else
+			{
+				if (temp_1[1] == 1)
+				{
+					if (ab_headhunter < 2)
+					{
+						temp_2 = 800;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							ab_headhunter = ab_headhunter ? 2 : 1;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else if (temp_1[1] == 2)
+				{
+					if (ab_antigens < 2)
+					{
+						temp_2 = 600;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							StopHealingModification(heal_mod[1]);
+							StopHealOverTime(heal_mod[2]);
+							ab_antigens = ab_antigens ? 2 : 1;
+							StartHealingModification(EventPlayer(), AllPlayers(), 100 + 20 * ab_antigens, HealingModificationRev.ReceiversDamagersAndDamagePercent);
+							heal_mod[1] = LastHealingModificationID();
+							StartHealOverTime(EventPlayer(), null, 9999, MaxHealth(EventPlayer()) * 0.01 * ab_antigens);
+							heal_mod[2] = LastHealOverTime();
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+				else
+				{
+					if (ab_quick_fix < 2)
+					{
+						temp_2 = 700;
+						check_if_enough_money();
+						if (temp_2)
+						{
+							ab_quick_fix = ab_quick_fix ? 2 : 1;
+							update_ab_string_and_play_sound();
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			if (!ab_priority)
+			{
+				temp_2 = 1200;
+				check_if_enough_money();
+				if (!temp_2)
+				{
+					Wait(0.1, WaitBehavior.IgnoreCondition);
+					Abort();
+				}
+			}
+			else if (temp_1[1] == ab_priority)
+			{
+				Wait(0.1, WaitBehavior.IgnoreCondition);
+				Abort();
+			}
+			else
+			{
+				SmallMessage(EventPlayer(), "Swapped Priority");
+			}
+			ab_priority = temp_1[1];
+			update_ab_string_and_play_sound();
+		}
+	}
+	Wait(0.1, WaitBehavior.IgnoreCondition);
+}
+
+rule: "Team 1 (Spawn): Player Init, Create Effects, Set Is Combatant"
+Event.OngoingPlayer
+Team.Team1
+if (HasSpawned(EventPlayer()) == true)
+{
+	# Fail-Safe if player somehow despawned (Like Echo duplicating D.Va)
+	AbortIf(is_combatant);
+	SmallMessage(EventPlayer(), "*******​ ​***********​ PvE: Talents​ | 3.4.6 ​***​ LemonAid");
+	# Triage: Players to Players Healing Increase
+	StartHealingModification(FilteredArray(combatants, NormalizedHealth(ArrayElement()) <= 0.5), EventPlayer(), 100 + 25 * ab_triage, HealingModificationRev.ReceiversDamagersAndDamagePercent);
+	is_combatant = true;
+	spectated_player = EventPlayer();
+	ab_bought_abilities_string = "";
+	health_percent = 100;
+	healing_dealt_percent = 100;
+	SetHealingReceived(EventPlayer(), 85 + 2.5 * upgrade_count);
+	update_combatants();
+	CreateEffect(downed_start_t ? AllPlayers() : [], Effect.Ring, Color.Yellow, EventPlayer(), 3, EffectRev.VisibleTo);
+	CreateIcon(downed_start_t ? RemoveFromArray(AllPlayers(), EventPlayer()) : [], EventPlayer(), Icon.Skull, IconRev.VisibleTo, Color.Yellow, true);
+	# Workaround: Normalized Health sometimes doesn't reevaluate, so force with TTE
+	CreateHudText(AllPlayers(Team.Team1), <"<0><1>", HeroIconString(HeroOf(EventPlayer())), downed_start_t && revive_timer ? progress_bar_strings[RoundToInteger(revive_timer / 10, Rounding.Down)] : "">, <"<0><1><2>", EventPlayer(), ab_priority ? ["(A)", "(B)", "(C)"][ab_priority - 1] : "", in_buy_menu_start_t ? "(In Shop)" : "">, <"<0><1>", downed_start_t ? revive_timer ? "Being Revived" : "Downed" : is_changing_heroes ? "Changing Heroes" : <"<0> HP", RoundToInteger(Health(EventPlayer()), Rounding.Up)>, <", <0>$", RoundToInteger(money_mult * money_amount - money_spent_amount, Rounding.Down)>>, Location.Left, LocalPlayer() == EventPlayer() ? -1 : SlotOf(EventPlayer()), downed_start_t ? Color.Red : is_changing_heroes || NormalizedHealth(EventPlayer()) >= 0.5 ? LocalPlayer() == EventPlayer() ? Color.Green : Color.SkyBlue : Color.Orange, downed_start_t ? Color.Red : is_changing_heroes || NormalizedHealth(EventPlayer()) >= 0.5 ? LocalPlayer() == EventPlayer() ? Color.Green : Color.SkyBlue : Color.Orange, downed_start_t ? Color.Red : is_changing_heroes || NormalizedHealth(EventPlayer()) >= 0.5 ? LocalPlayer() == EventPlayer() ? Color.Green : Color.SkyBlue : Color.Orange, HudTextRev.VisibleToSortOrderStringAndColor, Spectators.DefaultVisibility);
+	# Stats
+	Damage_Received = 100;
+	Damage_Dealt = 100;
+	Move_Speed = 100;
+	# Ability lists
+	CreateHudText(is_combatant ? EventPlayer() : [], null, spectated_player.ab_bought_abilities_string, null, Location.Left, 10, null, Color.Green, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
+	CreateHudText(spectated_player.Talent1 ? EventPlayer() : [], "", spectated_player.talent_text[2], <"<0>\n━━━━", spectated_player.talent_text[1]>, Location.Left, 11, Color.Blue, Color.White, Color.SkyBlue, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
+	CreateHudText(spectated_player.Talent2 ? EventPlayer() : [], "", spectated_player.talent_text[4], <"<0>\n━━━━", spectated_player.talent_text[3]>, Location.Left, 12, Color.Blue, Color.White, Color.SkyBlue, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
+	CreateHudText(spectated_player.active_ab_number ? EventPlayer() : [], AbilityIconString([Hero.Ana, Hero.Sombra, Hero.Soldier76, Hero.Reaper, Hero.Cassidy, Hero.Baptiste, Hero.Sigma, Hero.Sombra][spectated_player.active_ab_number - 1], [Button.Ultimate, Button.Ability1, Button.Ability1, Button.Ability1, Button.Ability2, Button.Ability1, Button.Ultimate, Button.SecondaryFire][spectated_player.active_ab_number - 1]), <"Hold or double tap <0>", InputBindingString(Button.Melee)>, <"<0>: <1>", ["Stim Infusion", "Cloak", "Feint", "Frenzy", "Smoke Bomb", "Resurgence", "Tear Gas", "Chain Hack"][spectated_player.active_ab_number - 1], spectated_player.active_ab_cooldown ? RoundToInteger(spectated_player.active_ab_cooldown, Rounding.Up) : "Ready">, Location.Left, 13, spectated_player.active_ab_cooldown < 0 ? Color.Green : HasStatus(spectated_player, Status.Hacked) || HasStatus(spectated_player, Status.Stunned) ? Color.Red : spectated_player.active_ab_cooldown ? Color.Gray : Color.Green, Color.Orange, spectated_player.active_ab_cooldown < 0 ? Color.Green : HasStatus(spectated_player, Status.Hacked) || HasStatus(spectated_player, Status.Stunned) ? Color.Red : spectated_player.active_ab_cooldown ? Color.Gray : Color.Green, HudTextRev.VisibleToStringAndColor, Spectators.DefaultVisibility);
+	CreateEffect(Smoked_Screen && !perk_special_operator ? EventPlayer() : [], Effect.Sphere, Color.White, EventPlayer(), 5, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(HasStatus(EventPlayer(), Status.Invincible) ? AllPlayers() : [], Effect.BaptisteImmortalityFieldProtectedEffect, Team.Team2, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
+	if (wave_number > 0)
+	{
+		StartForcingPlayerOutlines(FilteredArray(AllPlayers(Team.Team2), ArrayElement().is_living_boss), EventPlayer(), true, Color.Yellow, OutlineType.Always);
+		can_use_drop_in_buy_menu = true;
+		WaitUntil(in_buy_menu_start_t, 15);
+		can_use_drop_in_buy_menu = false;
+		if (in_buy_menu_start_t)
+		{
+			active_ab_is_cloaked = true;
+			SetStatus(EventPlayer(), null, Status.PhasedOut, 30);
+			WaitUntil(!in_buy_menu_start_t, 30);
+			active_ab_is_cloaked = false;
+			ClearStatus(EventPlayer(), Status.PhasedOut);
+		}
+	}
+	else
+	{
+		Teleport(EventPlayer(), player_spawn_pos);
+		Wait(0.2, WaitBehavior.IgnoreCondition);
+		SetFacing(EventPlayer(), player_spawn_facing, Relative.ToWorld);
+	}
+}
+
+rule: "Team 1: Add Health Pool"
+Event.OngoingPlayer
+Team.Team1
+if (is_combatant == true)
+if (upgrade_count > 0)
+{
+	AddHealthPoolToPlayer(EventPlayer(), HealthType.Health, health_percent * 0.25 * upgrade_count, true, true);
+}
+
+rule: "Team 1 Button: Hold Reload, Change Hero, Set Last Position (1), Last Eye Position (2), Last Facing (3)"
+Event.OngoingPlayer
+Team.Team1
+if (IsButtonHeld(EventPlayer(), Button.Reload) == true)
+{
+	Wait(0.4, WaitBehavior.AbortWhenFalse);
+	AbortIf(objective_phase_number > 0 || downed_start_t || in_buy_menu_start_t);
+	if (perk_mystery_swap)
+	{
+		SmallMessage(EventPlayer(), "Mystery Swap prevents you from changing heroes");
+		Abort();
+	}
+	is_changing_heroes = true;
+	ab_var_1 = PositionOf(EventPlayer());
+	ab_var_2 = EyePosition(EventPlayer());
+	ab_var_3 = FacingDirectionOf(EventPlayer());
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Yellow, ab_var_1, 1);
+	StartCamera(EventPlayer(), RayCastHitPosition(ab_var_2, ab_var_2 - 8.25 * DirectionFromAngles(HorizontalAngleFromDirection(ab_var_3), 20), null, null, false) + 0.25 * DirectionFromAngles(HorizontalAngleFromDirection(ab_var_3), 20), ab_var_2, 0);
+	ClearStatus(EventPlayer(), Status.Unkillable);
+	Kill(EventPlayer(), null);
+	# Lower values might cause the player to fall through the map when respawning
+	Teleport(EventPlayer(), 100 * Down());
+	Wait(0.1, WaitBehavior.IgnoreCondition);
+	is_invisible = 2;
+	WaitUntil(IsAlive(EventPlayer()), 99999);
+	StopCamera(EventPlayer());
+	Teleport(EventPlayer(), ab_var_1);
+	SetFacing(EventPlayer(), ab_var_3, Relative.ToWorld);
+	is_changing_heroes = false;
+	is_invisible = false;
+	Wait(0.5, WaitBehavior.IgnoreCondition);
+	update_ab_string_and_play_sound();
+}
+
+rule: "Team 1: Took Damage, Set Last Damage Taken"
+Event.OnDamageTaken
+Team.Team1
+{
+	last_damage_taken_t = TotalTimeElapsed();
+}
+
+rule: "Team 1 (Death): Start Camera, Play Sounds, Set is Downed, Revive Timer, Knocked down, Phased out, Death Cam Target"
+Event.OnDeath
+Team.Team1
+if (is_changing_heroes == false)
+{
+	if (!downed_start_t)
+	{
+		DisableMessages(EventPlayer());
+		SmallMessage(AllPlayers(), <"<0> was downed!", EventPlayer()>);
+		death_cam_target = EyePosition(EventPlayer()) + 1000 * DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()), 0);
+		StartCamera(EventPlayer(), RayCastHitPosition(EyePosition(spectated_player), EyePosition(spectated_player) - (death_cam_target ? 6.25 * DirectionTowards(EyePosition(spectated_player), death_cam_target) : 8.25 * DirectionFromAngles(HorizontalFacingAngleOf(spectated_player), 20)), null, null, false) + 0.25 * (death_cam_target ? DirectionTowards(EyePosition(spectated_player), death_cam_target) : DirectionFromAngles(HorizontalFacingAngleOf(spectated_player), 20)), EyePosition(spectated_player), death_cam_target ? 10 : 20);
+		for (temp_1 = 0; combatants_count; 1)
+		{
+			PlayEffect(combatants[temp_1], PlayEffect.RingExplosionSound, Color.White, combatants[temp_1], 200);
+			PlayEffect(combatants[temp_1], PlayEffect.RingExplosionSound, Color.White, combatants[temp_1], 200);
+		}
+		downed_start_t = TotalTimeElapsed();
+		revive_timer = false;
+		if (perk_nemesis && Attacker().is_alive && TeamOf(Attacker()) == Team.Team2 && !Attacker().iv_is_portal && SlotOf(Attacker()) != 1)
+		{
+			nemesis_killer = Attacker();
+		}
+		else
+		{
+			nemesis_killer = null;
+		}
+		disable_player();
+	}
+	if (EventWasEnvironment())
+	{
+		temp_1 = NearestWalkablePosition(EventPlayer());
+		nwp_teleport();
+	}
+	Resurrect(EventPlayer());
+	ClearStatus(EventPlayer(), Status.PhasedOut);
+	SetStatus(EventPlayer(), null, Status.Invincible, 9999);
+	// SetStatus(EventPlayer(), null, Status.KnockedDown, 9999);
+	Wait(0.05, WaitBehavior.RestartWhenTrue);
+	SetPlayerHealth(EventPlayer(), 1);
+	SetStatus(EventPlayer(), null, Status.PhasedOut, 9999);
+	if (Attacker() != EventPlayer())
+	{
+		death_cam_target = Attacker();
+		Wait(5, WaitBehavior.RestartWhenTrue);
+	}
+	death_cam_target = null;
+}
+
+rule: "Team 1: Player downed fallback"
+Event.OngoingPlayer
+Team.Team1
+if (downed_start_t == true)
+if (HasStatus(EventPlayer(), Status.Stunned) == false)
+{
+	Wait(0.25, WaitBehavior.AbortWhenFalse);
+	AbortIfConditionIsFalse();
+	StartScalingPlayer(EventPlayer(), 0.5, false);
+	disable_player();
+	while (downed_start_t && !HasStatus(EventPlayer(), Status.Hacked))
+	{
+		ClearStatus(EventPlayer(), Status.PhasedOut);
+		CancelPrimaryAction(EventPlayer());
+		SetStatus(EventPlayer(), null, Status.Hacked, 9999);
+		Wait(0.25, WaitBehavior.IgnoreCondition);
+	}
+	if (downed_start_t)
+	{
+		SetStatus(EventPlayer(), null, Status.PhasedOut, 9999);
+	}
+	LoopIfConditionIsTrue();
+}
+
+rule: "Team 1: Select Next Spectated Player"
+Event.OngoingPlayer
+Team.Team1
+if (downed_start_t == true)
+if (IsButtonHeld(EventPlayer(), Button.Jump) == true)
+{
+	AbortIf(downed_start_t + 0.5 >= TotalTimeElapsed());
+	death_cam_target = null;
+	if (nemesis_killer)
+	{
+		if (spectated_player == EventPlayer())
+		{
+			spectated_player = nemesis_killer;
+		}
+		else
+		{
+			spectated_player = EventPlayer();
+		}
+	}
+	else
+	{
+		spectated_player = combatants[(IndexOfArrayValue(combatants, spectated_player) + 1) % combatants_count];
+	}
+	Wait(0.25, WaitBehavior.IgnoreCondition);
+}
+
+rule: "Team 1: Spectated Player does not exist anymore"
+Event.OngoingPlayer
+Team.Team1
+if (EntityExists(spectated_player) == false)
+{
+	spectated_player = EventPlayer();
+}
+
+rule: "Team 1: Revive, Check Player in Radius, Unset Is Downed"
+Event.OngoingPlayer
+Team.Team1
+if (downed_start_t == true)
+if (downed_start_t + 1 < TotalTimeElapsed())
+{
+	revivers = FilteredArray(combatants, !ArrayElement().downed_start_t && !(ArrayElement().is_invisible % 3) && DistanceBetween(EventPlayer(), Vector(XOf(PositionOf(ArrayElement())), YOf(PositionOf(EventPlayer())), ZOf(PositionOf(ArrayElement())))) <= 3 && AbsoluteValue(YOf(PositionOf(EventPlayer())) - YOf(PositionOf(ArrayElement()))) <= 3 && (HeroOf(ArrayElement()) == Hero.Mei && IsUsingAbility1(ArrayElement()) || IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock)));
+	if (CountOf(revivers))
+	{
+		is_revive_slow = IsTrueForAll(revivers, ArrayElement().active_ab_is_cloaked || HasStatus(ArrayElement(), Status.Invincible) || HasStatus(ArrayElement(), Status.PhasedOut));
+		revive_timer += (is_hard_mode_enabled || is_apocalyptic ? 0.667 : 1) * (perk_golden_hour ? 2 : 1) * (is_revive_slow ? 2.5 : 5);
+		if (revive_timer >= 100)
+		{
+			SmallMessage(AllPlayers(), <"<0> has been revived!", EventPlayer()>);
+			downed_start_t = false;
+		}
+	}
+	else
+	{
+		revive_timer = false;
+	}
+	Wait(0.2, WaitBehavior.IgnoreCondition);
+	LoopIfConditionIsTrue();
+}
+
+rule: "Team 1: Teleport if Player died on Jumppad"
+Event.OngoingPlayer
+Team.Team1
+if (downed_start_t == true)
+if (downed_start_t + 5 < TotalTimeElapsed())
+if (is_flying == true)
+{
+	temp_1 = NearestWalkablePosition(PositionOf(EventPlayer()) + 5 * DirectionFromAngles(RandomInteger(-179, 180), false));
+	nwp_teleport();
+}
+
+rule: "Team 1: Player gets up"
+Event.OngoingPlayer
+Team.Team1
+if (downed_start_t == false)
+{
+	AbortIf(!is_combatant);
+	EnableMessages(EventPlayer());
+	StopCamera(EventPlayer());
+	enable_player();
+	PlayEffect(AllPlayers(), PlayEffect.BuffImpactSound, Color.White, EventPlayer(), 200);
+	SetPlayerHealth(EventPlayer(), 100000);
+	spectated_player = EventPlayer();
+	revivers = [];
+	nemesis_killer = null;
+	ClearStatus(EventPlayer(), Status.Hacked);
+	ClearStatus(EventPlayer(), Status.Invincible);
+	enable_player();
+	StopScalingPlayer(EventPlayer());
+	Wait(2, WaitBehavior.AbortWhenFalse);
+	AbortIfConditionIsFalse();
+	ClearStatus(EventPlayer(), Status.PhasedOut);
+}
+
+rule: "Team 1: Heal after few sec"
+Event.OngoingPlayer
+Team.Team1
+if (last_damage_taken_t + (perk_die_hard ? 0.5 : 1) * (mut_deep_wounds ? 5 : 2.5) < TotalTimeElapsed())
+if (NormalizedHealth(EventPlayer()) != 1)
+if (Health(EventPlayer()) != false)
+{
+	Heal(EventPlayer(), null, MaxHealth(EventPlayer()) * 0.333);
+	PlayEffect(EventPlayer(), PlayEffect.BuffExplosionSound, Color.White, EventPlayer(), 50);
+	while (true)
+	{
+		Wait(0.2, WaitBehavior.AbortWhenFalse);
+		AbortIfConditionIsFalse();
+		Heal(EventPlayer(), null, 40);
+	}
+}
+
+rule: "Team 1: Set / Unset Is Flying"
+Event.OngoingPlayer
+Team.Team1
+if (IsOnGround(EventPlayer()) == false)
+{
+	Wait(1.5, WaitBehavior.AbortWhenFalse);
+	is_flying = true;
+	WaitUntil(IsOnGround(EventPlayer()), 99999);
+	is_flying = false;
+}
+
+rule: "Team 1: Calculate Eye Offset"
+Event.OngoingPlayer
+Team.Team1
+if (is_combatant == true)
+{
+	if (HeroOf(EventPlayer()) == Hero.Mei && IsUsingAbility1(EventPlayer()))
+	{
+		eye_offset = 1.2 * Up();
+	}
+	else if (HasStatus(EventPlayer(), Status.KnockedDown) || HasStatus(EventPlayer(), Status.Asleep) || IsCommunicatingAnyEmote(EventPlayer()))
+	{
+		eye_offset = PositionOf(EventPlayer()) + 0.25 * Up() - EyePosition(EventPlayer());
+	}
+	else
+	{
+		eye_offset = aim_offset;
+	}
+	if (active_ab_is_smoked)
+	{
+		active_ab_is_smoked = false;
+		eye_offset += RandomReal(0.5, 2) * DirectionFromAngles(RandomInteger(-179, 180), RandomInteger(0, 45));
+	}
+	Wait(1, WaitBehavior.IgnoreCondition);
+	LoopIfConditionIsTrue();
+}
+
+rule: "Team 1 Button: Hold or double tap Melee, Use active Ability"
+Event.OngoingPlayer
+Team.Team1
+if (IsButtonHeld(EventPlayer(), Button.Melee) == true)
+{
+	WaitUntil(!IsButtonHeld(EventPlayer(), Button.Melee), 0.4);
+	if (!IsButtonHeld(EventPlayer(), Button.Melee))
+	{
+		WaitUntil(IsButtonHeld(EventPlayer(), Button.Melee), 0.3);
+		AbortIf(!IsButtonHeld(EventPlayer(), Button.Melee));
+	}
+	AbortIf(IsDead(EventPlayer()) || downed_start_t || HasStatus(EventPlayer(), Status.Hacked) || HasStatus(EventPlayer(), Status.Stunned) || !active_ab_number || in_buy_menu_start_t);
+	PlayEffect(EventPlayer(), PlayEffect.DebuffImpactSound, Color.White, EventPlayer(), 200);
+	if (active_ab_number == 1)
+	{
+		last_damage_taken_t = false;
+		SetStatus(EventPlayer(), null, Status.Invincible, 0.1);
+		Damage_Dealt += 100;
+		healing_dealt_percent += 100;
+		Move_Speed += 50;
+		for (active_ab_cooldown = -6; 0; 1)
+		{
+			Wait(1, WaitBehavior.IgnoreCondition);
+		}
+		Damage_Dealt -= 100;
+		healing_dealt_percent -= 100;
+		Move_Speed -= 50;
+		active_ab_cooldown = 30;
+	}
+	else if (active_ab_number == 2)
+	{
+		active_ab_is_cloaked = true;
+		for (active_ab_cooldown = -8; 0; 1)
+		{
+			Wait(1, WaitBehavior.IgnoreCondition);
+		}
+		active_ab_is_cloaked = false;
+		Damage(PlayersWithinRadius(EyePosition(EventPlayer()), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 99);
+		SetStatus(PlayersWithinRadius(EyePosition(EventPlayer()), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Frozen, 4);
+		PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Aqua, EyePosition(EventPlayer()), 10);
+		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
+		active_ab_cooldown = 20;
+	}
+	else if (active_ab_number == 3)
+	{
+		active_ab_cooldown = -1;
+		temp_1 = PlayersWithinRadius(EyePosition(EventPlayer()), 6, Team.Team2, RadiusLOS.Surfaces);
+		Damage(temp_1, EventPlayer(), 100);
+		ApplyImpulse(EventPlayer(), ThrottleOf(EventPlayer()) != Vector(0, 0, 0) ? ThrottleOf(EventPlayer()) : Forward(), 25, Relative.ToPlayer, ContraryMotion.Cancel);
+		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Black, EyePosition(EventPlayer()), 6);
+		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
+		SetGravity(EventPlayer(), 0);
+		SetStatus(EventPlayer(), null, Status.PhasedOut, 0.7);
+		Wait(0.6, WaitBehavior.IgnoreCondition);
+		SetGravity(EventPlayer(), 100);
+		temp_1 = PlayersWithinRadius(EyePosition(EventPlayer()), 6, Team.Team2, RadiusLOS.Surfaces);
+		Damage(temp_1, EventPlayer(), 100);
+		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Black, EyePosition(EventPlayer()), 6);
+		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
+		active_ab_cooldown = 10;
+		Wait(1, WaitBehavior.IgnoreCondition);
+	}
+	else if (active_ab_number == 4)
+	{
+		active_ab_is_frenzied = true;
+		SetStatus(EventPlayer(), null, Status.Invincible, 5);
+		for (active_ab_cooldown = -5; 0; 1)
+		{
+			last_damage_taken_t = TotalTimeElapsed();
+			Wait(1, WaitBehavior.IgnoreCondition);
+		}
+		active_ab_is_frenzied = false;
+		active_ab_cooldown = 30;
+	}
+	else if (active_ab_number == 5)
+	{
+		active_ab_var = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + 2 * Down(), null, null, false) + 2 * Up();
+		for (active_ab_cooldown = -10; 0; 0.5)
+		{
+			(<Player>FilteredArray(combatants, DistanceBetween(EyePosition(ArrayElement()), Vector(XOf(active_ab_var), YOf(EyePosition(ArrayElement())), ZOf(active_ab_var))) <= 10 && AbsoluteValue(YOf(EyePosition(ArrayElement())) - YOf(active_ab_var)) <= 5)).active_ab_is_smoked = true;
+			Wait(0.5, WaitBehavior.IgnoreCondition);
+		}
+		active_ab_cooldown = 20;
+	}
+	else if (active_ab_number == 6)
+	{
+		for (active_ab_cooldown = -5; 0; 0.25)
+		{
+			if (NormalizedHealth(EventPlayer()) != 1)
+			{
+				Heal(EventPlayer(), null, 75);
+			}
+			if (NormalizedHealth(EventPlayer()) == 1)
+			{
+				Heal(SortedArray(FilteredArray(PlayersWithinRadius(EventPlayer(), 15, Team.Team1, RadiusLOS.Off), ArrayElement().is_combatant && !ArrayElement().downed_start_t && NormalizedHealth(ArrayElement()) != 1), NormalizedHealth(ArrayElement()))[0], null, 75);
+			}
+			Wait(0.25, WaitBehavior.IgnoreCondition);
+		}
+		active_ab_cooldown = 25;
+	}
+	else if (active_ab_number == 7)
+	{
+		active_ab_var = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + 100 * FacingDirectionOf(EventPlayer()), AllPlayers(Team.Team2), null, true);
+		PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.White, active_ab_var, 8);
+		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, active_ab_var, 200);
+		for (active_ab_cooldown = -6; 0; 1)
+		{
+			temp_1 = FilteredArray(AllLivingPlayers(Team.Team2), !HasStatus(ArrayElement(), Status.PhasedOut) && !HasStatus(ArrayElement(), Status.Stunned) && DistanceBetween(active_ab_var, EyePosition(ArrayElement())) <= 8);
+			StartDamageOverTime(temp_1, EventPlayer(), 2, 40);
+			for (temp_2 = 0; CountOf(temp_1); 1)
+			{
+				temp_1[temp_2].gmut_fortified_bypass_end_t = Max(TotalTimeElapsed(), temp_1[temp_2].gmut_fortified_bypass_end_t);
+				SetStatus(temp_1[temp_2], EventPlayer(), Status.Stunned, temp_1[temp_2].is_fortified ? 0.5 : 1);
+			}
+			Wait(2, WaitBehavior.IgnoreCondition);
+		}
+		active_ab_cooldown = 35;
+	}
+	else if (active_ab_number == 8)
+	{
+		temp_1 = LastOf(SortedArray(FilteredArray(AllLivingPlayers(Team.Team2), !HasStatus(ArrayElement(), Status.PhasedOut) && !ArrayElement().iv_is_portal && IsInViewAngle(EventPlayer(), ArrayElement(), 45) && IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(ArrayElement()), BarrierLOS.NoBarriersBlock)), DotProduct(FacingDirectionOf(EventPlayer()), DirectionTowards(EyePosition(EventPlayer()), ArrayElement()))));
+		if (temp_1)
+		{
+			SetStatus(temp_1, EventPlayer(), Status.Hacked, 5);
+			ModifyVariable(active_ab_var, Operation.AppendToArray, temp_1);
+			for (temp_2 = 4; 1; -1)
+			{
+				temp_1 = SortedArray(FilteredArray(RemoveFromArray(AllLivingPlayers(Team.Team2), active_ab_var), !HasStatus(ArrayElement(), Status.PhasedOut) && !ArrayElement().iv_is_portal && IsInLineOfSight(temp_1, ArrayElement(), BarrierLOS.NoBarriersBlock)), DistanceBetween(temp_1, ArrayElement()))[0];
+				if (temp_1)
+				{
+					SetStatus(temp_1, EventPlayer(), Status.Hacked, temp_2);
+					ModifyVariable(active_ab_var, Operation.AppendToArray, temp_1);
+				}
+				else
+				{
+					break;
+				}
+			}
+			Damage(active_ab_var, EventPlayer(), 5);
+			active_ab_cooldown = -0.8;
+			Wait(0.8, WaitBehavior.IgnoreCondition);
+			active_ab_var = [];
+			active_ab_cooldown = 25;
+		}
+		else
+		{
+			active_ab_cooldown = 1;
+		}
+	}
+	for (active_ab_cooldown = active_ab_cooldown; 0; -1)
+	{
+		Wait(1, WaitBehavior.IgnoreCondition);
+	}
+}
+
+rule: "Team 1 Doomfist: Meteor Strike (Invisibility 2, not detectable)"
+Event.OngoingPlayer
+Team.Team1
+Player.Doomfist
+if (IsUsingUltimate(EventPlayer()) == true)
+{
+	is_invisible = 2;
+	WaitUntil(!IsUsingUltimate(EventPlayer()), 99999);
+	is_invisible = false;
+}
+
+rule: "Team 1 D.Va: Fill Ultimate Charge when downed"
+Event.OngoingPlayer
+Team.Team1
+Player.Dva
+if (downed_start_t == true)
+if (UltimateChargePercent(EventPlayer()) != 100)
+{
+	Wait(0.05, WaitBehavior.AbortWhenFalse);
+	SetUltimateCharge(EventPlayer(), 100);
+}
+
+rule: "Team 1 Echo: Stealth (Invisibility 1, detectable)"
+Event.OngoingPlayer
+Team.Team1
+Player.Echo
+if (HeroBeingDuplicated(EventPlayer()) == Hero.Sombra)
+if (IsUsingAbility1(EventPlayer()) == true)
+{
+	Wait(0.8, WaitBehavior.AbortWhenFalse);
+	is_invisible = 1;
+	WaitUntil(!IsUsingAbility1(EventPlayer()), 99999);
+	is_invisible = false;
+}
+
+rule: "Team 1 Echo: Remove Stealth when Duplicate ends"
+Event.OngoingPlayer
+Team.Team1
+Player.Echo
+if (is_invisible == 1)
+if (IsDuplicating(EventPlayer()) == false)
+{
+	is_invisible = false;
+}
+
+rule: "Team 1 Echo: Cancel Charge on Boss Enemies"
+Event.PlayerDealtKnockback
+Team.Team1
+Player.Echo
+{
+	AbortIf(HeroBeingDuplicated(EventPlayer()) != Hero.Reinhardt);
+	AbortIf(EventAbility() != null);
+	AbortIf(!Victim().is_living_boss);
+	Damage(Victim(), EventPlayer(), 150);
+	CancelPrimaryAction(EventPlayer());
+	Victim().gmut_fortified_bypass_end_t = Max(TotalTimeElapsed() + 1.2, Victim().gmut_fortified_bypass_end_t);
+	SetStatus(Victim(), EventPlayer(), Status.Stunned, 1.2);
+}
+
+rule: "Team 1 Echo: Cancel Chain Hook on Boss Enemies"
+Event.OnDamageDealt
+Team.Team1
+Player.Echo
+{
+	AbortIf(HeroBeingDuplicated(EventPlayer()) != Hero.Roadhog);
+	AbortIf(EventAbility() != Button.Ability1);
+	AbortIf(!Victim().is_living_boss);
+	AbortIf(!IsUsingAbility1(EventPlayer()));
+	CancelPrimaryAction(EventPlayer());
+	MinWait();
+	Victim().gmut_fortified_bypass_end_t = Max(TotalTimeElapsed() + 1, Victim().gmut_fortified_bypass_end_t);
+	SetStatus(Victim(), EventPlayer(), Status.Stunned, 1);
+}
+
+rule: "Team 1 Mercy: Revive Ability (Player)"
+Event.OngoingPlayer
+Team.Team1
+Player.Mercy
+if (IsButtonHeld(EventPlayer(), Button.Ability2) == true)
+if (AbilityCooldown(EventPlayer(), Button.Ability2) == false)
+if (downed_start_t == false)
+if (HasStatus(EventPlayer(), Status.Hacked) == false)
+if (HasStatus(EventPlayer(), Status.Stunned) == false)
+{
+	ab_player = LastOf(SortedArray(FilteredArray(PlayersWithinRadius(EventPlayer(), 10, Team.Team1, RadiusLOS.Off), ArrayElement().is_combatant && ArrayElement().downed_start_t && ArrayElement().downed_start_t + 0.1 < TotalTimeElapsed() && IsInViewAngle(EventPlayer(), ArrayElement(), 45)), DotProduct(FacingDirectionOf(EventPlayer()), DirectionTowards(EyePosition(EventPlayer()), ArrayElement()))));
+	if (ab_player)
+	{
+		SmallMessage(AllPlayers(), <"<0> has been resurrected by <1>!", ab_player, EventPlayer()>);
+		ab_player.downed_start_t = false;
+		PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.SkyBlue, ab_player, 1);
+		temp_1 = (is_hard_mode_enabled || is_apocalyptic ? 1.5 : 1) * [30, 33.333, 40][ab_haste];
+		SetAbilityCooldown(EventPlayer(), Button.Ability2, temp_1);
+		# Workaround: Set Cooldown for Controller Players
+		SetAbilityCooldown(EventPlayer(), Button.SecondaryFire, temp_1);
+	}
+	Wait(0.05, WaitBehavior.IgnoreCondition);
+}
+
+//> Outdated
+rule: "Team 1 Sombra: Stealth (Invisibility 1, detectable), end after 20 seconds"
+Event.OngoingPlayer
+Team.Team1
+Player.Sombra
+if (IsUsingAbility1(EventPlayer()) == true)
+{
+	Wait(0.8, WaitBehavior.AbortWhenFalse);
+	is_invisible = 1;
+	for (sombra_stealth_timer = 100; 0; -0.48)
+	{
+		WaitUntil(!IsUsingAbility1(EventPlayer()), 0.096);
+		if (!IsUsingAbility1(EventPlayer()))
+		{
+			break;
+		}
+	}
+	if (IsUsingAbility1(EventPlayer()))
+	{
+		PressButton(EventPlayer(), Button.Ability1);
+	}
+	is_invisible = false;
+}
+
+rule: "Team 1 Reinhardt: Cancel Charge on Boss Enemies"
+Event.PlayerDealtKnockback
+Team.Team1
+Player.Reinhardt
+{
+	AbortIf(EventAbility() != null);
+	AbortIf(!Victim().is_living_boss);
+	Damage(Victim(), EventPlayer(), 250);
+	CancelPrimaryAction(EventPlayer());
+	Victim().gmut_fortified_bypass_end_t = Max(TotalTimeElapsed() + 1.2, Victim().gmut_fortified_bypass_end_t);
+	SetStatus(Victim(), EventPlayer(), Status.Stunned, 1.2);
+}
+
+rule: "Team 1 Roadhog: Cancel Chain Hook on Boss Enemies"
+Event.OnDamageDealt
+Team.Team1
+Player.Roadhog
+{
+	AbortIf(EventAbility() != Button.Ability1);
+	AbortIf(!Victim().is_living_boss);
+	AbortIf(!IsUsingAbility1(EventPlayer()));
+	CancelPrimaryAction(EventPlayer());
+	MinWait();
+	Victim().gmut_fortified_bypass_end_t = Max(TotalTimeElapsed() + 1, Victim().gmut_fortified_bypass_end_t);
+	SetStatus(Victim(), EventPlayer(), Status.Stunned, 1);
+}
+
+rule: "Team 1 Tracer: Start Health Regeneration after Recall"
+Event.OngoingPlayer
+Team.Team1
+Player.Tracer
+if (IsUsingAbility2(EventPlayer()) == true)
+{
+	Wait(0.85, WaitBehavior.IgnoreCondition);
+	last_damage_taken_t = false;
+}
+
+rule: "Team 1 Zenyatta: Harmony target is harder to hit"
+Event.OnHealingDealt
+Team.Team1
+Player.Zenyatta
+{
+	AbortIf(EventAbility() != Button.Ability1);
+	Healee().active_ab_is_smoked = true;
+	Wait(1, WaitBehavior.IgnoreCondition);
+}
+
+rule: "Team 1: Smoke Screen"
+Event.OngoingPlayer
+Team.Team1
+if (Smoked_Screen == true)
+if (downed_start_t == false)
+{
+	StartForcingPlayerOutlines(AllPlayers(), EventPlayer(), false, Color.White, OutlineType.Default);
+	WaitUntil(IsDead(EventPlayer()), 4);
+	StopForcingPlayerOutlines(AllPlayers(), EventPlayer());
+	Smoked_Screen = false;
+	StartForcingPlayerOutlines(FilteredArray(AllPlayers(Team.Team2), ArrayElement().is_living_boss), EventPlayer(), true, Color.Yellow, OutlineType.Always);
+}
+
+rule: "Team 1: Is Shattered, Start Accelerating"
+Event.OnDamageTaken
+Team.Team1
+{
+	AbortIf(!HasStatus(EventPlayer(), Status.Stunned));
+	AbortIf(HeroOf(Attacker()) != Hero.Reinhardt);
+	AbortIf(EventAbility() != Button.Ultimate);
+	SetStatus(EventPlayer(), Attacker(), Status.Stunned, 5);
+	last_hit_by_shatter_t = TotalTimeElapsed();
+	ApplyImpulse(EventPlayer(), DirectionFromAngles(HorizontalAngleFromDirection(EventDirection()), 30), 15, Relative.ToWorld, ContraryMotion.CancelXYZ);
+	StartAccelerating(EventPlayer(), DirectionFromAngles(HorizontalAngleFromDirection(EventDirection()), 30), IsInAir(EventPlayer()) ? 100 : (1 - (TotalTimeElapsed() - last_hit_by_shatter_t)) * 500, 15, Relative.ToWorld, AccelerateRev.DirectionRateAndMaxSpeed);
+	Wait(1, WaitBehavior.IgnoreCondition);
+	ClearStatus(EventPlayer(), Status.Stunned);
+	StopAccelerating(EventPlayer());
+}

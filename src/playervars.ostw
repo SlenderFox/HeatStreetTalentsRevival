@@ -6,8 +6,6 @@ playervar Vector ab_wraith_pos;
 playervar Number sombra_stealth_timer;
 playervar Number last_damage_taken_t;
 playervar Boolean is_combatant;
-playervar Boolean is_controller_player;
-playervar Button mercy_res_button; // Should be removed
 playervar Number downed_start_t;
 playervar Player[] revivers;
 playervar Number revive_timer;
@@ -53,7 +51,6 @@ playervar Number real_tier; // Could be an enum
 playervar Boolean is_alive;
 playervar Boolean is_living_boss;
 playervar Boolean iv_is_portal;
-playervar Number aggression_health_threshold; // Can probably be removed
 playervar Boolean is_using_boss_aggression;
 playervar Boolean is_aggressive;
 playervar Boolean is_fortified;

@@ -1,0 +1,480 @@
+import "globalvars.ostw";
+import "playervars.ostw";
+import "subroutines.ostw";
+
+rule: "Team 2 CG: Improve Air Movement near Jump Pad"
+Event.OngoingPlayer
+Team.Team2
+if (is_map_cg == true)
+if ((nav_idx == 4 || nav_idx == 45) == true)
+if (is_alive == true)
+if (IsInAir(EventPlayer()) == true)
+if (is_using_combat_pathfinding == 0)
+if (HorizontalSpeedOf(EventPlayer()) >= 5)
+if (DistanceBetween(EventPlayer(), Vector(XOf(nav_pos), YOf(PositionOf(EventPlayer())), ZOf(nav_pos))) <= 0.5)
+{
+	ApplyImpulse(EventPlayer(), -1 * DirectionFromAngles(HorizontalAngleFromDirection(VelocityOf(EventPlayer())), 0), 0.001, Relative.ToWorld, ContraryMotion.CancelXYZ);
+	Wait(0.25, WaitBehavior.IgnoreCondition);
+	LoopIfConditionIsTrue();
+}
+
+rule: "Team 2: Enable Combat Pathfinding"
+Event.OngoingPlayer
+Team.Team2
+if (is_load_limit_reached == false)
+if (is_pathfinding_disabled == false)
+if (is_using_combat_pathfinding == 0)
+if (is_target_in_los >= 5)
+if (is_aggressive == true)
+if (IsOnGround(EventPlayer()) == true)
+if ((YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) <= 2 || YOf(nodes[target.best_nav_idx]) - YOf(PositionOf(EventPlayer())) <= 1) == true)
+if ((is_ranged || DistanceBetween(EventPlayer(), target) <= 1 + DistanceBetween(target, nodes[target.best_nav_idx])) == true)
+{
+	if (target.last_nav_update_t + combatants_count * 0.4 < TotalTimeElapsed())
+	{
+		update_target_nav();
+		AbortIfConditionIsFalse();
+	}
+	if (IsTrueForAny(elevator_nodes, DistanceBetween(EventPlayer(), Vector(XOf(ArrayElement()), YOf(PositionOf(EventPlayer())), ZOf(ArrayElement()))) < 1.5))
+	{
+		Wait(1, WaitBehavior.IgnoreCondition);
+		AbortIfConditionIsFalse();
+	}
+	is_using_combat_pathfinding = 3;
+	target_last_seen_pos = PositionOf(target);
+	is_nav_reachable_node = false;
+	MinWait();
+	LoopIfConditionIsTrue();
+}
+
+rule: "Team 2: Disable Combat Pathfinding"
+Event.OngoingPlayer
+Team.Team2
+if (is_using_combat_pathfinding == true)
+if ((is_aggressive && is_target_in_los) == 0)
+{
+	is_using_combat_pathfinding = 0;
+}
+
+rule: "Team 2: Set Nav (Not in Combat), Get Back to Node, Set Nav is Node"
+Event.OngoingPlayer
+Team.Team2
+if (is_alive == true)
+if (is_using_combat_pathfinding == 0)
+if (is_nav_reachable_node == false)
+{
+	if (!(is_load_limit_reached || is_pathfinding_disabled))
+	{
+		if (combat_pathfinding_type == 0)
+		{
+			SetMoveSpeed(EventPlayer(), mut_amped ? 115 : 100);
+		}
+		nav_pos = SortedArray(FilteredArray(nodes, IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock)), DistanceBetween(EventPlayer(), ArrayElement()))[0];
+		if (nav_pos == false)
+		{
+			nav_pos = SortedArray(nodes, DistanceBetween(EventPlayer(), ArrayElement()))[0];
+		}
+		nav_idx = IndexOfArrayValue(nodes, nav_pos);
+		is_nav_reachable_node = true;
+	}
+	Wait(0.5, WaitBehavior.IgnoreCondition);
+	LoopIfConditionIsTrue();
+}
+
+rule: "Team 2: Set Nav (Not in Combat), Select Next Node, Set Last Time at Node"
+Event.OngoingPlayer
+Team.Team2
+if (is_alive == true)
+if (is_using_combat_pathfinding == 0)
+if (is_nav_reachable_node == true)
+if (DistanceBetween(EventPlayer(), nav_pos) <= 1)
+{
+	last_time_at_node_t = TotalTimeElapsed();
+	if (!(is_load_limit_reached || is_pathfinding_disabled))
+	{
+		if (gamemode == 2 && is_living_boss && !is_aggressive)
+		{
+			if (nav_idx == dom_nav_guard_idx)
+			{
+				Wait(0.5, WaitBehavior.IgnoreCondition);
+				LoopIfConditionIsTrue();
+			}
+			else
+			{
+				nav_idx = SortedArray(edges[nav_idx], RandomReal(0, 0.5) + IndexOfStringChar(char_string, CharInString(distance_matrix[RoundToInteger((ArrayElement() * nodes_count + dom_nav_guard_idx) / 128, Rounding.Down)], (ArrayElement() * nodes_count + dom_nav_guard_idx) % 128)))[0];
+				nav_pos = nodes[nav_idx];
+			}
+		}
+		else if (target.is_combatant)
+		{
+			if (target.last_nav_update_t + combatants_count * 0.4 < TotalTimeElapsed())
+			{
+				update_target_nav();
+			}
+			if (nav_idx == target.best_nav_idx && is_aggressive && fear_end_t < TotalTimeElapsed())
+			{
+				is_target_in_los = 5;
+				is_using_combat_pathfinding = 3;
+				target_last_seen_pos = PositionOf(target);
+				is_nav_reachable_node = false;
+			}
+			else
+			{
+				nav_idx = SortedArray(edges[nav_idx], (is_aggressive && fear_end_t < TotalTimeElapsed() ? 1 : -1) * (RandomReal(0, 0.5) + IndexOfStringChar(char_string, CharInString(distance_matrix[RoundToInteger((ArrayElement() * nodes_count + target.best_nav_idx) / 128, Rounding.Down)], (ArrayElement() * nodes_count + target.best_nav_idx) % 128))))[0];
+				nav_pos = nodes[nav_idx];
+			}
+		}
+		else
+		{
+			nav_idx = RandomValueInArray(edges[nav_idx]);
+			nav_pos = nodes[nav_idx];
+		}
+	}
+	Wait(0.5, WaitBehavior.AbortWhenFalse);
+	LoopIfConditionIsTrue();
+}
+
+rule: "Team 2: Set Nav (in Combat)"
+Event.OngoingPlayer
+Team.Team2
+if (is_using_combat_pathfinding == true)
+{
+	if (!(is_load_limit_reached || is_pathfinding_disabled || HasStatus(EventPlayer(), Status.Rooted) || HasStatus(EventPlayer(), Status.Stunned)))
+	{
+		if (IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(target) + target.eye_offset, BarrierLOS.NoBarriersBlock))
+		{
+			target_last_seen_pos = PositionOf(target);
+			if (is_flying)
+			{
+				nav_pos = RayCastHitPosition(EyePosition(target), EyePosition(target) + 12 * DirectionFromAngles(HorizontalFacingAngleOf(target) + (RandomInteger(0, 1) ? -45 : 45), -60), null, null, false);
+				Wait(0.5, WaitBehavior.IgnoreCondition);
+			}
+			else if (target.is_flying && combat_pathfinding_type != 4)
+			{
+				# Roam
+				nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
+				find_wp_near_nav();
+			}
+			else
+			{
+				# Long Range, roam randomly, slow
+				if (combat_pathfinding_type == 0)
+				{
+					if (DistanceBetween(EventPlayer(), target) <= (HeroOf(EventPlayer()) == Hero.Baptiste ? 20 : 15))
+					{
+						nav_pos = PositionOf(EventPlayer()) + 2.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
+					}
+					else
+					{
+						nav_pos = PositionOf(EventPlayer()) + 2.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), target)) + RandomValueInArray([-45, 0, 45]), 0);
+					}
+					find_wp_near_nav();
+				}
+				else if (combat_pathfinding_type == 1)
+				{
+					if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > -2)
+					{
+						nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), target) - 2) * DirectionTowards(EventPlayer(), target);
+						find_wp_near_nav();
+					}
+					else
+					{
+						nav_pos = PositionOf(target) + 2 * DirectionTowards(target, EventPlayer());
+						check_drop();
+					}
+				}
+				else if (combat_pathfinding_type == 2)
+				{
+					nav_pos = PositionOf(EventPlayer()) + Min(1.5, DistanceBetween(EventPlayer(), target) - 2) * DirectionTowards(EventPlayer(), target);
+					find_wp_near_nav();
+				}
+				else if (combat_pathfinding_type == 3)
+				{
+					nav_pos = PositionOf(target) + 5 * DirectionFromAngles(HorizontalFacingAngleOf(target) + RandomValueInArray([-45, 45]), 0);
+					if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > -2)
+					{
+						nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), nav_pos)) * DirectionTowards(EventPlayer(), nav_pos);
+						find_wp_near_nav();
+					}
+					else
+					{
+						check_drop();
+					}
+				}
+				else if (combat_pathfinding_type == 4)
+				{
+					if (DistanceBetween(EventPlayer(), target) <= 12)
+					{
+						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(target, EventPlayer())) + (DistanceBetween(EventPlayer(), target) <= 8 && real_speed <= 1 ? RandomValueInArray([-135, 135]) : 0), 0);
+						find_wp_near_nav();
+					}
+					else
+					{
+						nav_pos = PositionOf(EventPlayer());
+					}
+				}
+				else if (combat_pathfinding_type == 5)
+				{
+					nav_pos = PositionOf(target) + 3 * DirectionFromAngles(HorizontalFacingAngleOf(target), 0);
+					if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > -2)
+					{
+						nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), nav_pos)) * DirectionTowards(EventPlayer(), nav_pos);
+						find_wp_near_nav();
+					}
+					else
+					{
+						check_drop();
+					}
+				}
+				else if (combat_pathfinding_type == 6)
+				{
+					nav_pos = PositionOf(target) + 1.5 * DirectionFromAngles(HorizontalFacingAngleOf(target) + (HorizontalAngleTowards(target, EventPlayer()) > 0 ? 90 : -90), 0);
+					if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > -2)
+					{
+						nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), nav_pos)) * DirectionTowards(EventPlayer(), nav_pos);
+						find_wp_near_nav();
+					}
+					else
+					{
+						check_drop();
+					}
+				}
+				else if (combat_pathfinding_type == 7)
+				{
+					if (DistanceBetween(EventPlayer(), target) <= 17)
+					{
+						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
+					}
+					else
+					{
+						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), target)) + RandomValueInArray([-45, 0, 45]), 0);
+					}
+					find_wp_near_nav();
+				}
+				else if (combat_pathfinding_type == 8)
+				{
+					temp_1 = RemoveFromArray(FilteredArray(PlayersWithinRadius(EventPlayer(), 3, Team.Team2, RadiusLOS.Off), ArrayElement().is_alive), EventPlayer());
+					if (CountOf(temp_1))
+					{
+						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionTowards(SortedArray(temp_1, DistanceBetween(EventPlayer(), ArrayElement()))[0], EventPlayer());
+						find_wp_near_nav();
+					}
+					else
+					{
+						nav_pos = PositionOf(EventPlayer());
+					}
+				}
+				else if (combat_pathfinding_type == 9)
+				{
+					if (ab_var_1)
+					{
+						if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > -2)
+						{
+							nav_pos = PositionOf(EventPlayer()) + 6 * DirectionTowards(EventPlayer(), target);
+							find_wp_near_nav();
+						}
+						else
+						{
+							nav_pos = PositionOf(target);
+							check_drop();
+						}
+					}
+					else
+					{
+						if (ab_var_2)
+						{
+							nav_pos = PositionOf(target) + 3 * DirectionFromAngles(HorizontalFacingAngleOf(target), 0);
+						}
+						else
+						{
+							nav_pos = PositionOf(target) + 5 * DirectionFromAngles(HorizontalFacingAngleOf(target) + RandomValueInArray([-45, 45]), 0);
+						}
+						if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > -2)
+						{
+							nav_pos = PositionOf(EventPlayer()) + Min(4, DistanceBetween(EventPlayer(), nav_pos)) * DirectionTowards(EventPlayer(), nav_pos);
+							find_wp_near_nav();
+						}
+						else
+						{
+							check_drop();
+						}
+					}
+				}
+			}
+			if (combat_pathfinding_type == 0)
+			{
+				SetMoveSpeed(EventPlayer(), mut_amped ? 75.5 : 65);
+			}
+		}
+		else
+		{
+			if (DistanceBetween(EventPlayer(), Vector(XOf(target_last_seen_pos), YOf(PositionOf(EventPlayer())), ZOf(target_last_seen_pos))) < 0.5)
+			{
+				target_last_seen_pos = PositionOf(target);
+			}
+			if (is_flying)
+			{
+				nav_pos = target_last_seen_pos;
+			}
+			else
+			{
+				nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), target_last_seen_pos)) * DirectionTowards(EventPlayer(), target_last_seen_pos);
+				find_wp_near_nav();
+			}
+			if (combat_pathfinding_type == 0)
+			{
+				SetMoveSpeed(EventPlayer(), mut_amped ? 115 : 100);
+			}
+		}
+	}
+	Wait(is_load_limit_reached ? 1 : 0.5, WaitBehavior.IgnoreCondition);
+	LoopIfConditionIsTrue();
+}
+
+rule: "Team 2: Find Target"
+Event.OngoingPlayer
+Team.Team2
+if (is_alive == true)
+{
+	if (!(fear_end_t >= TotalTimeElapsed() || is_wraith || HeroOf(EventPlayer()) == Hero.Sombra && ab_player))
+	{
+		if (is_ignoring_other_targets)
+		{
+			temp_1 = target.is_combatant && !target.downed_start_t && !target.active_ab_is_cloaked && !(target.is_invisible && DistanceBetween(EventPlayer(), target) > 2.4) && IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(target) + target.eye_offset, BarrierLOS.NoBarriersBlock) ? target : null;
+		}
+		else
+		{
+			temp_1 = SortedArray(FilteredArray(combatants, !ArrayElement().downed_start_t && !ArrayElement().active_ab_is_cloaked && !(ArrayElement().is_invisible && DistanceBetween(EventPlayer(), ArrayElement()) > 2.4) && IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(ArrayElement()) + ArrayElement().eye_offset, BarrierLOS.NoBarriersBlock)), [1, 0.25, 2, 4][ArrayElement().ab_priority] * (ArrayElement() == target ? 0.25 : 1) * DistanceBetween(EventPlayer(), ArrayElement()) + (!is_ranged && ArrayElement().is_flying ? 500 : 0) + (HasStatus(ArrayElement(), Status.Asleep) ? 1000 : 0) + (HasStatus(ArrayElement(), Status.Invincible) || HasStatus(ArrayElement(), Status.PhasedOut) ? 2000 : 0) + (ArrayElement().active_ab_is_frenzied ? -5000 : 0))[0];
+		}
+		if (temp_1)
+		{
+			is_target_in_los = 5;
+			target = temp_1;
+			target_last_seen_pos = PositionOf(target);
+		}
+		else
+		{
+			if (target.downed_start_t || !target.is_combatant || target.active_ab_is_cloaked || !(target.is_invisible && DistanceBetween(EventPlayer(), target) > 2.4))
+			{
+				find_chase_target();
+				is_target_in_los = 0;
+			}
+			else if (is_target_in_los)
+			{
+				if (!is_flying && YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > 2)
+				{
+					is_using_combat_pathfinding = 0;
+				}
+				is_target_in_los -= 1;
+			}
+			if (!is_target_in_los && Ammo(EventPlayer(), 0) < 0.5 * MaxAmmo(EventPlayer(), 0))
+			{
+				PressButton(EventPlayer(), Button.Reload);
+			}
+		}
+	}
+	Wait(is_load_limit_reached ? 1 : 0.5, WaitBehavior.IgnoreCondition);
+	LoopIfConditionIsTrue();
+}
+
+rule: "Team 2: Calculate Real Speed"
+Event.OngoingPlayer
+Team.Team2
+if (is_alive == true)
+{
+	if (is_load_limit_reached || is_pathfinding_disabled)
+	{
+		# Larger than 1.5 to not trigger stuck rules
+		real_speed = 1.6;
+		Wait(0.5, WaitBehavior.AbortWhenFalse);
+	}
+	else
+	{
+		real_speed_pos_1 = PositionOf(EventPlayer());
+		if (IsJumping(EventPlayer()))
+		{
+			last_jump_t = TotalTimeElapsed();
+		}
+		if (last_jump_t + 0.15 >= TotalTimeElapsed())
+		{
+			real_speed = DistanceBetween(Vector(XOf(real_speed_pos_1), YOf(real_speed_pos_2), ZOf(real_speed_pos_1)), real_speed_pos_2) / 0.112;
+		}
+		else
+		{
+			real_speed = DistanceBetween(real_speed_pos_1, real_speed_pos_2) / 0.112;
+		}
+		Wait(0.112, WaitBehavior.AbortWhenFalse);
+		real_speed_pos_2 = PositionOf(EventPlayer());
+		if (IsJumping(EventPlayer()))
+		{
+			last_jump_t = TotalTimeElapsed();
+		}
+		if (last_jump_t + 0.15 >= TotalTimeElapsed())
+		{
+			real_speed = DistanceBetween(Vector(XOf(real_speed_pos_1), YOf(real_speed_pos_2), ZOf(real_speed_pos_1)), real_speed_pos_2) / 0.112;
+		}
+		else
+		{
+			real_speed = DistanceBetween(real_speed_pos_1, real_speed_pos_2) / 0.112;
+		}
+		Wait(0.112, WaitBehavior.AbortWhenFalse);
+	}
+	LoopIfConditionIsTrue();
+}
+
+rule: "Team 2: Bot is stuck"
+Event.OngoingPlayer
+Team.Team2
+if (is_alive == true)
+if (real_speed <= 1.5)
+if (is_flying == false)
+if (Slowed_until < TotalTimeElapsed())
+if (HasStatus(EventPlayer(), Status.Rooted) == false)
+if (HasStatus(EventPlayer(), Status.Stunned) == false)
+if (DistanceBetween(EventPlayer(), Vector(XOf(nav_pos), YOf(is_using_combat_pathfinding ? PositionOf(EventPlayer()) : nav_pos), ZOf(nav_pos))) >= 0.5)
+{
+	Wait(0.5, WaitBehavior.AbortWhenFalse);
+	LoopIf(HeroOf(EventPlayer()) == Hero.Reinhardt && IsUsingUltimate(EventPlayer()));
+	if (IsTrueForAny(elevator_nodes, DistanceBetween(EventPlayer(), Vector(XOf(ArrayElement()), YOf(PositionOf(EventPlayer())), ZOf(ArrayElement()))) < 1.5))
+	{
+		Wait(1.5, WaitBehavior.AbortWhenFalse);
+	}
+	AbortIfConditionIsFalse();
+	if (is_using_combat_pathfinding)
+	{
+		if (AbsoluteValue(HorizontalAngleFromDirection(ThrottleOf(EventPlayer()))) <= 45)
+		{
+			PressButton(EventPlayer(), Button.Jump);
+		}
+	}
+	else
+	{
+		PressButton(EventPlayer(), Button.Jump);
+		if (!(is_target_in_los || fear_end_t >= TotalTimeElapsed()))
+		{
+			DisableMovementCollisionWithPlayers(EventPlayer());
+			Wait(0.5, WaitBehavior.IgnoreCondition);
+			EnableMovementCollisionWithPlayers(EventPlayer());
+		}
+		Wait(0.5, WaitBehavior.AbortWhenFalse);
+		is_nav_reachable_node = false;
+	}
+	Wait(0.5, WaitBehavior.IgnoreCondition);
+	LoopIfConditionIsTrue();
+}
+
+rule: "Team 2: Teleport if Target not in LOS and hasn't reached Node for 8 seconds"
+Event.OngoingPlayer
+Team.Team2
+if (is_alive == true)
+if (HasStatus(EventPlayer(), Status.Rooted) == false)
+if (HasStatus(EventPlayer(), Status.Stunned) == false)
+if (is_pathfinding_disabled == false)
+if (is_target_in_los == 0)
+if (fear_end_t < TotalTimeElapsed())
+if (last_time_at_node_t < TotalTimeElapsed())
+{
+	Wait(8, WaitBehavior.AbortWhenFalse);
+	LoopIf(is_load_limit_reached);
+	teleport_to_free_spawn();
+}

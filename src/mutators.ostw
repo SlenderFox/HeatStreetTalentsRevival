@@ -1,0 +1,178 @@
+import "globalvars.ostw";
+import "playervars.ostw";
+
+rule: "MUT Team 2 (Gamechanging Mutator): Gamechanging Mutator was enabled"
+Event.OngoingPlayer
+Team.Team2
+if (is_gmut_enabled == true)
+{
+	Wait(0.5, WaitBehavior.IgnoreCondition);
+	if (gmut_storm_raging)
+	{
+		CreateEffect(gmut_var ? AllPlayers() : [], Effect.AnaNanoBoostedEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
+	}
+	if (gmut_adaptive_shield)
+	{
+		CreateEffect(gmut_var == 1 ? AllPlayers() : [], Effect.WreckingBallAdaptiveShieldTargetEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
+	}
+	if (gmut_fortified)
+	{
+		AddHealthPoolToPlayer(EventPlayer(), HealthType.Armor, 0.4 * health_percent, true, true);
+	}
+	is_gmut_enabled = false;
+}
+
+rule: "MUT Team 2 (Gamechanging Mutator): Adaptive Shield"
+Event.OngoingPlayer
+Team.Team2
+if (gmut_adaptive_shield == true)
+if (IsAlive(EventPlayer()) == true)
+if (gmut_var == false)
+if (NormalizedHealth(EventPlayer()) <= 0.5)
+{
+	AbortIf(iv_is_portal);
+	if (SlotOf(EventPlayer()) == 1)
+	{
+		# Set Player Health converts the shield into regular HP, so wait until after
+		Wait(0.016, WaitBehavior.AbortWhenFalse);
+		AbortIfConditionIsFalse();
+	}
+	temp_1 = CountOf(FilteredArray(combatants, DistanceBetween(EventPlayer(), ArrayElement()) <= 8 && IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.EnemyBarriersBlock)));
+	if (temp_1)
+	{
+		PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Blue, EventPlayer(), 1);
+		AddHealthPoolToPlayer(EventPlayer(), HealthType.Shields, 0.75 * temp_1 / combatants_count * MaxHealth(EventPlayer()), false, false);
+		HP_Pool[3] = LastCreatedHealthPool();
+		gmut_var = 1;
+		WaitUntil(!HealthOfType(EventPlayer(), HealthType.Shields), 7);
+		RemoveHealthPoolFromPlayer(HP_Pool[3]);
+		gmut_var = 2;
+	}
+	else
+	{
+		gmut_var = 2;
+	}
+}
+
+rule: "MUT Team 2 (Gamechanging Mutator): Sympathy Gains"
+Event.OnDeath
+Team.Team2
+if (gmut_sympathy_gains == true)
+if (iv_is_portal == false)
+{
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Black, EventPlayer(), 1);
+	Wait(0.15, WaitBehavior.AbortWhenFalse);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.White, PositionOf(EventPlayer()), 1);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Yellow, PositionOf(EventPlayer()), real_tier * 8 + 6);
+	Heal(PlayersWithinRadius(EventPlayer(), real_tier * 4 + 3, Team.Team2, RadiusLOS.Off), null, Min(MaxHealth(EventPlayer()) * 0.3, 500));
+}
+
+rule: "MUT Team 2 (Gamechanging Mutator): Fortified"
+Event.OngoingPlayer
+Team.Team2
+if (is_fortified == true)
+if (HasStatus(EventPlayer(), Status.Stunned) == true)
+if (gmut_fortified_bypass_end_t < TotalTimeElapsed())
+{
+	if (HasStatus(EventPlayer(), Status.KnockedDown))
+	{
+		ClearStatus(EventPlayer(), Status.KnockedDown);
+		Wait(1, WaitBehavior.IgnoreCondition);
+	}
+	else if (HasStatus(EventPlayer(), Status.Asleep))
+	{
+		WaitUntil(!HasStatus(EventPlayer(), Status.Asleep), 3);
+		if (HasStatus(EventPlayer(), Status.Asleep))
+		{
+			ClearStatus(EventPlayer(), Status.Asleep);
+			Wait(0.5, WaitBehavior.IgnoreCondition);
+		}
+	}
+	else if (HasStatus(EventPlayer(), Status.Frozen))
+	{
+		WaitUntil(!HasStatus(EventPlayer(), Status.Frozen), 1);
+		ClearStatus(EventPlayer(), Status.Frozen);
+	}
+	else
+	{
+		WaitUntil(!HasStatus(EventPlayer(), Status.Stunned), 0.5);
+		ClearStatus(EventPlayer(), Status.Stunned);
+	}
+	Wait(0.25, WaitBehavior.AbortWhenFalse);
+	LoopIfConditionIsTrue();
+}
+
+rule: "MUT Team 2 (Gamechanging Mutator): Salvation"
+Event.OngoingPlayer
+Team.Team2
+if (gmut_salvation == true)
+if (IsAlive(EventPlayer()) == true)
+if (is_living_boss == false)
+{
+	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
+	WaitUntil(Health(EventPlayer()) <= 1, 99999);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Purple, PositionOf(EventPlayer()), 1);
+	SetStatus(EventPlayer(), null, Status.Stunned, 1.333);
+	SetStatus(EventPlayer(), null, Status.Invincible, 0.1);
+	Heal(EventPlayer(), null, MaxHealth(EventPlayer()) * 0.05);
+	ClearStatus(EventPlayer(), Status.Unkillable);
+}
+
+rule: "Team 2 (Mutator): Artful Dodger"
+Event.OngoingPlayer
+Team.Team2
+if (mut_artful_dodger == true)
+if (can_dodge == false)
+if (IsAlive(EventPlayer()) == true)
+{
+	can_dodge = true;
+}
+
+rule: "MUT Team 2 (Mutator): Swan Song"
+Event.OngoingPlayer
+Team.Team2
+if (mut_swan_song == true)
+if (IsAlive(EventPlayer()) == true)
+if (is_living_boss == true)
+{
+	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
+	WaitUntil(Health(EventPlayer()) <= 1, 99999);
+	CreateEffect(AllPlayers(), Effect.EchoCloningEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
+	Effects_[1] = LastCreatedEntity();
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Violet, EventPlayer(), 1);
+	SetStatus(EventPlayer(), null, Status.Stunned, 1);
+	WaitUntil(IsDead(EventPlayer()), 5);
+	ClearStatus(EventPlayer(), Status.Unkillable);
+	Kill(EventPlayer(), null);
+	DestroyEffect(Effects_[1]);
+}
+
+rule: "MUT Team 2: Counterstrike"
+Event.OngoingPlayer
+Team.Team2
+if (mut_counterstrike == true)
+if (is_using_boss_aggression == false)
+if (IsUsingUltimate(target) == true)
+{
+	is_aggressive = !is_aggressive;
+	Wait(4, WaitBehavior.IgnoreCondition);
+	LoopIfConditionIsTrue();
+	is_aggressive = true;
+	if (RandomInteger(1, 100) > 75 && HeroOf(EventPlayer()) != Hero.Soldier76)
+	{
+		Wait(RandomReal(3, 7), WaitBehavior.IgnoreCondition);
+		SetUltimateCharge(EventPlayer(), 100);
+		PressButton(EventPlayer(), Button.Ultimate);
+		Wait(RandomReal(1, 2), WaitBehavior.IgnoreCondition);
+		PressButton(EventPlayer(), Button.PrimaryFire);
+	}
+	LoopIfConditionIsTrue();
+}
+
+rule: "MUT Team 2 (Mutator): Low Blow"
+Event.PlayerDealtKnockback
+Team.Team2
+{
+	AbortIf(!mut_low_blow);
+	Damage(Victim(), EventPlayer(), 0.5 * EventDamage());
+}
