@@ -31,7 +31,7 @@ rule: "IV Team 2: Force portal to shoot lava"
 Event.OngoingPlayer
 Team.Team2
 Player.Torbjorn
-if (IsUsingUltimate(EventPlayer()) == true)
+if (IsUsingUltimate(EventPlayer()))
 {
 	SetFacing(EventPlayer(), DirectionTowards(EyePosition(EventPlayer()), Vector(RandomInteger(-500, 500), RandomInteger(-500, 500), RandomInteger(-500, 500))), Relative.ToWorld);
 	PressButton(EventPlayer(), Button.PrimaryFire);
@@ -94,7 +94,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Torbjorn
 if (objective_phase_number == 1)
-if ((ab_var_2 >= TotalTimeElapsed() || special_spawns_count > 0) == true)
+if (ab_var_2 >= TotalTimeElapsed() || special_spawns_count > 0)
 {
 	SetDamageReceived(EventPlayer(), 5);
 	WaitUntil(!(objective_phase_number == 1 && (ab_var_2 >= TotalTimeElapsed() || special_spawns_count > 0)), 99999);
@@ -105,9 +105,9 @@ rule: "IV Team 1 Moira: Biotic Grasp on Portal Simulation"
 Event.OngoingPlayer
 Team.Team1
 Player.Moira
-if (gamemode == false)
+if (gamemode == 0)
 if (objective_phase_number == 1)
-if (IsFiringSecondary(EventPlayer()) == true)
+if (IsFiringSecondary(EventPlayer()))
 {
 	if (DistanceBetween(EyePosition(EventPlayer()), iv_dom_objective_pos + 1.11 * Up()) <= 20 && IsInLineOfSight(EyePosition(EventPlayer()), iv_dom_objective_pos + 1.11 * Up(), BarrierLOS.NoBarriersBlock))
 	{

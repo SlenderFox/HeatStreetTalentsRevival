@@ -230,7 +230,7 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 
 rule: "Global (First Wave): Create Mutator Start HUD, Scale Values, Set Level"
 if (wave_number == 0)
-if (IsTrueForAny(combatants, IsButtonHeld(ArrayElement(), Button.Interact) && DistanceBetween(ArrayElement(), ability_shop_pos) > 2) == true)
+if (IsTrueForAny(combatants, IsButtonHeld(ArrayElement(), Button.Interact) && DistanceBetween(ArrayElement(), ability_shop_pos) > 2))
 {
 	DestroyHudText(game_or_mutator_start_huds[0]);
 	DestroyHudText(game_or_mutator_start_huds[1]);
@@ -328,8 +328,8 @@ if (NumberOfLivingPlayers(Team.Team2) == 0)
 }
 
 rule: "Global: Enable normal Spawns"
-if ((objective_phase_number == 1 || objective_phase_number == 2) == true)
-if (enable_normal_spawns == false)
+if (objective_phase_number == 1 || objective_phase_number == 2)
+if (!enable_normal_spawns)
 if (NumberOfLivingPlayers(Team.Team2) < NumberOfPlayers(Team.Team2))
 {
 	temp_1 = FilteredArray(AllLivingPlayers(Team.Team2), !ArrayElement().is_living_boss);
@@ -349,8 +349,8 @@ if (NumberOfLivingPlayers(Team.Team2) < NumberOfPlayers(Team.Team2))
 }
 
 rule: "Global: Disable normal Spawns"
-if ((objective_phase_number == 1 || objective_phase_number == 2) == true)
-if (enable_normal_spawns == true)
+if (objective_phase_number == 1 || objective_phase_number == 2)
+if (enable_normal_spawns)
 if (NumberOfLivingPlayers(Team.Team2) == NumberOfPlayers(Team.Team2))
 {
 	enable_normal_spawns = false;
@@ -359,7 +359,7 @@ if (NumberOfLivingPlayers(Team.Team2) == NumberOfPlayers(Team.Team2))
 
 rule: "Global: Defeat"
 if (wave_number > 0)
-if (IsTrueForAll(combatants, ArrayElement().downed_start_t) == true)
+if (IsTrueForAll(combatants, ArrayElement().downed_start_t))
 {
 	Wait(2, WaitBehavior.AbortWhenFalse);
 	AbortIf(is_victory_declared);

@@ -114,8 +114,8 @@ Team.Team2
 rule: "Team 2 (Respawn): Reset Dummy, Change Hero"
 Event.OngoingPlayer
 Team.Team2
-if (is_alive == false)
-if ((base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 || enable_normal_spawns || is_expendable) == true)
+if (!is_alive)
+if (base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 || enable_normal_spawns || is_expendable)
 {
 	if (!(base_tier == -1 || gamemode == 2 && objective_phase_number == 0 && SlotOf(EventPlayer()) <= 3))
 	{
@@ -407,7 +407,7 @@ if ((base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 |
 		else if (HeroOf(EventPlayer()) == Hero.Echo || HeroOf(EventPlayer()) == Hero.Baptiste || HeroOf(EventPlayer()) == Hero.Reaper || HeroOf(EventPlayer()) == Hero.Sombra || HeroOf(EventPlayer()) == Hero.Widowmaker || HeroOf(EventPlayer()) == Hero.Pharah || HeroOf(EventPlayer()) == Hero.Lucio || HeroOf(EventPlayer()) == Hero.Zarya)
 		{
 			real_tier = 2;
-			if (mut_bulletproof == true)
+			if (mut_bulletproof)
 			{
 				AddHealthPoolToPlayer(EventPlayer(), HealthType.Health, 0.9 * health_percent, false, false);
 				HP_Pool[5] = LastCreatedHealthPool();
@@ -571,7 +571,7 @@ Team.Team2
 rule: "Team 2: Is Hacked, Tase Bot"
 Event.OngoingPlayer
 Team.Team2
-if (HasStatus(EventPlayer(), Status.Hacked) == true)
+if (HasStatus(EventPlayer(), Status.Hacked))
 {
 	AbortIf(is_living_boss);
 	AbortIf(is_hardwired);
@@ -592,7 +592,7 @@ if (HasStatus(EventPlayer(), Status.Hacked) == true)
 rule: "Team 2: Is Hacked, effect"
 Event.OngoingPlayer
 Team.Team2
-if (HasStatus(EventPlayer(), Status.Hacked) == true)
+if (HasStatus(EventPlayer(), Status.Hacked))
 {
 	soldier_espionage = true;
 	WaitUntil(!HasStatus(EventPlayer(), Status.Hacked), 99999);
@@ -604,8 +604,8 @@ if (HasStatus(EventPlayer(), Status.Hacked) == true)
 rule: "Team 2: Quick Melee"
 Event.OngoingPlayer
 Team.Team2
-if (can_quick_melee == true)
-if (is_target_in_los == true)
+if (can_quick_melee)
+if (is_target_in_los)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -658,7 +658,7 @@ rule: "Team 2 Brigitte: Hold / Drop Shield if Target and Distance to Target >= 6
 Event.OngoingPlayer
 Team.Team2
 Player.Brigitte
-if (is_target_in_los == true)
+if (is_target_in_los)
 if (DistanceBetween(EventPlayer(), target) >= 6)
 {
 	StartHoldingButton(EventPlayer(), Button.SecondaryFire);
@@ -670,7 +670,7 @@ rule: "Team 2 Brigitte: Start / Stop Attacking if Distance to Target < 6m"
 Event.OngoingPlayer
 Team.Team2
 Player.Brigitte
-if (is_target_in_los == true)
+if (is_target_in_los)
 if (DistanceBetween(EventPlayer(), target) < 6)
 {
 	StartHoldingButton(EventPlayer(), Button.PrimaryFire);
@@ -682,7 +682,7 @@ rule: "Team 2 Brigitte: Increase / Normalize Move Speed while holding Shield"
 Event.OngoingPlayer
 Team.Team2
 Player.Brigitte
-if (IsFiringSecondary(EventPlayer()) == true)
+if (IsFiringSecondary(EventPlayer()))
 {
 	SetMoveSpeed(EventPlayer(), mut_amped ? 164.286 : 142.857);
 	WaitUntil(!IsFiringSecondary(EventPlayer()), 99999);
@@ -756,8 +756,8 @@ Event.OngoingPlayer
 Team.Team2
 Player.Zarya
 if (is_target_in_los >= 5)
-if (IsUsingAbility1(EventPlayer()) == false)
-if ((wave_number >= 12 || is_living_boss) == true)
+if (!IsUsingAbility1(EventPlayer()))
+if (wave_number >= 12 || is_living_boss)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -801,8 +801,8 @@ Event.OngoingPlayer
 Team.Team2
 Player.Lucio
 if (is_target_in_los >= 4)
-if (IsUsingAbility1(EventPlayer()) == false)
-if ((wave_number >= 12 || is_living_boss) == true)
+if (!IsUsingAbility1(EventPlayer()))
+if (wave_number >= 12 || is_living_boss)
 {
 	AbortIfConditionIsFalse();
 	SetUltimateCharge(EventPlayer(), 100);
@@ -847,9 +847,9 @@ rule: "Team 2 Kiriko: Jump"
 Event.OngoingPlayer
 Team.Team2
 Player.Kiriko
-if (is_using_combat_pathfinding == true)
-if (target.is_flying == false)
-if (IsOnGround(EventPlayer()) == true)
+if (is_using_combat_pathfinding)
+if (!target.is_flying)
+if (IsOnGround(EventPlayer()))
 {
 	StartHoldingButton(EventPlayer(), Button.Jump);
 	Wait(1, WaitBehavior.IgnoreCondition);
@@ -876,7 +876,7 @@ Team.Team2
 Player.Kiriko
 if (is_target_in_los >= 5)
 if (DistanceBetween(EventPlayer(), target) <= 20)
-if ((wave_number >= 6 || is_living_boss) == true)
+if (wave_number >= 6 || is_living_boss)
 {
 	AbortIfConditionIsFalse();
 	SetUltimateCharge(EventPlayer(), 100);
@@ -913,7 +913,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Cassidy
 if (is_target_in_los >= 4)
-if (IsUsingUltimate(EventPlayer()) == false)
+if (!IsUsingUltimate(EventPlayer()))
 {
 	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), target)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -955,7 +955,7 @@ rule: "Team 2 Soldier: Shoot, Is Charging (1), Protecting Charge Target (2), Has
 Event.OngoingPlayer
 Team.Team2
 Player.Soldier76
-if (ab_var_1 == false)
+if (!ab_var_1)
 if (is_target_in_los >= 4)
 {
 	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), target)) / 300, WaitBehavior.IgnoreCondition);
@@ -1018,7 +1018,7 @@ rule: "Team 2 Soldier: Biotic Field (Heavy Trooper), Emit Smoke (Grenadier)"
 Event.OngoingPlayer
 Team.Team2
 Player.Soldier76
-if (ab_var_3 == false)
+if (!ab_var_3)
 if (NormalizedHealth(EventPlayer()) <= 0.5)
 {
 	ab_var_3 = true;
@@ -1051,7 +1051,7 @@ Team.Team2
 Player.Soldier76
 if (real_tier == 4)
 if (is_target_in_los >= 5)
-if (target.is_flying == false)
+if (!target.is_flying)
 if (DistanceBetween(EventPlayer(), target) <= 40)
 {
 	Wait(0.5, WaitBehavior.IgnoreCondition);
@@ -1088,7 +1088,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Soldier76
 if (ab_var_1 == 2)
-if ((real_speed <= 1.5 || target.is_flying) == true)
+if (real_speed <= 1.5 || target.is_flying)
 {
 	Wait(2, WaitBehavior.AbortWhenFalse);
 	ab_var_1 = false;
@@ -1099,7 +1099,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Soldier76
 if (ab_var_1 == 2)
-if (IsUsingAbility1(EventPlayer()) == false)
+if (!IsUsingAbility1(EventPlayer()))
 if (MagnitudeOf(ThrottleOf(EventPlayer())) > 0)
 if (AbsoluteValue(HorizontalAngleFromDirection(ThrottleOf(EventPlayer()))) <= 60)
 {
@@ -1172,12 +1172,12 @@ rule: "Team 2 Baptiste: Immortality Field"
 Event.OngoingPlayer
 Team.Team2
 Player.Baptiste
-if (is_target_in_los == true)
-if (ab_var_1 == false)
+if (is_target_in_los)
+if (!ab_var_1)
 if (NormalizedHealth(EventPlayer()) <= 0.25)
-if ((wave_number >= 10 || is_living_boss) == true)
-if (HasStatus(EventPlayer(), Status.Hacked) == false)
-if (HasStatus(EventPlayer(), Status.Stunned) == false)
+if (wave_number >= 10 || is_living_boss)
+if (!HasStatus(EventPlayer(), Status.Hacked))
+if (!HasStatus(EventPlayer(), Status.Stunned))
 {
 	ab_var_1 = true;
 	AbortIf(!is_living_boss && RandomInteger(1, 100) > 40);
@@ -1219,7 +1219,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Echo
 if (is_target_in_los >= 5)
-if (is_aggressive == true)
+if (is_aggressive)
 if (DistanceBetween(EventPlayer(), target) <= 40)
 {
 	is_using_combat_pathfinding = 3;
@@ -1239,7 +1239,7 @@ if (DistanceBetween(EventPlayer(), target) <= 40)
 			WaitUntil(!IsUsingAbility1(EventPlayer()), 99999);
 		}
 		nav_pos = SortedArray(FilteredArray(nodes, IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock)), 2 * DistanceBetween(EventPlayer(), ArrayElement()) - VerticalAngleTowards(EventPlayer(), ArrayElement()))[0];
-		if (nav_pos == false)
+		if (!nav_pos)
 		{
 			nav_pos = SortedArray(nodes, DistanceBetween(EventPlayer(), ArrayElement()))[0];
 		}
@@ -1262,7 +1262,7 @@ rule: "Team 2 Echo: Ascend / Descend"
 Event.OngoingPlayer
 Team.Team2
 Player.Echo
-if (is_flying == true)
+if (is_flying)
 if (AbsoluteValue(YOf(PositionOf(EventPlayer())) - YOf(nav_pos)) >= 1)
 {
 	if (YOf(PositionOf(EventPlayer())) < YOf(nav_pos))
@@ -1283,7 +1283,7 @@ rule: "Team 2 Echo: Glide"
 Event.OngoingPlayer
 Team.Team2
 Player.Echo
-if (ab_var_1 == true)
+if (ab_var_1)
 {
 	Wait(0.25, WaitBehavior.AbortWhenFalse);
 	StartHoldingButton(EventPlayer(), Button.Jump);
@@ -1296,7 +1296,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Mei
 if (is_target_in_los >= 4)
-if (IsUsingAbility1(EventPlayer()) == false)
+if (!IsUsingAbility1(EventPlayer()))
 {
 	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), target)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -1321,7 +1321,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Mei
 if (NormalizedHealth(EventPlayer()) <= 0.499)
-if (IsUsingAbility1(EventPlayer()) == false)
+if (!IsUsingAbility1(EventPlayer()))
 {
 	PressButton(EventPlayer(), RandomInteger(1, 4) <= 3 ? Button.Ability2 : Button.Ability1);
 	if (IsUsingAbility2(EventPlayer()))
@@ -1344,8 +1344,8 @@ Team.Team2
 Player.Mei
 if (is_target_in_los >= 5)
 if (DistanceBetween(EventPlayer(), target) <= 25)
-if (IsUsingAbility1(EventPlayer()) == false)
-if ((wave_number >= 12 || is_living_boss) == true)
+if (!IsUsingAbility1(EventPlayer()))
+if (wave_number >= 12 || is_living_boss)
 {
 	AbortIfConditionIsFalse();
 	SetUltimateCharge(EventPlayer(), 100);
@@ -1379,12 +1379,12 @@ Event.OngoingPlayer
 Team.Team2
 Player.Sombra
 if (is_target_in_los >= 5)
-if (is_aggressive == true)
-if (target.is_flying == false)
+if (is_aggressive)
+if (!target.is_flying)
 if (DistanceBetween(EventPlayer(), target) >= 7.5)
 if (DistanceBetween(EventPlayer(), target) <= 25)
 if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) >= 3)
-if (IsInViewAngle(EventPlayer(), target, 5) == true)
+if (IsInViewAngle(EventPlayer(), target, 5))
 {
 	if (IsUsingAbility2(EventPlayer()))
 	{
@@ -1409,7 +1409,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Sombra
 if (is_target_in_los >= 5)
-if ((wave_number >= 13 || is_living_boss) == true)
+if (wave_number >= 13 || is_living_boss)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -1441,7 +1441,7 @@ rule: "Team 2 Sombra: Tase"
 Event.OngoingPlayer
 Team.Team2
 Player.Sombra
-if (is_target_in_los == true)
+if (is_target_in_los)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -1470,7 +1470,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Sombra
 if (ab_player != null)
-if ((ab_player.tased_end_t < TotalTimeElapsed() || ab_var_2 || Health(EventPlayer()) < ab_var_3 || ab_player.downed_start_t || !ab_player.is_combatant || HasStatus(EventPlayer(), Status.Hacked) || HasStatus(EventPlayer(), Status.Stunned) || DistanceBetween(EventPlayer(), ab_player) >= 11 || !IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(ab_player), BarrierLOS.AllBarriersBlock)) == true)
+if (ab_player.tased_end_t < TotalTimeElapsed() || ab_var_2 || Health(EventPlayer()) < ab_var_3 || ab_player.downed_start_t || !ab_player.is_combatant || HasStatus(EventPlayer(), Status.Hacked) || HasStatus(EventPlayer(), Status.Stunned) || DistanceBetween(EventPlayer(), ab_player) >= 11 || !IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(ab_player), BarrierLOS.AllBarriersBlock))
 {
 	if (ab_player.perk_shockproof)
 	{
@@ -1560,7 +1560,7 @@ rule: "Team 2 Widowmaker: Grappling Hook"
 Event.OngoingPlayer
 Team.Team2
 Player.Widowmaker
-if (is_using_combat_pathfinding == true)
+if (is_using_combat_pathfinding)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -1584,9 +1584,9 @@ disabled rule: "Team 2 Widowmaker: Infra-Sight"
 Event.OngoingPlayer
 Team.Team2
 Player.Widowmaker
-if (is_target_in_los == true)
-if (is_infrasight_on == false)
-if ((wave_number >= 1 || is_living_boss) == true)
+if (is_target_in_los)
+if (!is_infrasight_on)
+if (wave_number >= 1 || is_living_boss)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -1602,8 +1602,8 @@ Event.OngoingPlayer
 Team.Team2
 Player.Widowmaker
 if (target == 0)
-if (is_infrasight_on == false)
-if (IsTrueForAny(combatants, ArrayElement().is_invisible == 1) == true)
+if (!is_infrasight_on)
+if (IsTrueForAny(combatants, ArrayElement().is_invisible == 1))
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -1653,7 +1653,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Reaper
 if (is_target_in_los >= 4)
-if (IsUsingAbility1(EventPlayer()) == false)
+if (!IsUsingAbility1(EventPlayer()))
 {
 	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), target)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -1666,12 +1666,12 @@ rule: "Team 2 Reaper: Wraith Form, Force Position"
 Event.OngoingPlayer
 Team.Team2
 Player.Reaper
-if (is_alive == true)
-if (is_aggressive == true)
+if (is_alive)
+if (is_aggressive)
 if (fear_end_t < TotalTimeElapsed())
-if (HasStatus(EventPlayer(), Status.Hacked) == false)
-if (HasStatus(EventPlayer(), Status.Rooted) == false)
-if (HasStatus(EventPlayer(), Status.Stunned) == false)
+if (!HasStatus(EventPlayer(), Status.Hacked))
+if (!HasStatus(EventPlayer(), Status.Rooted))
+if (!HasStatus(EventPlayer(), Status.Stunned))
 if (DistanceBetween(EventPlayer(), target) >= 10)
 if (DistanceBetween(EventPlayer(), target) <= 40)
 {
@@ -1698,10 +1698,10 @@ rule: "Team 2 Reaper: Cancel Wraith Form, Stop Forcing Position"
 Event.OngoingPlayer
 Team.Team2
 Player.Reaper
-if (is_wraith == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (is_wraith)
+if (IsUsingAbility1(EventPlayer()))
 if (DistanceBetween(EventPlayer(), target) <= 3)
-if (IsInLineOfSight(target, PositionOf(EventPlayer()), BarrierLOS.NoBarriersBlock) == true)
+if (IsInLineOfSight(target, PositionOf(EventPlayer()), BarrierLOS.NoBarriersBlock))
 {
 	if (DistanceBetween(EventPlayer(), RayCastHitPosition(EventPlayer(), EventPlayer().Position() + 5 * Down(), null, null, false)) >= 5)
 	{
@@ -1722,8 +1722,8 @@ rule: "Team 2 Reaper: Wraith Form Timed out / Target left / Target is invisible,
 Event.OngoingPlayer
 Team.Team2
 Player.Reaper
-if (is_wraith == true)
-if ((!IsUsingAbility1(EventPlayer()) || !target.is_combatant || target.active_ab_is_cloaked) == true)
+if (is_wraith)
+if (!IsUsingAbility1(EventPlayer()) || !target.is_combatant || target.active_ab_is_cloaked)
 {
 	StopChasingVariable(ab_wraith_pos);
 	StopForcingPlayerPosition(EventPlayer());
@@ -1738,8 +1738,8 @@ Event.OngoingPlayer
 Team.Team2
 Player.Reaper
 if (is_target_in_los >= 5)
-if (IsUsingAbility1(EventPlayer()) == false)
-if ((wave_number >= 12 || is_living_boss) == true)
+if (!IsUsingAbility1(EventPlayer()))
+if (wave_number >= 12 || is_living_boss)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -1796,12 +1796,12 @@ rule: "Team 2 Ana: Nano Boost"
 Event.OngoingPlayer
 Team.Team2
 Player.Ana
-if (is_target_in_los == true)
-if (ab_var_1 == false)
+if (is_target_in_los)
+if (!ab_var_1)
 if (NormalizedHealth(EventPlayer()) <= 0.75)
-if ((wave_number >= 13 || is_living_boss) == true)
-if (HasStatus(EventPlayer(), Status.Hacked) == false)
-if (HasStatus(EventPlayer(), Status.Stunned) == false)
+if (wave_number >= 13 || is_living_boss)
+if (!HasStatus(EventPlayer(), Status.Hacked))
+if (!HasStatus(EventPlayer(), Status.Stunned))
 {
 	ab_var_1 = true;
 	AbortIf(!is_living_boss && RandomInteger(1, 100) > 50);
@@ -1814,7 +1814,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Dva
 if (is_target_in_los >= 3)
-if ((DistanceBetween(EventPlayer(), target) <= 10 || IsUsingAbility1(EventPlayer()) || IsStanding(EventPlayer()) || IsInAlternateForm(EventPlayer())) == true)
+if (DistanceBetween(EventPlayer(), target) <= 10 || IsUsingAbility1(EventPlayer()) || IsStanding(EventPlayer()) || IsInAlternateForm(EventPlayer()))
 {
 	StartHoldingButton(EventPlayer(), Button.PrimaryFire);
 	WaitUntil(!(is_target_in_los >= 3 && (DistanceBetween(EventPlayer(), target) <= 15 || IsUsingAbility1(EventPlayer()) || IsStanding(EventPlayer()) || IsInAlternateForm(EventPlayer()))), RandomInteger(4, 8));
@@ -1830,11 +1830,11 @@ Event.OngoingPlayer
 Team.Team2
 Player.Dva
 if (is_target_in_los >= 5)
-if (is_aggressive == true)
-if (IsInAlternateForm(EventPlayer()) == false)
+if (is_aggressive)
+if (!IsInAlternateForm(EventPlayer()))
 if (DistanceBetween(EventPlayer(), target) >= 7.5)
 if (DistanceBetween(EventPlayer(), target) <= 25)
-if (IsInViewAngle(EventPlayer(), target, 5) == true)
+if (IsInViewAngle(EventPlayer(), target, 5))
 {
 	PressButton(EventPlayer(), Button.Ability1);
 	is_pathfinding_disabled = true;
@@ -1851,9 +1851,9 @@ Event.OngoingPlayer
 Team.Team2
 Player.Dva
 if (is_target_in_los >= 5)
-if (ab_var_1 == false)
+if (!ab_var_1)
 if (wave_number >= 15)
-if (IsInAlternateForm(EventPlayer()) == false)
+if (!IsInAlternateForm(EventPlayer()))
 if (NormalizedHealth(EventPlayer()) <= 0.8)
 if (Health(EventPlayer()) > 1)
 {
@@ -1879,9 +1879,9 @@ rule: "Team 2 D.Va: Boss Self-Destruct"
 Event.OngoingPlayer
 Team.Team2
 Player.Dva
-if (is_living_boss == true)
-if (ab_var_1 == false)
-if (IsInAlternateForm(EventPlayer()) == false)
+if (is_living_boss)
+if (!ab_var_1)
+if (!IsInAlternateForm(EventPlayer()))
 if (Health(EventPlayer()) < 1)
 {
 	SetUltimateCharge(EventPlayer(), 100);
@@ -1896,9 +1896,9 @@ rule: "Team 2 D.Va: Allow Call Mech"
 Event.OngoingPlayer
 Team.Team2
 Player.Dva
-if (is_alive == true)
-if (IsInAlternateForm(EventPlayer()) == true)
-if (ab_var_2 == false)
+if (is_alive)
+if (IsInAlternateForm(EventPlayer()))
+if (!ab_var_2)
 {
 	Wait(is_living_boss ? 25 : 10, WaitBehavior.AbortWhenFalse);
 	AbortIfConditionIsFalse();
@@ -1909,12 +1909,12 @@ rule: "Team 2 D.Va: Call Mech"
 Event.OngoingPlayer
 Team.Team2
 Player.Dva
-if (is_alive == true)
-if (IsInAlternateForm(EventPlayer()) == true)
-if (ab_var_2 == true)
-if (HasStatus(EventPlayer(), Status.Hacked) == false)
-if (HasStatus(EventPlayer(), Status.Stunned) == false)
-if (IsOnGround(EventPlayer()) == true)
+if (is_alive)
+if (IsInAlternateForm(EventPlayer()))
+if (ab_var_2)
+if (!HasStatus(EventPlayer(), Status.Hacked))
+if (!HasStatus(EventPlayer(), Status.Stunned))
+if (IsOnGround(EventPlayer()))
 {
 	SetUltimateCharge(EventPlayer(), 100);
 	PressButton(EventPlayer(), Button.Ultimate);
@@ -1925,7 +1925,7 @@ rule: "Team 2 D.Va: Set / Unset Is aggressive"
 Event.OngoingPlayer
 Team.Team2
 Player.Dva
-if (is_using_boss_aggression == false)
+if (!is_using_boss_aggression)
 if ((is_alive && IsInAlternateForm(EventPlayer())) == is_aggressive)
 {
 	is_aggressive = !is_aggressive;
@@ -1953,8 +1953,8 @@ rule: "Team 2 Orisa: Decrease / Normalize Move Speed while shooting on ground"
 Event.OngoingPlayer
 Team.Team2
 Player.Orisa
-if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
-if (IsOnGround(EventPlayer()) == true)
+if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
+if (IsOnGround(EventPlayer()))
 {
 	SetMoveSpeed(EventPlayer(), mut_amped ? 57.5 : 50);
 	WaitUntil(!(IsButtonHeld(EventPlayer(), Button.PrimaryFire) && IsOnGround(EventPlayer())), 99999);
@@ -1967,7 +1967,7 @@ Team.Team2
 Player.Orisa
 if (is_target_in_los >= 5)
 if (DistanceBetween(EventPlayer(), target) <= 15)
-if (IsInViewAngle(EventPlayer(), target, 5) == true)
+if (IsInViewAngle(EventPlayer(), target, 5))
 {
 	PressButton(EventPlayer(), Button.SecondaryFire);
 	Wait(15, WaitBehavior.IgnoreCondition);
@@ -1978,8 +1978,8 @@ rule: "Team 2 Orisa: Fortify"
 Event.OngoingPlayer
 Team.Team2
 Player.Orisa
-if ((SlotOf(EventPlayer()) != 1 || objective_phase_number == 1) == true)
-if (IsUsingAbility1(EventPlayer()) == false)
+if (SlotOf(EventPlayer()) != 1 || objective_phase_number == 1)
+if (!IsUsingAbility1(EventPlayer()))
 if (NormalizedHealth(EventPlayer()) <= (gmut_fortified ? 0.6 : 0.4))
 {
 	PressButton(EventPlayer(), Button.Ability1);
@@ -1991,7 +1991,7 @@ rule: "Team 2 Orisa: Javelin Spin"
 Event.OngoingPlayer
 Team.Team2
 Player.Orisa
-if (is_target_in_los == true)
+if (is_target_in_los)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -2006,8 +2006,8 @@ rule: "Team 2 Orisa: Terra-Surge"
 Event.OngoingPlayer
 Team.Team2
 Player.Orisa
-if (is_target_in_los == true)
-if ((wave_number >= 10 || is_living_boss) == true)
+if (is_target_in_los)
+if (wave_number >= 10 || is_living_boss)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -2024,7 +2024,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Roadhog
 if (is_target_in_los >= 4)
-if (IsUsingAbility1(EventPlayer()) == false)
+if (!IsUsingAbility1(EventPlayer()))
 {
 	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), target)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -2061,7 +2061,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Roadhog
 if (is_target_in_los >= 5)
-if ((wave_number >= 11 || is_living_boss) == true)
+if (wave_number >= 11 || is_living_boss)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -2077,7 +2077,7 @@ rule: "Team 2 Roadhog: Whole Hog Shoot"
 Event.OngoingPlayer
 Team.Team2
 Player.Roadhog
-if (IsUsingUltimate(EventPlayer()) == true)
+if (IsUsingUltimate(EventPlayer()))
 {
 	StartHoldingButton(EventPlayer(), Button.PrimaryFire);
 	Wait(RandomReal(0.7, 1.1), WaitBehavior.IgnoreCondition);
@@ -2108,7 +2108,7 @@ rule: "Team 2 Tracer: Blink"
 Event.OngoingPlayer
 Team.Team2
 Player.Tracer
-if (is_aggressive == true)
+if (is_aggressive)
 if (is_target_in_los >= 4)
 if (DistanceBetween(EventPlayer(), target) <= 5)
 if (AbsoluteValue(HorizontalAngleTowards(target, EventPlayer())) <= 45)
@@ -2129,10 +2129,10 @@ rule: "Team 2 Tracer: Recall to enemy on high ground"
 Event.OngoingPlayer
 Team.Team2
 Player.Tracer
-if (is_target_in_los == true)
-if (is_aggressive == true)
+if (is_target_in_los)
+if (is_aggressive)
 if (recall_block_end_t < TotalTimeElapsed())
-if (target.is_flying == false)
+if (!target.is_flying)
 if (DistanceBetween(EventPlayer(), target) <= 20)
 if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) >= 3)
 {
@@ -2152,12 +2152,12 @@ rule: "Team 2 Tracer: Pulse Bomb, Has Used Pulse Bomb (1)"
 Event.OngoingPlayer
 Team.Team2
 Player.Tracer
-if (is_target_in_los == true)
-if (is_aggressive == true)
-if (ab_var_1 == false)
+if (is_target_in_los)
+if (is_aggressive)
+if (!ab_var_1)
 if (NormalizedHealth(EventPlayer()) <= 0.4)
-if (HasStatus(EventPlayer(), Status.Hacked) == false)
-if (HasStatus(EventPlayer(), Status.Stunned) == false)
+if (!HasStatus(EventPlayer(), Status.Hacked))
+if (!HasStatus(EventPlayer(), Status.Stunned))
 {
 	ab_var_1 = true;
 	SetUltimateCharge(EventPlayer(), 100);
@@ -2193,7 +2193,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Genji
 if (is_target_in_los >= 4)
-if ((IsUsingUltimate(EventPlayer()) && DistanceBetween(EventPlayer(), target) > 5) == false)
+if (!IsUsingUltimate(EventPlayer()) || DistanceBetween(EventPlayer(), target) <= 5)
 {
 	if (DistanceBetween(EventPlayer(), target) > 4 || IsUsingUltimate(EventPlayer()))
 	{
@@ -2211,9 +2211,9 @@ rule: "Team 2 Genji: Jump"
 Event.OngoingPlayer
 Team.Team2
 Player.Genji
-if (is_using_combat_pathfinding == true)
-if (target.is_flying == false)
-if (IsOnGround(EventPlayer()) == true)
+if (is_using_combat_pathfinding)
+if (!target.is_flying)
+if (IsOnGround(EventPlayer()))
 {
 	PressButton(EventPlayer(), Button.Jump);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
@@ -2227,10 +2227,10 @@ Event.OngoingPlayer
 Team.Team2
 Player.Genji
 if (is_target_in_los >= 4)
-if (is_aggressive == true)
+if (is_aggressive)
 if (DistanceBetween(EventPlayer(), target) <= 15)
 if (AbsoluteValue(HorizontalAngleTowards(EventPlayer(), target)) <= 5)
-if (IsUsingAbility2(EventPlayer()) == false)
+if (!IsUsingAbility2(EventPlayer()))
 {
 	if (!is_load_limit_reached)
 	{
@@ -2260,9 +2260,9 @@ rule: "Team 2 Genji: Dragonblade"
 Event.OngoingPlayer
 Team.Team2
 Player.Genji
-if (is_alive == true)
+if (is_alive)
 if (NormalizedHealth(EventPlayer()) <= 0.5)
-if (IsUsingUltimate(EventPlayer()) == false)
+if (!IsUsingUltimate(EventPlayer()))
 {
 	SetUltimateCharge(EventPlayer(), 100);
 	PressButton(EventPlayer(), Button.Ultimate);
@@ -2309,9 +2309,9 @@ rule: "Team 2 Hanzo: Storm Arrows"
 Event.OngoingPlayer
 Team.Team2
 Player.Hanzo
-if (is_target_in_los == true)
+if (is_target_in_los)
 if (NormalizedHealth(EventPlayer()) <= 0.5)
-if (IsUsingAbility2(EventPlayer()) == false)
+if (!IsUsingAbility2(EventPlayer()))
 {
 	PressButton(EventPlayer(), Button.Ability2);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
@@ -2322,7 +2322,7 @@ rule: "Team 2 Hanzo: Dragonstrike"
 Event.OngoingPlayer
 Team.Team2
 Player.Hanzo
-if (is_alive == true)
+if (is_alive)
 if (is_target_in_los == 0)
 if (fear_end_t < TotalTimeElapsed())
 if (DistanceBetween(EventPlayer(), target) >= 15)
@@ -2352,11 +2352,11 @@ rule: "Team 2 Reinhardt: Hold / Drop Shield if Target and Distance to Target >= 
 Event.OngoingPlayer
 Team.Team2
 Player.Reinhardt
-if (is_target_in_los == true)
+if (is_target_in_los)
 if (DistanceBetween(EventPlayer(), target) >= 5)
 # Reinhardt won't automatically raise his shield again after charging or being hacked
-if (IsUsingAbility1(EventPlayer()) == false)
-if (HasStatus(EventPlayer(), Status.Hacked) == false)
+if (!IsUsingAbility1(EventPlayer()))
+if (!HasStatus(EventPlayer(), Status.Hacked))
 {
 	StartHoldingButton(EventPlayer(), Button.SecondaryFire);
 	WaitUntil(!(is_target_in_los && DistanceBetween(EventPlayer(), target) >= 5 && !IsUsingAbility1(EventPlayer()) && !HasStatus(EventPlayer(), Status.Hacked)), 99999);
@@ -2367,7 +2367,7 @@ rule: "Team 2 Reinhardt: Start / Stop Attacking if Distance to Target < 5m"
 Event.OngoingPlayer
 Team.Team2
 Player.Reinhardt
-if (is_target_in_los == true)
+if (is_target_in_los)
 if (DistanceBetween(EventPlayer(), target) < 5)
 {
 	StartHoldingButton(EventPlayer(), Button.PrimaryFire);
@@ -2395,7 +2395,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Reinhardt
 if (is_target_in_los >= 5)
-if (is_aggressive == true)
+if (is_aggressive)
 if (target.last_hit_by_shatter_t + 1 >= TotalTimeElapsed())
 if (target.last_hit_by_shatter_t + 0.4 < TotalTimeElapsed())
 if (AbsoluteValue(HorizontalAngleTowards(EventPlayer(), target)) <= 5)
@@ -2409,9 +2409,9 @@ rule: "Team 2 Reinhardt: Charge into battle (Mut: Lock 'n Load)"
 Event.OngoingPlayer
 Team.Team2
 Player.Reinhardt
-if (mut_lock_n_load == true)
+if (mut_lock_n_load)
 if (is_target_in_los >= 4)
-if (is_aggressive == true)
+if (is_aggressive)
 if (DistanceBetween(EventPlayer(), target) > 25)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
@@ -2424,8 +2424,8 @@ Event.OngoingPlayer
 Team.Team2
 Player.Reinhardt
 if (is_target_in_los >= 5)
-if (target.is_flying == false)
-if (IsFiringSecondary(EventPlayer()) == false)
+if (!target.is_flying)
+if (!IsFiringSecondary(EventPlayer()))
 {
 	Wait(1, WaitBehavior.AbortWhenFalse);
 	LoopIf(RandomInteger(1, 100) <= 100 * NormalizedHealth(EventPlayer()));
@@ -2440,8 +2440,8 @@ rule: "Team 2 Sigma: Flux"
 Event.OngoingPlayer
 Team.Team2
 Player.Sigma
-if (is_target_in_los == true)
-if ((is_living_boss || wave_number >= 10) == true)
+if (is_target_in_los)
+if (is_living_boss || wave_number >= 10)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -2464,8 +2464,8 @@ Event.OngoingPlayer
 Team.Team2
 Player.Sigma
 if (is_target_in_los >= 4)
-if (IsFiringSecondary(EventPlayer()) == false)
-if (IsUsingUltimate(EventPlayer()) == false)
+if (!IsFiringSecondary(EventPlayer()))
+if (!IsUsingUltimate(EventPlayer()))
 {
 	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), target)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -2479,9 +2479,9 @@ Event.OngoingPlayer
 Team.Team2
 Player.Sigma
 if (is_target_in_los >= 4)
-if (IsUsingAbility1(EventPlayer()) == false)
-if (IsUsingAbility2(EventPlayer()) == false)
-if (IsUsingUltimate(EventPlayer()) == false)
+if (!IsUsingAbility1(EventPlayer()))
+if (!IsUsingAbility2(EventPlayer()))
+if (!IsUsingUltimate(EventPlayer()))
 {
 	if (DistanceBetween(target, EventPlayer()) <= 30)
 	{
@@ -2498,8 +2498,8 @@ Event.OngoingPlayer
 Team.Team2
 Player.Sigma
 if (is_target_in_los >= 4)
-if (IsFiringSecondary(EventPlayer()) == false)
-if (IsUsingAbility2(EventPlayer()) == false)
+if (!IsFiringSecondary(EventPlayer()))
+if (!IsUsingAbility2(EventPlayer()))
 {
 	Wait(10, WaitBehavior.IgnoreCondition);
 	PressButton(EventPlayer(), Button.Ability1);
@@ -2510,10 +2510,10 @@ rule: "Team 2 Sigma: Rock"
 Event.OngoingPlayer
 Team.Team2
 Player.Sigma
-if (mut_lock_n_load == true)
+if (mut_lock_n_load)
 if (is_target_in_los >= 4)
-if (IsFiringSecondary(EventPlayer()) == false)
-if (IsUsingAbility1(EventPlayer()) == false)
+if (!IsFiringSecondary(EventPlayer()))
+if (!IsUsingAbility1(EventPlayer()))
 {
 	PressButton(EventPlayer(), Button.Ability2);
 	Wait(10, WaitBehavior.IgnoreCondition);
@@ -2523,7 +2523,7 @@ if (IsUsingAbility1(EventPlayer()) == false)
 rule: "Team 2 Boss Aggro: Set / Unset Is aggressive"
 Event.OngoingPlayer
 Team.Team2
-if (is_using_boss_aggression == true)
+if (is_using_boss_aggression)
 if (is_aggressive != is_target_in_los == 5)
 {
 	Wait(3, WaitBehavior.AbortWhenFalse);
@@ -2536,9 +2536,9 @@ if (is_aggressive != is_target_in_los == 5)
 rule: "Team 2 Boss Aggro: Set Is aggressive after losing 20% health since Boss last time aggressive"
 Event.OngoingPlayer
 Team.Team2
-if (is_using_boss_aggression == true)
-if (is_alive == true)
-if (is_aggressive == false)
+if (is_using_boss_aggression)
+if (is_alive)
+if (!is_aggressive)
 {
 	Number aggression_health_threshold = NormalizedHealth(EventPlayer()) - 0.2;
 	WaitUntil(NormalizedHealth(EventPlayer()) < aggression_health_threshold || is_aggressive || !is_living_boss, 99999);
@@ -2562,7 +2562,7 @@ rule: "MUT Team 2 (Mutator) Cassidy: Fully Loaded, Magnade"
 Event.OngoingPlayer
 Team.Team2
 Player.Cassidy
-if ((is_living_boss || mut_fully_loaded) == true)
+if (is_living_boss || mut_fully_loaded)
 if (wave_number >= 4)
 if (is_target_in_los >= 4)
 {
@@ -2579,7 +2579,7 @@ rule: "MUT Team 2 Echo (Mutator): Fully Loaded, Focusing Beam"
 Event.OngoingPlayer
 Team.Team2
 Player.Echo
-if (mut_fully_loaded == true)
+if (mut_fully_loaded)
 if (is_target_in_los >= 4)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
@@ -2595,7 +2595,7 @@ rule: "MUT Team 2 (Mutator) Team 2 Ana: Fully Loaded, Sleep Dart"
 Event.OngoingPlayer
 Team.Team2
 Player.Ana
-if (mut_fully_loaded == true)
+if (mut_fully_loaded)
 if (is_target_in_los >= 4)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
@@ -2611,9 +2611,9 @@ rule: "MUT Team 2 Pharah (Mutator): Fully Loaded, Concussive Blast"
 Event.OngoingPlayer
 Team.Team2
 Player.Pharah
-if (mut_fully_loaded == true)
-if (is_target_in_los == true)
-if (IsUsingAbility1(EventPlayer()) == false)
+if (mut_fully_loaded)
+if (is_target_in_los)
+if (!IsUsingAbility1(EventPlayer()))
 {
 	Wait(1, WaitBehavior.AbortWhenFalse);
 	PressButton(EventPlayer(), Button.Ability2);

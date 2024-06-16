@@ -14,7 +14,7 @@ Team.Team1
 rule: "Team 1 (Ability): Charged"
 Event.OngoingPlayer
 Team.Team1
-if (ab_charged == true)
+if (ab_charged)
 if (UltimateChargePercent(EventPlayer()) < ab_charged * 15)
 {
 	SetUltimateCharge(EventPlayer(), ab_charged * 15);
@@ -29,7 +29,7 @@ if (UltimateChargePercent(EventPlayer()) < ab_charged * 15)
 rule: "Team 1 (Ability): Haste Primary Fire"
 Event.OngoingPlayer
 Team.Team1
-if (ab_haste == true)
+if (ab_haste)
 if (AbilityCooldown(EventPlayer(), Button.PrimaryFire) > 0.1)
 {
 	SetAbilityCooldown(EventPlayer(), Button.PrimaryFire, (1 - 0.25 * ab_haste) * AbilityCooldown(EventPlayer(), Button.PrimaryFire));
@@ -38,7 +38,7 @@ if (AbilityCooldown(EventPlayer(), Button.PrimaryFire) > 0.1)
 rule: "Team 1 (Ability): Haste Secondary Fire"
 Event.OngoingPlayer
 Team.Team1
-if (ab_haste == true)
+if (ab_haste)
 if (AbilityCooldown(EventPlayer(), Button.SecondaryFire) > 0.1)
 {
 	SetAbilityCooldown(EventPlayer(), Button.SecondaryFire, (1 - 0.25 * ab_haste) * AbilityCooldown(EventPlayer(), Button.SecondaryFire));
@@ -47,7 +47,7 @@ if (AbilityCooldown(EventPlayer(), Button.SecondaryFire) > 0.1)
 rule: "Team 1 (Ability): Haste Ability 1"
 Event.OngoingPlayer
 Team.Team1
-if (ab_haste == true)
+if (ab_haste)
 if (AbilityCooldown(EventPlayer(), Button.Ability1) > 0.1)
 {
 	SetAbilityCooldown(EventPlayer(), Button.Ability1, (1 - 0.25 * ab_haste) * AbilityCooldown(EventPlayer(), Button.Ability1));
@@ -56,7 +56,7 @@ if (AbilityCooldown(EventPlayer(), Button.Ability1) > 0.1)
 rule: "Team 1 (Ability): Haste Ability 2"
 Event.OngoingPlayer
 Team.Team1
-if (ab_haste == true)
+if (ab_haste)
 if (AbilityCooldown(EventPlayer(), Button.Ability2) > 0.1)
 {
 	SetAbilityCooldown(EventPlayer(), Button.Ability2, (1 - 0.25 * ab_haste) * AbilityCooldown(EventPlayer(), Button.Ability2));
@@ -65,7 +65,7 @@ if (AbilityCooldown(EventPlayer(), Button.Ability2) > 0.1)
 rule: "Team 1 (Ability): Haste Jump"
 Event.OngoingPlayer
 Team.Team1
-if (ab_haste == true)
+if (ab_haste)
 if (AbilityCooldown(EventPlayer(), Button.Jump) > 0.1)
 {
 	SetAbilityCooldown(EventPlayer(), Button.Jump, (1 - 0.25 * ab_haste) * AbilityCooldown(EventPlayer(), Button.Jump));
@@ -74,7 +74,7 @@ if (AbilityCooldown(EventPlayer(), Button.Jump) > 0.1)
 rule: "Team 1 (Ability): Haste Crouch"
 Event.OngoingPlayer
 Team.Team1
-if (ab_haste == true)
+if (ab_haste)
 if (AbilityCooldown(EventPlayer(), Button.Crouch) > 0.1)
 {
 	SetAbilityCooldown(EventPlayer(), Button.Crouch, (1 - 0.25 * ab_haste) * AbilityCooldown(EventPlayer(), Button.Crouch));
@@ -105,7 +105,7 @@ if (last_damage_taken_t + 3 < TotalTimeElapsed())
 rule: "Team 1 (Ability): Quick Fix"
 Event.OnElimination
 Team.Team1
-if (ab_quick_fix == true)
+if (ab_quick_fix)
 {
 	Heal(EventPlayer(), null, ab_quick_fix * 50);
 	if (!current_quick_fix_speed_bonus)
@@ -121,8 +121,8 @@ if (ab_quick_fix == true)
 rule: "Team 1 (Ability): Second Wind"
 Event.OngoingPlayer
 Team.Team1
-if (ab_second_wind == true)
-if (downed_start_t == true)
+if (ab_second_wind)
+if (downed_start_t)
 if (downed_start_t + 0.9 < TotalTimeElapsed())
 {
 	SmallMessage(AllPlayers(), <"<0> received a second wind!", EventPlayer()>);
@@ -137,7 +137,7 @@ Event.OngoingPlayer
 Team.Team1
 if (perk_mystery_swap != false)
 if (perk_mystery_swap < TotalTimeElapsed())
-if (downed_start_t == false)
+if (downed_start_t == 0)
 {
 	Wait(1, WaitBehavior.AbortWhenFalse);
 	AbortIfConditionIsFalse();
@@ -174,8 +174,8 @@ if (downed_start_t == false)
 rule: "Team 1 (Perk): Bulletstorm"
 Event.OngoingPlayer
 Team.Team1
-if (perk_bulletstorm == true)
-if ((Ammo(EventPlayer(), false) < MaxAmmo(EventPlayer(), false) || Ammo(EventPlayer(), 1) < MaxAmmo(EventPlayer(), 1)) == true)
+if (perk_bulletstorm)
+if (Ammo(EventPlayer(), false) < MaxAmmo(EventPlayer(), false) || Ammo(EventPlayer(), 1) < MaxAmmo(EventPlayer(), 1))
 {
 	SetAmmo(EventPlayer(), false, 1000);
 	SetAmmo(EventPlayer(), 1, 1000);
@@ -184,7 +184,7 @@ if ((Ammo(EventPlayer(), false) < MaxAmmo(EventPlayer(), false) || Ammo(EventPla
 rule: "Team 1 (Perk): Nemesis"
 Event.OngoingPlayer
 Team.Team1
-if (IsDead(nemesis_killer) == true)
+if (IsDead(nemesis_killer))
 {
 	Wait(0.2, WaitBehavior.AbortWhenFalse);
 	AbortIf(!downed_start_t);
@@ -212,7 +212,7 @@ Team.Team1
 rule: "Team 1 (Perk): Crash N' Dash"
 Event.OngoingPlayer
 Team.Team1
-if (perk_crash_n_dash == true)
+if (perk_crash_n_dash)
 if (SpeedOf(EventPlayer()) >= 8)
 {
 	Heal(EventPlayer(), null, 10);

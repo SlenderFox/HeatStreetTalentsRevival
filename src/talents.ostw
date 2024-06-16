@@ -5,8 +5,8 @@ rule: "Ana: Multinade"
 Event.OngoingPlayer
 Team.Team1
 Player.Ana
-if (Talent1 == true)
-if (IsUsingAbility2(EventPlayer()) == true)
+if (Talent1)
+if (IsUsingAbility2(EventPlayer()))
 {
 	for (Number i! = 0; 4; 1)
 	{
@@ -23,9 +23,9 @@ rule: "Ana: Sleep Paralysis"
 Event.OnDamageDealt
 Team.Team1
 Player.Ana
+if (Talent2)
+if (EventAbility() == Button.Ability1)
 {
-	AbortIf(!Talent2);
-	AbortIf(EventAbility() != Button.Ability1);
 	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Black, Victim(), 2);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	WaitUntil(!HasStatus(Victim(), Status.Asleep), 5);
@@ -40,8 +40,8 @@ rule: "Zenyatta: Stress Relief"
 Event.OngoingPlayer
 Team.Team1
 Player.Zenyatta
-if (Talent1 == true)
-if (IsFiringSecondary(EventPlayer()) == true)
+if (Talent1)
+if (IsFiringSecondary(EventPlayer()))
 {
 	Wait(2, WaitBehavior.AbortWhenFalse);
 	PlayEffect(EventPlayer(), PlayEffect.ExplosionSound, Color.Black, EventPlayer(), 150);
@@ -54,8 +54,8 @@ rule: "Zenyatta: Perfect Balance"
 Event.OngoingPlayer
 Team.Team1
 Player.Zenyatta
-if (IsUsingUltimate(EventPlayer()) == true)
-if (Talent2 == true)
+if (Talent2)
+if (IsUsingUltimate(EventPlayer()))
 {
 	StartDamageOverTime(PlayersWithinRadius(EventPlayer(), 12, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 1, 100);
 	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, EventPlayer(), 24);
@@ -67,8 +67,8 @@ rule: "Orisa- Spinning Shreddies"
 Event.OngoingPlayer
 Team.Team1
 Player.Orisa
-if (Talent1 == true)
-if (IsUsingAbility2(EventPlayer()) == true)
+if (Talent1)
+if (IsUsingAbility2(EventPlayer()))
 {
 	while (IsUsingAbility2(EventPlayer()))
 	{
@@ -82,8 +82,8 @@ rule: "Orisa: metalhead"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Orisa
+if (Talent2)
 if (EventAbility() == Button.SecondaryFire)
-if (Talent2 == true)
 {
 	Damage(PlayersWithinRadius(Victim(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 50);
 	ApplyImpulse(RemoveFromArray(PlayersWithinRadius(Victim(), 6, Team.Team2, RadiusLOS.Surfaces), Victim()), DirectionTowards(Victim(), EventPlayer()), -15, Relative.ToWorld, ContraryMotion.Cancel);
@@ -95,8 +95,8 @@ rule: "Sigma: Accretion Disk"
 Event.OngoingPlayer
 Team.Team1
 Player.Sigma
-if (Talent1 == true)
-if (IsUsingAbility2(EventPlayer()) == true)
+if (Talent1)
+if (IsUsingAbility2(EventPlayer()))
 {
 	SetProjectileSpeed(EventPlayer(), 150);
 	SetProjectileGravity(EventPlayer(), 0);
@@ -109,10 +109,10 @@ rule: "Sigma: Accretion Disk"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Sigma
+if (Talent1)
+if (EventAbility() == Button.Ability2)
+if (Victim() != EventPlayer())
 {
-	AbortIf(!Talent1);
-	AbortIf(EventAbility() != Button.Ability2);
-	AbortIf(Victim() == EventPlayer());
 	SetStatus(Victim(), EventPlayer(), Status.KnockedDown, 1.5);
 	Damage(Victim(), EventPlayer(), EventDamage() * 0.75);
 }
@@ -121,8 +121,8 @@ rule: "Sigma: String Theory"
 Event.OngoingPlayer
 Team.Team1
 Player.Sigma
-if (Talent2 == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent2)
+if (IsUsingAbility1(EventPlayer()))
 {
 	Wait(1.8, WaitBehavior.AbortWhenFalse);
 	Ability_Projectile1 = EyePosition(EventPlayer());
@@ -149,7 +149,7 @@ rule: "Ashe: Black Gunpowder"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Ashe
-if (Talent1 == true)
+if (Talent1)
 if (EventAbility() == Button.Ability1)
 if (Victim() != EventPlayer())
 {
@@ -161,7 +161,7 @@ rule: "Ashe: Dancing Flames"
 Event.OnElimination
 Team.Team1
 Player.Ashe
-if (Talent2 == true)
+if (Talent2)
 {
 	PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.Orange, EyePosition(Victim()), 120);
 	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Orange, Victim(), 5);
@@ -171,29 +171,18 @@ if (Talent2 == true)
 	Damage(PlayersWithinRadius(Victim(), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 30);
 }
 
-rule: "Widowmaker: Widowmaker Ult"
-Event.OngoingPlayer
-Team.Team1
-Player.Widowmaker
-if (IsUsingUltimate(EventPlayer()) == true)
-{
-	AllPlayers(Team.Team2).Slowed_until = 9999 + TotalTimeElapsed();
-	WaitUntil(!IsUsingUltimate(EventPlayer()), 9999);
-	AllPlayers(Team.Team2).Slowed_until = TotalTimeElapsed();
-}
-
 rule: "Widowmaker: Baiser De Soie"
 Event.OnDamageDealt
 Team.Team1
 Player.Widowmaker
+if (Talent1)
+if (EventAbility() == Button.PrimaryFire)
+if (IsFiringSecondary(EventPlayer()))
+if (EventWasCriticalHit())
+if (NormalizedHealth(Victim() <= 0.3))
+if (!Victim().is_living_boss)
+if (!Victim().iv_is_portal)
 {
-	AbortIf(!Talent1);
-	AbortIf(EventAbility() != Button.PrimaryFire);
-	AbortIf(!IsFiringSecondary(EventPlayer()));
-	AbortIf(!EventWasCriticalHit());
-	AbortIf(NormalizedHealth(Victim()) > 0.3);
-	AbortIf(Victim().is_living_boss);
-	AbortIf(Victim().iv_is_portal);
 	PlayEffect(AllPlayers(), PlayEffect.BadPickupEffect, Color.Violet, Victim(), 3);
 	Damage(Victim(), EventPlayer(), 10000);
 	Damage(PlayersWithinRadius(Victim(), 3, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), EventDamage());
@@ -203,8 +192,8 @@ rule: "Widowmaker: Parting Gift"
 Event.OngoingPlayer
 Team.Team1
 Player.Widowmaker
-if (Talent2 == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent2)
+if (IsUsingAbility1(EventPlayer()))
 if (SpeedOf(EventPlayer()) >= 20)
 {
 	while (IsUsingAbility1(EventPlayer()))
@@ -223,8 +212,8 @@ rule: "Torbjorn: Heatwave"
 Event.OngoingPlayer
 Team.Team1
 Player.Torbjorn
-if (Talent1 == true)
-if ((IsUsingAbility2(EventPlayer()) || IsUsingUltimate(EventPlayer())) == true)
+if (Talent1)
+if (IsUsingAbility2(EventPlayer()) || IsUsingUltimate(EventPlayer()))
 {
 	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), 11);
 	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), 12);
@@ -239,11 +228,11 @@ rule: "[Torbjorn] Foundry"
 Event.OnDamageDealt
 Team.Team1
 Player.Torbjorn
+if (Talent2)
+if (EventAbility() == Button.PrimaryFire)
+if (Weapon(EventPlayer() == 2))
+if (DistanceBetween(EventPlayer(), Victim()) < 2.5)
 {
-	AbortIf(!Talent2);
-	AbortIf(EventAbility() != Button.PrimaryFire);
-	AbortIf(Weapon(EventPlayer()) != 2);
-	AbortIf(DistanceBetween(EventPlayer(), Victim()) > 2.5);
 	Damage(Victim(), EventPlayer(), EventDamage() * 0.4);
 	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Orange, Victim(), 0.25);
 }
@@ -252,7 +241,7 @@ rule: "[Torbjorn] Foundry - Bonus Speed"
 Event.OngoingPlayer
 Team.Team1
 Player.Torbjorn
-if (Talent2 == true)
+if (Talent2)
 if (Weapon(EventPlayer()) == 2)
 {
 	Move_Speed += 40;
@@ -264,9 +253,9 @@ rule: "Reinhardt: Fire Blast"
 Event.OnDamageDealt
 Team.Team1
 Player.Reinhardt
+if (Talent1)
+if (EventAbility() == Button.Ability2)
 {
-	AbortIf(!Talent1);
-	AbortIf(EventAbility() != Button.Ability2);
 	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Orange, Victim(), 5);
 	StartDamageOverTime(PlayersWithinRadius(Victim(), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 5, 20);
 	SetStatus(PlayersWithinRadius(Victim(), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Burning, 5);
@@ -276,9 +265,9 @@ rule: "Reinhardt: Epicenter"
 Event.OngoingPlayer
 Team.Team1
 Player.Reinhardt
-if (Talent2 == true)
-if (IsUsingUltimate(EventPlayer()) == true)
-if (IsOnGround(EventPlayer()) == true)
+if (Talent2)
+if (IsUsingUltimate(EventPlayer()))
+if (IsOnGround(EventPlayer()))
 {
 	SetStatus(PlayersWithinRadius(EventPlayer(), 20, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.KnockedDown, 2.5);
 	for (Number i! = 0; 3; 1)
@@ -294,8 +283,8 @@ rule: "Brigitte: Endeavor"
 Event.OngoingPlayer
 Team.Team1
 Player.Brigitte
-if (Talent1 == true)
-if (Ability_Available == true)
+if (Talent1)
+if (Ability_Available)
 {
 	CreateEffect(AllPlayers(), Effect.EchoCloningEffect, Team.Team1, EventPlayer(), 0.4, EffectRev.VisibleToPositionAndRadius);
 	Effects_[1] = LastCreatedEntity();
@@ -319,7 +308,7 @@ rule: "Brigitte: Endeavor"
 Event.OngoingPlayer
 Team.Team1
 Player.Brigitte
-if (Talent1 == true)
+if (Talent1)
 if (AbilityCooldown(EventPlayer(), Button.SecondaryFire) >= 0.1)
 {
 	Ability_Available = true;
@@ -331,8 +320,8 @@ rule: "Brigitte: Whiplash"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Brigitte
-if (Talent2 == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent2)
+if (IsUsingAbility1(EventPlayer()))
 {
 	PlayEffect(AllPlayers(), PlayEffect.RingExplosionSound, Color.Green, Victim(), 100);
 	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Orange, Victim(), 2.5);
@@ -345,9 +334,9 @@ rule: "Genji: Venomous Strike"
 Event.OnDamageDealt
 Team.Team1
 Player.Genji
+if (Talent1)
+if (EventAbility() == Button.Ability1)
 {
-	AbortIf(!Talent1);
-	AbortIf(EventAbility() != Button.Ability1);
 	StartHealOverTime(EventPlayer(), EventPlayer(), 3, 15);
 	StartDamageOverTime(Victim(), EventPlayer(), 3, 15);
 	Heal(EventPlayer(), EventPlayer(), 5);
@@ -359,9 +348,9 @@ rule: "Genji: Sharpened Storm - Primary"
 Event.OngoingPlayer
 Team.Team1
 Player.Genji
-if (Talent2 == true)
-if (IsFiringPrimary(EventPlayer()) == true)
-if (IsUsingUltimate(EventPlayer()) == false)
+if (Talent2)
+if (IsFiringPrimary(EventPlayer()))
+if (!IsUsingUltimate(EventPlayer()))
 {
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	CreateProjectile(ProjectileType.GenjiShuriken, EventPlayer(), null, null, Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 27, 2, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 60, 4, 0, 0, 0);
@@ -375,8 +364,8 @@ rule: "Genji: Sharpened Storm - Secondary"
 Event.OngoingPlayer
 Team.Team1
 Player.Genji
-if (Talent2 == true)
-if (IsFiringSecondary(EventPlayer()) == true)
+if (Talent2)
+if (IsFiringSecondary(EventPlayer()))
 {
 	MinWait();
 	CreateProjectile(ProjectileType.GenjiShuriken, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + 4.5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 27, 2, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 60, 4, 0, 0, 0);
@@ -388,9 +377,9 @@ rule: "Mercy: Wings of Grand"
 Event.OngoingPlayer
 Team.Team1
 Player.Mercy
-if (Talent1 == true)
-if (IsAlive(EventPlayer()) == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent1)
+if (IsAlive(EventPlayer()))
+if (IsUsingAbility1(EventPlayer()))
 {
 	if (SpeedOf(EventPlayer()) > 10)
 	{
@@ -407,8 +396,8 @@ rule: "Mercy: Holy Light Missiles"
 Event.OngoingPlayer
 Team.Team1
 Player.Mercy
-if (Talent2 == true)
-if (IsUsingUltimate(EventPlayer()) == true)
+if (Talent2)
+if (IsUsingUltimate(EventPlayer()))
 {
 	CreateEffect(AllPlayers(), Effect.Orb, Color.Yellow, Ability_Projectile1, 1, EffectRev.VisibleToPositionAndRadius);
 	Effects_[1] = LastCreatedEntity();
@@ -431,8 +420,8 @@ rule: "Tracer: Vortex"
 Event.OngoingPlayer
 Team.Team1
 Player.Tracer
-if (IsUsingAbility2(EventPlayer()) == true)
-if (Talent1 == true)
+if (Talent1)
+if (IsUsingAbility2(EventPlayer()))
 {
 	Heal(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 1);
 	Damage(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 25);
@@ -443,6 +432,7 @@ if (Talent1 == true)
 	SetEnvironmentCreditPlayer(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer());
 }
 
+//> What is this rule
 rule: "Tracer: Vortex 2"
 Event.OnHealingTaken
 Team.Team2
@@ -462,22 +452,34 @@ Team.Team2
 	Cancel_Momentum();
 }
 
-rule: "Tracer: Chain Reaction"
+rule: "Tracer: Chain Reaction Initial"
+Event.OnDamageDealt
+Team.Team1
+Player.Tracer
+if (Talent2)
+if (EventAbility() == Button.Ultimate)
+# Ignore stick damage
+if (EventDamage() > 20)
+{
+	Victim().Chain_Reaction_On = true;
+}
+
+rule: "Tracer: Chain Reaction Propagation"
 Event.OngoingPlayer
 Team.Team2
-if (IsTrueForAny(FilteredArray(AllLivingPlayers(Team.Team2), ArrayElement().Chain_Reaction_On), DistanceBetween(EventPlayer(), ArrayElement()) <= 7) == true)
-if (Chain_Reaction_Immune == false)
-if (Chain_Reaction_On == false)
-if (IsAlive(EventPlayer()) == true)
+if (IsTrueForAny(FilteredArray(AllLivingPlayers(Team.Team2), ArrayElement().Chain_Reaction_On), DistanceBetween(EventPlayer(), ArrayElement()) <= 7))
+if (!Chain_Reaction_Immune)
+if (!Chain_Reaction_On)
+if (IsAlive(EventPlayer()))
 {
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	Chain_Reaction_On = true;
 }
 
-rule: "Tracer: Chain Reaction 2"
+rule: "Tracer: Chain Reaction Damage"
 Event.OngoingPlayer
 Team.Team2
-if (Chain_Reaction_On == true)
+if (Chain_Reaction_On)
 {
 	Wait(0.1, WaitBehavior.IgnoreCondition);
 	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Aqua, EventPlayer(), 3);
@@ -491,23 +493,12 @@ if (Chain_Reaction_On == true)
 	Chain_Reaction_Immune = false;
 }
 
-rule: "Tracer: Chain Reaction 3"
-Event.OnDamageDealt
-Team.Team1
-Player.Tracer
-{
-	AbortIf(!Talent2);
-	AbortIf(EventAbility() != Button.Ultimate);
-	AbortIf(EventDamage() <= 20);
-	Victim().Chain_Reaction_On = true;
-}
-
 rule: "Symmetra: Sentry Paragon"
 Event.OngoingPlayer
 Team.Team1
 Player.Symmetra
-if (Talent1 == true)
-if (IsAlive(EventPlayer()) == true)
+if (Talent1)
+if (IsAlive(EventPlayer()))
 {
 	Wait(0.5, WaitBehavior.AbortWhenFalse);
 	StartDamageModification(AllPlayers(Team.Team2), EventPlayer(), 66.667, DamageModificationRev.ReceiversDamagersAndDamagePercent);
@@ -524,7 +515,7 @@ rule: "Symmetra: Shield Generator"
 Event.OnFinalBlow
 Team.Team1
 Player.Symmetra
-if (Talent2 == true)
+if (Talent2)
 {
 	Damage_Dealt += 30;
 	Move_Speed += 30;
@@ -543,9 +534,9 @@ rule: "[Hanzo] Arrow Rain"
 Event.OngoingPlayer
 Team.Team1
 Player.Hanzo
-if (Talent1 == true)
-if (IsFiringPrimary(EventPlayer()) == true)
-if (IsUsingAbility2(EventPlayer()) == true)
+if (Talent1)
+if (IsFiringPrimary(EventPlayer()))
+if (IsUsingAbility2(EventPlayer()))
 {
 	for (Number i! = 0; 2; 1)
 	{
@@ -558,7 +549,7 @@ rule: "Hanzo: Stormbreak"
 Event.OnFinalBlow
 Team.Team1
 Player.Hanzo
-if (Talent2 == true)
+if (Talent2)
 {
 	Ability_Countdown = 4;
 	ChaseVariableAtRate(Ability_Countdown, 0, 1, RateChaseReevaluation.DestinationAndRate);
@@ -568,7 +559,7 @@ rule: "Hanzo: Stormbreak - Boost"
 Event.OngoingPlayer
 Team.Team1
 Player.Hanzo
-if (Talent2 == true)
+if (Talent2)
 if (Ability_Countdown > 0)
 {
 	CreateEffect(AllPlayers(), Effect.WinstonPrimalRageEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
@@ -593,8 +584,8 @@ rule: "Echo: Bomber Jacket"
 Event.OngoingPlayer
 Team.Team1
 Player.Echo
-if (Talent1 == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent1)
+if (IsUsingAbility1(EventPlayer()))
 {
 	CreateHomingProjectile(ProjectileType.EchoStickyBomb, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(-0.5, false, false), EventPlayer(), LocalVector.Rotation), Down(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 30, 1, 1.5, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0, 20, 5, 0, SortedArray(FilteredArray(AllPlayers(Team.Team2), IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock) && ArrayElement().is_alive), DistanceBetween(EventPlayer(), ArrayElement()))[0], 1);
 	CreateHomingProjectile(ProjectileType.EchoStickyBomb, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(0.5, false, false), EventPlayer(), LocalVector.Rotation), Down(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 30, 1, 1.5, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0, 20, 5, 0, SortedArray(FilteredArray(AllPlayers(Team.Team2), IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock) && ArrayElement().is_alive), DistanceBetween(EventPlayer(), ArrayElement()))[0], 1);
@@ -606,12 +597,12 @@ rule: "Echo: Focusing Optics"
 Event.OnDamageDealt
 Team.Team1
 Player.Echo
+if (Talent2)
+if (EventAbility() == Button.Ability2)
+if (!IsDuplicating(EventPlayer()))
+if (NormalizedHealth(Victim()) > 0.5)
+if (NormalizedHealth(Victim()) <= 0.9)
 {
-	AbortIf(!Talent2);
-	AbortIf(EventAbility() != Button.Ability2);
-	AbortIf(IsDuplicating(EventPlayer()));
-	AbortIf(NormalizedHealth(Victim()) <= 0.5);
-	AbortIf(NormalizedHealth(Victim()) > 0.9);
 	Damage(Victim(), EventPlayer(), EventDamage() * 3);
 	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Violet, Victim(), 0.5);
 }
@@ -620,8 +611,8 @@ rule: "[Lucio] Chord Cadence"
 Event.OngoingPlayer
 Team.Team1
 Player.Lucio
-if (Talent1 == true)
-if (IsUsingAbility2(EventPlayer()) == true)
+if (Talent1)
+if (IsUsingAbility2(EventPlayer()))
 {
 	WaitUntil(!IsUsingAbility2(EventPlayer()), 4);
 	SetAbilityCooldown(EventPlayer(), Button.Ability2, 0);
@@ -635,9 +626,9 @@ rule: "[Lucio] Chord Cadence burstfire"
 Event.OngoingPlayer
 Team.Team1
 Player.Lucio
-if (Talent1 == true)
-if (IsFiringPrimary(EventPlayer()) == true)
-if (IsUsingAbility2(EventPlayer()) == true)
+if (Talent1)
+if (IsUsingAbility2(EventPlayer()))
+if (IsFiringPrimary(EventPlayer()))
 {
 	for (Number i! = 0; 4; 1)
 	{
@@ -657,8 +648,8 @@ rule: "Lucio: Reverse Amp"
 Event.OngoingPlayer
 Team.Team1
 Player.Lucio
-if (IsUsingAbility2(EventPlayer()) == true)
-if (Talent2 == true)
+if (IsUsingAbility2(EventPlayer()))
+if (Talent2)
 {
 	if (IsUsingAbility1(EventPlayer()))
 	{
@@ -676,8 +667,8 @@ rule: "D.Va: Voltage Grid"
 Event.OngoingPlayer
 Team.Team1
 Player.Dva
-if (IsFiringSecondary(EventPlayer()) == true)
-if (Talent1 == true)
+if (IsFiringSecondary(EventPlayer()))
+if (Talent1)
 {
 	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 2, 0.15);
 	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 5, 0.15);
@@ -697,7 +688,7 @@ Event.PlayerDealtKnockback
 Team.Team1
 Player.Dva
 if (EventAbility() == Button.Ability1)
-if (Talent2 == true)
+if (Talent2)
 {
 	Damage(Victim(), EventPlayer(), 30);
 	SetStatus(Victim(), null, Status.Burning, 3);
@@ -709,8 +700,8 @@ rule: "Zarya- Combusta-bubble - Detect Barrier Target"
 Event.OngoingPlayer
 Team.Team1
 Player.Zarya
-if (Talent1 == true)
-if (IsUsingAbility2(EventPlayer()) == true)
+if (Talent1)
+if (IsUsingAbility2(EventPlayer()))
 {
 	Wait(0.025, WaitBehavior.IgnoreCondition);
 	Ability_End = FilteredArray(PlayersWithinRadius(EventPlayer(), 30, Team.Team1, RadiusLOS.Surfaces), HasStatus(ArrayElement(), Status.Invincible) && IsAlive(ArrayElement()) && IsInViewAngle(EventPlayer(), ArrayElement(), 103))[0];
@@ -725,8 +716,8 @@ rule: "Zarya- Combusta-Bubble - Self bubble"
 Event.OngoingPlayer
 Team.Team1
 Player.Zarya
-if (Talent1 == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent1)
+if (IsUsingAbility1(EventPlayer()))
 {
 	Wait(0.1, WaitBehavior.AbortWhenFalse);
 	WaitUntil(!IsUsingAbility1(EventPlayer()), 2);
@@ -740,9 +731,10 @@ rule: "Zarya- Power Surge"
 Event.OngoingPlayer
 Team.Team1
 Player.Zarya
-if (Talent2 == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent2)
+if (IsUsingAbility1(EventPlayer()))
 {
+	//> Can this be a condition
 	AbortIf(!HasStatus(EventPlayer(), Status.Invincible));
 	Damage(EventPlayer(), null, 10000);
 	Wait(0.1, WaitBehavior.IgnoreCondition);
@@ -755,9 +747,9 @@ rule: "Pharah: Head Trauma"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Pharah
-if (Talent1 == true)
+if (Talent1)
 if (EventAbility() == Button.Ability2)
-if (Victim().iv_is_portal == false)
+if (!Victim().iv_is_portal)
 if (Victim() != EventPlayer())
 {
 	Damage(Victim(), EventPlayer(), 60);
@@ -770,9 +762,9 @@ rule: "[Pharah] Weaponized Storm"
 Event.OngoingPlayer
 Team.Team1
 Player.Pharah
-if (Talent2 == true)
-if (IsFiringPrimary(EventPlayer()) == true)
-if (Ammo(EventPlayer(), false) % 6 == false)
+if (Talent2)
+if (IsFiringPrimary(EventPlayer()))
+if (!Ammo(EventPlayer(), false) % 6)
 {
 	SetProjectileSpeed(EventPlayer(), 125);
 	Ability_End = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 100, AllLivingPlayers(Team.All), EventPlayer(), true);
@@ -797,10 +789,10 @@ rule: "Junkrat: Pyromania"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Junkrat
+if (Talent1)
+if (EventAbility() != Button.Melee)
+if (Victim() != EventPlayer())
 {
-	AbortIf(!Talent1);
-	AbortIf(EventAbility() == Button.Melee);
-	AbortIf(Victim() == EventPlayer());
 	StartDamageOverTime(Victim(), EventPlayer(), 2, 20);
 	SetStatus(Victim(), null, Status.Burning, 2);
 }
@@ -809,7 +801,7 @@ rule: "Junkrat: Trigger Happy"
 Event.OngoingPlayer
 Team.Team1
 Player.Junkrat
-if (Talent2 == true)
+if (Talent2)
 if (AbilityCharge(EventPlayer(), Button.Ability1) < 5)
 {
 	Wait(4, WaitBehavior.AbortWhenFalse);
@@ -821,8 +813,8 @@ rule: "Roadhog: Stench"
 Event.OngoingPlayer
 Team.Team1
 Player.Roadhog
-if (Talent1 == true)
-if (IsAlive(EventPlayer()) == true)
+if (Talent1)
+if (IsAlive(EventPlayer()))
 {
 	CreateEffect(AllPlayers(), Effect.Ring, Color.Violet, EventPlayer(), 8, EffectRev.VisibleToPositionAndRadius);
 	Effects_[1] = LastCreatedEntity();
@@ -837,7 +829,7 @@ Event.OngoingPlayer
 Team.Team1
 Player.Roadhog
 if (DistanceBetween(EventPlayer(), ClosestPlayerTo(EventPlayer(), Team.Team2)) <= 8)
-if (Talent1 == true)
+if (Talent1)
 {
 	Damage(PlayersWithinRadius(EventPlayer(), 8, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 9);
 	Wait(0.4, WaitBehavior.IgnoreCondition);
@@ -848,8 +840,8 @@ rule: "Roadhog: Chainsnap"
 Event.OngoingPlayer
 Team.Team1
 Player.Roadhog
-if (Talent2 == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent2)
+if (IsUsingAbility1(EventPlayer()))
 {
 	Damage_Dealt += 400;
 	WaitUntil(!Talent2 || !IsUsingAbility1(EventPlayer()), 99999);
@@ -862,7 +854,7 @@ rule: "Roadhog: Chainsnap - Reset cooldown"
 Event.OnElimination
 Team.Team1
 Player.Roadhog
-if (Talent2 == true)
+if (Talent2)
 {
 	WaitUntil(!IsUsingAbility1(EventPlayer()), 3);
 	SetAbilityCooldown(EventPlayer(), Button.Ability1, false);
@@ -872,8 +864,8 @@ rule: "Moira: Flourish"
 Event.OngoingPlayer
 Team.Team1
 Player.Moira
-if (IsUsingAbility1(EventPlayer()) == true)
-if (Talent1 == true)
+if (IsUsingAbility1(EventPlayer()))
+if (Talent1)
 {
 	StartDamageOverTime(PlayersWithinRadius(EventPlayer(), 3, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 2, 25);
 	StartHealOverTime(PlayersWithinRadius(EventPlayer(), 3, Team.Team1, RadiusLOS.Surfaces), EventPlayer(), 2, 40);
@@ -886,9 +878,9 @@ rule: "[Moira] Catalyst -"
 Event.OngoingPlayer
 Team.Team1
 Player.Moira
-if (Talent2 == true)
-if (IsUsingUltimate(EventPlayer()) == true)
-if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
+if (Talent2)
+if (IsUsingUltimate(EventPlayer()))
+if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 if (AbilityResource(EventPlayer(), Button.PrimaryFire) > 8)
 {
 	Damage_Dealt += 300;
@@ -905,9 +897,9 @@ rule: "[Moira] Catalyst -"
 Event.OngoingPlayer
 Team.Team1
 Player.Moira
-if (Talent2 == true)
-if (IsUsingUltimate(EventPlayer()) == true)
-if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
+if (Talent2)
+if (IsUsingUltimate(EventPlayer()))
+if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 if (AbilityResource(EventPlayer(), Button.PrimaryFire) > 8)
 {
 	SetAbilityResource(EventPlayer(), Button.PrimaryFire, AbilityResource(EventPlayer(), Button.PrimaryFire) - 15);
@@ -921,8 +913,8 @@ rule: "Mei: Cold Snap"
 Event.OngoingPlayer
 Team.Team1
 Player.Mei
-if (Talent1 == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent1)
+if (IsUsingAbility1(EventPlayer()))
 {
 	Wait(0.5, WaitBehavior.AbortWhenFalse);
 	WaitUntil(!IsUsingAbility1(EventPlayer()), 99999);
@@ -936,8 +928,8 @@ rule: "[Mei] Fractical Strike"
 Event.OngoingPlayer
 Team.Team1
 Player.Mei
-if (Talent2 == true)
-if (IsFiringSecondary(EventPlayer()) == true)
+if (Talent2)
+if (IsFiringSecondary(EventPlayer()))
 {
 	Damage_Dealt -= 60;
 	Wait(0.3, WaitBehavior.IgnoreCondition);
@@ -954,7 +946,7 @@ rule: "[Winston] Next Generation"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Winston
-if (Talent1 == true)
+if (Talent1)
 if (EventAbility() == Button.Ultimate)
 {
 	SetUltimateCharge(EventPlayer(), UltimateChargePercent(EventPlayer()) + 5);
@@ -965,8 +957,8 @@ rule: "[Winston] Quake"
 Event.OngoingPlayer
 Team.Team1
 Player.Winston
-if (Talent2 == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent2)
+if (IsUsingAbility1(EventPlayer()))
 {
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	WaitUntil(IsOnGround(EventPlayer()), 99999);
@@ -981,8 +973,8 @@ rule: "Reaper: Wraith Wrath"
 Event.OngoingPlayer
 Team.Team1
 Player.Reaper
-if (IsUsingAbility1(EventPlayer()) == true)
-if (Talent1 == true)
+if (IsUsingAbility1(EventPlayer()))
+if (Talent1)
 {
 	Wait(0.1, WaitBehavior.AbortWhenFalse);
 	CancelPrimaryAction(EventPlayer());
@@ -1004,8 +996,8 @@ rule: "Reaper: Loom"
 Event.OngoingPlayer
 Team.Team1
 Player.Reaper
-if (IsUsingAbility1(EventPlayer()) == true)
-if (Talent2 == true)
+if (IsUsingAbility1(EventPlayer()))
+if (Talent2)
 {
 	SetStatus(FilteredArray(PlayersInViewAngle(EventPlayer(), Team.Team2, 45), IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock)), EventPlayer(), Status.Hacked, 2);
 	Damage(FilteredArray(PlayersInViewAngle(EventPlayer(), Team.Team2, 45), IsInLineOfSight(ArrayElement(), EventPlayer(), BarrierLOS.NoBarriersBlock)), EventPlayer(), 35);
@@ -1015,8 +1007,8 @@ rule: "[Sojourn] Thunderout Kicks"
 Event.OngoingPlayer
 Team.Team1
 Player.Sojourn
-if (Talent1 == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent1)
+if (IsUsingAbility1(EventPlayer()))
 {
 	Ability_Active = 1 + TotalTimeElapsed();
 	WaitUntil(AbilityCooldown(EventPlayer(), Button.Ability1) > 1 || IsButtonHeld(EventPlayer(), Button.Jump), 1);
@@ -1029,10 +1021,10 @@ rule: "Sojourn: Matter Splatter"
 Event.OnDamageDealt
 Team.Team1
 Player.Sojourn
+if (Talent2)
+if (EventAbility() == Button.SecondaryFire)
+if (EventWasCriticalHit())
 {
-	AbortIf(!Talent2);
-	AbortIf(EventAbility() != Button.SecondaryFire);
-	AbortIf(!EventWasCriticalHit());
 	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(Victim()), 4);
 	Damage(PlayersWithinRadius(Victim(), 4, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), EventDamage());
 }
@@ -1041,8 +1033,8 @@ rule: "Soldier76: Triple Threat"
 Event.OngoingPlayer
 Team.Team1
 Player.Soldier76
-if (Talent1 == true)
-if (IsFiringSecondary(EventPlayer()) == true)
+if (Talent1)
+if (IsFiringSecondary(EventPlayer()))
 {
 	CreateProjectile(ProjectileType.PharahRocket, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + 4.5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 60, 1, 2.5, PlayEffect.GoodExplosion, PlayEffect.RingExplosionSound, 0, 60, 4, 0, 0, 0);
 	CreateProjectile(ProjectileType.PharahRocket, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) - 4.5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 60, 1, 2.5, PlayEffect.GoodExplosion, PlayEffect.RingExplosionSound, 0, 60, 4, 0, 0, 0);
@@ -1052,7 +1044,7 @@ rule: "Soldier76: Triple Threat - Init rocket"
 Event.OngoingPlayer
 Team.Team1
 Player.Soldier76
-if (Talent1 == true)
+if (Talent1)
 {
 	//> So fucking wrong
 	Ability_Projectile1 = Ability_Available;
@@ -1063,9 +1055,9 @@ rule: "Soldier76: Espionage"
 Event.OnHealingDealt
 Team.Team1
 Player.Soldier76
+if (Talent2)
+if (EventAbility() == Button.Ability2)
 {
-	AbortIf(!Talent2);
-	AbortIf(EventAbility() != Button.Ability2);
 	if (!Healee().soldier_espionage)
 	{
 		Healee().soldier_espionage = true;
@@ -1075,7 +1067,7 @@ Player.Soldier76
 rule: "Soldier76: Espionage - Allies effect"
 Event.OngoingPlayer
 Team.Team1
-if (soldier_espionage == true)
+if (soldier_espionage)
 {
 	soldier_espionage = false;
 	if (downed_start_t && CountOf(revivers) > 0)
@@ -1090,8 +1082,8 @@ rule: "Baptiste: Corrode"
 Event.OngoingPlayer
 Team.Team1
 Player.Baptiste
-if (IsUsingAbility1(EventPlayer()) == true)
-if (Talent1 == true)
+if (IsUsingAbility1(EventPlayer()))
+if (Talent1)
 {
 	for (Number i! = 0; 3; 1)
 	{
@@ -1106,9 +1098,9 @@ rule: "[Baptiste] Aerial Ace - Jump"
 Event.OngoingPlayer
 Team.Team1
 Player.Baptiste
-if (Talent2 == true)
-if (IsCrouching(EventPlayer()) == true)
-if (HasStatus(EventPlayer(), Status.Hacked) == false)
+if (Talent2)
+if (IsCrouching(EventPlayer()))
+if (!HasStatus(EventPlayer(), Status.Hacked))
 {
 	WaitUntil(!IsCrouching(EventPlayer()), 9999);
 	WaitUntil(IsJumping(EventPlayer()), 1);
@@ -1124,11 +1116,11 @@ rule: "[Baptiste] Aerial Ace - Slower fall"
 Event.OngoingPlayer
 Team.Team1
 Player.Baptiste
-if (Talent2 == true)
-if (Ability_Available == true)
-if (IsAlive(EventPlayer()) == true)
-if (IsButtonHeld(EventPlayer(), Button.Jump) == true)
-if ((HasStatus(EventPlayer(), Status.Stunned) && HasStatus(EventPlayer(), Status.Hacked)) == false)
+if (Talent2)
+if (Ability_Available)
+if (IsAlive(EventPlayer()))
+if (IsButtonHeld(EventPlayer(), Button.Jump))
+if (!HasStatus(EventPlayer(), Status.Stunned) && HasStatus(EventPlayer(), Status.Hacked))
 if (AltitudeOf(EventPlayer()) >= 1)
 if (VerticalSpeedOf(EventPlayer()) < 0)
 {
@@ -1143,9 +1135,9 @@ rule: "[Bastion]- Fusillade"
 Event.OngoingPlayer
 Team.Team1
 Player.Bastion
-if (Talent1 == true)
-if (IsInAlternateForm(EventPlayer()) == true)
-if (IsFiringPrimary(EventPlayer()) == true)
+if (Talent1)
+if (IsInAlternateForm(EventPlayer()))
+if (IsFiringPrimary(EventPlayer()))
 {
 	Wait(0.5, WaitBehavior.AbortWhenFalse);
 	while (IsFiringPrimary(EventPlayer()) && IsInAlternateForm(EventPlayer()))
@@ -1159,10 +1151,10 @@ rule: "[Bastion]: Trickshot"
 Event.OnDamageDealt
 Team.Team1
 Player.Bastion
+if (Talent2)
+if (EventAbility() == Button.SecondaryFire)
+if (EventDamage() <= 30)
 {
-	AbortIf(!Talent2);
-	AbortIf(EventAbility() != Button.SecondaryFire);
-	AbortIf(EventDamage() > 30);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	SetAbilityCooldown(EventPlayer(), Button.SecondaryFire, AbilityCooldown(EventPlayer(), Button.SecondaryFire) - 3);
 	Damage(PlayersWithinRadius(Victim(), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 30);
@@ -1173,8 +1165,8 @@ rule: "[Sombra] Stack Overflow"
 Event.OngoingPlayer
 Team.Team1
 Player.Sombra
-if (Talent1 == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent1)
+if (IsUsingAbility1(EventPlayer()))
 {
 	Wait(0.8, WaitBehavior.AbortWhenFalse);
 	WaitUntil(IsButtonHeld(EventPlayer(), Button.PrimaryFire) || IsButtonHeld(EventPlayer(), Button.Ability1) || IsButtonHeld(EventPlayer(), Button.Ultimate) || IsButtonHeld(EventPlayer(), Button.Melee) || IsCommunicatingAnyEmote(EventPlayer()), 99999);
@@ -1193,8 +1185,8 @@ rule: "[Sombra] Stack Overflow - melee"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Sombra
-if (Talent1 == true)
-if (Ability_Active == true)
+if (Talent1)
+if (Ability_Active)
 if (EventAbility() == Button.Melee)
 {
 	SetStatus(Victim(), EventPlayer(), Status.Stunned, 1);
@@ -1206,8 +1198,8 @@ rule: "[Sombra] Cyberattack"
 Event.OngoingPlayer
 Team.Team1
 Player.Sombra
-if (Talent2 == true)
-if (IsUsingAbility2(EventPlayer()) == true)
+if (Talent2)
+if (IsUsingAbility2(EventPlayer()))
 {
 	WaitUntil(!IsUsingAbility2(EventPlayer()), 99999);
 	AbortIf(IsButtonHeld(EventPlayer(), Button.Interact));
@@ -1224,8 +1216,8 @@ rule: "Doomfist: Punch Card"
 Event.OngoingPlayer
 Team.Team1
 Player.Doomfist
-if (Talent1 == true)
-if (IsFiringSecondary(EventPlayer()) == true)
+if (Talent1)
+if (IsFiringSecondary(EventPlayer()))
 {
 	Wait(1, WaitBehavior.AbortWhenFalse);
 	Damage_Dealt += 200;
@@ -1237,8 +1229,8 @@ rule: "[Doomfist] Fire Quake - Use seismic slam"
 Event.OngoingPlayer
 Team.Team1
 Player.Doomfist
-if (Talent2 == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent2)
+if (IsUsingAbility1(EventPlayer()))
 {
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	WaitUntil(IsOnGround(EventPlayer()) || !IsUsingAbility1(EventPlayer()), 1000);
@@ -1259,8 +1251,8 @@ rule: "Cassidy: Standoff"
 Event.OngoingPlayer
 Team.Team1
 Player.Cassidy
-if (IsUsingUltimate(EventPlayer()) == true)
-if (Talent1 == true)
+if (IsUsingUltimate(EventPlayer()))
+if (Talent1)
 {
 	Wait(0.2, WaitBehavior.IgnoreCondition);
 	Ability_Countdown = false;
@@ -1275,8 +1267,8 @@ rule: "Cassidy: Standoff - Set root"
 Event.OngoingPlayer
 Team.Team1
 Player.Cassidy
-if (IsUsingUltimate(EventPlayer()) == true)
-if (Talent1 == true)
+if (IsUsingUltimate(EventPlayer()))
+if (Talent1)
 {
 	Wait(0.2, WaitBehavior.IgnoreCondition);
 	for (Number i! = 0; 5; 1)
@@ -1292,9 +1284,9 @@ rule: "Cassidy: Flashpoint"
 Event.OnDamageDealt
 Team.Team1
 Player.Cassidy
+if (Talent2)
+if (EventAbility() == Button.Ability2)
 {
-	AbortIf(!Talent2);
-	AbortIf(EventAbility() != Button.Ability2);
 	if (EventDamage() <= 25)
 	{
 		Wait(1.25, WaitBehavior.IgnoreCondition);
@@ -1307,7 +1299,7 @@ rule: "Wrecking Ball: Orbital Strike"
 Event.OngoingPlayer
 Team.Team1
 Player.WreckingBall
-if (Talent1 == true)
+if (Talent1)
 if (AbilityCooldown(EventPlayer(), Button.Crouch) >= 0.1)
 {
 	Ability_Countdown = AltitudeOf(EventPlayer()) * 10;
@@ -1321,9 +1313,9 @@ rule: "[Wrecking Ball] Orbital Strike"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.WreckingBall
+if (Talent1)
+if (EventAbility() == Button.Crouch)
 {
-	AbortIf(!Talent1);
-	AbortIf(EventAbility() != Button.Crouch);
 	SetStatus(Victim(), null, Status.Stunned, 1.1);
 }
 
@@ -1331,8 +1323,8 @@ rule: "Wrecking Ball: Distort"
 Event.OngoingPlayer
 Team.Team1
 Player.WreckingBall
-if (Talent2 == true)
-if (IsUsingAbility2(EventPlayer()) == true)
+if (Talent2)
+if (IsUsingAbility2(EventPlayer()))
 {
 	for (Number i! = false; 4; 1)
 	{
@@ -1347,8 +1339,8 @@ rule: "[Queen] Shout Very Loudly"
 Event.OngoingPlayer
 Team.Team1
 Player.JunkerQueen
-if (Talent1 == true)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (Talent1)
+if (IsUsingAbility1(EventPlayer()))
 {
 	StartDamageOverTime(RemoveFromArray(PlayersWithinRadius(EventPlayer(), 15, Team.Team2, RadiusLOS.Surfaces), EventPlayer()), EventPlayer(), 5, 8);
 	StartHealOverTime(EventPlayer(), EventPlayer(), 5, 8 * CountOf(PlayersWithinRadius(EventPlayer(), 15, Team.Team2, RadiusLOS.Surfaces)));
@@ -1358,10 +1350,10 @@ rule: "[Queen] Grace Period"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.JunkerQueen
+if (Talent2)
+if (EventAbility() == Button.SecondaryFire)
+if (!IsMeleeing(EventPlayer()))
 {
-	AbortIf(!Talent2);
-	AbortIf(EventAbility() != Button.SecondaryFire);
-	AbortIf(IsMeleeing(EventPlayer()));
 	Damage(PlayersWithinRadius(Victim(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 50);
 	Heal(EventPlayer(), EventPlayer(), 50);
 	StartDamageOverTime(PlayersWithinRadius(Victim(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 3, 25);
@@ -1375,8 +1367,8 @@ rule: "Kiriko: Shinobi Tactics"
 Event.OnHealingDealt
 Team.Team1
 Player.Kiriko
+if (Talent1)
 {
-	AbortIf(!Talent1);
 	Damage(PlayersWithinRadius(Healee(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), EventHealing() * 2);
 }
 
@@ -1384,7 +1376,7 @@ rule: "Kiriko: Recession"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Kiriko
-if (Talent2 == true)
+if (Talent2)
 if (EventAbility() == Button.Ability2)
 {
 	Damage(Victim(), EventPlayer(), 75);
@@ -1396,8 +1388,8 @@ rule: "Ramattra: Vile Dominance"
 Event.OngoingPlayer
 Team.Team1
 Player.Ramattra
-if (Talent1 == true)
-if ((IsUsingAbility1(EventPlayer()) || IsUsingUltimate(EventPlayer())) == true)
+if (Talent1)
+if ((IsUsingAbility1(EventPlayer()) || IsUsingUltimate(EventPlayer())))
 {
 	Move_Speed += 30;
 	Ability_Active = true;
@@ -1406,6 +1398,7 @@ if ((IsUsingAbility1(EventPlayer()) || IsUsingUltimate(EventPlayer())) == true)
 	Ability_Active = false;
 }
 
+//> Stupid
 rule: "Ramattra: Vile Dominance"
 Event.OnDamageDealt
 Team.Team1
@@ -1422,11 +1415,10 @@ rule: "Ramattra: Nether Sector"
 Event.OnDamageDealt
 Team.Team1
 Player.Ramattra
+if (Talent2)
+if (EventAbility() == Button.Ability2)
+if (IsOnGround(Victim()))
 {
-	AbortIf(!Talent2);
-	AbortIf(!IsOnGround(EventPlayer()));
-	AbortIf(EventAbility() != Button.Ability2);
-	Heal(EventPlayer(), EventPlayer(), 20);
 	SetUltimateCharge(EventPlayer(), UltimateChargePercent(EventPlayer()) + 1);
 	Wait(0.1, WaitBehavior.IgnoreCondition);
 }
@@ -1435,7 +1427,7 @@ rule: "Lifeweaver: Autumn Blossoms"
 Event.OnElimination
 Team.Team1
 Player.Lifeweaver
-if (Talent1 == true)
+if (Talent1)
 {
 	CreateProjectile(ProjectileType.ZaryaParticleCannon, null, PositionOf(Victim()) + Vector(0, 0.5, 0), Up(), Relative.ToWorld, ModifyHealthType.Heal, Team.Team1, MaxHealth(Victim()), 1, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0.025, 0, 8, 0, 0, 0);
 }
@@ -1454,8 +1446,8 @@ rule: "Lifeweaver: Pressure Therapy"
 Event.OngoingPlayer
 Team.Team1
 Player.Lifeweaver
-if (Talent2 == true)
-if (IsAlive(EventPlayer()) == true)
+if (Talent2)
+if (IsAlive(EventPlayer()))
 {
 	Wait(0.5, WaitBehavior.AbortWhenFalse);
 	StartDamageModification(FilteredArray(AllPlayers(Team.Team2), YOf(PositionOf(EventPlayer())) - YOf(PositionOf(ArrayElement())) >= 3 || DotProduct(FacingDirectionOf(ArrayElement()), VectorTowards(ArrayElement(), EventPlayer())) < 0), EventPlayer(), 150, DamageModificationRev.ReceiversDamagersAndDamagePercent);

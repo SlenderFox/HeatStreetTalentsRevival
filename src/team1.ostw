@@ -4,10 +4,10 @@ import "subroutines.ostw";
 
 rule: "[Tutorial] Close HUD"
 Event.OngoingPlayer
-if (Tut_Active == true)
-if (IsButtonHeld(EventPlayer(), Button.Reload) == true)
-if (IsButtonHeld(EventPlayer(), Button.Crouch) == true)
-if (IsAlive(EventPlayer()) == true)
+if (Tut_Active)
+if (IsButtonHeld(EventPlayer(), Button.Reload))
+if (IsButtonHeld(EventPlayer(), Button.Crouch))
+if (IsAlive(EventPlayer()))
 {
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	Tut_Active = false;
@@ -16,10 +16,10 @@ if (IsAlive(EventPlayer()) == true)
 
 rule: "[Tutorial] Open HUD"
 Event.OngoingPlayer
-if (Tut_Active == false)
-if (IsButtonHeld(EventPlayer(), Button.Reload) == true)
-if (IsButtonHeld(EventPlayer(), Button.Crouch) == true)
-if (IsAlive(EventPlayer()) == true)
+if (!Tut_Active)
+if (IsButtonHeld(EventPlayer(), Button.Reload))
+if (IsButtonHeld(EventPlayer(), Button.Crouch))
+if (IsAlive(EventPlayer()))
 {
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	Tut_Active = true;
@@ -85,7 +85,7 @@ if (NormalizedHealth(EventPlayer()) >= 0.5)
 rule: "Team 1 Button: Interact, Open / Leave Buy Menu"
 Event.OngoingPlayer
 Team.Team1
-if (IsButtonHeld(EventPlayer(), Button.Interact) == true)
+if (IsButtonHeld(EventPlayer(), Button.Interact))
 {
 	if (in_buy_menu_start_t)
 	{
@@ -106,8 +106,8 @@ if (IsButtonHeld(EventPlayer(), Button.Interact) == true)
 rule: "Team 1: Leave Buy Menu when downed, health low, stunned or tased"
 Event.OngoingPlayer
 Team.Team1
-if (in_buy_menu_start_t == true)
-if ((downed_start_t || NormalizedHealth(EventPlayer()) < 0.5 || HasStatus(EventPlayer(), Status.Stunned) || tased_end_t >= TotalTimeElapsed()) == true)
+if (in_buy_menu_start_t)
+if (downed_start_t || NormalizedHealth(EventPlayer()) < 0.5 || HasStatus(EventPlayer(), Status.Stunned) || tased_end_t >= TotalTimeElapsed())
 {
 	leave_buy_menu();
 	AbortIf(NormalizedHealth(EventPlayer()) > 0.4);
@@ -117,8 +117,8 @@ if ((downed_start_t || NormalizedHealth(EventPlayer()) < 0.5 || HasStatus(EventP
 rule: "Team 1: Toggle Show active Ability"
 Event.OngoingPlayer
 Team.Team1
-if (in_buy_menu_start_t == true)
-if (IsButtonHeld(EventPlayer(), Button.Melee) == true)
+if (in_buy_menu_start_t)
+if (IsButtonHeld(EventPlayer(), Button.Melee))
 {
 	AbortIf(in_buy_menu_start_t + 0.1 >= TotalTimeElapsed());
 	is_showing_active_abilities = !is_showing_active_abilities;
@@ -127,8 +127,8 @@ if (IsButtonHeld(EventPlayer(), Button.Melee) == true)
 rule: "Team 1: Buy Ability"
 Event.OngoingPlayer
 Team.Team1
-if (in_buy_menu_start_t == true)
-if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
+if (in_buy_menu_start_t)
+if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 {
 	AbortIf(in_buy_menu_start_t + 0.1 >= TotalTimeElapsed() || AbsoluteValue(HorizontalFacingAngleOf(EventPlayer())) >= 135 || AbsoluteValue(VerticalFacingAngleOf(EventPlayer()) + 11.25) >= 45 || tased_end_t >= TotalTimeElapsed());
 	# Grid coordinates of selected panel
@@ -674,7 +674,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire) == true)
 rule: "Team 1 (Spawn): Player Init, Create Effects, Set Is Combatant"
 Event.OngoingPlayer
 Team.Team1
-if (HasSpawned(EventPlayer()) == true)
+if (HasSpawned(EventPlayer()))
 {
 	# Fail-Safe if player somehow despawned (Like Echo duplicating D.Va)
 	AbortIf(is_combatant);
@@ -729,7 +729,7 @@ if (HasSpawned(EventPlayer()) == true)
 rule: "Team 1: Add Health Pool"
 Event.OngoingPlayer
 Team.Team1
-if (is_combatant == true)
+if (is_combatant)
 if (upgrade_count > 0)
 {
 	AddHealthPoolToPlayer(EventPlayer(), HealthType.Health, health_percent * 0.25 * upgrade_count, true, true);
@@ -738,7 +738,7 @@ if (upgrade_count > 0)
 rule: "Team 1 Button: Hold Reload, Change Hero, Set Last Position (1), Last Eye Position (2), Last Facing (3)"
 Event.OngoingPlayer
 Team.Team1
-if (IsButtonHeld(EventPlayer(), Button.Reload) == true)
+if (IsButtonHeld(EventPlayer(), Button.Reload))
 {
 	Wait(0.4, WaitBehavior.AbortWhenFalse);
 	AbortIf(objective_phase_number > 0 || downed_start_t || in_buy_menu_start_t);
@@ -779,7 +779,7 @@ Team.Team1
 rule: "Team 1 (Death): Start Camera, Play Sounds, Set is Downed, Revive Timer, Knocked down, Phased out, Death Cam Target"
 Event.OnDeath
 Team.Team1
-if (is_changing_heroes == false)
+if (!is_changing_heroes)
 {
 	if (!downed_start_t)
 	{
@@ -827,8 +827,8 @@ if (is_changing_heroes == false)
 rule: "Team 1: Player downed fallback"
 Event.OngoingPlayer
 Team.Team1
-if (downed_start_t == true)
-if (HasStatus(EventPlayer(), Status.Stunned) == false)
+if (downed_start_t)
+if (!HasStatus(EventPlayer(), Status.Stunned))
 {
 	Wait(0.25, WaitBehavior.AbortWhenFalse);
 	AbortIfConditionIsFalse();
@@ -851,8 +851,8 @@ if (HasStatus(EventPlayer(), Status.Stunned) == false)
 rule: "Team 1: Select Next Spectated Player"
 Event.OngoingPlayer
 Team.Team1
-if (downed_start_t == true)
-if (IsButtonHeld(EventPlayer(), Button.Jump) == true)
+if (downed_start_t)
+if (IsButtonHeld(EventPlayer(), Button.Jump))
 {
 	AbortIf(downed_start_t + 0.5 >= TotalTimeElapsed());
 	death_cam_target = null;
@@ -877,7 +877,7 @@ if (IsButtonHeld(EventPlayer(), Button.Jump) == true)
 rule: "Team 1: Spectated Player does not exist anymore"
 Event.OngoingPlayer
 Team.Team1
-if (EntityExists(spectated_player) == false)
+if (!EntityExists(spectated_player))
 {
 	spectated_player = EventPlayer();
 }
@@ -885,7 +885,7 @@ if (EntityExists(spectated_player) == false)
 rule: "Team 1: Revive, Check Player in Radius, Unset Is Downed"
 Event.OngoingPlayer
 Team.Team1
-if (downed_start_t == true)
+if (downed_start_t)
 if (downed_start_t + 1 < TotalTimeElapsed())
 {
 	revivers = FilteredArray(combatants, !ArrayElement().downed_start_t && !(ArrayElement().is_invisible % 3) && DistanceBetween(EventPlayer(), Vector(XOf(PositionOf(ArrayElement())), YOf(PositionOf(EventPlayer())), ZOf(PositionOf(ArrayElement())))) <= 3 && AbsoluteValue(YOf(PositionOf(EventPlayer())) - YOf(PositionOf(ArrayElement()))) <= 3 && (HeroOf(ArrayElement()) == Hero.Mei && IsUsingAbility1(ArrayElement()) || IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock)));
@@ -910,9 +910,9 @@ if (downed_start_t + 1 < TotalTimeElapsed())
 rule: "Team 1: Teleport if Player died on Jumppad"
 Event.OngoingPlayer
 Team.Team1
-if (downed_start_t == true)
+if (downed_start_t)
 if (downed_start_t + 5 < TotalTimeElapsed())
-if (is_flying == true)
+if (is_flying)
 {
 	temp_1 = NearestWalkablePosition(PositionOf(EventPlayer()) + 5 * DirectionFromAngles(RandomInteger(-179, 180), false));
 	nwp_teleport();
@@ -921,7 +921,7 @@ if (is_flying == true)
 rule: "Team 1: Player gets up"
 Event.OngoingPlayer
 Team.Team1
-if (downed_start_t == false)
+if (!downed_start_t)
 {
 	AbortIf(!is_combatant);
 	EnableMessages(EventPlayer());
@@ -961,7 +961,7 @@ if (Health(EventPlayer()) != false)
 rule: "Team 1: Set / Unset Is Flying"
 Event.OngoingPlayer
 Team.Team1
-if (IsOnGround(EventPlayer()) == false)
+if (!IsOnGround(EventPlayer()))
 {
 	Wait(1.5, WaitBehavior.AbortWhenFalse);
 	is_flying = true;
@@ -972,7 +972,7 @@ if (IsOnGround(EventPlayer()) == false)
 rule: "Team 1: Calculate Eye Offset"
 Event.OngoingPlayer
 Team.Team1
-if (is_combatant == true)
+if (is_combatant)
 {
 	if (HeroOf(EventPlayer()) == Hero.Mei && IsUsingAbility1(EventPlayer()))
 	{
@@ -998,7 +998,7 @@ if (is_combatant == true)
 rule: "Team 1 Button: Hold or double tap Melee, Use active Ability"
 Event.OngoingPlayer
 Team.Team1
-if (IsButtonHeld(EventPlayer(), Button.Melee) == true)
+if (IsButtonHeld(EventPlayer(), Button.Melee))
 {
 	WaitUntil(!IsButtonHeld(EventPlayer(), Button.Melee), 0.4);
 	if (!IsButtonHeld(EventPlayer(), Button.Melee))
@@ -1154,7 +1154,7 @@ rule: "Team 1 Doomfist: Meteor Strike (Invisibility 2, not detectable)"
 Event.OngoingPlayer
 Team.Team1
 Player.Doomfist
-if (IsUsingUltimate(EventPlayer()) == true)
+if (IsUsingUltimate(EventPlayer()))
 {
 	is_invisible = 2;
 	WaitUntil(!IsUsingUltimate(EventPlayer()), 99999);
@@ -1165,7 +1165,7 @@ rule: "Team 1 D.Va: Fill Ultimate Charge when downed"
 Event.OngoingPlayer
 Team.Team1
 Player.Dva
-if (downed_start_t == true)
+if (downed_start_t)
 if (UltimateChargePercent(EventPlayer()) != 100)
 {
 	Wait(0.05, WaitBehavior.AbortWhenFalse);
@@ -1177,7 +1177,7 @@ Event.OngoingPlayer
 Team.Team1
 Player.Echo
 if (HeroBeingDuplicated(EventPlayer()) == Hero.Sombra)
-if (IsUsingAbility1(EventPlayer()) == true)
+if (IsUsingAbility1(EventPlayer()))
 {
 	Wait(0.8, WaitBehavior.AbortWhenFalse);
 	is_invisible = 1;
@@ -1190,7 +1190,7 @@ Event.OngoingPlayer
 Team.Team1
 Player.Echo
 if (is_invisible == 1)
-if (IsDuplicating(EventPlayer()) == false)
+if (!IsDuplicating(EventPlayer()))
 {
 	is_invisible = false;
 }
@@ -1228,11 +1228,11 @@ rule: "Team 1 Mercy: Revive Ability (Player)"
 Event.OngoingPlayer
 Team.Team1
 Player.Mercy
-if (IsButtonHeld(EventPlayer(), Button.Ability2) == true)
-if (AbilityCooldown(EventPlayer(), Button.Ability2) == false)
-if (downed_start_t == false)
-if (HasStatus(EventPlayer(), Status.Hacked) == false)
-if (HasStatus(EventPlayer(), Status.Stunned) == false)
+if (IsButtonHeld(EventPlayer(), Button.Ability2))
+if (!AbilityCooldown(EventPlayer(), Button.Ability2))
+if (!downed_start_t)
+if (!HasStatus(EventPlayer(), Status.Hacked))
+if (!HasStatus(EventPlayer(), Status.Stunned))
 {
 	ab_player = LastOf(SortedArray(FilteredArray(PlayersWithinRadius(EventPlayer(), 10, Team.Team1, RadiusLOS.Off), ArrayElement().is_combatant && ArrayElement().downed_start_t && ArrayElement().downed_start_t + 0.1 < TotalTimeElapsed() && IsInViewAngle(EventPlayer(), ArrayElement(), 45)), DotProduct(FacingDirectionOf(EventPlayer()), DirectionTowards(EyePosition(EventPlayer()), ArrayElement()))));
 	if (ab_player)
@@ -1253,7 +1253,7 @@ rule: "Team 1 Sombra: Stealth (Invisibility 1, detectable), end after 20 seconds
 Event.OngoingPlayer
 Team.Team1
 Player.Sombra
-if (IsUsingAbility1(EventPlayer()) == true)
+if (IsUsingAbility1(EventPlayer()))
 {
 	Wait(0.8, WaitBehavior.AbortWhenFalse);
 	is_invisible = 1;
@@ -1303,7 +1303,7 @@ rule: "Team 1 Tracer: Start Health Regeneration after Recall"
 Event.OngoingPlayer
 Team.Team1
 Player.Tracer
-if (IsUsingAbility2(EventPlayer()) == true)
+if (IsUsingAbility2(EventPlayer()))
 {
 	Wait(0.85, WaitBehavior.IgnoreCondition);
 	last_damage_taken_t = false;
@@ -1322,8 +1322,8 @@ Player.Zenyatta
 rule: "Team 1: Smoke Screen"
 Event.OngoingPlayer
 Team.Team1
-if (Smoked_Screen == true)
-if (downed_start_t == false)
+if (Smoked_Screen)
+if (downed_start_t == 0)
 {
 	StartForcingPlayerOutlines(AllPlayers(), EventPlayer(), false, Color.White, OutlineType.Default);
 	WaitUntil(IsDead(EventPlayer()), 4);
@@ -1346,4 +1346,15 @@ Team.Team1
 	Wait(1, WaitBehavior.IgnoreCondition);
 	ClearStatus(EventPlayer(), Status.Stunned);
 	StopAccelerating(EventPlayer());
+}
+
+rule: "Widowmaker: Widowmaker Ult"
+Event.OngoingPlayer
+Team.Team1
+Player.Widowmaker
+if (IsUsingUltimate(EventPlayer()))
+{
+	AllPlayers(Team.Team2).Slowed_until = 9999 + TotalTimeElapsed();
+	WaitUntil(!IsUsingUltimate(EventPlayer()), 9999);
+	AllPlayers(Team.Team2).Slowed_until = TotalTimeElapsed();
 }

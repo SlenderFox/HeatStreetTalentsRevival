@@ -63,6 +63,19 @@ Player.Brigitte
 	StartForcingDummyBotName(EventPlayer(), "Shield");
 }
 
+rule: "[Info] Cassidy"
+Event.OngoingPlayer
+Player.Cassidy
+{
+	# T1
+	talent_text[1] = "standoff";
+	talent_text[2] = "enemies cannot move once their skull is locked during deadeye";
+	# T2
+	talent_text[3] = "flashpoint";
+	talent_text[4] = "magnetic grenade will heavily stun enemies if it sticks";
+	StartForcingDummyBotName(EventPlayer(), "Gunslinger");
+}
+
 rule: "[Info] DVa"
 Event.OngoingPlayer
 Player.Dva
@@ -189,19 +202,6 @@ Player.Lucio
 	talent_text[3] = "reverse amp";
 	talent_text[4] = "amp it up inflicts the opposite song effect to enemies";
 	StartForcingDummyBotName(EventPlayer(), "Gunrunner");
-}
-
-rule: "[Info] Cassidy"
-Event.OngoingPlayer
-Player.Cassidy
-{
-	# T1
-	talent_text[1] = "standoff";
-	talent_text[2] = "enemies cannot move once their skull is locked during deadeye";
-	# T2
-	talent_text[3] = "flashpoint";
-	talent_text[4] = "magnetic grenade will heavily stun enemies if it sticks";
-	StartForcingDummyBotName(EventPlayer(), "Gunslinger");
 }
 
 rule: "[Info] Mei"

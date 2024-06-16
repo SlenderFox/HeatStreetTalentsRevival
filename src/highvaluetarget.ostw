@@ -20,7 +20,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Slot1
 if (objective_phase_number == 2)
-if (HasStatus(EventPlayer(), Status.Stunned) == false)
+if (!HasStatus(EventPlayer(), Status.Stunned))
 {
 	Wait(0.25, WaitBehavior.AbortWhenFalse);
 	AbortIfConditionIsFalse();

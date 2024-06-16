@@ -4,7 +4,7 @@ import "playervars.ostw";
 rule: "MUT Team 2 (Gamechanging Mutator): Gamechanging Mutator was enabled"
 Event.OngoingPlayer
 Team.Team2
-if (is_gmut_enabled == true)
+if (is_gmut_enabled)
 {
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	if (gmut_storm_raging)
@@ -25,9 +25,9 @@ if (is_gmut_enabled == true)
 rule: "MUT Team 2 (Gamechanging Mutator): Adaptive Shield"
 Event.OngoingPlayer
 Team.Team2
-if (gmut_adaptive_shield == true)
-if (IsAlive(EventPlayer()) == true)
-if (gmut_var == false)
+if (gmut_adaptive_shield)
+if (IsAlive(EventPlayer()))
+if (!gmut_var)
 if (NormalizedHealth(EventPlayer()) <= 0.5)
 {
 	AbortIf(iv_is_portal);
@@ -57,8 +57,8 @@ if (NormalizedHealth(EventPlayer()) <= 0.5)
 rule: "MUT Team 2 (Gamechanging Mutator): Sympathy Gains"
 Event.OnDeath
 Team.Team2
-if (gmut_sympathy_gains == true)
-if (iv_is_portal == false)
+if (gmut_sympathy_gains)
+if (!iv_is_portal)
 {
 	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Black, EventPlayer(), 1);
 	Wait(0.15, WaitBehavior.AbortWhenFalse);
@@ -70,8 +70,8 @@ if (iv_is_portal == false)
 rule: "MUT Team 2 (Gamechanging Mutator): Fortified"
 Event.OngoingPlayer
 Team.Team2
-if (is_fortified == true)
-if (HasStatus(EventPlayer(), Status.Stunned) == true)
+if (is_fortified)
+if (HasStatus(EventPlayer(), Status.Stunned))
 if (gmut_fortified_bypass_end_t < TotalTimeElapsed())
 {
 	if (HasStatus(EventPlayer(), Status.KnockedDown))
@@ -105,9 +105,9 @@ if (gmut_fortified_bypass_end_t < TotalTimeElapsed())
 rule: "MUT Team 2 (Gamechanging Mutator): Salvation"
 Event.OngoingPlayer
 Team.Team2
-if (gmut_salvation == true)
-if (IsAlive(EventPlayer()) == true)
-if (is_living_boss == false)
+if (gmut_salvation)
+if (IsAlive(EventPlayer()))
+if (!is_living_boss)
 {
 	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
 	WaitUntil(Health(EventPlayer()) <= 1, 99999);
@@ -121,9 +121,9 @@ if (is_living_boss == false)
 rule: "Team 2 (Mutator): Artful Dodger"
 Event.OngoingPlayer
 Team.Team2
-if (mut_artful_dodger == true)
-if (can_dodge == false)
-if (IsAlive(EventPlayer()) == true)
+if (mut_artful_dodger)
+if (!can_dodge)
+if (IsAlive(EventPlayer()))
 {
 	can_dodge = true;
 }
@@ -131,9 +131,9 @@ if (IsAlive(EventPlayer()) == true)
 rule: "MUT Team 2 (Mutator): Swan Song"
 Event.OngoingPlayer
 Team.Team2
-if (mut_swan_song == true)
-if (IsAlive(EventPlayer()) == true)
-if (is_living_boss == true)
+if (mut_swan_song)
+if (IsAlive(EventPlayer()))
+if (is_living_boss)
 {
 	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
 	WaitUntil(Health(EventPlayer()) <= 1, 99999);
@@ -150,9 +150,9 @@ if (is_living_boss == true)
 rule: "MUT Team 2: Counterstrike"
 Event.OngoingPlayer
 Team.Team2
-if (mut_counterstrike == true)
-if (is_using_boss_aggression == false)
-if (IsUsingUltimate(target) == true)
+if (mut_counterstrike)
+if (!is_using_boss_aggression)
+if (IsUsingUltimate(target))
 {
 	is_aggressive = !is_aggressive;
 	Wait(4, WaitBehavior.IgnoreCondition);

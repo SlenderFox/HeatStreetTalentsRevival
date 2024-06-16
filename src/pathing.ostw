@@ -5,10 +5,10 @@ import "subroutines.ostw";
 rule: "Team 2 CG: Improve Air Movement near Jump Pad"
 Event.OngoingPlayer
 Team.Team2
-if (is_map_cg == true)
-if ((nav_idx == 4 || nav_idx == 45) == true)
-if (is_alive == true)
-if (IsInAir(EventPlayer()) == true)
+if (is_map_cg)
+if (nav_idx == 4 || nav_idx == 45)
+if (is_alive)
+if (IsInAir(EventPlayer()))
 if (is_using_combat_pathfinding == 0)
 if (HorizontalSpeedOf(EventPlayer()) >= 5)
 if (DistanceBetween(EventPlayer(), Vector(XOf(nav_pos), YOf(PositionOf(EventPlayer())), ZOf(nav_pos))) <= 0.5)
@@ -21,14 +21,14 @@ if (DistanceBetween(EventPlayer(), Vector(XOf(nav_pos), YOf(PositionOf(EventPlay
 rule: "Team 2: Enable Combat Pathfinding"
 Event.OngoingPlayer
 Team.Team2
-if (is_load_limit_reached == false)
-if (is_pathfinding_disabled == false)
+if (!is_load_limit_reached)
+if (!is_pathfinding_disabled)
 if (is_using_combat_pathfinding == 0)
 if (is_target_in_los >= 5)
-if (is_aggressive == true)
-if (IsOnGround(EventPlayer()) == true)
-if ((YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) <= 2 || YOf(nodes[target.best_nav_idx]) - YOf(PositionOf(EventPlayer())) <= 1) == true)
-if ((is_ranged || DistanceBetween(EventPlayer(), target) <= 1 + DistanceBetween(target, nodes[target.best_nav_idx])) == true)
+if (is_aggressive)
+if (IsOnGround(EventPlayer()))
+if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) <= 2 || YOf(nodes[target.best_nav_idx]) - YOf(PositionOf(EventPlayer())) <= 1)
+if (is_ranged || DistanceBetween(EventPlayer(), target) <= 1 + DistanceBetween(target, nodes[target.best_nav_idx]))
 {
 	if (target.last_nav_update_t + combatants_count * 0.4 < TotalTimeElapsed())
 	{
@@ -50,7 +50,7 @@ if ((is_ranged || DistanceBetween(EventPlayer(), target) <= 1 + DistanceBetween(
 rule: "Team 2: Disable Combat Pathfinding"
 Event.OngoingPlayer
 Team.Team2
-if (is_using_combat_pathfinding == true)
+if (is_using_combat_pathfinding)
 if ((is_aggressive && is_target_in_los) == 0)
 {
 	is_using_combat_pathfinding = 0;
@@ -59,9 +59,9 @@ if ((is_aggressive && is_target_in_los) == 0)
 rule: "Team 2: Set Nav (Not in Combat), Get Back to Node, Set Nav is Node"
 Event.OngoingPlayer
 Team.Team2
-if (is_alive == true)
+if (is_alive)
 if (is_using_combat_pathfinding == 0)
-if (is_nav_reachable_node == false)
+if (!is_nav_reachable_node)
 {
 	if (!(is_load_limit_reached || is_pathfinding_disabled))
 	{
@@ -70,7 +70,7 @@ if (is_nav_reachable_node == false)
 			SetMoveSpeed(EventPlayer(), mut_amped ? 115 : 100);
 		}
 		nav_pos = SortedArray(FilteredArray(nodes, IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock)), DistanceBetween(EventPlayer(), ArrayElement()))[0];
-		if (nav_pos == false)
+		if (!nav_pos)
 		{
 			nav_pos = SortedArray(nodes, DistanceBetween(EventPlayer(), ArrayElement()))[0];
 		}
@@ -84,9 +84,9 @@ if (is_nav_reachable_node == false)
 rule: "Team 2: Set Nav (Not in Combat), Select Next Node, Set Last Time at Node"
 Event.OngoingPlayer
 Team.Team2
-if (is_alive == true)
+if (is_alive)
 if (is_using_combat_pathfinding == 0)
-if (is_nav_reachable_node == true)
+if (is_nav_reachable_node)
 if (DistanceBetween(EventPlayer(), nav_pos) <= 1)
 {
 	last_time_at_node_t = TotalTimeElapsed();
@@ -137,7 +137,7 @@ if (DistanceBetween(EventPlayer(), nav_pos) <= 1)
 rule: "Team 2: Set Nav (in Combat)"
 Event.OngoingPlayer
 Team.Team2
-if (is_using_combat_pathfinding == true)
+if (is_using_combat_pathfinding)
 {
 	if (!(is_load_limit_reached || is_pathfinding_disabled || HasStatus(EventPlayer(), Status.Rooted) || HasStatus(EventPlayer(), Status.Stunned)))
 	{
@@ -334,7 +334,7 @@ if (is_using_combat_pathfinding == true)
 rule: "Team 2: Find Target"
 Event.OngoingPlayer
 Team.Team2
-if (is_alive == true)
+if (is_alive)
 {
 	if (!(fear_end_t >= TotalTimeElapsed() || is_wraith || HeroOf(EventPlayer()) == Hero.Sombra && ab_player))
 	{
@@ -380,7 +380,7 @@ if (is_alive == true)
 rule: "Team 2: Calculate Real Speed"
 Event.OngoingPlayer
 Team.Team2
-if (is_alive == true)
+if (is_alive)
 {
 	if (is_load_limit_reached || is_pathfinding_disabled)
 	{
@@ -425,12 +425,12 @@ if (is_alive == true)
 rule: "Team 2: Bot is stuck"
 Event.OngoingPlayer
 Team.Team2
-if (is_alive == true)
+if (is_alive)
 if (real_speed <= 1.5)
-if (is_flying == false)
+if (!is_flying)
 if (Slowed_until < TotalTimeElapsed())
-if (HasStatus(EventPlayer(), Status.Rooted) == false)
-if (HasStatus(EventPlayer(), Status.Stunned) == false)
+if (!HasStatus(EventPlayer(), Status.Rooted))
+if (!HasStatus(EventPlayer(), Status.Stunned))
 if (DistanceBetween(EventPlayer(), Vector(XOf(nav_pos), YOf(is_using_combat_pathfinding ? PositionOf(EventPlayer()) : nav_pos), ZOf(nav_pos))) >= 0.5)
 {
 	Wait(0.5, WaitBehavior.AbortWhenFalse);
@@ -466,10 +466,10 @@ if (DistanceBetween(EventPlayer(), Vector(XOf(nav_pos), YOf(is_using_combat_path
 rule: "Team 2: Teleport if Target not in LOS and hasn't reached Node for 8 seconds"
 Event.OngoingPlayer
 Team.Team2
-if (is_alive == true)
-if (HasStatus(EventPlayer(), Status.Rooted) == false)
-if (HasStatus(EventPlayer(), Status.Stunned) == false)
-if (is_pathfinding_disabled == false)
+if (is_alive)
+if (!HasStatus(EventPlayer(), Status.Rooted))
+if (!HasStatus(EventPlayer(), Status.Stunned))
+if (!is_pathfinding_disabled)
 if (is_target_in_los == 0)
 if (fear_end_t < TotalTimeElapsed())
 if (last_time_at_node_t < TotalTimeElapsed())
