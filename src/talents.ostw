@@ -179,7 +179,7 @@ if (Talent1)
 if (EventAbility() == Button.PrimaryFire)
 if (IsFiringSecondary(EventPlayer()))
 if (EventWasCriticalHit())
-if (NormalizedHealth(Victim() <= 0.3))
+if (NormalizedHealth(Victim()) <= 0.3)
 if (!Victim().is_living_boss)
 if (!Victim().iv_is_portal)
 {
@@ -230,7 +230,7 @@ Team.Team1
 Player.Torbjorn
 if (Talent2)
 if (EventAbility() == Button.PrimaryFire)
-if (Weapon(EventPlayer() == 2))
+if (Weapon(EventPlayer()) == 2)
 if (DistanceBetween(EventPlayer(), Victim()) < 2.5)
 {
 	Damage(Victim(), EventPlayer(), EventDamage() * 0.4);
