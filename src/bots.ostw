@@ -15,6 +15,52 @@ Team.Team2
 	}
 }
 
+rule: "Team 2: Find Target"
+Event.OngoingPlayer
+Team.Team2
+if (is_alive)
+{
+	if (!(fear_end_t >= TotalTimeElapsed() || is_wraith || HeroOf(EventPlayer()) == Hero.Sombra && ab_player))
+	{
+		if (is_ignoring_other_targets)
+		{
+			temp_1 = target.is_combatant && !target.downed_start_t && !target.active_ab_is_cloaked && !(target.is_invisible && DistanceBetween(EventPlayer(), target) > 2.4) && IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(target) + target.eye_offset, BarrierLOS.NoBarriersBlock) ? target : null;
+		}
+		else
+		{
+			temp_1 = SortedArray(FilteredArray(combatants, !ArrayElement().downed_start_t && !ArrayElement().active_ab_is_cloaked && !(ArrayElement().is_invisible && DistanceBetween(EventPlayer(), ArrayElement()) > 2.4) && IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(ArrayElement()) + ArrayElement().eye_offset, BarrierLOS.NoBarriersBlock)), [1, 0.25, 2, 4][ArrayElement().ab_priority] * (ArrayElement() == target ? 0.25 : 1) * DistanceBetween(EventPlayer(), ArrayElement()) + (!is_ranged && ArrayElement().is_flying ? 500 : 0) + (HasStatus(ArrayElement(), Status.Asleep) ? 1000 : 0) + (HasStatus(ArrayElement(), Status.Invincible) || HasStatus(ArrayElement(), Status.PhasedOut) ? 2000 : 0) + (ArrayElement().active_ab_is_frenzied ? -5000 : 0))[0];
+		}
+		if (temp_1)
+		{
+			is_target_in_los = 5;
+			target = temp_1;
+			target_last_seen_pos = PositionOf(target);
+		}
+		else
+		{
+			if (target.downed_start_t || !target.is_combatant || target.active_ab_is_cloaked || !(target.is_invisible && DistanceBetween(EventPlayer(), target) > 2.4))
+			{
+				find_chase_target();
+				is_target_in_los = 0;
+			}
+			else if (is_target_in_los)
+			{
+				if (!is_flying && YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > 2)
+				{
+					is_using_combat_pathfinding = 0;
+				}
+				is_target_in_los -= 1;
+			}
+			if (!is_target_in_los && Ammo(EventPlayer(), 0) < 0.5 * MaxAmmo(EventPlayer(), 0))
+			{
+				PressButton(EventPlayer(), Button.Reload);
+			}
+		}
+	}
+	Wait(is_load_limit_reached ? 1 : 0.5, WaitBehavior.IgnoreCondition);
+	LoopIfConditionIsTrue();
+}
+
 rule: "Team 2 (Death): Field Resurrection"
 Event.OnDeath
 Team.Team2
