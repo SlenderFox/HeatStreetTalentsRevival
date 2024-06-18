@@ -88,8 +88,6 @@ globalvar Boolean is_map_cg;
 globalvar String char_string; // Probably used for navigation
 # bots(1) main(1) team1(1)
 globalvar Vector aim_offset;
-# main(2) subroutines(2)
-globalvar Boolean is_victory_declared;
 # main(2)
 globalvar Boolean is_mutator_activation_disabled; // Useless
 # bots(4) main(2)

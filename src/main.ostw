@@ -1,6 +1,16 @@
 import "../customGameSettings.lobby";
 import "subroutines.ostw";
 
+globalvar Boolean is_victory_declared;
+
+void declare_victory() "Subroutine: Declare Victory"
+{
+	Wait(2, WaitBehavior.IgnoreCondition);
+	AbortIf(is_victory_declared);
+	is_victory_declared = true;
+	DeclareTeamVictory(Team.Team1);
+}
+
 rule: "Mod by LemonAid#11644, Original mode by Shingen#21859"
 {
 	DisableInspectorRecording();

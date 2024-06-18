@@ -30,14 +30,6 @@ void update_combatants() "Subroutine: Update Combatants"
 	combatants_count = CountOf(combatants);
 }
 
-void declare_victory() "Subroutine: Declare Victory"
-{
-	Wait(2, WaitBehavior.IgnoreCondition);
-	AbortIf(is_victory_declared);
-	is_victory_declared = true;
-	DeclareTeamVictory(Team.Team1);
-}
-
 void play_incoming_sound_twice() "Subroutine: Play Incoming Sound Twice"
 {
 	ModifyTeamScore(Team.Team1, 1);
