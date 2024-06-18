@@ -1,4 +1,4 @@
-import "../customGameSettings.lobby";
+import "../settings.lobby";
 import "subroutines.ostw";
 
 globalvar Boolean is_victory_declared;
