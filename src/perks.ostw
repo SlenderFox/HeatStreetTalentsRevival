@@ -137,7 +137,7 @@ if (downed_start_t + 0.9 < TotalTimeElapsed())
 rule: "Team 1 (Perk): Mystery Swap"
 Event.OngoingPlayer
 Team.Team1
-if (perk_mystery_swap != false)
+if (perk_mystery_swap)
 if (perk_mystery_swap < TotalTimeElapsed())
 if (downed_start_t == 0)
 {

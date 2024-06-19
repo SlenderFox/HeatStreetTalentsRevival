@@ -952,7 +952,7 @@ Event.OngoingPlayer
 Team.Team1
 if (last_damage_taken_t + (perk_die_hard ? 0.5 : 1) * (mut_deep_wounds ? 5 : 2.5) < TotalTimeElapsed())
 if (NormalizedHealth(EventPlayer()) != 1)
-if (Health(EventPlayer()) != false)
+if (Health(EventPlayer()))
 {
 	Heal(EventPlayer(), null, MaxHealth(EventPlayer()) * 0.333);
 	PlayEffect(EventPlayer(), PlayEffect.BuffExplosionSound, Color.White, EventPlayer(), 50);
