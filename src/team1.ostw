@@ -2,6 +2,15 @@ import "globalvars.ostw";
 import "playervars.ostw";
 import "subroutines.ostw";
 
+globalvar Boolean is_hard_mode_enabled;
+globalvar Boolean mut_deep_wounds;
+globalvar Number money_mult;
+globalvar Vector buy_menu_cam_pos;
+globalvar Vector player_spawn_pos;
+globalvar Vector player_spawn_facing;
+globalvar Vector ability_shop_pos;
+globalvar String[] progress_bar_strings;
+
 playervar Number heal_mod;
 playervar Number[] Damage_Received;
 playervar Vector death_cam_target;

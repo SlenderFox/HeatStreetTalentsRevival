@@ -2,6 +2,13 @@ import "globalvars.ostw";
 import "playervars.ostw";
 import "subroutines.ostw";
 
+globalvar Boolean is_map_cg;
+globalvar Number nodes_count;
+globalvar Number[][] edges;
+globalvar String char_string; // Probably used for navigation
+globalvar String[] distance_matrix;
+globalvar Any[] elevator_nodes; // Unknown, only set to empty array
+
 playervar Number last_time_at_node_t;
 playervar Vector real_speed_pos_1;
 playervar Vector real_speed_pos_2;

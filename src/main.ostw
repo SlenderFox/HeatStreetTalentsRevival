@@ -4,8 +4,13 @@ import "subroutines.ostw";
 
 globalvar Boolean is_victory_declared;
 globalvar Boolean is_mutator_activation_disabled; // Useless
+globalvar Boolean mut_reinforcements;
+globalvar Boolean mut_expendable;
 globalvar Number last_spawn_phase_end_t;
 globalvar Number[] game_or_mutator_start_huds; // Holds TextIDs *2
+globalvar Number[] mutators_list; // 0 to 19
+globalvar Number[] gmut_list; // 0 to 3
+globalvar Number mut_count;
 
 void set_map_cg() "Subroutine (Set Map CG): Set Spawns, Nodes, Edges, Distance Matrix, Ability Buy Location"
 {
@@ -235,7 +240,7 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 	# 100-500%
 	money_mult = WorkshopSettingInteger("Settings", "Money Generation Scalar (in Percent)", 100, 50, 500, 1);
 	# 0=15w, 1=22w
-	length = WorkshopSettingCombo("Settings", "Game Length", 0, ["15 Waves", "22 Waves"], 2);
+	isGameLengthLong = WorkshopSettingCombo("Settings", "Game Length", 0, ["15 Waves", "22 Waves"], 2);
 	CreateHudText(AllPlayers(), null, null, <"<0> Difficulty<1>", ["Easy", "Normal", "Hard", "Apocalyptic"][temp_1], money_mult == 100 ? "" : <", +<0>% money", money_mult - 100>>, Location.Right, -100, null, null, Color.Orange, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
 	money_mult /= 100;
 	if (temp_1 == 0)
@@ -309,11 +314,11 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 	}
 	# Create HUDs
 	CreateHudText(AllPlayers(), null, null, <"Heat Street: Talents - 3.4.6 | KFVAY - Chateau Guillard)​ ​-​ ​<0><1>", ["Invasion", "High Value Target", "Domination"][gamemode], MatchTime() ? <"<0><1><2>", MatchTime() > 10 ? "0:" : "", RoundToInteger(RoundToInteger(10 * MatchTime(), Rounding.Up) / 10, Rounding.Down), MatchTime() > 10 ? "" : <".<0>", RoundToInteger(10 * MatchTime(), Rounding.Up) % 10>> : "">, Location.Top, -100, null, null, Color.White, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
-	if (length == 0)
+	if (isGameLengthLong == false)
 	{
 		CreateHudText(AllPlayers(), <"Wave <0>/15 ", wave_number>, null, null, Location.Top, -99, Color.White, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
 	}
-	else if (length == 1)
+	else if (isGameLengthLong == true)
 	{
 		CreateHudText(AllPlayers(), <"Wave <0>/22 ", wave_number>, null, null, Location.Top, -99, Color.White, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
 	}
@@ -447,11 +452,11 @@ rule: "Global (Next Wave): Revive Players, Scale Values, Set Level, Set Mutators
 if (objective_phase_number == 3)
 if (NumberOfLivingPlayers(Team.Team2) == 0)
 {
-	if (wave_number >= 15 && length == 0)
+	if (wave_number >= 15 && isGameLengthLong == false)
 	{
 		async! declare_victory();
 	}
-	else if (wave_number >= 22 && length == 1)
+	else if (wave_number >= 22 && isGameLengthLong == true)
 	{
 		async! declare_victory();
 	}

@@ -5,6 +5,7 @@ globalvar Boolean mut_heartburn; // Unused
 globalvar Number[] current_perks_huds_list;
 globalvar Number[] spawn_nearest_node_idx_list;
 globalvar Vector[] spawn_pos_list;
+globalvar Vector buy_menu_base_pos;
 
 # main(1) team1(1)
 void update_combatants() "Subroutine: Update Combatants"

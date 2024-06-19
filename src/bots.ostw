@@ -3,7 +3,23 @@ import "playervars.ostw";
 import "subroutines.ostw";
 
 globalvar Boolean mut_lock_n_load;
+globalvar Boolean is_infrasight_on;
+globalvar Boolean is_waiting_to_remove_bot;
+globalvar Boolean is_mutator_mode_enabled;
+globalvar Boolean mut_hardwired;
+globalvar Boolean mut_promotion;
+globalvar Boolean mut_gear_upgrade;
+globalvar Boolean mut_mutation;
+globalvar Boolean mut_advanced_medkit;
+globalvar Boolean mut_emp_rounds;
+globalvar Boolean mut_fully_loaded;
+globalvar Boolean mut_bulletproof;
+globalvar Boolean mut_yakuza;
 globalvar Number tier_4_spawns_block_end_t;
+globalvar Number diff_health_mult;
+globalvar Number diff_damage_mult;
+globalvar Hero[] boss_list_1;
+globalvar Hero[] boss_list_2;
 
 playervar Boolean is_wraith;
 playervar Boolean can_stagger;
@@ -516,7 +532,7 @@ if (base_tier == -1 ? enable_objective_enemy_spawn : special_spawns_count > 0 ||
 		can_quick_melee = HeroOf(EventPlayer()) != Hero.Brigitte && HeroOf(EventPlayer()) != Hero.Roadhog && HeroOf(EventPlayer()) != Hero.WreckingBall && HeroOf(EventPlayer()) != Hero.Reinhardt && !iv_is_portal;
 		if (is_living_boss)
 		{
-			health_percent = (is_mutator_mode_enabled ? 1.2 : 1) * (length == 0 ? 1.25 : 1.5) * [4, 2.25, 2.25, 1][real_tier - 1];
+			health_percent = (is_mutator_mode_enabled ? 1.2 : 1) * (isGameLengthLong == false ? 1.25 : 1.5) * [4, 2.25, 2.25, 1][real_tier - 1];
 			Damage_Dealt = (is_mutator_mode_enabled ? 1.2 : 1) * ((gamemode == 0 ? 1.5 : 1.3) + wave_number / 35) * [3.5, 2.25, 1.7, 1.05][real_tier - 1];
 		}
 		else

@@ -1,6 +1,13 @@
 import "globalvars.ostw";
 import "playervars.ostw";
 
+globalvar Boolean is_gmut_enabled;
+globalvar Boolean gmut_sympathy_gains;
+globalvar Boolean gmut_salvation;
+globalvar Boolean mut_swan_song;
+globalvar Boolean mut_counterstrike;
+globalvar Boolean mut_low_blow;
+
 rule: "MUT Team 2 (Gamechanging Mutator): Gamechanging Mutator was enabled"
 Event.OngoingPlayer
 Team.Team2

@@ -1,6 +1,8 @@
 import "globalvars.ostw";
 import "subroutines.ostw";
 
+globalvar Vector[] iv_dom_objective_all_pos_list;
+
 void iv_defend_portal() "IV Subroutine: Defend Portal"
 {
 	money_amount += 95;
