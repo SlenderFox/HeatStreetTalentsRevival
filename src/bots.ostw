@@ -13,6 +13,39 @@ playervar Boolean is_mutated;
 playervar Number recall_block_end_t;
 playervar Vector ab_wraith_pos;
 
+void start_facing() "Subroutine: Start Facing"
+{
+	if (HeroOf(EventPlayer()) == Hero.Soldier76)
+	{
+		if (real_tier == 4)
+		{
+			StartFacing(EventPlayer(), (is_target_in_los && (!ab_var_1 || is_using_combat_pathfinding) ? Vector(false, false, false) : 1.5 * DirectionTowards(EventPlayer(), nav_pos)) + (target.is_combatant ? DirectionTowards(EyePosition(EventPlayer()), EyePosition(target) + target.eye_offset) : Vector(false, false, false)), HasStatus(EventPlayer(), Status.Stunned) ? 0 : ab_var_1 ? 1000 : 300, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
+		}
+		else
+		{
+			StartFacing(EventPlayer(), (is_target_in_los ? Vector(false, false, false) : 1.5 * DirectionTowards(EventPlayer(), nav_pos)) + (target.is_combatant ? DirectionTowards(EyePosition(EventPlayer()), EyePosition(target) + target.eye_offset) : Vector(false, false, false)), HasStatus(EventPlayer(), Status.Stunned) ? 0 : Slowed_until >= TotalTimeElapsed() ? 50 : 300, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
+		}
+	}
+	else
+	{
+		if (HeroOf(EventPlayer()) == Hero.Widowmaker || HeroOf(EventPlayer()) == Hero.Hanzo)
+		{
+			StartFacing(EventPlayer(), facing_override_direction ? facing_override_direction : (is_target_in_los ? Vector(false, false, false) : 1.5 * DirectionTowards(EventPlayer(), nav_pos)) + (target.is_combatant ? DirectionTowards(EyePosition(EventPlayer()), EyePosition(target) + target.eye_offset) : Vector(false, false, false)), HasStatus(EventPlayer(), Status.Stunned) ? 0 : 300, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
+			facing_override_direction = false;
+		}
+		else if (!iv_is_portal)
+		{
+			StartFacing(EventPlayer(), (is_target_in_los ? Vector(false, false, false) : 1.5 * DirectionTowards(EventPlayer(), nav_pos)) + (target.is_combatant ? DirectionTowards(EyePosition(EventPlayer()), EyePosition(target) + target.eye_offset) : Vector(false, false, false)), HasStatus(EventPlayer(), Status.Stunned) ? 0 : Slowed_until >= TotalTimeElapsed() ? 50 : 300, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
+		}
+	}
+}
+
+void find_chase_target() "Subroutine: Find Chase Target"
+{
+	AbortIf(is_ignoring_other_targets);
+	target = SortedArray(FilteredArray(combatants, !ArrayElement().downed_start_t && !ArrayElement().active_ab_is_cloaked && !(ArrayElement().is_invisible && DistanceBetween(EventPlayer(), ArrayElement()) > 2.4)), DistanceBetween(EventPlayer(), ArrayElement()))[0];
+}
+
 rule: "Team 2: Bot Init"
 Event.OngoingPlayer
 Team.Team2

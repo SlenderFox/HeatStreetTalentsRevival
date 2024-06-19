@@ -1,6 +1,39 @@
 import "globalvars.ostw";
 import "subroutines.ostw";
 
+void iv_defend_portal() "IV Subroutine: Defend Portal"
+{
+	money_amount += 95;
+	if (objective_phase_number == 1)
+	{
+		enable_normal_spawns = true;
+		call_reinforcements();
+		async! play_incoming_sound_twice();
+		ab_var_2 = TotalTimeElapsed() + 10;
+	}
+	temp_2 = FilteredArray(PlayersWithinRadius(iv_dom_objective_pos, 15, Team.Team1, RadiusLOS.Surfaces), ArrayElement().is_combatant && !HasStatus(ArrayElement(), Status.PhasedOut) && IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.EnemyBarriersBlock));
+	for (temp_1 = 0; CountOf(temp_2); 1)
+	{
+		ApplyImpulse(temp_2[temp_1], DirectionFromAngles(HorizontalAngleFromDirection(VectorTowards(iv_dom_objective_pos, temp_2[temp_1])), -20), 25, Relative.ToWorld, ContraryMotion.CancelXYZ);
+	}
+	temp_1 = RandomInteger(0, 5);
+	if (temp_1 == 5 && wave_number >= 7)
+	{
+		temp_2.tased_end_t = TotalTimeElapsed() + 3;
+	}
+	else if (temp_1 <= 1 && wave_number >= 4)
+	{
+		SetUltimateCharge(EventPlayer(), 100);
+		PressButton(EventPlayer(), Button.Ultimate);
+	}
+	else if (temp_1 == 3 && wave_number >= 4)
+	{
+		PressButton(EventPlayer(), Button.Ability1);
+	}
+	PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
+	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, temp_1 == 5 && wave_number >= 7 ? Color.Purple : Color.Red, iv_dom_objective_pos + 1.11 * Up(), 10);
+}
+
 rule: "IV Team 2 Slot 0: Create Portal Entities"
 Event.OngoingPlayer
 Team.Team2

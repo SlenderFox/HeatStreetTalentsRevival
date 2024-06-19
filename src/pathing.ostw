@@ -7,6 +7,41 @@ playervar Vector real_speed_pos_1;
 playervar Vector real_speed_pos_2;
 playervar Number last_jump_t;
 
+void check_drop() "Subroutine: Check Drop (Avoid dropping too low)"
+{
+	if (is_load_limit_reached)
+	{
+		nav_pos = PositionOf(EventPlayer());
+		Abort();
+	}
+	temp_1 = PositionOf(EventPlayer()) + 1.75 * DirectionTowards(EventPlayer(), Vector(XOf(nav_pos), YOf(PositionOf(EventPlayer())), ZOf(nav_pos))) + Up();
+	if (DistanceBetween(temp_1, RayCastHitPosition(temp_1, temp_1 + 30 * Down(), null, null, false)) >= YOf(temp_1) - YOf(PositionOf(target)) + 5)
+	{
+		nav_pos = PositionOf(EventPlayer());
+		is_using_combat_pathfinding -= 1;
+		Abort();
+	}
+	temp_1 = PositionOf(EventPlayer()) + 3.5 * DirectionTowards(EventPlayer(), Vector(XOf(nav_pos), YOf(PositionOf(EventPlayer())), ZOf(nav_pos))) + Up();
+	if (DistanceBetween(temp_1, RayCastHitPosition(temp_1, temp_1 + 30 * Down(), null, null, false)) >= YOf(temp_1) - YOf(PositionOf(target)) + 5)
+	{
+		nav_pos = PositionOf(EventPlayer());
+		is_using_combat_pathfinding -= 1;
+		Abort();
+	}
+	is_using_combat_pathfinding = 3;
+}
+
+void update_target_nav() "Subroutine: Update Target Nav"
+{
+	target.last_nav_update_t = TotalTimeElapsed();
+	temp_1 = EyePosition(target) + target.eye_offset;
+	target.best_nav_idx = IndexOfArrayValue(nodes, SortedArray(FilteredArray(RemoveFromArray(nodes, elevator_nodes), IsInLineOfSight(ArrayElement() + Vector(0, 1.5, 0), temp_1, BarrierLOS.NoBarriersBlock)), DistanceBetween(target, ArrayElement()) + AbsoluteValue(YOf(PositionOf(target)) - YOf(ArrayElement())))[0]);
+	if (target.best_nav_idx == -1)
+	{
+		target.best_nav_idx = IndexOfArrayValue(nodes, SortedArray(RemoveFromArray(nodes, elevator_nodes), DistanceBetween(target, ArrayElement()))[0]);
+	}
+}
+
 rule: "Team 2 CG: Improve Air Movement near Jump Pad"
 Event.OngoingPlayer
 Team.Team2

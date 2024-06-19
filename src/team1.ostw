@@ -8,6 +8,160 @@ playervar Vector death_cam_target;
 playervar Player spectated_player;
 playervar Any nemesis_beam_effect;
 
+void open_buy_menu() "Subroutine: Open Buy Menu, Last Facing (3)"
+{
+	AbortIf(downed_start_t || NormalizedHealth(EventPlayer()) < 0.5 || HasStatus(EventPlayer(), Status.Stunned) || tased_end_t >= TotalTimeElapsed());
+	ApplyImpulse(EventPlayer(), -1 * DirectionFromAngles(HorizontalAngleFromDirection(VelocityOf(EventPlayer())), false), 0.001, Relative.ToWorld, ContraryMotion.CancelXYZ);
+	ab_var_3 = FacingDirectionOf(EventPlayer());
+	in_buy_menu_start_t = TotalTimeElapsed();
+	DisableHeroHud(EventPlayer());
+	SetFacing(EventPlayer(), Forward(), Relative.ToWorld);
+	StartCamera(EventPlayer(), buy_menu_cam_pos, buy_menu_cam_pos + buy_menu_left_up_forward[2], 0);
+	disable_player();
+	SetAimSpeed(EventPlayer(), 200);
+}
+
+void leave_buy_menu() "Subroutine: Leave Buy Menu"
+{
+	in_buy_menu_start_t = false;
+	EnableHeroHud(EventPlayer());
+	SetFacing(EventPlayer(), ab_var_3, Relative.ToWorld);
+	if (!downed_start_t)
+	{
+		StopCamera(EventPlayer());
+		enable_player();
+	}
+	SetAimSpeed(EventPlayer(), 100);
+}
+
+void check_if_enough_money() "Subroutine: Check if enough money"
+{
+	if (money_mult * money_amount - money_spent_amount >= temp_2)
+	{
+		money_spent_amount += temp_2;
+		SmallMessage(EventPlayer(), "Ability unlocked");
+		play_purchase_confirmation_sound();
+	}
+	else
+	{
+		temp_2 = false;
+		SmallMessage(EventPlayer(), "Not enough money");
+	}
+}
+
+void buy_active_ability() "Subroutine: Buy Active Ability"
+{
+	if (!active_ab_number)
+	{
+		temp_2 = 1200;
+		check_if_enough_money();
+		AbortIf(!temp_2);
+	}
+	else if (temp_1 == active_ab_number)
+	{
+		Abort();
+	}
+	else
+	{
+		SmallMessage(EventPlayer(), "Swapped Active Ability");
+	}
+	remove_active_ability();
+	active_ab_number = temp_1;
+	if (temp_1 == 1)
+	{
+		CreateEffect(active_ab_cooldown < 0 ? AllPlayers(Team.All) : [], Effect.AnaNanoBoostedEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleTo);
+		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
+	}
+	else if (temp_1 == 2)
+	{
+		CreateEffect(active_ab_cooldown < 0 ? AllPlayers(Team.All) : [], Effect.ReaperWraithFormEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleTo);
+		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
+	}
+	else if (temp_1 == 4)
+	{
+		CreateEffect(active_ab_cooldown < 0 ? AllPlayers(Team.All) : [], Effect.BaptisteImmortalityFieldProtectedEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleTo);
+		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
+	}
+	else if (temp_1 == 5)
+	{
+		active_ab_var = 1000 * Down();
+		CreateEffect(active_ab_cooldown < 0 ? AllPlayers(Team.All) : [], Effect.Cloud, Color.SkyBlue, active_ab_var + 2 * Up(), 10, EffectRev.VisibleToPositionAndRadius);
+		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
+		CreateEffect(active_ab_cooldown < 0 ? AllPlayers(Team.All) : [], Effect.Cloud, Color.SkyBlue, active_ab_var + 2 * Down(), 10, EffectRev.VisibleToPositionAndRadius);
+		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
+		CreateEffect(active_ab_cooldown < 0 ? AllPlayers(Team.All) : [], Effect.Ring, Color.SkyBlue, active_ab_var + Down(), 10, EffectRev.VisibleToPositionAndRadius);
+		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
+	}
+	else if (temp_1 == 6)
+	{
+		CreateEffect(active_ab_cooldown < 0 ? AllPlayers(Team.All) : [], Effect.HealTargetActiveEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleTo);
+		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
+	}
+	else if (temp_1 == 7)
+	{
+		active_ab_var = 1000 * Down();
+		CreateEffect(active_ab_cooldown < 0 ? AllPlayers(Team.All) : [], Effect.Cloud, Color.Yellow, active_ab_var + Up(), 8, EffectRev.VisibleToPositionAndRadius);
+		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
+		CreateEffect(active_ab_cooldown < 0 ? AllPlayers(Team.All) : [], Effect.Cloud, Color.Yellow, active_ab_var + Down(), 8, EffectRev.VisibleToPositionAndRadius);
+		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
+	}
+	else if (temp_1 == 8)
+	{
+		active_ab_var = [];
+		CreateBeamEffect(CountOf(active_ab_var) ? AllPlayers(Team.All) : [], BeamType.BadBeam, EventPlayer(), active_ab_var[0], Color.Purple, EffectRev.VisibleToPositionAndRadius);
+		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
+		CreateBeamEffect(CountOf(active_ab_var) > 1 ? AllPlayers(Team.All) : [], BeamType.BadBeam, active_ab_var[0], active_ab_var[1], Color.Purple, EffectRev.VisibleToPositionAndRadius);
+		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
+		CreateBeamEffect(CountOf(active_ab_var) > 2 ? AllPlayers(Team.All) : [], BeamType.BadBeam, active_ab_var[1], active_ab_var[2], Color.Purple, EffectRev.VisibleToPositionAndRadius);
+		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
+		CreateBeamEffect(CountOf(active_ab_var) > 3 ? AllPlayers(Team.All) : [], BeamType.BadBeam, active_ab_var[2], active_ab_var[3], Color.Purple, EffectRev.VisibleToPositionAndRadius);
+		ModifyVariable(active_ab_effect_list, Operation.AppendToArray, LastCreatedEntity());
+	}
+	play_purchase_confirmation_sound();
+}
+
+void remove_active_ability() "Subroutine: Remove Active Ability"
+{
+	if (active_ab_cooldown < 0)
+	{
+		active_ab_cooldown = -0.1;
+	}
+	DestroyEffect(active_ab_effect_list);
+	active_ab_effect_list = [];
+	active_ab_number = false;
+}
+
+void play_purchase_confirmation_sound() "Subroutine: Play Purchase Confirmation Sound"
+{
+	PlayEffect(EventPlayer(), PlayEffect.BuffExplosionSound, Color.White, buy_menu_cam_pos, 200);
+}
+
+void disable_player() "Subroutine: Disable Player"
+{
+	ForceThrottle(EventPlayer(), false, 0.1, false, 0.1, false, 0.1);
+	SetPrimaryFireEnabled(EventPlayer(), false);
+	SetSecondaryFireEnabled(EventPlayer(), false);
+	SetAbility1Enabled(EventPlayer(), false);
+	SetAbility2Enabled(EventPlayer(), false);
+	SetMeleeEnabled(EventPlayer(), false);
+	SetJumpEnabled(EventPlayer(), false);
+	SetCrouchEnabled(EventPlayer(), false);
+	DisallowButton(EventPlayer(), Button.Ultimate);
+}
+
+void enable_player() "Subroutine: Enable Player"
+{
+	StopForcingThrottle(EventPlayer());
+	SetPrimaryFireEnabled(EventPlayer(), true);
+	SetSecondaryFireEnabled(EventPlayer(), true);
+	SetAbility1Enabled(EventPlayer(), true);
+	SetAbility2Enabled(EventPlayer(), true);
+	SetMeleeEnabled(EventPlayer(), true);
+	SetJumpEnabled(EventPlayer(), true);
+	SetCrouchEnabled(EventPlayer(), true);
+	AllowButton(EventPlayer(), Button.Ultimate);
+}
+
 rule: "[Tutorial] Close HUD"
 Event.OngoingPlayer
 if (Tut_Active)

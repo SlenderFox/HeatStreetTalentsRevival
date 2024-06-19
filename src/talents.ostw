@@ -9,6 +9,11 @@ playervar Number Ability_Active;
 playervar Vector Ability_Projectile1; // At one point randomly assigned to a bool
 playervar Any Ability_End;
 
+void Cancel_Momentum() "Subroutine: Cancel player momentum"
+{
+	ApplyImpulse(EventPlayer(), -1 * DirectionFromAngles(HorizontalAngleFromDirection(VelocityOf(EventPlayer())), 0), 0.001, Relative.ToWorld, ContraryMotion.CancelXYZ);
+}
+
 rule: "Ana: Multinade"
 Event.OngoingPlayer
 Team.Team1
