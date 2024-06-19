@@ -1,0 +1,35 @@
+import "subroutines.ostw";
+
+rule: "Automatically give all talents"
+Event.OngoingPlayer
+if (EventPlayer() == HostPlayer())
+if (IsCommunicating(EventPlayer(), Communication.Attacking))
+{
+	Talent1 = true;
+	Talent2 = true;
+}
+
+// TODO v
+//rule: "Automatically give all abilities"
+//Event.OngoingPlayer
+//if (EventPlayer() == HostPlayer())
+//if (IsCommunicating(EventPlayer(), Communication.Defending))
+//{
+
+//}
+
+rule: "Manually reroll shop"
+Event.OngoingPlayer
+if (EventPlayer() == HostPlayer())
+if (IsMeleeing(EventPlayer()))
+{
+	set_random_perks();
+}
+
+rule: "Give money"
+Event.OngoingPlayer
+if (EventPlayer() == HostPlayer())
+if (IsCommunicating(EventPlayer(), Communication.Thanks))
+{
+	money_spent_amount -= 100000;
+}

@@ -1,4 +1,5 @@
 import "../settings.lobby";
+import "debug.ostw";
 import "subroutines.ostw";
 
 globalvar Boolean is_victory_declared;

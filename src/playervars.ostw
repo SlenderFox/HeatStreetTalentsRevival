@@ -34,7 +34,7 @@ playervar Boolean in_buy_menu_start_t;
 playervar Boolean is_showing_active_abilities;
 # main(1) team1(3)
 playervar Boolean can_use_drop_in_buy_menu;
-# main(1) subroutines(2) team1(3)
+# main(1) subroutines(2) team1(3) debug(1)
 playervar Number money_spent_amount;
 # bots(10) pathing(1)
 playervar Boolean is_pathfinding_disabled;
@@ -188,9 +188,9 @@ playervar Any[] Effects_;
 playervar Boolean Smoked_Screen;
 # main(1) team1(4)
 playervar Boolean Tut_Active;
-# perks(3) subroutines(2) talents(52) team1(4)
+# perks(3) subroutines(2) talents(52) team1(4) debug(1)
 playervar Boolean Talent2;
-# perks(3) subroutines(2) talents(55) team1(4)
+# perks(3) subroutines(2) talents(55) team1(4) debug(1)
 playervar Boolean Talent1;
 # bots(6) mutators(2) talents(4) team1(2)
 playervar Any[] HP_Pool;
