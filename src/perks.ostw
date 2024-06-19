@@ -1,7 +1,6 @@
 import "playervars.ostw";
 import "subroutines.ostw";
 
-playervar Boolean[] Swapped_Talent_Array;
 playervar Number current_quick_fix_speed_bonus;
 
 rule: "Team 1 (Ability): Priority C"
@@ -142,6 +141,7 @@ if (perk_mystery_swap != false)
 if (perk_mystery_swap < TotalTimeElapsed())
 if (downed_start_t == 0)
 {
+	Boolean[] Swapped_Talent_Array;
 	Wait(1, WaitBehavior.AbortWhenFalse);
 	AbortIfConditionIsFalse();
 	if (Talent1)
