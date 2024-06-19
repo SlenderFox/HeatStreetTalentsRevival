@@ -4,12 +4,14 @@ Enemy spawn quota: The game expects an amount of each type of enemy to spawn and
 Enemy respawn times scale with difficulty.
 ## Abilities
 ### Haste
-Look into ways to get it working with charged abilities.
+Look into ways to get it working with charged abilities, Ashe's coach gun, and Bastion's turret form.
 ### Bulletstorm
 If Blizz still haven't fixed new heroes in workshop, maybe shelve this.
 ### Shockproof
 Remove passthrough.
 ## Talents
+### D.va
+Something with her micro-missiles.
 ### Lifeweaver
 Current talents are very boring.
 ### Illari
