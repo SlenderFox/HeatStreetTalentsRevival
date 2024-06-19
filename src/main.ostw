@@ -16,11 +16,6 @@ rule: "Mod by LemonAid#11644, Original mode by Shingen#21859"
 	DisableInspectorRecording();
 }
 
-rule: "Special thanks"
-{
-	Special_Thanks = WorkshopSettingCombo("Special thanks", "Cool people", 10, ["Thank you to", "Shingen", "Developful", "SgtMoody"], 0);
-}
-
 rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Create Game Entities"
 {
 	# Select and initialize Gamemode
@@ -59,7 +54,7 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 	# 0=Easy, 1=Normal, 2=Hard, 3=Apocalypse
 	temp_1 = WorkshopSettingCombo("Settings", "Difficulty", 1, ["Easy", "Normal", "Hard", "Apocalyptic"], 0);
 	# 100-500%
-	money_mult = WorkshopSettingInteger("Settings", "Money Generation Scalar (in Percent)", 100, 100, 500, 1);
+	money_mult = WorkshopSettingInteger("Settings", "Money Generation Scalar (in Percent)", 100, 50, 500, 1);
 	# 0=15w, 1=22w
 	length = WorkshopSettingCombo("Settings", "Game Length", 0, ["15 Waves", "22 Waves"], 2);
 	CreateHudText(AllPlayers(), null, null, <"<0> Difficulty<1>", ["Easy", "Normal", "Hard", "Apocalyptic"][temp_1], money_mult == 100 ? "" : <", +<0>% money", money_mult - 100>>, Location.Right, -100, null, null, Color.Orange, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
@@ -236,6 +231,12 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 	}
 	is_gmut_enabled = true;
 	Wait(2, WaitBehavior.IgnoreCondition);
+}
+
+// After the other settings
+rule: "Special thanks"
+{
+	Special_Thanks = WorkshopSettingCombo("Credits", "Thank you to", 0, ["LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
 }
 
 rule: "Global (First Wave): Create Mutator Start HUD, Scale Values, Set Level"

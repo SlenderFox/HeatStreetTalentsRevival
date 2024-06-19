@@ -1,6 +1,6 @@
 {
   "Mode Name": "Heat Street Talents Revival",
-  "Description": "Credits to: ItsDeltin, LemonAid, Shingen, SgtMoody, and Developful",
+  "Description": "PvE wave survival with purchasable upgrades\\nand abilities. Version 4.0.0\\nCredits to: LemonAid, Shingen, LtVictory,\\nSgtMoody, and Developful.\\nRebuilt in OSTW <https://github.com/SlenderFox/HeatStreetTalents>.",
   "Lobby": {
     "Map Rotation": "After A Game",
     "Max Team 1 Players": 5,
@@ -24,11 +24,6 @@
     }
   },
   "Heroes": {
-    "General": {
-      "Disabled Heroes": [
-        "Venture"
-      ]
-    },
     "Team 1": {
       "General": {
         "Ultimate Generation": 50.0,
@@ -44,44 +39,35 @@
         "Damage Dealt": 75.0
       },
       "Junker Queen": {
-        "Ultimate Generation (Rampage)": 60.0
+        "Ultimate Generation Rampage": 60.0
       },
       "Kiriko": {
         "Damage Dealt": 115.0
       },
       "Mercy": {
         "Damage Dealt": 115.0,
-        "Ultimate Generation (Valkyrie)": 40.0
+        "Ultimate Generation Valkyrie": 40.0
       },
       "Moira": {
         "Damage Dealt": 115.0,
-        "Ultimate Generation (Coalescence)": 40.0
+        "Ultimate Generation Coalescence": 40.0
       },
       "Widowmaker": {
         "Ultimate Duration": 120.0
       },
       "Wrecking Ball": {
-        "Ultimate Generation (Minefield)": 50.0
+        "Ultimate Generation Minefield": 50.0
       },
       "Zarya": {
-        "Ultimate Generation (Graviton Surge)": 40.0
+        "Ultimate Generation Graviton Surge": 40.0
       },
       "Zenyatta": {
         "Damage Dealt": 120.0,
         "Healing Dealt": 150.0,
-        "Ultimate Generation (Transcendence)": 60.0
+        "Ultimate Generation Transcendence": 60.0
       }
     },
     "Team 2": {
-      "Enabled Heroes": [
-        "Ashe",
-        "Doomfist",
-        "Junkrat",
-        "Mercy",
-        "Symmetra",
-        "Winston",
-        "Zenyatta"
-      ],
       "General": {
         "Ammunition Clip Size Scalar": 200.0
       },
@@ -129,7 +115,7 @@
         "Flight Cooldown Time": 0.0,
         "Focusing Beam Cooldown Time": 10.0,
         "Sticky Bombs Cooldown Time": 10.0,
-        "Ultimate Ability (Duplicate)": false
+        "Ultimate Ability Duplicate": false
       },
       "Genji": {
         "Damage Dealt": 91.0,
@@ -256,7 +242,7 @@
         "Damage Dealt": 63.0,
         "Grappling Hook Cooldown Time": 10.0,
         "Health": 125.0,
-        "Ultimate Ability (Infra-sight)": false,
+        "Ultimate Ability Infra-sight": false,
         "Ultimate Duration": 120.0,
         "Venom Mine Cooldown Time": 10.0
       },
@@ -274,14 +260,9 @@
         "Particle Barrier Cooldown Time": 10.0,
         "Projected Barrier Cooldown Time": 10.0,
         "Projectile Gravity": 40.0,
-        "Ultimate Generation (Graviton Surge)": 40.0
+        "Ultimate Generation Graviton Surge": 40.0
       }
     }
-  },
-  "Workshop": {
-    "Cool people": 3.0,
-    "Difficulty": 1.0,
-    "Game Length": 1.0
   },
   "Extensions": {
     "Buff Status Effects": true,
