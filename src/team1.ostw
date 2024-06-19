@@ -13,9 +13,12 @@ globalvar String[] progress_bar_strings;
 
 playervar Number heal_mod;
 playervar Number[] Damage_Received;
+playervar Number active_ab_number;
+playervar Number active_ab_cooldown;
 playervar Vector death_cam_target;
 playervar Player spectated_player;
 playervar Any nemesis_beam_effect;
+playervar Any active_ab_var; // Both vector and player
 
 void open_buy_menu() "Subroutine: Open Buy Menu, Last Facing (3)"
 {

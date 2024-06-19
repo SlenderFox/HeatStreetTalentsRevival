@@ -197,14 +197,14 @@ void find_wp_near_nav() "Subroutine: Find WP near Nav (find a walkable position 
 		if (DistanceBetween(nav_pos + Up(), RayCastHitPosition(nav_pos + Up(), nav_pos + 2 * Down(), null, null, false)) >= 3)
 		{
 			# Ranged bots stand still
-			if (is_load_limit_reached || is_ranged || DistanceBetween(EventPlayer(), target) < 2)
+			if (is_load_limit_reached || is_ranged || DistanceBetween(EventPlayer(), myTarget) < 2)
 			{
 				nav_pos = PositionOf(EventPlayer());
 				Abort();
 			}
 			else
 			{
-				nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), target) - 2) * DirectionTowards(EventPlayer(), target);
+				nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), myTarget) - 2) * DirectionTowards(EventPlayer(), myTarget);
 				if (IsOnGround(EventPlayer()))
 				{
 					# Check if destination is not walkable

@@ -159,7 +159,7 @@ Event.OngoingPlayer
 Team.Team2
 if (mut_counterstrike)
 if (!is_using_boss_aggression)
-if (IsUsingUltimate(target))
+if (IsUsingUltimate(myTarget))
 {
 	is_aggressive = !is_aggressive;
 	Wait(4, WaitBehavior.IgnoreCondition);

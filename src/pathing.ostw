@@ -10,9 +10,11 @@ globalvar String[] distance_matrix;
 globalvar Any[] elevator_nodes; // Unknown, only set to empty array
 
 playervar Number last_time_at_node_t;
+playervar Number last_jump_t;
+playervar Number last_nav_update_t;
 playervar Vector real_speed_pos_1;
 playervar Vector real_speed_pos_2;
-playervar Number last_jump_t;
+playervar Vector best_nav_idx;
 
 void check_drop() "Subroutine: Check Drop (Avoid dropping too low)"
 {
@@ -22,14 +24,14 @@ void check_drop() "Subroutine: Check Drop (Avoid dropping too low)"
 		Abort();
 	}
 	temp_1 = PositionOf(EventPlayer()) + 1.75 * DirectionTowards(EventPlayer(), Vector(XOf(nav_pos), YOf(PositionOf(EventPlayer())), ZOf(nav_pos))) + Up();
-	if (DistanceBetween(temp_1, RayCastHitPosition(temp_1, temp_1 + 30 * Down(), null, null, false)) >= YOf(temp_1) - YOf(PositionOf(target)) + 5)
+	if (DistanceBetween(temp_1, RayCastHitPosition(temp_1, temp_1 + 30 * Down(), null, null, false)) >= YOf(temp_1) - YOf(PositionOf(myTarget)) + 5)
 	{
 		nav_pos = PositionOf(EventPlayer());
 		is_using_combat_pathfinding -= 1;
 		Abort();
 	}
 	temp_1 = PositionOf(EventPlayer()) + 3.5 * DirectionTowards(EventPlayer(), Vector(XOf(nav_pos), YOf(PositionOf(EventPlayer())), ZOf(nav_pos))) + Up();
-	if (DistanceBetween(temp_1, RayCastHitPosition(temp_1, temp_1 + 30 * Down(), null, null, false)) >= YOf(temp_1) - YOf(PositionOf(target)) + 5)
+	if (DistanceBetween(temp_1, RayCastHitPosition(temp_1, temp_1 + 30 * Down(), null, null, false)) >= YOf(temp_1) - YOf(PositionOf(myTarget)) + 5)
 	{
 		nav_pos = PositionOf(EventPlayer());
 		is_using_combat_pathfinding -= 1;
@@ -40,12 +42,12 @@ void check_drop() "Subroutine: Check Drop (Avoid dropping too low)"
 
 void update_target_nav() "Subroutine: Update Target Nav"
 {
-	target.last_nav_update_t = TotalTimeElapsed();
-	temp_1 = EyePosition(target) + target.eye_offset;
-	target.best_nav_idx = IndexOfArrayValue(nodes, SortedArray(FilteredArray(RemoveFromArray(nodes, elevator_nodes), IsInLineOfSight(ArrayElement() + Vector(0, 1.5, 0), temp_1, BarrierLOS.NoBarriersBlock)), DistanceBetween(target, ArrayElement()) + AbsoluteValue(YOf(PositionOf(target)) - YOf(ArrayElement())))[0]);
-	if (target.best_nav_idx == -1)
+	myTarget.last_nav_update_t = TotalTimeElapsed();
+	temp_1 = EyePosition(myTarget) + myTarget.eye_offset;
+	myTarget.best_nav_idx = IndexOfArrayValue(nodes, SortedArray(FilteredArray(RemoveFromArray(nodes, elevator_nodes), IsInLineOfSight(ArrayElement() + Vector(0, 1.5, 0), temp_1, BarrierLOS.NoBarriersBlock)), DistanceBetween(myTarget, ArrayElement()) + AbsoluteValue(YOf(PositionOf(myTarget)) - YOf(ArrayElement())))[0]);
+	if (myTarget.best_nav_idx == -1)
 	{
-		target.best_nav_idx = IndexOfArrayValue(nodes, SortedArray(RemoveFromArray(nodes, elevator_nodes), DistanceBetween(target, ArrayElement()))[0]);
+		myTarget.best_nav_idx = IndexOfArrayValue(nodes, SortedArray(RemoveFromArray(nodes, elevator_nodes), DistanceBetween(myTarget, ArrayElement()))[0]);
 	}
 }
 
@@ -74,10 +76,10 @@ if (is_using_combat_pathfinding == 0)
 if (is_target_in_los >= 5)
 if (is_aggressive)
 if (IsOnGround(EventPlayer()))
-if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) <= 2 || YOf(nodes[target.best_nav_idx]) - YOf(PositionOf(EventPlayer())) <= 1)
-if (is_ranged || DistanceBetween(EventPlayer(), target) <= 1 + DistanceBetween(target, nodes[target.best_nav_idx]))
+if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) <= 2 || YOf(nodes[myTarget.best_nav_idx]) - YOf(PositionOf(EventPlayer())) <= 1)
+if (is_ranged || DistanceBetween(EventPlayer(), myTarget) <= 1 + DistanceBetween(myTarget, nodes[myTarget.best_nav_idx]))
 {
-	if (target.last_nav_update_t + combatants_count * 0.4 < TotalTimeElapsed())
+	if (myTarget.last_nav_update_t + combatants_count * 0.4 < TotalTimeElapsed())
 	{
 		update_target_nav();
 		AbortIfConditionIsFalse();
@@ -88,7 +90,7 @@ if (is_ranged || DistanceBetween(EventPlayer(), target) <= 1 + DistanceBetween(t
 		AbortIfConditionIsFalse();
 	}
 	is_using_combat_pathfinding = 3;
-	target_last_seen_pos = PositionOf(target);
+	target_last_seen_pos = PositionOf(myTarget);
 	is_nav_reachable_node = false;
 	MinWait();
 	LoopIfConditionIsTrue();
@@ -152,22 +154,22 @@ if (DistanceBetween(EventPlayer(), nav_pos) <= 1)
 				nav_pos = nodes[nav_idx];
 			}
 		}
-		else if (target.is_combatant)
+		else if (myTarget.is_combatant)
 		{
-			if (target.last_nav_update_t + combatants_count * 0.4 < TotalTimeElapsed())
+			if (myTarget.last_nav_update_t + combatants_count * 0.4 < TotalTimeElapsed())
 			{
 				update_target_nav();
 			}
-			if (nav_idx == target.best_nav_idx && is_aggressive && fear_end_t < TotalTimeElapsed())
+			if (nav_idx == myTarget.best_nav_idx && is_aggressive && fear_end_t < TotalTimeElapsed())
 			{
 				is_target_in_los = 5;
 				is_using_combat_pathfinding = 3;
-				target_last_seen_pos = PositionOf(target);
+				target_last_seen_pos = PositionOf(myTarget);
 				is_nav_reachable_node = false;
 			}
 			else
 			{
-				nav_idx = SortedArray(edges[nav_idx], (is_aggressive && fear_end_t < TotalTimeElapsed() ? 1 : -1) * (RandomReal(0, 0.5) + IndexOfStringChar(char_string, CharInString(distance_matrix[RoundToInteger((ArrayElement() * nodes_count + target.best_nav_idx) / 128, Rounding.Down)], (ArrayElement() * nodes_count + target.best_nav_idx) % 128))))[0];
+				nav_idx = SortedArray(edges[nav_idx], (is_aggressive && fear_end_t < TotalTimeElapsed() ? 1 : -1) * (RandomReal(0, 0.5) + IndexOfStringChar(char_string, CharInString(distance_matrix[RoundToInteger((ArrayElement() * nodes_count + myTarget.best_nav_idx) / 128, Rounding.Down)], (ArrayElement() * nodes_count + myTarget.best_nav_idx) % 128))))[0];
 				nav_pos = nodes[nav_idx];
 			}
 		}
@@ -188,15 +190,15 @@ if (is_using_combat_pathfinding)
 {
 	if (!(is_load_limit_reached || is_pathfinding_disabled || HasStatus(EventPlayer(), Status.Rooted) || HasStatus(EventPlayer(), Status.Stunned)))
 	{
-		if (IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(target) + target.eye_offset, BarrierLOS.NoBarriersBlock))
+		if (IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(myTarget) + myTarget.eye_offset, BarrierLOS.NoBarriersBlock))
 		{
-			target_last_seen_pos = PositionOf(target);
+			target_last_seen_pos = PositionOf(myTarget);
 			if (is_flying)
 			{
-				nav_pos = RayCastHitPosition(EyePosition(target), EyePosition(target) + 12 * DirectionFromAngles(HorizontalFacingAngleOf(target) + (RandomInteger(0, 1) ? -45 : 45), -60), null, null, false);
+				nav_pos = RayCastHitPosition(EyePosition(myTarget), EyePosition(myTarget) + 12 * DirectionFromAngles(HorizontalFacingAngleOf(myTarget) + (RandomInteger(0, 1) ? -45 : 45), -60), null, null, false);
 				Wait(0.5, WaitBehavior.IgnoreCondition);
 			}
-			else if (target.is_flying && combat_pathfinding_type != 4)
+			else if (myTarget.is_flying && combat_pathfinding_type != 4)
 			{
 				# Roam
 				nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
@@ -207,38 +209,38 @@ if (is_using_combat_pathfinding)
 				# Long Range, roam randomly, slow
 				if (combat_pathfinding_type == 0)
 				{
-					if (DistanceBetween(EventPlayer(), target) <= (HeroOf(EventPlayer()) == Hero.Baptiste ? 20 : 15))
+					if (DistanceBetween(EventPlayer(), myTarget) <= (HeroOf(EventPlayer()) == Hero.Baptiste ? 20 : 15))
 					{
 						nav_pos = PositionOf(EventPlayer()) + 2.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
 					}
 					else
 					{
-						nav_pos = PositionOf(EventPlayer()) + 2.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), target)) + RandomValueInArray([-45, 0, 45]), 0);
+						nav_pos = PositionOf(EventPlayer()) + 2.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), myTarget)) + RandomValueInArray([-45, 0, 45]), 0);
 					}
 					find_wp_near_nav();
 				}
 				else if (combat_pathfinding_type == 1)
 				{
-					if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > -2)
+					if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) > -2)
 					{
-						nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), target) - 2) * DirectionTowards(EventPlayer(), target);
+						nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), myTarget) - 2) * DirectionTowards(EventPlayer(), myTarget);
 						find_wp_near_nav();
 					}
 					else
 					{
-						nav_pos = PositionOf(target) + 2 * DirectionTowards(target, EventPlayer());
+						nav_pos = PositionOf(myTarget) + 2 * DirectionTowards(myTarget, EventPlayer());
 						check_drop();
 					}
 				}
 				else if (combat_pathfinding_type == 2)
 				{
-					nav_pos = PositionOf(EventPlayer()) + Min(1.5, DistanceBetween(EventPlayer(), target) - 2) * DirectionTowards(EventPlayer(), target);
+					nav_pos = PositionOf(EventPlayer()) + Min(1.5, DistanceBetween(EventPlayer(), myTarget) - 2) * DirectionTowards(EventPlayer(), myTarget);
 					find_wp_near_nav();
 				}
 				else if (combat_pathfinding_type == 3)
 				{
-					nav_pos = PositionOf(target) + 5 * DirectionFromAngles(HorizontalFacingAngleOf(target) + RandomValueInArray([-45, 45]), 0);
-					if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > -2)
+					nav_pos = PositionOf(myTarget) + 5 * DirectionFromAngles(HorizontalFacingAngleOf(myTarget) + RandomValueInArray([-45, 45]), 0);
+					if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) > -2)
 					{
 						nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), nav_pos)) * DirectionTowards(EventPlayer(), nav_pos);
 						find_wp_near_nav();
@@ -250,9 +252,9 @@ if (is_using_combat_pathfinding)
 				}
 				else if (combat_pathfinding_type == 4)
 				{
-					if (DistanceBetween(EventPlayer(), target) <= 12)
+					if (DistanceBetween(EventPlayer(), myTarget) <= 12)
 					{
-						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(target, EventPlayer())) + (DistanceBetween(EventPlayer(), target) <= 8 && real_speed <= 1 ? RandomValueInArray([-135, 135]) : 0), 0);
+						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(myTarget, EventPlayer())) + (DistanceBetween(EventPlayer(), myTarget) <= 8 && real_speed <= 1 ? RandomValueInArray([-135, 135]) : 0), 0);
 						find_wp_near_nav();
 					}
 					else
@@ -262,8 +264,8 @@ if (is_using_combat_pathfinding)
 				}
 				else if (combat_pathfinding_type == 5)
 				{
-					nav_pos = PositionOf(target) + 3 * DirectionFromAngles(HorizontalFacingAngleOf(target), 0);
-					if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > -2)
+					nav_pos = PositionOf(myTarget) + 3 * DirectionFromAngles(HorizontalFacingAngleOf(myTarget), 0);
+					if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) > -2)
 					{
 						nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), nav_pos)) * DirectionTowards(EventPlayer(), nav_pos);
 						find_wp_near_nav();
@@ -275,8 +277,8 @@ if (is_using_combat_pathfinding)
 				}
 				else if (combat_pathfinding_type == 6)
 				{
-					nav_pos = PositionOf(target) + 1.5 * DirectionFromAngles(HorizontalFacingAngleOf(target) + (HorizontalAngleTowards(target, EventPlayer()) > 0 ? 90 : -90), 0);
-					if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > -2)
+					nav_pos = PositionOf(myTarget) + 1.5 * DirectionFromAngles(HorizontalFacingAngleOf(myTarget) + (HorizontalAngleTowards(myTarget, EventPlayer()) > 0 ? 90 : -90), 0);
+					if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) > -2)
 					{
 						nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), nav_pos)) * DirectionTowards(EventPlayer(), nav_pos);
 						find_wp_near_nav();
@@ -288,13 +290,13 @@ if (is_using_combat_pathfinding)
 				}
 				else if (combat_pathfinding_type == 7)
 				{
-					if (DistanceBetween(EventPlayer(), target) <= 17)
+					if (DistanceBetween(EventPlayer(), myTarget) <= 17)
 					{
 						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
 					}
 					else
 					{
-						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), target)) + RandomValueInArray([-45, 0, 45]), 0);
+						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), myTarget)) + RandomValueInArray([-45, 0, 45]), 0);
 					}
 					find_wp_near_nav();
 				}
@@ -315,14 +317,14 @@ if (is_using_combat_pathfinding)
 				{
 					if (ab_var_1)
 					{
-						if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > -2)
+						if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) > -2)
 						{
-							nav_pos = PositionOf(EventPlayer()) + 6 * DirectionTowards(EventPlayer(), target);
+							nav_pos = PositionOf(EventPlayer()) + 6 * DirectionTowards(EventPlayer(), myTarget);
 							find_wp_near_nav();
 						}
 						else
 						{
-							nav_pos = PositionOf(target);
+							nav_pos = PositionOf(myTarget);
 							check_drop();
 						}
 					}
@@ -330,13 +332,13 @@ if (is_using_combat_pathfinding)
 					{
 						if (ab_var_2)
 						{
-							nav_pos = PositionOf(target) + 3 * DirectionFromAngles(HorizontalFacingAngleOf(target), 0);
+							nav_pos = PositionOf(myTarget) + 3 * DirectionFromAngles(HorizontalFacingAngleOf(myTarget), 0);
 						}
 						else
 						{
-							nav_pos = PositionOf(target) + 5 * DirectionFromAngles(HorizontalFacingAngleOf(target) + RandomValueInArray([-45, 45]), 0);
+							nav_pos = PositionOf(myTarget) + 5 * DirectionFromAngles(HorizontalFacingAngleOf(myTarget) + RandomValueInArray([-45, 45]), 0);
 						}
-						if (YOf(PositionOf(target)) - YOf(PositionOf(EventPlayer())) > -2)
+						if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) > -2)
 						{
 							nav_pos = PositionOf(EventPlayer()) + Min(4, DistanceBetween(EventPlayer(), nav_pos)) * DirectionTowards(EventPlayer(), nav_pos);
 							find_wp_near_nav();
@@ -357,7 +359,7 @@ if (is_using_combat_pathfinding)
 		{
 			if (DistanceBetween(EventPlayer(), Vector(XOf(target_last_seen_pos), YOf(PositionOf(EventPlayer())), ZOf(target_last_seen_pos))) < 0.5)
 			{
-				target_last_seen_pos = PositionOf(target);
+				target_last_seen_pos = PositionOf(myTarget);
 			}
 			if (is_flying)
 			{
