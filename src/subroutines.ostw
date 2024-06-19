@@ -1,6 +1,11 @@
 import "globalvars.ostw";
 import "playervars.ostw";
 
+globalvar Boolean mut_heartburn; // Unused
+globalvar Number[] current_perks_huds_list;
+globalvar Number[] spawn_nearest_node_idx_list;
+globalvar Vector[] spawn_pos_list;
+
 void set_map_cg() "Subroutine (Set Map CG): Set Spawns, Nodes, Edges, Distance Matrix, Ability Buy Location"
 {
 	spawn_pos_list = [Vector(206.454, 0.001, 70.22), Vector(221.427, 8.692, 66.933), Vector(193.658, 0.998, 67.449), Vector(229.543, 1.999, 85.875), Vector(224.599, 5.001, 110.683), Vector(199.902, 8.843, 109.823), Vector(176.589, 6.999, 66.024), Vector(212.836, 9, 81.39), Vector(228.988, 12.998, 65.82), Vector(186.82, 0.999, 87.814)];

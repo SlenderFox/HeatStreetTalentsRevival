@@ -1,6 +1,9 @@
 import "globalvars.ostw";
 import "subroutines.ostw";
 
+globalvar Player[] dom_point_A_contesters;
+globalvar Player[] dom_point_B_contesters;
+
 rule: "DOM Team 2 Slot 2: Create Guard and Control Point Entities"
 Event.OngoingPlayer
 Team.Team2

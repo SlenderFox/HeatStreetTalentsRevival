@@ -2,6 +2,9 @@ import "../settings.lobby";
 import "subroutines.ostw";
 
 globalvar Boolean is_victory_declared;
+globalvar Boolean is_mutator_activation_disabled; // Useless
+globalvar Number last_spawn_phase_end_t;
+globalvar Number[] game_or_mutator_start_huds; // Holds TextIDs *2
 
 void declare_victory() "Subroutine: Declare Victory"
 {
@@ -236,7 +239,7 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 // After the other settings
 rule: "Special thanks"
 {
-	Special_Thanks = WorkshopSettingCombo("Credits", "Thank you to", 0, ["LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
+	Any Special_Thanks = WorkshopSettingCombo("Credits", "Thank you to", 0, ["LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
 }
 
 rule: "Global (First Wave): Create Mutator Start HUD, Scale Values, Set Level"

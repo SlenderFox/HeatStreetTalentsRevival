@@ -2,6 +2,9 @@ import "globalvars.ostw";
 import "playervars.ostw";
 import "subroutines.ostw";
 
+globalvar Boolean mut_lock_n_load;
+globalvar Number tier_4_spawns_block_end_t;
+
 playervar Boolean is_wraith;
 playervar Boolean can_stagger;
 playervar Boolean can_quick_melee;

@@ -1,5 +1,3 @@
-# main(1)
-globalvar define Special_Thanks;
 # bots(7) invasion(1) main(18) pathing(1) subroutines(5)
 globalvar Any gamemode; // Both number and array
 # main(4) team1(2)
@@ -10,10 +8,6 @@ globalvar Number wave_number;
 globalvar Boolean enable_normal_spawns;
 # bots(5) invasion(4) subroutines(4)
 globalvar Number special_spawns_count;
-# bots(4)
-globalvar Number tier_4_spawns_block_end_t;
-# main(2)
-globalvar Number last_spawn_phase_end_t;
 # subroutines(2) team1(3)
 globalvar Number upgrade_count;
 # bots(3) main(2)
@@ -34,10 +28,6 @@ globalvar Vector[] iv_dom_objective_all_pos_list;
 globalvar Number hvt_dom_objective_killed_count; // Often used as boolean
 # highvaluetarget(6) subroutines(1)
 globalvar Number hvt_call_reinforcements_end_t;
-# domination(8)
-globalvar Player[] dom_point_A_contesters;
-# domination(8)
-globalvar Player[] dom_point_B_contesters;
 # bots(6) main(1)
 globalvar Boolean is_infrasight_on;
 # bots(3) domination(2) highvaluetarget(1) main(41) mutators(1) subroutines(26) team1(9)
@@ -46,8 +36,6 @@ globalvar Player combatants;
 globalvar Number combatants_count;
 # main(1) team1(1)
 globalvar String[] progress_bar_strings;
-# main(4)
-globalvar Number[] game_or_mutator_start_huds; // Holds TextIDs *2
 # bots(7) main(2) pathing(7) subroutines(2)
 globalvar Boolean is_load_limit_reached;
 # bots(2) main(3)
@@ -68,10 +56,6 @@ globalvar Vector[] buy_menu_left_up_forward;
 globalvar Vector buy_menu_cam_pos;
 # main(27) subroutines(2)
 globalvar Vector buy_menu_base_pos;
-# subroutines(7)
-globalvar Vector[] spawn_pos_list;
-# subroutines(2)
-globalvar Number[] spawn_nearest_node_idx_list;
 # bots(2) main(1) pathing(8) subroutines(8)
 globalvar Vector[] nodes;
 # main(1) pathing(4)
@@ -81,15 +65,13 @@ globalvar Number[][] edges;
 # pathing(2) subroutines(1)
 globalvar String[] distance_matrix;
 # pathing(2) subroutines(3)
-globalvar define elevator_nodes; // Unknown, only set to empty array
+globalvar Any[] elevator_nodes; // Unknown, only set to empty array
 # main(1) pathing(1)
 globalvar Boolean is_map_cg;
 # main(1) pathing(2)
 globalvar String char_string; // Probably used for navigation
 # bots(1) main(1) team1(1)
 globalvar Vector aim_offset;
-# main(2)
-globalvar Boolean is_mutator_activation_disabled; // Useless
 # bots(4) main(2)
 globalvar Boolean is_mutator_mode_enabled;
 # bots(1) domination(2) highvaluetarget(2) main(3) subroutines(2) team1(1)
@@ -102,8 +84,6 @@ globalvar Number diff_health_mult;
 globalvar Number diff_damage_mult;
 # main(1) subroutines(18) team1(1)
 globalvar Number[] current_perks; // Could be an enum
-# subroutines(6)
-globalvar Number[] current_perks_huds_list;
 # main(3) subroutines(4)
 globalvar Number[] mutators_list; // 0 to 19
 # main(1) mutators(2) subroutines(1)
@@ -124,12 +104,8 @@ globalvar Boolean mut_hardwired;
 globalvar Boolean mut_promotion;
 # bots(2) subroutines(1)
 globalvar Boolean mut_advanced_medkit;
-# bots(6)
-globalvar Boolean mut_lock_n_load;
 # bots(1) main(1) subroutines(1)
 globalvar Boolean mut_emp_rounds;
-# subroutines(1)
-globalvar Boolean mut_heartburn;
 # subroutines(2) team1(1)
 globalvar Boolean mut_deep_wounds;
 # bots(1) subroutines(1)
