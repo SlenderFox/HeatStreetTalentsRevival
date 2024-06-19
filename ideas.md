@@ -14,9 +14,11 @@ Current talents are very boring.
 Enemies will never shoot pylon.  
 Her ult is really strong.  
 - Outburst deals damage and sets enemies on fire
+- Enemies near pylon take increased damage
 ### Mauga
 Naturally strong in pve.  
 Cage fight is ineffective against tough enemies.
 ### Venture
 Burrow is very strong.
 Ult is very good.
+Maybe something with melee
