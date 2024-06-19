@@ -2,6 +2,14 @@ import "globalvars.ostw";
 import "playervars.ostw";
 import "subroutines.ostw";
 
+playervar Boolean is_wraith;
+playervar Boolean can_stagger;
+playervar Boolean can_quick_melee;
+playervar Boolean is_hardwired;
+playervar Boolean is_mutated;
+playervar Number recall_block_end_t;
+playervar Vector ab_wraith_pos;
+
 rule: "Team 2: Bot Init"
 Event.OngoingPlayer
 Team.Team2

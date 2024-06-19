@@ -2,6 +2,11 @@ import "globalvars.ostw";
 import "playervars.ostw";
 import "subroutines.ostw";
 
+playervar Number last_time_at_node_t;
+playervar Vector real_speed_pos_1;
+playervar Vector real_speed_pos_2;
+playervar Number last_jump_t;
+
 rule: "Team 2 CG: Improve Air Movement near Jump Pad"
 Event.OngoingPlayer
 Team.Team2

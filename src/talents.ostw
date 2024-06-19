@@ -1,6 +1,14 @@
 import "playervars.ostw";
 import "subroutines.ostw";
 
+playervar Boolean Ability_Available;
+playervar Boolean Chain_Reaction_Immune;
+playervar Boolean Chain_Reaction_On;
+playervar Number Ability_Countdown;
+playervar Number Ability_Active;
+playervar Vector Ability_Projectile1; // At one point randomly assigned to a bool
+playervar Any Ability_End;
+
 rule: "Ana: Multinade"
 Event.OngoingPlayer
 Team.Team1

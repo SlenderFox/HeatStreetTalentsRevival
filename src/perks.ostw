@@ -1,6 +1,9 @@
 import "playervars.ostw";
 import "subroutines.ostw";
 
+playervar Boolean[] Swapped_Talent_Array;
+playervar Number current_quick_fix_speed_bonus;
+
 rule: "Team 1 (Ability): Priority C"
 Event.OnHealingDealt
 Team.Team1

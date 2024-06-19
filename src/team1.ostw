@@ -2,6 +2,12 @@ import "globalvars.ostw";
 import "playervars.ostw";
 import "subroutines.ostw";
 
+playervar Number heal_mod;
+playervar Number[] Damage_Received;
+playervar Vector death_cam_target;
+playervar Player spectated_player;
+playervar Any nemesis_beam_effect;
+
 rule: "[Tutorial] Close HUD"
 Event.OngoingPlayer
 if (Tut_Active)
