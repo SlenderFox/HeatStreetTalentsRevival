@@ -7,6 +7,8 @@ Enemy respawn times scale with difficulty.
 Look into ways to get it working with charged abilities.
 ### Bulletstorm
 If Blizz still haven't fixed new heroes in workshop, maybe shelve this.
+### Shockproof
+Remove passthrough.
 ## Talents
 ### Lifeweaver
 Current talents are very boring.
@@ -21,4 +23,5 @@ Cage fight is ineffective against tough enemies.
 ### Venture
 Burrow is very strong.
 Ult is very good.
-Maybe something with melee
+Maybe something with melee.
+Something with drill dash.
