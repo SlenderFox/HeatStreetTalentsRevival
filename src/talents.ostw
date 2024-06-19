@@ -1243,12 +1243,14 @@ if (IsUsingAbility1(EventPlayer()))
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	WaitUntil(IsOnGround(EventPlayer()) || !IsUsingAbility1(EventPlayer()), 1000);
 	AbortIf(!IsUsingAbility1(EventPlayer()));
-	for (Number i! = -5; 5; 1)
+	Number i!;
+	for (i = -5; 5; 1)
 	{
 		CreateProjectile(ProjectileType.ReinhardtFireStrike, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + i * 5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 1, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 40, 4, 0, 0, 0);
 		Wait(0.025, WaitBehavior.IgnoreCondition);
 	}
-	for (Number i! = 5; -5; -1)
+	//> Broken, possible hit entity limit
+	for (i = 5; -5; -1)
 	{
 		CreateProjectile(ProjectileType.ReinhardtFireStrike, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + i * 5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 1, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 40, 4, 0, 0, 0);
 		Wait(0.025, WaitBehavior.IgnoreCondition);
