@@ -34,14 +34,14 @@ void set_random_perks() "Subroutine: Set Random Perks"
 	if (wave_number % 4 == 1)
 	{
 		current_perks = ArraySlice(RandomizedArray(RemoveFromArray([12, 13], current_perks)), 0, 2);
-		for (temp_1 = 0; 2; 1)
+		for (gIterator = 0; 2; 1)
 		{
-			temp_2 = buy_menu_base_pos - (temp_1 ? 25 : 2.5) * buy_menu_left_up_forward[1] - 112.5 * buy_menu_left_up_forward[0];
-			if (current_perks[temp_1] == 12)
+			temp_2 = buy_menu_base_pos - (gIterator ? 25 : 2.5) * buy_menu_left_up_forward[1] - 112.5 * buy_menu_left_up_forward[0];
+			if (current_perks[gIterator] == 12)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Hero Talent 1\n      $1600", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().Talent1 ? Color.Gray : Color.Purple, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[temp_1] == 13)
+			else if (current_perks[gIterator] == 13)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Hero Talent 2\n      $1600", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().Talent2 ? Color.Gray : Color.Purple, Spectators.DefaultVisibility);
 			}
@@ -51,54 +51,54 @@ void set_random_perks() "Subroutine: Set Random Perks"
 	else
 	{
 		current_perks = ArraySlice(RandomizedArray(RemoveFromArray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], current_perks)), 0, 2);
-		for (temp_1 = 0; 2; 1)
+		for (gIterator = 0; 2; 1)
 		{
-			temp_2 = buy_menu_base_pos - (temp_1 ? 25 : 2.5) * buy_menu_left_up_forward[1] - 112.5 * buy_menu_left_up_forward[0];
-			if (current_perks[temp_1] == 0)
+			temp_2 = buy_menu_base_pos - (gIterator ? 25 : 2.5) * buy_menu_left_up_forward[1] - 112.5 * buy_menu_left_up_forward[0];
+			if (current_perks[gIterator] == 0)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Mystery Swap\n     500$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_mystery_swap ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[temp_1] == 1)
+			else if (current_perks[gIterator] == 1)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Bulletstorm\n   1000$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_bulletstorm ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[temp_1] == 2)
+			else if (current_perks[gIterator] == 2)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Die Hard\n 700$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_die_hard ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[temp_1] == 3)
+			else if (current_perks[gIterator] == 3)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Brass Knuckles\n     700$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_brass_knuckles ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[temp_1] == 4)
+			else if (current_perks[gIterator] == 4)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Vampiric\n   1000$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_vampiric ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[temp_1] == 5)
+			else if (current_perks[gIterator] == 5)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Crash N' Dash\n      700$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_crash_n_dash ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[temp_1] == 6)
+			else if (current_perks[gIterator] == 6)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Golden Hour\n    1000$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_golden_hour ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[temp_1] == 7)
+			else if (current_perks[gIterator] == 7)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Supercharge\n        700$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_super_charge ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[temp_1] == 8)
+			else if (current_perks[gIterator] == 8)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Nemesis\n   800$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_nemesis ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[temp_1] == 9)
+			else if (current_perks[gIterator] == 9)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Spec Ops\n 600$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_special_operator ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[temp_1] == 10)
+			else if (current_perks[gIterator] == 10)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Sharpshooter\n   900$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_sharpshooter ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[temp_1] == 11)
+			else if (current_perks[gIterator] == 11)
 			{
 				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Shockproof\n        700$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_shockproof ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
@@ -163,15 +163,15 @@ void teleport_to_free_spawn() "Subroutine: Teleport to free Spawn"
 	else
 	{
 		temp_2 = MappedArray(spawn_pos_list, false);
-		for (temp_1 = 0; CountOf(spawn_pos_list); 1)
+		for (gIterator = 0; CountOf(spawn_pos_list); 1)
 		{
-			if (IsTrueForAny(combatants, IsInLineOfSight(spawn_pos_list[temp_1] + Up(), EyePosition(ArrayElement()), BarrierLOS.NoBarriersBlock)))
+			if (IsTrueForAny(combatants, IsInLineOfSight(spawn_pos_list[gIterator] + Up(), EyePosition(ArrayElement()), BarrierLOS.NoBarriersBlock)))
 			{
-				temp_2[temp_1] = 2;
+				temp_2[gIterator] = 2;
 			}
-			else if (IsTrueForAny(combatants, DistanceBetween(spawn_pos_list[temp_1], ArrayElement()) <= 10))
+			else if (IsTrueForAny(combatants, DistanceBetween(spawn_pos_list[gIterator], ArrayElement()) <= 10))
 			{
-				temp_2[temp_1] = 1;
+				temp_2[gIterator] = 1;
 			}
 		}
 		temp_1 = SortedArray(spawn_pos_list, temp_2[CurrentArrayIndex()] + RandomReal(0, 0.5))[0];

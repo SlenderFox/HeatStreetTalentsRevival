@@ -959,10 +959,10 @@ if (!is_changing_heroes)
 		SmallMessage(AllPlayers(), <"<0> was downed!", EventPlayer()>);
 		death_cam_target = EyePosition(EventPlayer()) + 1000 * DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()), 0);
 		StartCamera(EventPlayer(), RayCastHitPosition(EyePosition(spectated_player), EyePosition(spectated_player) - (death_cam_target ? 6.25 * DirectionTowards(EyePosition(spectated_player), death_cam_target) : 8.25 * DirectionFromAngles(HorizontalFacingAngleOf(spectated_player), 20)), null, null, false) + 0.25 * (death_cam_target ? DirectionTowards(EyePosition(spectated_player), death_cam_target) : DirectionFromAngles(HorizontalFacingAngleOf(spectated_player), 20)), EyePosition(spectated_player), death_cam_target ? 10 : 20);
-		for (temp_1 = 0; combatants_count; 1)
+		for (gIterator = 0; combatants_count; 1)
 		{
-			PlayEffect(combatants[temp_1], PlayEffect.RingExplosionSound, Color.White, combatants[temp_1], 200);
-			PlayEffect(combatants[temp_1], PlayEffect.RingExplosionSound, Color.White, combatants[temp_1], 200);
+			PlayEffect(combatants[gIterator], PlayEffect.RingExplosionSound, Color.White, combatants[gIterator], 200);
+			PlayEffect(combatants[gIterator], PlayEffect.RingExplosionSound, Color.White, combatants[gIterator], 200);
 		}
 		downed_start_t = TotalTimeElapsed();
 		revive_timer = false;
@@ -1276,10 +1276,10 @@ if (IsButtonHeld(EventPlayer(), Button.Melee))
 		{
 			temp_1 = FilteredArray(AllLivingPlayers(Team.Team2), !HasStatus(ArrayElement(), Status.PhasedOut) && !HasStatus(ArrayElement(), Status.Stunned) && DistanceBetween(active_ab_var, EyePosition(ArrayElement())) <= 8);
 			StartDamageOverTime(temp_1, EventPlayer(), 2, 40);
-			for (temp_2 = 0; CountOf(temp_1); 1)
+			for (gIterator = 0; CountOf(temp_1); 1)
 			{
-				temp_1[temp_2].gmut_fortified_bypass_end_t = Max(TotalTimeElapsed(), temp_1[temp_2].gmut_fortified_bypass_end_t);
-				SetStatus(temp_1[temp_2], EventPlayer(), Status.Stunned, temp_1[temp_2].is_fortified ? 0.5 : 1);
+				temp_1[gIterator].gmut_fortified_bypass_end_t = Max(TotalTimeElapsed(), temp_1[gIterator].gmut_fortified_bypass_end_t);
+				SetStatus(temp_1[gIterator], EventPlayer(), Status.Stunned, temp_1[temp_2].is_fortified ? 0.5 : 1);
 			}
 			Wait(2, WaitBehavior.IgnoreCondition);
 		}
@@ -1292,12 +1292,12 @@ if (IsButtonHeld(EventPlayer(), Button.Melee))
 		{
 			SetStatus(temp_1, EventPlayer(), Status.Hacked, 5);
 			ModifyVariable(active_ab_var, Operation.AppendToArray, temp_1);
-			for (temp_2 = 4; 1; -1)
+			for (gIterator = 4; 1; -1)
 			{
 				temp_1 = SortedArray(FilteredArray(RemoveFromArray(AllLivingPlayers(Team.Team2), active_ab_var), !HasStatus(ArrayElement(), Status.PhasedOut) && !ArrayElement().iv_is_portal && IsInLineOfSight(temp_1, ArrayElement(), BarrierLOS.NoBarriersBlock)), DistanceBetween(temp_1, ArrayElement()))[0];
 				if (temp_1)
 				{
-					SetStatus(temp_1, EventPlayer(), Status.Hacked, temp_2);
+					SetStatus(temp_1, EventPlayer(), Status.Hacked, gIterator);
 					ModifyVariable(active_ab_var, Operation.AppendToArray, temp_1);
 				}
 				else

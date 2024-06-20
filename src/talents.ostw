@@ -21,7 +21,7 @@ Player.Ana
 if (Talent1)
 if (IsUsingAbility2(EventPlayer()))
 {
-	for (Number i! = 0; 4; 1)
+	for (gIterator = 0; 4; 1)
 	{
 		Wait(0.03, WaitBehavior.IgnoreCondition);
 		SetAbilityCooldown(EventPlayer(), Button.Ability2, false);
@@ -214,7 +214,7 @@ if (SpeedOf(EventPlayer()) >= 20)
 		CreateProjectile(ProjectileType.RamattraRavenousVortexSphere, EventPlayer(), null, Up(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 2, 4, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0.05, 15, 3, 8, 1, 100);
 		Wait(0.15, WaitBehavior.IgnoreCondition);
 	}
-	for (Number i! = 0; 4; 1)
+	for (gIterator = 0; 4; 1)
 	{
 		Wait(0.15, WaitBehavior.IgnoreCondition);
 		CreateProjectile(ProjectileType.RamattraRavenousVortexSphere, EventPlayer(), null, Up(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 2, 4, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0.05, 15, 3, 8, 1, 100);
@@ -283,11 +283,11 @@ if (IsUsingUltimate(EventPlayer()))
 if (IsOnGround(EventPlayer()))
 {
 	SetStatus(PlayersWithinRadius(EventPlayer(), 20, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.KnockedDown, 2.5);
-	for (Number i! = 0; 3; 1)
+	for (gIterator = 0; 3; 1)
 	{
 		Wait(0.032, WaitBehavior.IgnoreCondition);
-		Damage(PlayersWithinRadius(EventPlayer(), i * 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 50);
-		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), i * 20);
+		Damage(PlayersWithinRadius(EventPlayer(), gIterator * 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 50);
+		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), gIterator * 20);
 	}
 	Wait(5, WaitBehavior.IgnoreCondition);
 }
@@ -445,7 +445,6 @@ if (IsUsingAbility2(EventPlayer()))
 	SetEnvironmentCreditPlayer(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer());
 }
 
-//> What is this rule
 rule: "Tracer: Vortex 2"
 Event.OnHealingTaken
 Team.Team2
@@ -551,7 +550,7 @@ if (Talent1)
 if (IsFiringPrimary(EventPlayer()))
 if (IsUsingAbility2(EventPlayer()))
 {
-	for (Number i! = 0; 2; 1)
+	for (gIterator = 0; 2; 1)
 	{
 		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EyePosition(EventPlayer()) + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 70, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 110, 5, 0, 1, 5);
 		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EyePosition(EventPlayer()) + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 70, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 110, 5, 0, 1, 5);
@@ -643,7 +642,7 @@ if (Talent1)
 if (IsUsingAbility2(EventPlayer()))
 if (IsFiringPrimary(EventPlayer()))
 {
-	for (Number i! = 0; 4; 1)
+	for (gIterator = 0; 4; 1)
 	{
 		CreateProjectile(ProjectileType.LucioSonicAmplifier, EventPlayer(), EyePosition(EventPlayer()) + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1)), Relative.ToWorld, ModifyHealthType.Damage, OppositeTeamOf(TeamOf(EventPlayer())), 20, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 50, 5, 0, 0, 0);
 		CreateProjectile(ProjectileType.LucioSonicAmplifier, EventPlayer(), EyePosition(EventPlayer()) + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1)), Relative.ToWorld, ModifyHealthType.Damage, OppositeTeamOf(TeamOf(EventPlayer())), 20, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 50, 5, 0, 0, 0);
@@ -787,7 +786,7 @@ if (!Ammo(EventPlayer(), false) % 6)
 	ChaseVariableAtRate(Ability_Projectile1, Ability_End, 35, RateChaseReevaluation.DestinationAndRate);
 	WaitUntil(!Talent2 || Ability_Projectile1 == Ability_End, 99999);
 	DestroyEffect(Effects_[7]);
-	for (Number i! = 0; 6; 1)
+	for (gIterator = 0; 6; 1)
 	{
 		PlayEffect(AllPlayers(), PlayEffect.BadPickupEffect, Color.Orange, Ability_Projectile1 + Vector(RandomReal(-1.5, 1.5), RandomReal(-0.5, 0.5), RandomReal(-1.5, 1.5)), 1);
 		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.Team1, Ability_Projectile1, 25);
@@ -948,7 +947,7 @@ if (IsFiringSecondary(EventPlayer()))
 	Wait(0.3, WaitBehavior.IgnoreCondition);
 	Damage_Dealt += 60;
 	AbortIfConditionIsFalse();
-	for (Number i! = 0; 5; 1)
+	for (gIterator = 0; 5; 1)
 	{
 		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(false, -0.25, false), EventPlayer(), LocalVector.Rotation), DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 75, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 115, 5, 0, 0, 5);
 		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(false, -0.25, false), EventPlayer(), LocalVector.Rotation), DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 75, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 115, 5, 0, 0, 5);
@@ -1098,7 +1097,7 @@ Player.Baptiste
 if (IsUsingAbility1(EventPlayer()))
 if (Talent1)
 {
-	for (Number i! = 0; 3; 1)
+	for (gIterator = 0; 3; 1)
 	{
 		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Purple, PositionOf(EventPlayer()), 20);
 		Damage(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 25);
@@ -1248,16 +1247,14 @@ if (IsUsingAbility1(EventPlayer()))
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	WaitUntil(IsOnGround(EventPlayer()) || !IsUsingAbility1(EventPlayer()), 1000);
 	AbortIf(!IsUsingAbility1(EventPlayer()));
-	Number i!;
-	for (i = -5; 5; 1)
+	for (gIterator = -5; 5; 1)
 	{
-		CreateProjectile(ProjectileType.ReinhardtFireStrike, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + i * 5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 1, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 40, 4, 0, 0, 0);
+		CreateProjectile(ProjectileType.ReinhardtFireStrike, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + gIterator * 5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 1, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 40, 4, 0, 0, 0);
 		Wait(0.025, WaitBehavior.IgnoreCondition);
 	}
-	//> Broken, possible hit entity limit
-	for (i = 5; -5; -1)
+	for (gIterator = 5; -5; -1)
 	{
-		CreateProjectile(ProjectileType.ReinhardtFireStrike, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + i * 5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 1, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 40, 4, 0, 0, 0);
+		CreateProjectile(ProjectileType.ReinhardtFireStrike, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + gIterator * 5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 50, 1, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 40, 4, 0, 0, 0);
 		Wait(0.025, WaitBehavior.IgnoreCondition);
 	}
 }
@@ -1286,7 +1283,7 @@ if (IsUsingUltimate(EventPlayer()))
 if (Talent1)
 {
 	Wait(0.2, WaitBehavior.IgnoreCondition);
-	for (Number i! = 0; 5; 1)
+	for (gIterator = 0; 5; 1)
 	{
 		Wait(1, WaitBehavior.AbortWhenFalse);
 		PlayEffect(EventPlayer(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 15);
@@ -1341,7 +1338,7 @@ Player.WreckingBall
 if (Talent2)
 if (IsUsingAbility2(EventPlayer()))
 {
-	for (Number i! = false; 4; 1)
+	for (gIterator = false; 4; 1)
 	{
 		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Purple, PositionOf(EventPlayer()), 20);
 		Damage(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 25);

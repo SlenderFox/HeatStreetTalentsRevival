@@ -187,9 +187,9 @@ Team.Team2
 	{
 		temp_1 = ArraySlice(SortedArray(FilteredArray(PlayersWithinRadius(EyePosition(EventPlayer()), 8, Team.Team2, RadiusLOS.Surfaces), ArrayElement().is_alive && !ArrayElement().gmut_var && !ArrayElement().iv_is_portal), DistanceBetween(EventPlayer(), ArrayElement())), 0, 2);
 		temp_1.gmut_var = true;
-		for (temp_2 = 0; CountOf(temp_1); 1)
+		for (gIterator = 0; CountOf(temp_1); 1)
 		{
-			PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Red, temp_1[temp_2], 1);
+			PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Red, temp_1[gIterator], 1);
 		}
 		gmut_var = false;
 	}
@@ -1132,12 +1132,11 @@ if (NormalizedHealth(EventPlayer()) <= 0.5)
 	ab_var_3 = true;
 	if (real_tier == 3)
 	{
-		for (Number i! = 5; 0; -1)
+		for (gIterator = 5; 0; -1)
 		{
 			PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.White, EventPlayer(), 0.1);
 			if (IsDead(EventPlayer()))
 			{
-				i = 0;
 				break;
 			}
 			Wait(0.2, WaitBehavior.IgnoreCondition);
