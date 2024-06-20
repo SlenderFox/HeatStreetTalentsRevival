@@ -5,11 +5,11 @@ Event.OngoingPlayer
 Player.Ana
 {
 	# T1
-	talent_text[1] = "multinade";
-	talent_text[2] = "throw 3 biotic grenades instead of 1";
+	pTalentText[1] = "multinade";
+	pTalentText[2] = "throw 3 biotic grenades instead of 1";
 	# T2
-	talent_text[3] = "sleep paralysis";
-	talent_text[4] = "enemies slept by sleep dart receive large damage when they wake up";
+	pTalentText[3] = "sleep paralysis";
+	pTalentText[4] = "enemies slept by sleep dart receive large damage when they wake up";
 	StartForcingDummyBotName(EventPlayer(), "Shrike");
 }
 
@@ -18,11 +18,11 @@ Event.OngoingPlayer
 Player.Ashe
 {
 	# T1
-	talent_text[1] = "black gunpowder";
-	talent_text[2] = "coach gun stuns and sets enemies on fire";
+	pTalentText[1] = "black gunpowder";
+	pTalentText[2] = "coach gun stuns and sets enemies on fire";
 	# T2
-	talent_text[3] = "dancing flames";
-	talent_text[4] = "eliminated enemies exlpode and burn others nearby";
+	pTalentText[3] = "dancing flames";
+	pTalentText[4] = "eliminated enemies exlpode and burn others nearby";
 }
 
 rule: "[Info] Baptiste"
@@ -30,11 +30,11 @@ Event.OngoingPlayer
 Player.Baptiste
 {
 	# T1
-	talent_text[1] = "corrode";
-	talent_text[2] = "regenerative burst inflicts poison damage to enemies";
+	pTalentText[1] = "corrode";
+	pTalentText[2] = "regenerative burst inflicts poison damage to enemies";
 	# T2
-	talent_text[3] = "aerial ace";
-	talent_text[4] = "exo-boots allow for gliding and deal bonus damage while gliding";
+	pTalentText[3] = "aerial ace";
+	pTalentText[4] = "exo-boots allow for gliding and deal bonus damage while gliding";
 	StartForcingDummyBotName(EventPlayer(), "Medic");
 }
 
@@ -43,11 +43,11 @@ Event.OngoingPlayer
 Player.Bastion
 {
 	# T1
-	talent_text[1] = "fusillade";
-	talent_text[2] = "start firing barrages of rockets when shooting in assault form";
+	pTalentText[1] = "fusillade";
+	pTalentText[2] = "start firing barrages of rockets when shooting in assault form";
 	# T2
-	talent_text[3] = "trickshot";
-	talent_text[4] = "landing tactical grenade on an enemy deals more damage and heals health";
+	pTalentText[3] = "trickshot";
+	pTalentText[4] = "landing tactical grenade on an enemy deals more damage and heals health";
 }
 
 rule: "[Info] Brigitte"
@@ -55,11 +55,11 @@ Event.OngoingPlayer
 Player.Brigitte
 {
 	# T1
-	talent_text[1] = "endeavor";
-	talent_text[2] = "gain a boost in damage, armour and speed when your barrier breaks";
+	pTalentText[1] = "endeavor";
+	pTalentText[2] = "gain a boost in damage, armour and speed when your barrier breaks";
 	# T2
-	talent_text[3] = "whiplash";
-	talent_text[4] = "endpoint of whip shot generates a stunning shockwave";
+	pTalentText[3] = "whiplash";
+	pTalentText[4] = "endpoint of whip shot generates a stunning shockwave";
 	StartForcingDummyBotName(EventPlayer(), "Shield");
 }
 
@@ -68,11 +68,11 @@ Event.OngoingPlayer
 Player.Cassidy
 {
 	# T1
-	talent_text[1] = "standoff";
-	talent_text[2] = "enemies cannot move once their skull is locked during deadeye";
+	pTalentText[1] = "standoff";
+	pTalentText[2] = "enemies cannot move once their skull is locked during deadeye";
 	# T2
-	talent_text[3] = "flashpoint";
-	talent_text[4] = "magnetic grenade will heavily stun enemies if it sticks";
+	pTalentText[3] = "flashpoint";
+	pTalentText[4] = "magnetic grenade will heavily stun enemies if it sticks";
 	StartForcingDummyBotName(EventPlayer(), "Gunslinger");
 }
 
@@ -81,11 +81,11 @@ Event.OngoingPlayer
 Player.Dva
 {
 	# T1
-	talent_text[1] = "voltage grid";
-	talent_text[2] = "defense matrix damages and roots enemies";
+	pTalentText[1] = "voltage grid";
+	pTalentText[2] = "defense matrix damages and roots enemies";
 	# T2
-	talent_text[3] = "shooting star";
-	talent_text[4] = "boosters set enemies on fire";
+	pTalentText[3] = "shooting star";
+	pTalentText[4] = "boosters set enemies on fire";
 	StartForcingDummyBotName(EventPlayer(), "Aeronaut");
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	SetPlayerHealth(EventPlayer(), 100000);
@@ -96,11 +96,11 @@ Event.OngoingPlayer
 Player.Doomfist
 {
 	# T1
-	talent_text[1] = "punch card";
-	talent_text[2] = "rocket punch deals triple damage at full charge";
+	pTalentText[1] = "punch card";
+	pTalentText[2] = "rocket punch deals triple damage at full charge";
 	# T2
-	talent_text[3] = "fire quake";
-	talent_text[4] = "seismic slam sends out two massive wave of flames";
+	pTalentText[3] = "fire quake";
+	pTalentText[4] = "seismic slam sends out two massive wave of flames";
 }
 
 rule: "[Info] Echo"
@@ -108,11 +108,11 @@ Event.OngoingPlayer
 Player.Echo
 {
 	# T1
-	talent_text[1] = "bomblet jacket";
-	talent_text[2] = "send out mini-bombs to enemies while flight is active";
+	pTalentText[1] = "bomblet jacket";
+	pTalentText[2] = "send out mini-bombs to enemies while flight is active";
 	# T2
-	talent_text[3] = "focusing optics";
-	talent_text[4] = "focusing beam boost starts at 90% hp instead of 50%";
+	pTalentText[3] = "focusing optics";
+	pTalentText[4] = "focusing beam boost starts at 90% hp instead of 50%";
 	StartForcingDummyBotName(EventPlayer(), "Hoverbird");
 }
 
@@ -121,11 +121,11 @@ Event.OngoingPlayer
 Player.Genji
 {
 	# T1
-	talent_text[1] = "venomous strike";
-	talent_text[2] = "swift strike deals bleed damage; heal for bleed damage";
+	pTalentText[1] = "venomous strike";
+	pTalentText[2] = "swift strike deals bleed damage; heal for bleed damage";
 	# T2
-	talent_text[3] = "sharpened storm";
-	talent_text[4] = "double the amount of shurikens fired";
+	pTalentText[3] = "sharpened storm";
+	pTalentText[4] = "double the amount of shurikens fired";
 	StartForcingDummyBotName(EventPlayer(), "Shinobi");
 }
 
@@ -134,11 +134,11 @@ Event.OngoingPlayer
 Player.Hanzo
 {
 	# T1
-	talent_text[1] = "Arrow Rain";
-	talent_text[2] = "fire more arrows per shot during Storm Arrows";
+	pTalentText[1] = "Arrow Rain";
+	pTalentText[2] = "fire more arrows per shot during Storm Arrows";
 	# T2
-	talent_text[3] = "stormbreak";
-	talent_text[4] = "storm arrows have no cooldown for a short duration when earning a kill";
+	pTalentText[3] = "stormbreak";
+	pTalentText[4] = "storm arrows have no cooldown for a short duration when earning a kill";
 	StartForcingDummyBotName(EventPlayer(), "Bowmaster");
 }
 
@@ -147,11 +147,11 @@ Event.OngoingPlayer
 Player.Junkrat
 {
 	# T1
-	talent_text[1] = "pyromania";
-	talent_text[2] = "All explosive attacks deal fire damage";
+	pTalentText[1] = "pyromania";
+	pTalentText[2] = "All explosive attacks deal fire damage";
 	# T2
-	talent_text[3] = "trigger happy";
-	talent_text[4] = "Gain +1 Concussion Mine every 4s, up to 5 max";
+	pTalentText[3] = "trigger happy";
+	pTalentText[4] = "Gain +1 Concussion Mine every 4s, up to 5 max";
 }
 
 rule: "[Info] Junker Queen"
@@ -159,11 +159,11 @@ Event.OngoingPlayer
 Player.JunkerQueen
 {
 	# T1
-	talent_text[1] = "Shout Louder";
-	talent_text[2] = "commanding shout wounds enemies in the area";
+	pTalentText[1] = "Shout Louder";
+	pTalentText[2] = "commanding shout wounds enemies in the area";
 	# T2
-	talent_text[3] = "Grace Period";
-	talent_text[4] = "gracie deals can pull multiple enemies back at once";
+	pTalentText[3] = "Grace Period";
+	pTalentText[4] = "gracie deals can pull multiple enemies back at once";
 }
 
 rule: "[Info] Lifeweaver"
@@ -171,11 +171,11 @@ Event.OngoingPlayer
 Player.Lifeweaver
 {
 	# T1
-	talent_text[1] = "Autumn Blossoms";
-	talent_text[2] = "Deal more damage and eliminations cause enemies to drop heal orbs";
+	pTalentText[1] = "Autumn Blossoms";
+	pTalentText[2] = "Deal more damage and eliminations cause enemies to drop heal orbs";
 	# T2
-	talent_text[3] = "Pressure Therapy";
-	talent_text[4] = "Deal 50% more damage to enemies you're above and behind";
+	pTalentText[3] = "Pressure Therapy";
+	pTalentText[4] = "Deal 50% more damage to enemies you're above and behind";
 }
 
 rule: "[Info] Kiriko"
@@ -183,11 +183,11 @@ Event.OngoingPlayer
 Player.Kiriko
 {
 	# T1
-	talent_text[1] = "Shinobi Tactics";
-	talent_text[2] = "healing health with abilities create energy explosions around the target";
+	pTalentText[1] = "Shinobi Tactics";
+	pTalentText[2] = "healing health with abilities create energy explosions around the target";
 	# T2
-	talent_text[3] = "recession";
-	talent_text[4] = "protection suzu damages for 20% of health and freezes enemies";
+	pTalentText[3] = "recession";
+	pTalentText[4] = "protection suzu damages for 20% of health and freezes enemies";
 	StartForcingDummyBotName(EventPlayer(), "Yokai");
 }
 
@@ -196,11 +196,11 @@ Event.OngoingPlayer
 Player.Lucio
 {
 	# T1
-	talent_text[1] = "Chord Cadence";
-	talent_text[2] = "amp it up triggers twice and adds more shots to your attack";
+	pTalentText[1] = "Chord Cadence";
+	pTalentText[2] = "amp it up triggers twice and adds more shots to your attack";
 	# T2
-	talent_text[3] = "reverse amp";
-	talent_text[4] = "amp it up inflicts the opposite song effect to enemies";
+	pTalentText[3] = "reverse amp";
+	pTalentText[4] = "amp it up inflicts the opposite song effect to enemies";
 	StartForcingDummyBotName(EventPlayer(), "Gunrunner");
 }
 
@@ -209,11 +209,11 @@ Event.OngoingPlayer
 Player.Mei
 {
 	# T1
-	talent_text[1] = "cold snap";
-	talent_text[2] = "instantly freeze nearby enemies once cryo-freeze breaks";
+	pTalentText[1] = "cold snap";
+	pTalentText[2] = "instantly freeze nearby enemies once cryo-freeze breaks";
 	# T2
-	talent_text[3] = "fractical strike";
-	talent_text[4] = "shoot more icicles at once but at slightly less damage";
+	pTalentText[3] = "fractical strike";
+	pTalentText[4] = "shoot more icicles at once but at slightly less damage";
 	StartForcingDummyBotName(EventPlayer(), "Subzero");
 }
 
@@ -222,11 +222,11 @@ Event.OngoingPlayer
 Player.Mercy
 {
 	# T1
-	talent_text[1] = "wings of grand";
-	talent_text[2] = "guardian angel damages and knocks enemies down in its path";
+	pTalentText[1] = "wings of grand";
+	pTalentText[2] = "guardian angel damages and knocks enemies down in its path";
 	# T2
-	talent_text[3] = "holy light missiles";
-	talent_text[4] = "launch powerful light charges during valkyrie";
+	pTalentText[3] = "holy light missiles";
+	pTalentText[4] = "launch powerful light charges during valkyrie";
 }
 
 rule: "[Info] Moira"
@@ -234,11 +234,11 @@ Event.OngoingPlayer
 Player.Moira
 {
 	# T1
-	talent_text[1] = "flourish";
-	talent_text[2] = "fading through allies heals and through enemies damages them";
+	pTalentText[1] = "flourish";
+	pTalentText[2] = "fading through allies heals and through enemies damages them";
 	# T2
-	talent_text[3] = "catalyst";
-	talent_text[4] = "holding primary during coalescence costs energy and speed, but boosts effectiveness";
+	pTalentText[3] = "catalyst";
+	pTalentText[4] = "holding primary during coalescence costs energy and speed, but boosts effectiveness";
 }
 
 rule: "[Info] Orisa"
@@ -246,11 +246,11 @@ Event.OngoingPlayer
 Player.Orisa
 {
 	# T1
-	talent_text[1] = "spinning shreddies";
-	talent_text[2] = "javelin spin sends projectile shards that knock back enemies";
+	pTalentText[1] = "spinning shreddies";
+	pTalentText[2] = "javelin spin sends projectile shards that knock back enemies";
 	# T2
-	talent_text[3] = "metalhead";
-	talent_text[4] = "energy javelin also affects enemies around the stuck target and stuns longer";
+	pTalentText[3] = "metalhead";
+	pTalentText[4] = "energy javelin also affects enemies around the stuck target and stuns longer";
 	StartForcingDummyBotName(EventPlayer(), "Bulldozer");
 }
 
@@ -259,11 +259,11 @@ Event.OngoingPlayer
 Player.Pharah
 {
 	# T1
-	talent_text[1] = "head trauma";
-	talent_text[2] = "concussive blast deals damage and tazes enemies below half health";
+	pTalentText[1] = "head trauma";
+	pTalentText[2] = "concussive blast deals damage and tazes enemies below half health";
 	# T2
-	talent_text[3] = "weaponized storm";
-	talent_text[4] = "every 6th rocket flies faster and detonates several clusters";
+	pTalentText[3] = "weaponized storm";
+	pTalentText[4] = "every 6th rocket flies faster and detonates several clusters";
 	StartForcingDummyBotName(EventPlayer(), "Skirmisher");
 }
 
@@ -272,11 +272,11 @@ Event.OngoingPlayer
 Player.Ramattra
 {
 	# T1
-	talent_text[1] = "vile dominance";
-	talent_text[2] = "move faster and root enemies with every punch in nemesis form";
+	pTalentText[1] = "vile dominance";
+	pTalentText[2] = "move faster and root enemies with every punch in nemesis form";
 	# T2
-	talent_text[3] = "nether sector";
-	talent_text[4] = "heal health and gain bonus ultimate charge for every grounded enemy with vortex";
+	pTalentText[3] = "nether sector";
+	pTalentText[4] = "heal health and gain bonus ultimate charge for every grounded enemy with vortex";
 	StartForcingDummyBotName(EventPlayer(), "tyrant");
 }
 
@@ -285,11 +285,11 @@ Event.OngoingPlayer
 Player.Reaper
 {
 	# T1
-	talent_text[1] = "wrathful wraith";
-	talent_text[2] = "allow shooting during wraith form";
+	pTalentText[1] = "wrathful wraith";
+	pTalentText[2] = "allow shooting during wraith form";
 	# T2
-	talent_text[3] = "paranoia";
-	talent_text[4] = "tase and damage enemies in sight during wraith form";
+	pTalentText[3] = "paranoia";
+	pTalentText[4] = "tase and damage enemies in sight during wraith form";
 	StartForcingDummyBotName(EventPlayer(), "Spook");
 }
 
@@ -298,11 +298,11 @@ Event.OngoingPlayer
 Player.Reinhardt
 {
 	# T1
-	talent_text[1] = "fire blast";
-	talent_text[2] = "fire strike explodes as it deals damage, igniting enemies";
+	pTalentText[1] = "fire blast";
+	pTalentText[2] = "fire strike explodes as it deals damage, igniting enemies";
 	# T2
-	talent_text[3] = "epicenter";
-	talent_text[4] = "earthshatter travels in all directions";
+	pTalentText[3] = "epicenter";
+	pTalentText[4] = "earthshatter travels in all directions";
 	StartForcingDummyBotName(EventPlayer(), "Crusader");
 }
 
@@ -311,11 +311,11 @@ Event.OngoingPlayer
 Player.Roadhog
 {
 	# T1
-	talent_text[1] = "stench";
-	talent_text[2] = "constantly inflict toxic damage to nearby enemeis";
+	pTalentText[1] = "stench";
+	pTalentText[2] = "constantly inflict toxic damage to nearby enemeis";
 	# T2
-	talent_text[3] = "chainsnap";
-	talent_text[4] = "chain hook deals 4x more damage; resets upon eliminations";
+	pTalentText[3] = "chainsnap";
+	pTalentText[4] = "chain hook deals 4x more damage; resets upon eliminations";
 	StartForcingDummyBotName(EventPlayer(), "Juggernaut");
 }
 
@@ -324,11 +324,11 @@ Event.OngoingPlayer
 Player.Sigma
 {
 	# T1
-	talent_text[1] = "accretion disk";
-	talent_text[2] = "accretion flies straight and has increased damage and stun";
+	pTalentText[1] = "accretion disk";
+	pTalentText[2] = "accretion flies straight and has increased damage and stun";
 	# T2
-	talent_text[3] = "string theory";
-	talent_text[4] = "when kinetic grasp ends, fire a blast that scales based on the amount of damage collected";
+	pTalentText[3] = "string theory";
+	pTalentText[4] = "when kinetic grasp ends, fire a blast that scales based on the amount of damage collected";
 	StartForcingDummyBotName(EventPlayer(), "Graviton");
 }
 
@@ -337,11 +337,11 @@ Event.OngoingPlayer
 Player.Sojourn
 {
 	# T1
-	talent_text[1] = "Thunderous kicks";
-	talent_text[2] = "kickslide jump initiates a powerful energy blast";
+	pTalentText[1] = "Thunderous kicks";
+	pTalentText[2] = "kickslide jump initiates a powerful energy blast";
 	# T2
-	talent_text[3] = "Matter Splatter";
-	talent_text[4] = "critical railgun hits are explosive";
+	pTalentText[3] = "Matter Splatter";
+	pTalentText[4] = "critical railgun hits are explosive";
 }
 
 rule: "[Info] Soldier: 76"
@@ -349,11 +349,11 @@ Event.OngoingPlayer
 Player.Soldier76
 {
 	# T1
-	talent_text[1] = "triple threat";
-	talent_text[2] = "helix rockets fires two adjacent mini rockets";
+	pTalentText[1] = "triple threat";
+	pTalentText[2] = "helix rockets fires two adjacent mini rockets";
 	# T2
-	talent_text[3] = "Espionage";
-	talent_text[4] = "allies in biotic field revive faster and become harder to hit";
+	pTalentText[3] = "Espionage";
+	pTalentText[4] = "allies in biotic field revive faster and become harder to hit";
 }
 
 rule: "[Info] Sombra"
@@ -361,11 +361,11 @@ Event.OngoingPlayer
 Player.Sombra
 {
 	# T1
-	talent_text[1] = "stack overflow";
-	talent_text[2] = "cancelling stealth will temporarily boost damage and cause melees to stun";
+	pTalentText[1] = "stack overflow";
+	pTalentText[2] = "cancelling stealth will temporarily boost damage and cause melees to stun";
 	# T2
-	talent_text[3] = "cyberattack";
-	talent_text[4] = "using translocator will damage and hack nearby enemies";
+	pTalentText[3] = "cyberattack";
+	pTalentText[4] = "using translocator will damage and hack nearby enemies";
 	StartForcingDummyBotName(EventPlayer(), "Taser");
 }
 
@@ -374,11 +374,11 @@ Event.OngoingPlayer
 Player.Symmetra
 {
 	# T1
-	talent_text[1] = "sentry paragon";
-	talent_text[2] = "each sentry turret deals 50% more damage";
+	pTalentText[1] = "sentry paragon";
+	pTalentText[2] = "each sentry turret deals 50% more damage";
 	# T2
-	talent_text[3] = "shield generator";
-	talent_text[4] = "gain increased damage and speed, and grant all players shields with kills";
+	pTalentText[3] = "shield generator";
+	pTalentText[4] = "gain increased damage and speed, and grant all players shields with kills";
 }
 
 rule: "[Info] Torbjorn"
@@ -386,11 +386,11 @@ Event.OngoingPlayer
 Player.Torbjorn
 {
 	# T1
-	talent_text[1] = "heatwaves";
-	talent_text[2] = "unleash waves of fire when overload or molten core is active";
+	pTalentText[1] = "heatwaves";
+	pTalentText[2] = "unleash waves of fire when overload or molten core is active";
 	# T2
-	talent_text[3] = "foundry";
-	talent_text[4] = "run 40% faster and deal 40% damage with forge hammer equipped";
+	pTalentText[3] = "foundry";
+	pTalentText[4] = "run 40% faster and deal 40% damage with forge hammer equipped";
 	StartForcingDummyBotName(EventPlayer(), "Portal");
 }
 
@@ -399,11 +399,11 @@ Event.OngoingPlayer
 Player.Tracer
 {
 	# T1
-	talent_text[1] = "vortex";
-	talent_text[2] = "recall drags and roots nearby enemies to its activation point";
+	pTalentText[1] = "vortex";
+	pTalentText[2] = "recall drags and roots nearby enemies to its activation point";
 	# T2
-	talent_text[3] = "chain reaction";
-	talent_text[4] = "pulse bomb explosions can chain onto other enemies";
+	pTalentText[3] = "chain reaction";
+	pTalentText[4] = "pulse bomb explosions can chain onto other enemies";
 	StartForcingDummyBotName(EventPlayer(), "Playmaker");
 }
 
@@ -412,11 +412,11 @@ Event.OngoingPlayer
 Player.Widowmaker
 {
 	# T1
-	talent_text[1] = "baiser de soie";
-	talent_text[2] = "scoped critical hits instantly kill enemies below 30% hp";
+	pTalentText[1] = "baiser de soie";
+	pTalentText[2] = "scoped critical hits instantly kill enemies below 30% hp";
 	# T2
-	talent_text[3] = "parting gift";
-	talent_text[4] = "leave a line of grenades while using grappling hook";
+	pTalentText[3] = "parting gift";
+	pTalentText[4] = "leave a line of grenades while using grappling hook";
 	StartForcingDummyBotName(EventPlayer(), "Sniper");
 }
 
@@ -425,11 +425,11 @@ Event.OngoingPlayer
 Player.Winston
 {
 	# T1
-	talent_text[1] = "next generation";
-	talent_text[2] = "primal rage damage is doubled and recharges 5% ult per hit";
+	pTalentText[1] = "next generation";
+	pTalentText[2] = "primal rage damage is doubled and recharges 5% ult per hit";
 	# T2
-	talent_text[3] = "quake";
-	talent_text[4] = "jump pack landing force is much more powerful and stuns enemies";
+	pTalentText[3] = "quake";
+	pTalentText[4] = "jump pack landing force is much more powerful and stuns enemies";
 }
 
 rule: "[Info] Wrecking Ball"
@@ -437,11 +437,11 @@ Event.OngoingPlayer
 Player.WreckingBall
 {
 	# T1
-	talent_text[1] = "orbital strike";
-	talent_text[2] = "piledriver deals more damage the higher you drop";
+	pTalentText[1] = "orbital strike";
+	pTalentText[2] = "piledriver deals more damage the higher you drop";
 	# T2
-	talent_text[3] = "distortion";
-	talent_text[4] = "adaptive shields triggers explosions and tazes nearby enemies";
+	pTalentText[3] = "distortion";
+	pTalentText[4] = "adaptive shields triggers explosions and tazes nearby enemies";
 	StartForcingDummyBotName(EventPlayer(), "Detonator");
 }
 
@@ -450,11 +450,11 @@ Event.OngoingPlayer
 Player.Zarya
 {
 	# T1
-	talent_text[1] = "combusta-bubble";
-	talent_text[2] = "barriers explode when they expire";
+	pTalentText[1] = "combusta-bubble";
+	pTalentText[2] = "barriers explode when they expire";
 	# T2
-	talent_text[3] = "power surge";
-	talent_text[4] = "personal barrier grants energy upon activation";
+	pTalentText[3] = "power surge";
+	pTalentText[4] = "personal barrier grants energy upon activation";
 	StartForcingDummyBotName(EventPlayer(), "Amazon");
 }
 
@@ -463,9 +463,9 @@ Event.OngoingPlayer
 Player.Zenyatta
 {
 	# T1
-	talent_text[1] = "stress relief";
-	talent_text[2] = "fully charged orb volleys deal 50% more damage";
+	pTalentText[1] = "stress relief";
+	pTalentText[2] = "fully charged orb volleys deal 50% more damage";
 	# T2
-	talent_text[3] = "perfect balance";
-	talent_text[4] = "transcendence damages enemies in the area of effect";
+	pTalentText[3] = "perfect balance";
+	pTalentText[4] = "transcendence damages enemies in the area of effect";
 }

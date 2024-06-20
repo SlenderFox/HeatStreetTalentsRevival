@@ -1,46 +1,46 @@
 import "globalvars.ostw";
 import "subroutines.ostw";
 
-globalvar Player[] dom_point_A_contesters;
-globalvar Player[] dom_point_B_contesters;
+globalvar Player[] gDomPointAContesters;
+globalvar Player[] gDomPointBContesters;
 
 rule: "DOM Team 2 Slot 2: Create Guard and Control Point Entities"
 Event.OngoingPlayer
 Team.Team2
 Player.Slot2
 {
-	CreateProgressBarHudText(objective_phase_number == 1 ? AllPlayers() : [], ArrayContains(dom_point_A_contesters, LocalPlayer()) ? objective_progress[0] : ArrayContains(dom_point_B_contesters, LocalPlayer()) ? objective_progress[1] : 0.25 * (100 * ((PlayersInSlot(2, Team.Team2).is_living_boss ? 1 - NormalizedHealth(PlayersInSlot(2, Team.Team2)) : 1) + (PlayersInSlot(3, Team.Team2).is_living_boss ? 1 - NormalizedHealth(PlayersInSlot(3, Team.Team2)) : 1)) + objective_progress[0] + objective_progress[1]), ArrayContains(dom_point_A_contesters, LocalPlayer()) ? PlayersInSlot(2, Team.Team2).is_living_boss ? "Kill the Guard to unlock this point" : "Capturing..." : ArrayContains(dom_point_B_contesters, LocalPlayer()) ? PlayersInSlot(3, Team.Team2).is_living_boss ? "Kill the Guard to unlock the point" : "Capturing..." : IsTrueForAny(AllPlayers(Team.Team2), ArrayElement().is_living_boss) ? "Kill the guards and capture the points" : "Capture the points", Location.Top, -97, ArrayContains(dom_point_A_contesters, LocalPlayer()) || ArrayContains(dom_point_B_contesters, LocalPlayer()) ? Color.Green : Color.Blue, ArrayContains(dom_point_A_contesters, LocalPlayer()) && PlayersInSlot(2, Team.Team2).is_living_boss || ArrayContains(dom_point_B_contesters, LocalPlayer()) && PlayersInSlot(3, Team.Team2).is_living_boss ? Color.Yellow : Color.Blue, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
-	CreateEffect(objective_phase_number == 1 && objective_progress[0] < 100 ? AllPlayers() : [], Effect.Ring, PlayersInSlot(2, Team.Team2).is_living_boss ? Color.Red : CountOf(dom_point_A_contesters) ? Color.Green : Color.White, iv_dom_objective_pos[0], 3, EffectRev.VisibleToPositionRadiusAndColor);
-	CreateEffect(objective_phase_number == 1 && objective_progress[1] < 100 ? AllPlayers() : [], Effect.Ring, PlayersInSlot(3, Team.Team2).is_living_boss ? Color.Red : CountOf(dom_point_B_contesters) ? Color.Green : Color.White, iv_dom_objective_pos[1], 3, EffectRev.VisibleToPositionRadiusAndColor);
-	CreateIcon(objective_phase_number == 1 && objective_progress[0] < 100 ? AllPlayers() : [], iv_dom_objective_pos[0] + 2 * Up(), Icon.ExclamationMark, IconRev.VisibleToPositionAndColor, PlayersInSlot(2, Team.Team2).is_living_boss ? Color.Orange : Color.Yellow, true);
-	CreateIcon(objective_phase_number == 1 && objective_progress[1] < 100 ? AllPlayers() : [], iv_dom_objective_pos[1] + 2 * Up(), Icon.ExclamationMark, IconRev.VisibleToPositionAndColor, PlayersInSlot(3, Team.Team2).is_living_boss ? Color.Orange : Color.Yellow, true);
-	CreateInWorldText(objective_phase_number == 1 && objective_progress[0] < 100 ? AllPlayers() : [], PlayersInSlot(2, Team.Team2).is_living_boss ? "Kill Guard" : "Capture point", PlayersInSlot(2, Team.Team2).is_living_boss ? PlayersInSlot(2, Team.Team2) : iv_dom_objective_pos[0] + 1.7 * Up(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndString, Color.Yellow, Spectators.DefaultVisibility);
-	CreateInWorldText(objective_phase_number == 1 && objective_progress[1] < 100 ? AllPlayers() : [], PlayersInSlot(3, Team.Team2).is_living_boss ? "Kill Guard" : "Capture point", PlayersInSlot(3, Team.Team2).is_living_boss ? PlayersInSlot(3, Team.Team2) : iv_dom_objective_pos[1] + 1.7 * Up(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndString, Color.Yellow, Spectators.DefaultVisibility);
+	CreateProgressBarHudText(gObjectivePhaseNumber == 1 ? AllPlayers() : [], ArrayContains(gDomPointAContesters, LocalPlayer()) ? gObjectiveProgress[0] : ArrayContains(gDomPointBContesters, LocalPlayer()) ? gObjectiveProgress[1] : 0.25 * (100 * ((PlayersInSlot(2, Team.Team2).pIsLivingBoss ? 1 - NormalizedHealth(PlayersInSlot(2, Team.Team2)) : 1) + (PlayersInSlot(3, Team.Team2).pIsLivingBoss ? 1 - NormalizedHealth(PlayersInSlot(3, Team.Team2)) : 1)) + gObjectiveProgress[0] + gObjectiveProgress[1]), ArrayContains(gDomPointAContesters, LocalPlayer()) ? PlayersInSlot(2, Team.Team2).pIsLivingBoss ? "Kill the Guard to unlock this point" : "Capturing..." : ArrayContains(gDomPointBContesters, LocalPlayer()) ? PlayersInSlot(3, Team.Team2).pIsLivingBoss ? "Kill the Guard to unlock the point" : "Capturing..." : IsTrueForAny(AllPlayers(Team.Team2), ArrayElement().pIsLivingBoss) ? "Kill the guards and capture the points" : "Capture the points", Location.Top, -97, ArrayContains(gDomPointAContesters, LocalPlayer()) || ArrayContains(gDomPointBContesters, LocalPlayer()) ? Color.Green : Color.Blue, ArrayContains(gDomPointAContesters, LocalPlayer()) && PlayersInSlot(2, Team.Team2).pIsLivingBoss || ArrayContains(gDomPointBContesters, LocalPlayer()) && PlayersInSlot(3, Team.Team2).pIsLivingBoss ? Color.Yellow : Color.Blue, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
+	CreateEffect(gObjectivePhaseNumber == 1 && gObjectiveProgress[0] < 100 ? AllPlayers() : [], Effect.Ring, PlayersInSlot(2, Team.Team2).pIsLivingBoss ? Color.Red : CountOf(gDomPointAContesters) ? Color.Green : Color.White, gIvDomObjectivePos[0], 3, EffectRev.VisibleToPositionRadiusAndColor);
+	CreateEffect(gObjectivePhaseNumber == 1 && gObjectiveProgress[1] < 100 ? AllPlayers() : [], Effect.Ring, PlayersInSlot(3, Team.Team2).pIsLivingBoss ? Color.Red : CountOf(gDomPointBContesters) ? Color.Green : Color.White, gIvDomObjectivePos[1], 3, EffectRev.VisibleToPositionRadiusAndColor);
+	CreateIcon(gObjectivePhaseNumber == 1 && gObjectiveProgress[0] < 100 ? AllPlayers() : [], gIvDomObjectivePos[0] + 2 * Up(), Icon.ExclamationMark, IconRev.VisibleToPositionAndColor, PlayersInSlot(2, Team.Team2).pIsLivingBoss ? Color.Orange : Color.Yellow, true);
+	CreateIcon(gObjectivePhaseNumber == 1 && gObjectiveProgress[1] < 100 ? AllPlayers() : [], gIvDomObjectivePos[1] + 2 * Up(), Icon.ExclamationMark, IconRev.VisibleToPositionAndColor, PlayersInSlot(3, Team.Team2).pIsLivingBoss ? Color.Orange : Color.Yellow, true);
+	CreateInWorldText(gObjectivePhaseNumber == 1 && gObjectiveProgress[0] < 100 ? AllPlayers() : [], PlayersInSlot(2, Team.Team2).pIsLivingBoss ? "Kill Guard" : "Capture point", PlayersInSlot(2, Team.Team2).pIsLivingBoss ? PlayersInSlot(2, Team.Team2) : gIvDomObjectivePos[0] + 1.7 * Up(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndString, Color.Yellow, Spectators.DefaultVisibility);
+	CreateInWorldText(gObjectivePhaseNumber == 1 && gObjectiveProgress[1] < 100 ? AllPlayers() : [], PlayersInSlot(3, Team.Team2).pIsLivingBoss ? "Kill Guard" : "Capture point", PlayersInSlot(3, Team.Team2).pIsLivingBoss ? PlayersInSlot(3, Team.Team2) : gIvDomObjectivePos[1] + 1.7 * Up(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndString, Color.Yellow, Spectators.DefaultVisibility);
 }
 
 rule: "DOM Team 2 Slot 2: Contest Control Point A"
 Event.OngoingPlayer
 Team.Team2
 Player.Slot2
-if (objective_phase_number == 1)
-if (objective_progress[0] < 100)
+if (gObjectivePhaseNumber == 1)
+if (gObjectiveProgress[0] < 100)
 {
-	dom_point_A_contesters = FilteredArray(combatants, !ArrayElement().downed_start_t && !(ArrayElement().is_invisible % 3) && DistanceBetween(iv_dom_objective_pos[0], Vector(XOf(PositionOf(ArrayElement())), YOf(iv_dom_objective_pos[0]), ZOf(PositionOf(ArrayElement())))) <= 3 && AbsoluteValue(YOf(PositionOf(iv_dom_objective_pos[0])) - YOf(PositionOf(ArrayElement()))) <= 3 && IsInLineOfSight(iv_dom_objective_pos[0] + Up(), ArrayElement(), BarrierLOS.NoBarriersBlock));
-	if (!PlayersInSlot(2, Team.Team2).is_living_boss && CountOf(dom_point_A_contesters))
+	gDomPointAContesters = FilteredArray(gCombatants, !ArrayElement().pDownedStartT && !(ArrayElement().pIsInvisible % 3) && DistanceBetween(gIvDomObjectivePos[0], Vector(XOf(PositionOf(ArrayElement())), YOf(gIvDomObjectivePos[0]), ZOf(PositionOf(ArrayElement())))) <= 3 && AbsoluteValue(YOf(PositionOf(gIvDomObjectivePos[0])) - YOf(PositionOf(ArrayElement()))) <= 3 && IsInLineOfSight(gIvDomObjectivePos[0] + Up(), ArrayElement(), BarrierLOS.NoBarriersBlock));
+	if (!PlayersInSlot(2, Team.Team2).pIsLivingBoss && CountOf(gDomPointAContesters))
 	{
-		objective_progress[0] += 2;
+		gObjectiveProgress[0] += 2;
 		Wait(0.25, WaitBehavior.IgnoreCondition);
-		objective_progress[0] += 2;
-		if (objective_progress[0] >= 100)
+		gObjectiveProgress[0] += 2;
+		if (gObjectiveProgress[0] >= 100)
 		{
-			PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Yellow, iv_dom_objective_pos[0], 3);
-			PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, iv_dom_objective_pos[0], 200);
-			dom_point_A_contesters = [];
-			money_amount += 70;
-			if (objective_progress[1] >= 100)
+			PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Yellow, gIvDomObjectivePos[0], 3);
+			PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, gIvDomObjectivePos[0], 200);
+			gDomPointAContesters = [];
+			gMoneyAmount += 70;
+			if (gObjectiveProgress[1] >= 100)
 			{
-				objective_phase_number = 2;
-				enable_normal_spawns = true;
+				gObjectivePhaseNumber = 2;
+				gEnableNormalSpawns = true;
 				call_reinforcements();
 				async! play_incoming_sound_twice();
 				Wait(2, WaitBehavior.IgnoreCondition);
@@ -60,25 +60,25 @@ rule: "DOM Team 2 Slot 2: Contest Control Point B"
 Event.OngoingPlayer
 Team.Team2
 Player.Slot2
-if (objective_phase_number == 1)
-if (objective_progress[1] < 100)
+if (gObjectivePhaseNumber == 1)
+if (gObjectiveProgress[1] < 100)
 {
-	dom_point_B_contesters = FilteredArray(combatants, !ArrayElement().downed_start_t && !(ArrayElement().is_invisible % 3) && DistanceBetween(iv_dom_objective_pos[1], Vector(XOf(PositionOf(ArrayElement())), YOf(iv_dom_objective_pos[1]), ZOf(PositionOf(ArrayElement())))) <= 3 && AbsoluteValue(YOf(PositionOf(iv_dom_objective_pos[1])) - YOf(PositionOf(ArrayElement()))) <= 3 && IsInLineOfSight(iv_dom_objective_pos[1] + Up(), ArrayElement(), BarrierLOS.NoBarriersBlock));
-	if (!PlayersInSlot(3, Team.Team2).is_living_boss && CountOf(dom_point_B_contesters))
+	gDomPointBContesters = FilteredArray(gCombatants, !ArrayElement().pDownedStartT && !(ArrayElement().pIsInvisible % 3) && DistanceBetween(gIvDomObjectivePos[1], Vector(XOf(PositionOf(ArrayElement())), YOf(gIvDomObjectivePos[1]), ZOf(PositionOf(ArrayElement())))) <= 3 && AbsoluteValue(YOf(PositionOf(gIvDomObjectivePos[1])) - YOf(PositionOf(ArrayElement()))) <= 3 && IsInLineOfSight(gIvDomObjectivePos[1] + Up(), ArrayElement(), BarrierLOS.NoBarriersBlock));
+	if (!PlayersInSlot(3, Team.Team2).pIsLivingBoss && CountOf(gDomPointBContesters))
 	{
-		objective_progress[1] += 2;
+		gObjectiveProgress[1] += 2;
 		Wait(0.25, WaitBehavior.IgnoreCondition);
-		objective_progress[1] += 2;
-		if (objective_progress[1] >= 100)
+		gObjectiveProgress[1] += 2;
+		if (gObjectiveProgress[1] >= 100)
 		{
-			PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Yellow, iv_dom_objective_pos[1], 3);
-			PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, iv_dom_objective_pos[1], 200);
-			dom_point_B_contesters = [];
-			money_amount += 70;
-			if (objective_progress[0] >= 100)
+			PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Yellow, gIvDomObjectivePos[1], 3);
+			PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, gIvDomObjectivePos[1], 200);
+			gDomPointBContesters = [];
+			gMoneyAmount += 70;
+			if (gObjectiveProgress[0] >= 100)
 			{
-				objective_phase_number = 2;
-				enable_normal_spawns = true;
+				gObjectivePhaseNumber = 2;
+				gEnableNormalSpawns = true;
 				call_reinforcements();
 				async! play_incoming_sound_twice();
 				Wait(2, WaitBehavior.IgnoreCondition);

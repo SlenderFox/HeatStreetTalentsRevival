@@ -2,65 +2,65 @@ import "globalvars.ostw";
 import "playervars.ostw";
 import "subroutines.ostw";
 
-globalvar Boolean is_map_cg;
-globalvar Number nodes_count;
-globalvar Number[][] edges;
-globalvar String char_string; // Probably used for navigation
-globalvar String[] distance_matrix;
-globalvar Any[] elevator_nodes; // Unknown, only set to empty array
+globalvar Boolean gIsMapCg;
+globalvar Number gNodesCount;
+globalvar Number[][] gEdges;
+globalvar String gCharString; // Probably used for navigation
+globalvar String[] gDistanceMatrix;
+globalvar Any[] gElevatorNodes; // Unknown, only set to empty array
 
-playervar Number last_time_at_node_t;
-playervar Number last_jump_t;
-playervar Number last_nav_update_t;
-playervar Vector real_speed_pos_1;
-playervar Vector real_speed_pos_2;
-playervar Vector best_nav_idx;
+playervar Number pLastTimesAtNodeT;
+playervar Number pLastJumpT;
+playervar Number pLastNavUpdateT;
+playervar Vector pRealSpeedPos1;
+playervar Vector pRealSpeedPos2;
+playervar Vector pBestNavIdx;
 
 void check_drop() "Subroutine: Check Drop (Avoid dropping too low)"
 {
-	if (is_load_limit_reached)
+	if (gIsLoadLimitReached)
 	{
-		nav_pos = PositionOf(EventPlayer());
+		pNavPos = PositionOf(EventPlayer());
 		Abort();
 	}
-	temp_1 = PositionOf(EventPlayer()) + 1.75 * DirectionTowards(EventPlayer(), Vector(XOf(nav_pos), YOf(PositionOf(EventPlayer())), ZOf(nav_pos))) + Up();
-	if (DistanceBetween(temp_1, RayCastHitPosition(temp_1, temp_1 + 30 * Down(), null, null, false)) >= YOf(temp_1) - YOf(PositionOf(myTarget)) + 5)
+	gTemp1 = PositionOf(EventPlayer()) + 1.75 * DirectionTowards(EventPlayer(), Vector(XOf(pNavPos), YOf(PositionOf(EventPlayer())), ZOf(pNavPos))) + Up();
+	if (DistanceBetween(gTemp1, RayCastHitPosition(gTemp1, gTemp1 + 30 * Down(), null, null, false)) >= YOf(gTemp1) - YOf(PositionOf(pMyTarget)) + 5)
 	{
-		nav_pos = PositionOf(EventPlayer());
-		is_using_combat_pathfinding -= 1;
+		pNavPos = PositionOf(EventPlayer());
+		pIsUsingCombatPathfinding -= 1;
 		Abort();
 	}
-	temp_1 = PositionOf(EventPlayer()) + 3.5 * DirectionTowards(EventPlayer(), Vector(XOf(nav_pos), YOf(PositionOf(EventPlayer())), ZOf(nav_pos))) + Up();
-	if (DistanceBetween(temp_1, RayCastHitPosition(temp_1, temp_1 + 30 * Down(), null, null, false)) >= YOf(temp_1) - YOf(PositionOf(myTarget)) + 5)
+	gTemp1 = PositionOf(EventPlayer()) + 3.5 * DirectionTowards(EventPlayer(), Vector(XOf(pNavPos), YOf(PositionOf(EventPlayer())), ZOf(pNavPos))) + Up();
+	if (DistanceBetween(gTemp1, RayCastHitPosition(gTemp1, gTemp1 + 30 * Down(), null, null, false)) >= YOf(gTemp1) - YOf(PositionOf(pMyTarget)) + 5)
 	{
-		nav_pos = PositionOf(EventPlayer());
-		is_using_combat_pathfinding -= 1;
+		pNavPos = PositionOf(EventPlayer());
+		pIsUsingCombatPathfinding -= 1;
 		Abort();
 	}
-	is_using_combat_pathfinding = 3;
+	pIsUsingCombatPathfinding = 3;
 }
 
 void update_target_nav() "Subroutine: Update Target Nav"
 {
-	myTarget.last_nav_update_t = TotalTimeElapsed();
-	temp_1 = EyePosition(myTarget) + myTarget.eye_offset;
-	myTarget.best_nav_idx = IndexOfArrayValue(nodes, SortedArray(FilteredArray(RemoveFromArray(nodes, elevator_nodes), IsInLineOfSight(ArrayElement() + Vector(0, 1.5, 0), temp_1, BarrierLOS.NoBarriersBlock)), DistanceBetween(myTarget, ArrayElement()) + AbsoluteValue(YOf(PositionOf(myTarget)) - YOf(ArrayElement())))[0]);
-	if (myTarget.best_nav_idx == -1)
+	pMyTarget.pLastNavUpdateT = TotalTimeElapsed();
+	gTemp1 = EyePosition(pMyTarget) + pMyTarget.pEyeOffset;
+	pMyTarget.pBestNavIdx = IndexOfArrayValue(gNodes, SortedArray(FilteredArray(RemoveFromArray(gNodes, gElevatorNodes), IsInLineOfSight(ArrayElement() + Vector(0, 1.5, 0), gTemp1, BarrierLOS.NoBarriersBlock)), DistanceBetween(pMyTarget, ArrayElement()) + AbsoluteValue(YOf(PositionOf(pMyTarget)) - YOf(ArrayElement())))[0]);
+	if (pMyTarget.pBestNavIdx == -1)
 	{
-		myTarget.best_nav_idx = IndexOfArrayValue(nodes, SortedArray(RemoveFromArray(nodes, elevator_nodes), DistanceBetween(myTarget, ArrayElement()))[0]);
+		pMyTarget.pBestNavIdx = IndexOfArrayValue(gNodes, SortedArray(RemoveFromArray(gNodes, gElevatorNodes), DistanceBetween(pMyTarget, ArrayElement()))[0]);
 	}
 }
 
 rule: "Team 2 CG: Improve Air Movement near Jump Pad"
 Event.OngoingPlayer
 Team.Team2
-if (is_map_cg)
-if (nav_idx == 4 || nav_idx == 45)
-if (is_alive)
+if (gIsMapCg)
+if (pNavIdx == 4 || pNavIdx == 45)
+if (pIsAlive)
 if (IsInAir(EventPlayer()))
-if (is_using_combat_pathfinding == 0)
+if (pIsUsingCombatPathfinding == 0)
 if (HorizontalSpeedOf(EventPlayer()) >= 5)
-if (DistanceBetween(EventPlayer(), Vector(XOf(nav_pos), YOf(PositionOf(EventPlayer())), ZOf(nav_pos))) <= 0.5)
+if (DistanceBetween(EventPlayer(), Vector(XOf(pNavPos), YOf(PositionOf(EventPlayer())), ZOf(pNavPos))) <= 0.5)
 {
 	ApplyImpulse(EventPlayer(), -1 * DirectionFromAngles(HorizontalAngleFromDirection(VelocityOf(EventPlayer())), 0), 0.001, Relative.ToWorld, ContraryMotion.CancelXYZ);
 	Wait(0.25, WaitBehavior.IgnoreCondition);
@@ -70,28 +70,28 @@ if (DistanceBetween(EventPlayer(), Vector(XOf(nav_pos), YOf(PositionOf(EventPlay
 rule: "Team 2: Enable Combat Pathfinding"
 Event.OngoingPlayer
 Team.Team2
-if (!is_load_limit_reached)
-if (!is_pathfinding_disabled)
-if (is_using_combat_pathfinding == 0)
-if (is_target_in_los >= 5)
-if (is_aggressive)
+if (!gIsLoadLimitReached)
+if (!pIsPathfindingDisabled)
+if (pIsUsingCombatPathfinding == 0)
+if (pIsTargetInLos >= 5)
+if (pIsAggressive)
 if (IsOnGround(EventPlayer()))
-if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) <= 2 || YOf(nodes[myTarget.best_nav_idx]) - YOf(PositionOf(EventPlayer())) <= 1)
-if (is_ranged || DistanceBetween(EventPlayer(), myTarget) <= 1 + DistanceBetween(myTarget, nodes[myTarget.best_nav_idx]))
+if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) <= 2 || YOf(gNodes[pMyTarget.pBestNavIdx]) - YOf(PositionOf(EventPlayer())) <= 1)
+if (pIsRanged || DistanceBetween(EventPlayer(), pMyTarget) <= 1 + DistanceBetween(pMyTarget, gNodes[pMyTarget.pBestNavIdx]))
 {
-	if (myTarget.last_nav_update_t + combatants_count * 0.4 < TotalTimeElapsed())
+	if (pMyTarget.pLastNavUpdateT + gCombatantsCount * 0.4 < TotalTimeElapsed())
 	{
 		update_target_nav();
 		AbortIfConditionIsFalse();
 	}
-	if (IsTrueForAny(elevator_nodes, DistanceBetween(EventPlayer(), Vector(XOf(ArrayElement()), YOf(PositionOf(EventPlayer())), ZOf(ArrayElement()))) < 1.5))
+	if (IsTrueForAny(gElevatorNodes, DistanceBetween(EventPlayer(), Vector(XOf(ArrayElement()), YOf(PositionOf(EventPlayer())), ZOf(ArrayElement()))) < 1.5))
 	{
 		Wait(1, WaitBehavior.IgnoreCondition);
 		AbortIfConditionIsFalse();
 	}
-	is_using_combat_pathfinding = 3;
-	target_last_seen_pos = PositionOf(myTarget);
-	is_nav_reachable_node = false;
+	pIsUsingCombatPathfinding = 3;
+	pTargetLastSeenPos = PositionOf(pMyTarget);
+	pIsNavReachableNode = false;
 	MinWait();
 	LoopIfConditionIsTrue();
 }
@@ -99,32 +99,32 @@ if (is_ranged || DistanceBetween(EventPlayer(), myTarget) <= 1 + DistanceBetween
 rule: "Team 2: Disable Combat Pathfinding"
 Event.OngoingPlayer
 Team.Team2
-if (is_using_combat_pathfinding)
-if ((is_aggressive && is_target_in_los) == 0)
+if (pIsUsingCombatPathfinding)
+if ((pIsAggressive && pIsTargetInLos) == 0)
 {
-	is_using_combat_pathfinding = 0;
+	pIsUsingCombatPathfinding = 0;
 }
 
 rule: "Team 2: Set Nav (Not in Combat), Get Back to Node, Set Nav is Node"
 Event.OngoingPlayer
 Team.Team2
-if (is_alive)
-if (is_using_combat_pathfinding == 0)
-if (!is_nav_reachable_node)
+if (pIsAlive)
+if (pIsUsingCombatPathfinding == 0)
+if (!pIsNavReachableNode)
 {
-	if (!(is_load_limit_reached || is_pathfinding_disabled))
+	if (!(gIsLoadLimitReached || pIsPathfindingDisabled))
 	{
-		if (combat_pathfinding_type == 0)
+		if (pCombatPathfindingType == 0)
 		{
-			SetMoveSpeed(EventPlayer(), mut_amped ? 115 : 100);
+			SetMoveSpeed(EventPlayer(), gMutAmpted ? 115 : 100);
 		}
-		nav_pos = SortedArray(FilteredArray(nodes, IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock)), DistanceBetween(EventPlayer(), ArrayElement()))[0];
-		if (!nav_pos)
+		pNavPos = SortedArray(FilteredArray(gNodes, IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock)), DistanceBetween(EventPlayer(), ArrayElement()))[0];
+		if (!pNavPos)
 		{
-			nav_pos = SortedArray(nodes, DistanceBetween(EventPlayer(), ArrayElement()))[0];
+			pNavPos = SortedArray(gNodes, DistanceBetween(EventPlayer(), ArrayElement()))[0];
 		}
-		nav_idx = IndexOfArrayValue(nodes, nav_pos);
-		is_nav_reachable_node = true;
+		pNavIdx = IndexOfArrayValue(gNodes, pNavPos);
+		pIsNavReachableNode = true;
 	}
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
@@ -133,50 +133,50 @@ if (!is_nav_reachable_node)
 rule: "Team 2: Set Nav (Not in Combat), Select Next Node, Set Last Time at Node"
 Event.OngoingPlayer
 Team.Team2
-if (is_alive)
-if (is_using_combat_pathfinding == 0)
-if (is_nav_reachable_node)
-if (DistanceBetween(EventPlayer(), nav_pos) <= 1)
+if (pIsAlive)
+if (pIsUsingCombatPathfinding == 0)
+if (pIsNavReachableNode)
+if (DistanceBetween(EventPlayer(), pNavPos) <= 1)
 {
-	last_time_at_node_t = TotalTimeElapsed();
-	if (!(is_load_limit_reached || is_pathfinding_disabled))
+	pLastTimesAtNodeT = TotalTimeElapsed();
+	if (!(gIsLoadLimitReached || pIsPathfindingDisabled))
 	{
-		if (gamemode == 2 && is_living_boss && !is_aggressive)
+		if (gGamemode == 2 && pIsLivingBoss && !pIsAggressive)
 		{
-			if (nav_idx == dom_nav_guard_idx)
+			if (pNavIdx == pDomNavGuardIdx)
 			{
 				Wait(0.5, WaitBehavior.IgnoreCondition);
 				LoopIfConditionIsTrue();
 			}
 			else
 			{
-				nav_idx = SortedArray(edges[nav_idx], RandomReal(0, 0.5) + IndexOfStringChar(char_string, CharInString(distance_matrix[RoundToInteger((ArrayElement() * nodes_count + dom_nav_guard_idx) / 128, Rounding.Down)], (ArrayElement() * nodes_count + dom_nav_guard_idx) % 128)))[0];
-				nav_pos = nodes[nav_idx];
+				pNavIdx = SortedArray(gEdges[pNavIdx], RandomReal(0, 0.5) + IndexOfStringChar(gCharString, CharInString(gDistanceMatrix[RoundToInteger((ArrayElement() * gNodesCount + pDomNavGuardIdx) / 128, Rounding.Down)], (ArrayElement() * gNodesCount + pDomNavGuardIdx) % 128)))[0];
+				pNavPos = gNodes[pNavIdx];
 			}
 		}
-		else if (myTarget.is_combatant)
+		else if (pMyTarget.pIsCombatant)
 		{
-			if (myTarget.last_nav_update_t + combatants_count * 0.4 < TotalTimeElapsed())
+			if (pMyTarget.pLastNavUpdateT + gCombatantsCount * 0.4 < TotalTimeElapsed())
 			{
 				update_target_nav();
 			}
-			if (nav_idx == myTarget.best_nav_idx && is_aggressive && fear_end_t < TotalTimeElapsed())
+			if (pNavIdx == pMyTarget.pBestNavIdx && pIsAggressive && pFearEndT < TotalTimeElapsed())
 			{
-				is_target_in_los = 5;
-				is_using_combat_pathfinding = 3;
-				target_last_seen_pos = PositionOf(myTarget);
-				is_nav_reachable_node = false;
+				pIsTargetInLos = 5;
+				pIsUsingCombatPathfinding = 3;
+				pTargetLastSeenPos = PositionOf(pMyTarget);
+				pIsNavReachableNode = false;
 			}
 			else
 			{
-				nav_idx = SortedArray(edges[nav_idx], (is_aggressive && fear_end_t < TotalTimeElapsed() ? 1 : -1) * (RandomReal(0, 0.5) + IndexOfStringChar(char_string, CharInString(distance_matrix[RoundToInteger((ArrayElement() * nodes_count + myTarget.best_nav_idx) / 128, Rounding.Down)], (ArrayElement() * nodes_count + myTarget.best_nav_idx) % 128))))[0];
-				nav_pos = nodes[nav_idx];
+				pNavIdx = SortedArray(gEdges[pNavIdx], (pIsAggressive && pFearEndT < TotalTimeElapsed() ? 1 : -1) * (RandomReal(0, 0.5) + IndexOfStringChar(gCharString, CharInString(gDistanceMatrix[RoundToInteger((ArrayElement() * gNodesCount + pMyTarget.pBestNavIdx) / 128, Rounding.Down)], (ArrayElement() * gNodesCount + pMyTarget.pBestNavIdx) % 128))))[0];
+				pNavPos = gNodes[pNavIdx];
 			}
 		}
 		else
 		{
-			nav_idx = RandomValueInArray(edges[nav_idx]);
-			nav_pos = nodes[nav_idx];
+			pNavIdx = RandomValueInArray(gEdges[pNavIdx]);
+			pNavPos = gNodes[pNavIdx];
 		}
 	}
 	Wait(0.5, WaitBehavior.AbortWhenFalse);
@@ -186,63 +186,63 @@ if (DistanceBetween(EventPlayer(), nav_pos) <= 1)
 rule: "Team 2: Set Nav (in Combat)"
 Event.OngoingPlayer
 Team.Team2
-if (is_using_combat_pathfinding)
+if (pIsUsingCombatPathfinding)
 {
-	if (!(is_load_limit_reached || is_pathfinding_disabled || HasStatus(EventPlayer(), Status.Rooted) || HasStatus(EventPlayer(), Status.Stunned)))
+	if (!(gIsLoadLimitReached || pIsPathfindingDisabled || HasStatus(EventPlayer(), Status.Rooted) || HasStatus(EventPlayer(), Status.Stunned)))
 	{
-		if (IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(myTarget) + myTarget.eye_offset, BarrierLOS.NoBarriersBlock))
+		if (IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(pMyTarget) + pMyTarget.pEyeOffset, BarrierLOS.NoBarriersBlock))
 		{
-			target_last_seen_pos = PositionOf(myTarget);
-			if (is_flying)
+			pTargetLastSeenPos = PositionOf(pMyTarget);
+			if (pIsFlying)
 			{
-				nav_pos = RayCastHitPosition(EyePosition(myTarget), EyePosition(myTarget) + 12 * DirectionFromAngles(HorizontalFacingAngleOf(myTarget) + (RandomInteger(0, 1) ? -45 : 45), -60), null, null, false);
+				pNavPos = RayCastHitPosition(EyePosition(pMyTarget), EyePosition(pMyTarget) + 12 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget) + (RandomInteger(0, 1) ? -45 : 45), -60), null, null, false);
 				Wait(0.5, WaitBehavior.IgnoreCondition);
 			}
-			else if (myTarget.is_flying && combat_pathfinding_type != 4)
+			else if (pMyTarget.pIsFlying && pCombatPathfindingType != 4)
 			{
 				# Roam
-				nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
+				pNavPos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
 				find_wp_near_nav();
 			}
 			else
 			{
 				# Long Range, roam randomly, slow
-				if (combat_pathfinding_type == 0)
+				if (pCombatPathfindingType == 0)
 				{
-					if (DistanceBetween(EventPlayer(), myTarget) <= (HeroOf(EventPlayer()) == Hero.Baptiste ? 20 : 15))
+					if (DistanceBetween(EventPlayer(), pMyTarget) <= (HeroOf(EventPlayer()) == Hero.Baptiste ? 20 : 15))
 					{
-						nav_pos = PositionOf(EventPlayer()) + 2.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
+						pNavPos = PositionOf(EventPlayer()) + 2.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
 					}
 					else
 					{
-						nav_pos = PositionOf(EventPlayer()) + 2.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), myTarget)) + RandomValueInArray([-45, 0, 45]), 0);
+						pNavPos = PositionOf(EventPlayer()) + 2.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), pMyTarget)) + RandomValueInArray([-45, 0, 45]), 0);
 					}
 					find_wp_near_nav();
 				}
-				else if (combat_pathfinding_type == 1)
+				else if (pCombatPathfindingType == 1)
 				{
-					if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) > -2)
+					if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) > -2)
 					{
-						nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), myTarget) - 2) * DirectionTowards(EventPlayer(), myTarget);
+						pNavPos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), pMyTarget) - 2) * DirectionTowards(EventPlayer(), pMyTarget);
 						find_wp_near_nav();
 					}
 					else
 					{
-						nav_pos = PositionOf(myTarget) + 2 * DirectionTowards(myTarget, EventPlayer());
+						pNavPos = PositionOf(pMyTarget) + 2 * DirectionTowards(pMyTarget, EventPlayer());
 						check_drop();
 					}
 				}
-				else if (combat_pathfinding_type == 2)
+				else if (pCombatPathfindingType == 2)
 				{
-					nav_pos = PositionOf(EventPlayer()) + Min(1.5, DistanceBetween(EventPlayer(), myTarget) - 2) * DirectionTowards(EventPlayer(), myTarget);
+					pNavPos = PositionOf(EventPlayer()) + Min(1.5, DistanceBetween(EventPlayer(), pMyTarget) - 2) * DirectionTowards(EventPlayer(), pMyTarget);
 					find_wp_near_nav();
 				}
-				else if (combat_pathfinding_type == 3)
+				else if (pCombatPathfindingType == 3)
 				{
-					nav_pos = PositionOf(myTarget) + 5 * DirectionFromAngles(HorizontalFacingAngleOf(myTarget) + RandomValueInArray([-45, 45]), 0);
-					if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) > -2)
+					pNavPos = PositionOf(pMyTarget) + 5 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget) + RandomValueInArray([-45, 45]), 0);
+					if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) > -2)
 					{
-						nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), nav_pos)) * DirectionTowards(EventPlayer(), nav_pos);
+						pNavPos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), pNavPos)) * DirectionTowards(EventPlayer(), pNavPos);
 						find_wp_near_nav();
 					}
 					else
@@ -250,37 +250,24 @@ if (is_using_combat_pathfinding)
 						check_drop();
 					}
 				}
-				else if (combat_pathfinding_type == 4)
+				else if (pCombatPathfindingType == 4)
 				{
-					if (DistanceBetween(EventPlayer(), myTarget) <= 12)
+					if (DistanceBetween(EventPlayer(), pMyTarget) <= 12)
 					{
-						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(myTarget, EventPlayer())) + (DistanceBetween(EventPlayer(), myTarget) <= 8 && real_speed <= 1 ? RandomValueInArray([-135, 135]) : 0), 0);
+						pNavPos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(pMyTarget, EventPlayer())) + (DistanceBetween(EventPlayer(), pMyTarget) <= 8 && pRealSpeed <= 1 ? RandomValueInArray([-135, 135]) : 0), 0);
 						find_wp_near_nav();
 					}
 					else
 					{
-						nav_pos = PositionOf(EventPlayer());
+						pNavPos = PositionOf(EventPlayer());
 					}
 				}
-				else if (combat_pathfinding_type == 5)
+				else if (pCombatPathfindingType == 5)
 				{
-					nav_pos = PositionOf(myTarget) + 3 * DirectionFromAngles(HorizontalFacingAngleOf(myTarget), 0);
-					if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) > -2)
+					pNavPos = PositionOf(pMyTarget) + 3 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget), 0);
+					if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) > -2)
 					{
-						nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), nav_pos)) * DirectionTowards(EventPlayer(), nav_pos);
-						find_wp_near_nav();
-					}
-					else
-					{
-						check_drop();
-					}
-				}
-				else if (combat_pathfinding_type == 6)
-				{
-					nav_pos = PositionOf(myTarget) + 1.5 * DirectionFromAngles(HorizontalFacingAngleOf(myTarget) + (HorizontalAngleTowards(myTarget, EventPlayer()) > 0 ? 90 : -90), 0);
-					if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) > -2)
-					{
-						nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), nav_pos)) * DirectionTowards(EventPlayer(), nav_pos);
+						pNavPos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), pNavPos)) * DirectionTowards(EventPlayer(), pNavPos);
 						find_wp_near_nav();
 					}
 					else
@@ -288,59 +275,72 @@ if (is_using_combat_pathfinding)
 						check_drop();
 					}
 				}
-				else if (combat_pathfinding_type == 7)
+				else if (pCombatPathfindingType == 6)
 				{
-					if (DistanceBetween(EventPlayer(), myTarget) <= 17)
+					pNavPos = PositionOf(pMyTarget) + 1.5 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget) + (HorizontalAngleTowards(pMyTarget, EventPlayer()) > 0 ? 90 : -90), 0);
+					if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) > -2)
 					{
-						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
+						pNavPos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), pNavPos)) * DirectionTowards(EventPlayer(), pNavPos);
+						find_wp_near_nav();
 					}
 					else
 					{
-						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), myTarget)) + RandomValueInArray([-45, 0, 45]), 0);
+						check_drop();
+					}
+				}
+				else if (pCombatPathfindingType == 7)
+				{
+					if (DistanceBetween(EventPlayer(), pMyTarget) <= 17)
+					{
+						pNavPos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
+					}
+					else
+					{
+						pNavPos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), pMyTarget)) + RandomValueInArray([-45, 0, 45]), 0);
 					}
 					find_wp_near_nav();
 				}
-				else if (combat_pathfinding_type == 8)
+				else if (pCombatPathfindingType == 8)
 				{
-					temp_1 = RemoveFromArray(FilteredArray(PlayersWithinRadius(EventPlayer(), 3, Team.Team2, RadiusLOS.Off), ArrayElement().is_alive), EventPlayer());
-					if (CountOf(temp_1))
+					gTemp1 = RemoveFromArray(FilteredArray(PlayersWithinRadius(EventPlayer(), 3, Team.Team2, RadiusLOS.Off), ArrayElement().pIsAlive), EventPlayer());
+					if (CountOf(gTemp1))
 					{
-						nav_pos = PositionOf(EventPlayer()) + 3.5 * DirectionTowards(SortedArray(temp_1, DistanceBetween(EventPlayer(), ArrayElement()))[0], EventPlayer());
+						pNavPos = PositionOf(EventPlayer()) + 3.5 * DirectionTowards(SortedArray(gTemp1, DistanceBetween(EventPlayer(), ArrayElement()))[0], EventPlayer());
 						find_wp_near_nav();
 					}
 					else
 					{
-						nav_pos = PositionOf(EventPlayer());
+						pNavPos = PositionOf(EventPlayer());
 					}
 				}
-				else if (combat_pathfinding_type == 9)
+				else if (pCombatPathfindingType == 9)
 				{
-					if (ab_var_1)
+					if (pAbVar1)
 					{
-						if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) > -2)
+						if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) > -2)
 						{
-							nav_pos = PositionOf(EventPlayer()) + 6 * DirectionTowards(EventPlayer(), myTarget);
+							pNavPos = PositionOf(EventPlayer()) + 6 * DirectionTowards(EventPlayer(), pMyTarget);
 							find_wp_near_nav();
 						}
 						else
 						{
-							nav_pos = PositionOf(myTarget);
+							pNavPos = PositionOf(pMyTarget);
 							check_drop();
 						}
 					}
 					else
 					{
-						if (ab_var_2)
+						if (pAbVar2)
 						{
-							nav_pos = PositionOf(myTarget) + 3 * DirectionFromAngles(HorizontalFacingAngleOf(myTarget), 0);
+							pNavPos = PositionOf(pMyTarget) + 3 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget), 0);
 						}
 						else
 						{
-							nav_pos = PositionOf(myTarget) + 5 * DirectionFromAngles(HorizontalFacingAngleOf(myTarget) + RandomValueInArray([-45, 45]), 0);
+							pNavPos = PositionOf(pMyTarget) + 5 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget) + RandomValueInArray([-45, 45]), 0);
 						}
-						if (YOf(PositionOf(myTarget)) - YOf(PositionOf(EventPlayer())) > -2)
+						if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) > -2)
 						{
-							nav_pos = PositionOf(EventPlayer()) + Min(4, DistanceBetween(EventPlayer(), nav_pos)) * DirectionTowards(EventPlayer(), nav_pos);
+							pNavPos = PositionOf(EventPlayer()) + Min(4, DistanceBetween(EventPlayer(), pNavPos)) * DirectionTowards(EventPlayer(), pNavPos);
 							find_wp_near_nav();
 						}
 						else
@@ -350,75 +350,75 @@ if (is_using_combat_pathfinding)
 					}
 				}
 			}
-			if (combat_pathfinding_type == 0)
+			if (pCombatPathfindingType == 0)
 			{
-				SetMoveSpeed(EventPlayer(), mut_amped ? 75.5 : 65);
+				SetMoveSpeed(EventPlayer(), gMutAmpted ? 75.5 : 65);
 			}
 		}
 		else
 		{
-			if (DistanceBetween(EventPlayer(), Vector(XOf(target_last_seen_pos), YOf(PositionOf(EventPlayer())), ZOf(target_last_seen_pos))) < 0.5)
+			if (DistanceBetween(EventPlayer(), Vector(XOf(pTargetLastSeenPos), YOf(PositionOf(EventPlayer())), ZOf(pTargetLastSeenPos))) < 0.5)
 			{
-				target_last_seen_pos = PositionOf(myTarget);
+				pTargetLastSeenPos = PositionOf(pMyTarget);
 			}
-			if (is_flying)
+			if (pIsFlying)
 			{
-				nav_pos = target_last_seen_pos;
+				pNavPos = pTargetLastSeenPos;
 			}
 			else
 			{
-				nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), target_last_seen_pos)) * DirectionTowards(EventPlayer(), target_last_seen_pos);
+				pNavPos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), pTargetLastSeenPos)) * DirectionTowards(EventPlayer(), pTargetLastSeenPos);
 				find_wp_near_nav();
 			}
-			if (combat_pathfinding_type == 0)
+			if (pCombatPathfindingType == 0)
 			{
-				SetMoveSpeed(EventPlayer(), mut_amped ? 115 : 100);
+				SetMoveSpeed(EventPlayer(), gMutAmpted ? 115 : 100);
 			}
 		}
 	}
-	Wait(is_load_limit_reached ? 1 : 0.5, WaitBehavior.IgnoreCondition);
+	Wait(gIsLoadLimitReached ? 1 : 0.5, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
 }
 
 rule: "Team 2: Calculate Real Speed"
 Event.OngoingPlayer
 Team.Team2
-if (is_alive)
+if (pIsAlive)
 {
-	if (is_load_limit_reached || is_pathfinding_disabled)
+	if (gIsLoadLimitReached || pIsPathfindingDisabled)
 	{
 		# Larger than 1.5 to not trigger stuck rules
-		real_speed = 1.6;
+		pRealSpeed = 1.6;
 		Wait(0.5, WaitBehavior.AbortWhenFalse);
 	}
 	else
 	{
-		real_speed_pos_1 = PositionOf(EventPlayer());
+		pRealSpeedPos1 = PositionOf(EventPlayer());
 		if (IsJumping(EventPlayer()))
 		{
-			last_jump_t = TotalTimeElapsed();
+			pLastJumpT = TotalTimeElapsed();
 		}
-		if (last_jump_t + 0.15 >= TotalTimeElapsed())
+		if (pLastJumpT + 0.15 >= TotalTimeElapsed())
 		{
-			real_speed = DistanceBetween(Vector(XOf(real_speed_pos_1), YOf(real_speed_pos_2), ZOf(real_speed_pos_1)), real_speed_pos_2) / 0.112;
+			pRealSpeed = DistanceBetween(Vector(XOf(pRealSpeedPos1), YOf(pRealSpeedPos2), ZOf(pRealSpeedPos1)), pRealSpeedPos2) / 0.112;
 		}
 		else
 		{
-			real_speed = DistanceBetween(real_speed_pos_1, real_speed_pos_2) / 0.112;
+			pRealSpeed = DistanceBetween(pRealSpeedPos1, pRealSpeedPos2) / 0.112;
 		}
 		Wait(0.112, WaitBehavior.AbortWhenFalse);
-		real_speed_pos_2 = PositionOf(EventPlayer());
+		pRealSpeedPos2 = PositionOf(EventPlayer());
 		if (IsJumping(EventPlayer()))
 		{
-			last_jump_t = TotalTimeElapsed();
+			pLastJumpT = TotalTimeElapsed();
 		}
-		if (last_jump_t + 0.15 >= TotalTimeElapsed())
+		if (pLastJumpT + 0.15 >= TotalTimeElapsed())
 		{
-			real_speed = DistanceBetween(Vector(XOf(real_speed_pos_1), YOf(real_speed_pos_2), ZOf(real_speed_pos_1)), real_speed_pos_2) / 0.112;
+			pRealSpeed = DistanceBetween(Vector(XOf(pRealSpeedPos1), YOf(pRealSpeedPos2), ZOf(pRealSpeedPos1)), pRealSpeedPos2) / 0.112;
 		}
 		else
 		{
-			real_speed = DistanceBetween(real_speed_pos_1, real_speed_pos_2) / 0.112;
+			pRealSpeed = DistanceBetween(pRealSpeedPos1, pRealSpeedPos2) / 0.112;
 		}
 		Wait(0.112, WaitBehavior.AbortWhenFalse);
 	}
@@ -428,22 +428,22 @@ if (is_alive)
 rule: "Team 2: Bot is stuck"
 Event.OngoingPlayer
 Team.Team2
-if (is_alive)
-if (real_speed <= 1.5)
-if (!is_flying)
-if (Slowed_until < TotalTimeElapsed())
+if (pIsAlive)
+if (pRealSpeed <= 1.5)
+if (!pIsFlying)
+if (pSlowedUntil < TotalTimeElapsed())
 if (!HasStatus(EventPlayer(), Status.Rooted))
 if (!HasStatus(EventPlayer(), Status.Stunned))
-if (DistanceBetween(EventPlayer(), Vector(XOf(nav_pos), YOf(is_using_combat_pathfinding ? PositionOf(EventPlayer()) : nav_pos), ZOf(nav_pos))) >= 0.5)
+if (DistanceBetween(EventPlayer(), Vector(XOf(pNavPos), YOf(pIsUsingCombatPathfinding ? PositionOf(EventPlayer()) : pNavPos), ZOf(pNavPos))) >= 0.5)
 {
 	Wait(0.5, WaitBehavior.AbortWhenFalse);
 	LoopIf(HeroOf(EventPlayer()) == Hero.Reinhardt && IsUsingUltimate(EventPlayer()));
-	if (IsTrueForAny(elevator_nodes, DistanceBetween(EventPlayer(), Vector(XOf(ArrayElement()), YOf(PositionOf(EventPlayer())), ZOf(ArrayElement()))) < 1.5))
+	if (IsTrueForAny(gElevatorNodes, DistanceBetween(EventPlayer(), Vector(XOf(ArrayElement()), YOf(PositionOf(EventPlayer())), ZOf(ArrayElement()))) < 1.5))
 	{
 		Wait(1.5, WaitBehavior.AbortWhenFalse);
 	}
 	AbortIfConditionIsFalse();
-	if (is_using_combat_pathfinding)
+	if (pIsUsingCombatPathfinding)
 	{
 		if (AbsoluteValue(HorizontalAngleFromDirection(ThrottleOf(EventPlayer()))) <= 45)
 		{
@@ -453,14 +453,14 @@ if (DistanceBetween(EventPlayer(), Vector(XOf(nav_pos), YOf(is_using_combat_path
 	else
 	{
 		PressButton(EventPlayer(), Button.Jump);
-		if (!(is_target_in_los || fear_end_t >= TotalTimeElapsed()))
+		if (!(pIsTargetInLos || pFearEndT >= TotalTimeElapsed()))
 		{
 			DisableMovementCollisionWithPlayers(EventPlayer());
 			Wait(0.5, WaitBehavior.IgnoreCondition);
 			EnableMovementCollisionWithPlayers(EventPlayer());
 		}
 		Wait(0.5, WaitBehavior.AbortWhenFalse);
-		is_nav_reachable_node = false;
+		pIsNavReachableNode = false;
 	}
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
@@ -469,15 +469,15 @@ if (DistanceBetween(EventPlayer(), Vector(XOf(nav_pos), YOf(is_using_combat_path
 rule: "Team 2: Teleport if Target not in LOS and hasn't reached Node for 8 seconds"
 Event.OngoingPlayer
 Team.Team2
-if (is_alive)
+if (pIsAlive)
 if (!HasStatus(EventPlayer(), Status.Rooted))
 if (!HasStatus(EventPlayer(), Status.Stunned))
-if (!is_pathfinding_disabled)
-if (is_target_in_los == 0)
-if (fear_end_t < TotalTimeElapsed())
-if (last_time_at_node_t < TotalTimeElapsed())
+if (!pIsPathfindingDisabled)
+if (pIsTargetInLos == 0)
+if (pFearEndT < TotalTimeElapsed())
+if (pLastTimesAtNodeT < TotalTimeElapsed())
 {
 	Wait(8, WaitBehavior.AbortWhenFalse);
-	LoopIf(is_load_limit_reached);
+	LoopIf(gIsLoadLimitReached);
 	teleport_to_free_spawn();
 }

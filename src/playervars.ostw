@@ -1,182 +1,182 @@
 # bots(19) team1(5)
-playervar Player ab_player;
+playervar Player pAbPlayer;
 # bots(37) main(1) pathing(1) team1(3)
-playervar Any ab_var_1;
+playervar Any pAbVar1;
 # bots(19) invasion(7) pathing(1) team1(4)
-playervar Any ab_var_2;
+playervar Any pAbVar2;
 # bots(11) team1(6)
-playervar Any ab_var_3;
+playervar Any pAbVar3;
 # main(1) team1(1)
-playervar Number sombra_stealth_timer;
+playervar Number pSombraStealthTimer;
 # main(2) perks(3) team1(5)
-playervar Number last_damage_taken_t;
+playervar Number pLastDamageTakenT;
 # bots(10) invasion(1) main(1) pathing(1) subroutines(1) team1(8)
-playervar Boolean is_combatant;
+playervar Boolean pIsCombatant;
 # bots(9) domination(2) highvaluetarget(16) main(12) perks(6) talents(1) team1(33)
-playervar Number downed_start_t;
+playervar Number pDownedStartT;
 # highvaluetarget(3) main(6) talents(1) team1(4)
-playervar Player[] revivers;
+playervar Player[] pRevivers;
 # bots(1) highvaluetarget(3) main(4) talents(1) team1(7)
-playervar Number revive_timer;
+playervar Number pReviveTimer;
 # main(2) team1(2)
-playervar Boolean is_revive_slow;
+playervar Boolean pIsReviveSlow;
 # bots(8) subroutines(1) team1(3)
-playervar Number tased_end_t;
+playervar Number pTasedEndT;
 # bots(17) pathing(4) team1(3)
-playervar Boolean is_flying;
+playervar Boolean pIsFlying;
 # bots(7) domination(2) highvaluetarget(1) main(1) perks(1) team1(11)
-playervar Boolean is_invisible;
+playervar Boolean pIsInvisible;
 # main(2) team1(7)
-playervar Boolean is_changing_heroes;
+playervar Boolean pIsChangedHeroes;
 # main(28) subroutines(14) team1(14)
-playervar Boolean in_buy_menu_start_t;
+playervar Boolean pInBuyMenu;
 # main(27) team1(8)
-playervar Boolean is_showing_active_abilities;
+playervar Boolean pIsShowingActiveAbilities;
 # main(1) team1(3)
-playervar Boolean can_use_drop_in_buy_menu;
+playervar Boolean pCanUseDropInBuyMenu;
 # debug(1) main(1) team1(5)
-playervar Number money_spent_amount;
+playervar Number pMoneySpentAmount;
 # bots(10) pathing(6)
-playervar Boolean is_pathfinding_disabled;
+playervar Boolean pIsPathfindingDisabled;
 # bots(9) pathing(14) subroutines(3)
-playervar Number is_using_combat_pathfinding; // Could be an enum
+playervar Number pIsUsingCombatPathfinding; // Could be an enum
 # bots(14) pathing(14)
-playervar Number combat_pathfinding_type; // Could be an enum
+playervar Number pCombatPathfindingType; // Could be an enum
 # bots(22) pathing(54) subroutines(18)
-playervar Vector nav_pos;
+playervar Vector pNavPos;
 # pathing(14) subroutines(5)
-playervar Vector nav_idx;
+playervar Vector pNavIdx;
 # pathing(3) subroutines(1)
-playervar Vector dom_nav_guard_idx;
+playervar Vector pDomNavGuardIdx;
 # bots(7) pathing(6) subroutines(4)
-playervar Boolean is_nav_reachable_node;
+playervar Boolean pIsNavReachableNode;
 # bots(2) pathing(21)
-playervar Number real_speed;
+playervar Number pRealSpeed;
 # bots(6) pathing(2) team1(4)
-playervar Vector eye_offset;
+playervar Vector pEyeOffset;
 # bots(14) pathing(1) subroutines(2)
-playervar Boolean is_ranged;
+playervar Boolean pIsRanged;
 # bots(14) mutators(2)
-playervar Boolean can_dodge;
+playervar Boolean pCanDodge;
 # bots(97) main(2) pathing(5)
-playervar Number is_target_in_los; // Could be an enum or bool
+playervar Number pIsTargetInLos; // Could be an enum or bool
 # bots(169) main(3) mutators(1) pathing(64) subroutines(3)
-playervar Player myTarget;
+playervar Player pMyTarget;
 # bots(1) pathing(9)
-playervar Vector target_last_seen_pos;
+playervar Vector pTargetLastSeenPos;
 # bots(5) main(11) subroutines(2)
-playervar Number base_tier; // Could be an enum
+playervar Number pBaseTier; // Could be an enum
 # bots(29) main(3) mutators(2)
-playervar Number real_tier; // Could be an enum
+playervar Number pRealTier; // Could be an enum
 # bots(16) pathing(7) subroutines(2) talents(2) team1(1)
-playervar Boolean is_alive;
+playervar Boolean pIsAlive;
 # bots(43) domination(17) main(2) mutators(2) pathing(1) talents(2) team1(6)
-playervar Boolean is_living_boss;
+playervar Boolean pIsLivingBoss;
 # bots(11) mutators(2) perks(1) talents(2) team1(3)
-playervar Boolean iv_is_portal;
+playervar Boolean pIvIsPortal;
 # bots(10) mutators(1)
-playervar Boolean is_using_boss_aggression;
+playervar Boolean pIsUsingBossAggression;
 # bots(27) mutators(3) pathing(5)
-playervar Boolean is_aggressive;
+playervar Boolean pIsAggressive;
 # bots(6) mutators(1) perks(1) team1(1)
-playervar Boolean is_fortified;
+playervar Boolean pIsFortified;
 # bots(10) pathing(4)
-playervar Number fear_end_t;
+playervar Number pFearEndT;
 # bots(3) talents(4)
-playervar Boolean soldier_espionage;
+playervar Boolean pSoldierEspionage;
 # bots(1) main(1) subroutines(1)
-playervar Boolean is_expendable;
+playervar Boolean pIsExpendable;
 # bots(7) main(1) mutators(6)
-playervar Number gmut_var; // Mostly a bool but randomly goes to 2
+playervar Number pGmutVar; // Mostly a bool but randomly goes to 2
 # bots(10) highvaluetarget(1) mutators(1) perks(2) team1(10)
-playervar Number gmut_fortified_bypass_end_t;
+playervar Number pGmutFortifiedBypassEndT;
 # bots(2) team1(2)
-playervar Number last_hit_by_shatter_t;
+playervar Number pLastHitByShatterT;
 # bots(7) team1(5)
-playervar Boolean active_ab_is_cloaked;
+playervar Boolean pActiveAbIsCloaked;
 # bots(1) team1(2)
-playervar Boolean active_ab_is_frenzied;
+playervar Boolean pActiveAbIsFrenzied;
 # talents(1) team1(4)
-playervar Boolean active_ab_is_smoked;
+playervar Boolean pActiveAbIsSmoked;
 # bots(6) subroutines(15)
-playervar Any[] active_ab_effect_list;
+playervar Any[] pActiveAbEffectList;
 # bots(1) subroutines(1) team1(2)
-playervar String ab_bought_abilities_string;
+playervar String pAbBoughtAbilitiesString;
 # main(3) perks(2) subroutines(1) team1(4)
-playervar Number ab_headhunter; // Mostly a bool but randomly goes to 2
+playervar Number pAbHeadhunter; // Mostly a bool but randomly goes to 2
 # main(3) perks(3) subroutines(1) team1(4)
-playervar Number ab_quick_fix;
+playervar Number pAbQuickFix;
 # main(3) perks(4) subroutines(1) team1(4)
-playervar Number ab_charged;
+playervar Number pAbCharged;
 # bots(3) main(3) subroutines(1) team1(4)
-playervar Number ab_heavy_impact;
+playervar Number pAbHeavyImpact;
 # main(3) perks(2) subroutines(1) team1(4)
-playervar Number ab_second_wind;
+playervar Number pAbSecondWind;
 # main(3) subroutines(1) team1(5)
-playervar Number ab_triage;
+playervar Number pAbTriage;
 # main(3) subroutines(1) team1(7)
-playervar Number ab_resilience;
+playervar Number pAbResilience;
 # main(3) subroutines(1) team1(6)
-playervar Number ab_antigens;
+playervar Number pAbAntigens;
 # main(3) perks(12) subroutines(1) team1(5)
-playervar Number ab_haste;
+playervar Number pAbHaste;
 # bots(1) main(9) perks(2) subroutines(1) team1(6)
-playervar Number ab_priority;
+playervar Number pAbPriority;
 # subroutines(2) team1(3)
-playervar Number ab_health_bonus;
+playervar Number pAbHealthBonus;
 # subroutines(2) team1(3)
-playervar Number ab_damage_bonus;
+playervar Number pAbDamageBonus;
 # subroutines(2) team1(3)
-playervar Number ab_healing_bonus;
+playervar Number pAbHealingBonus;
 # perks(4) subroutines(2) talents(1) team1(5)
-playervar Number perk_mystery_swap; // Also used as a timer
+playervar Number pPerkMysterySwap; // Also used as a timer
 # perks(1) subroutines(2) team1(3)
-playervar Boolean perk_bulletstorm;
+playervar Boolean pPerkBulletStorm;
 # main(1) subroutines(2) team1(4)
-playervar Boolean perk_die_hard;
+playervar Boolean pPerkDieHard;
 # bots(1) perks(1) subroutines(2) team1(3)
-playervar Boolean perk_brass_knuckles;
+playervar Boolean pPerkBrassKnuckles;
 # perks(1) subroutines(2) team1(3)
-playervar Boolean perk_vampiric;
+playervar Boolean pPerkVampiric;
 # perks(1) subroutines(2) team1(3)
-playervar Boolean perk_crash_n_dash;
+playervar Boolean pPerkCrashNDash;
 # subroutines(2) team1(4)
-playervar Boolean perk_golden_hour;
+playervar Boolean pPerkGoldenHour;
 # perks(1) subroutines(2) team1(3)
-playervar Boolean perk_super_charge;
+playervar Boolean pPerkSuperCharge;
 # subroutines(2) team1(5)
-playervar Boolean perk_nemesis;
+playervar Boolean pPerkNemesis;
 # main(2) perks(1) team1(7)
-playervar Boolean nemesis_killer;
+playervar Boolean pPerkNemesisKiller;
 # subroutines(2) team1(5)
-playervar Boolean perk_special_operator;
+playervar Boolean pPerkSpecialOperator;
 # subroutines(2) team1(3)
-playervar Boolean perk_sharpshooter;
+playervar Boolean pPerkSharpShooter;
 # bots(3) subroutines(2) team1(4)
-playervar Boolean perk_shockproof;
+playervar Boolean pPerkShockProof;
 # bots(14) mutators(1) team1(11)
-playervar Number[] health_percent;
+playervar Number[] pHealthPercent;
 # bots(10) main(1) perks(3) talents(26) team1(13)
-playervar Number[] Damage_Dealt;
+playervar Number[] pDamageDealt;
 # talents(2) team1(12)
-playervar Number[] healing_dealt_percent;
+playervar Number[] pHealingDealtPercent;
 # perks(4) talents(12) team1(10)
-playervar Number[] Move_Speed;
+playervar Number[] pMoveSpeed;
 # bots(4) pathing(1) team1(2)
-playervar Number Slowed_until;
+playervar Number pSlowedUntil;
 # info(148) main(4) subroutines(2) team1(4)
-playervar String talent_text;
+playervar String pTalentText;
 # talents(4) team1(4)
-playervar Number damage_mod;
+playervar Number pDamageMod;
 # mutators(2) talents(20)
-playervar Any[] Effects_;
+playervar Any[] pEffects;
 # bots(1) team1(3)
-playervar Boolean Smoked_Screen;
+playervar Boolean pSmokedScreen;
 # main(1) team1(4)
-playervar Boolean Tut_Active;
+playervar Boolean pTutActive;
 # debug(1) perks(3) subroutines(2) talents(55) team1(4)
-playervar Boolean Talent1;
+playervar Boolean pTalent1;
 # debug(1) perks(3) subroutines(2) talents(52) team1(4)
-playervar Boolean Talent2;
+playervar Boolean pTalent2;
 # bots(6) mutators(2) talents(4) team1(2)
-playervar Any[] HP_Pool;
+playervar Any[] pHpPool;

@@ -5,8 +5,8 @@ Event.OngoingPlayer
 if (EventPlayer() == HostPlayer())
 if (IsCommunicating(EventPlayer(), Communication.Attacking))
 {
-	Talent1 = true;
-	Talent2 = true;
+	pTalent1 = true;
+	pTalent2 = true;
 }
 
 // TODO v
@@ -31,5 +31,5 @@ Event.OngoingPlayer
 if (EventPlayer() == HostPlayer())
 if (IsCommunicating(EventPlayer(), Communication.Thanks))
 {
-	money_spent_amount -= 100000;
+	pMoneySpentAmount -= 100000;
 }

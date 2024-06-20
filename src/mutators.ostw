@@ -1,85 +1,85 @@
 import "globalvars.ostw";
 import "playervars.ostw";
 
-globalvar Boolean is_gmut_enabled;
-globalvar Boolean gmut_sympathy_gains;
-globalvar Boolean gmut_salvation;
-globalvar Boolean mut_swan_song;
-globalvar Boolean mut_counterstrike;
-globalvar Boolean mut_low_blow;
+globalvar Boolean gIsGmutEnabled;
+globalvar Boolean gGmutSympathyGains;
+globalvar Boolean gGmutSalvation;
+globalvar Boolean gMutSwanSong;
+globalvar Boolean gMutCounterStrike;
+globalvar Boolean gMutLowBlow;
 
 rule: "MUT Team 2 (Gamechanging Mutator): Gamechanging Mutator was enabled"
 Event.OngoingPlayer
 Team.Team2
-if (is_gmut_enabled)
+if (gIsGmutEnabled)
 {
 	Wait(0.5, WaitBehavior.IgnoreCondition);
-	if (gmut_storm_raging)
+	if (gGmutStormRaging)
 	{
-		CreateEffect(gmut_var ? AllPlayers() : [], Effect.AnaNanoBoostedEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
+		CreateEffect(pGmutVar ? AllPlayers() : [], Effect.AnaNanoBoostedEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
 	}
-	if (gmut_adaptive_shield)
+	if (gGmutAdaptiveShield)
 	{
-		CreateEffect(gmut_var == 1 ? AllPlayers() : [], Effect.WreckingBallAdaptiveShieldTargetEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
+		CreateEffect(pGmutVar == 1 ? AllPlayers() : [], Effect.WreckingBallAdaptiveShieldTargetEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
 	}
-	if (gmut_fortified)
+	if (gGmutFortified)
 	{
-		AddHealthPoolToPlayer(EventPlayer(), HealthType.Armor, 0.4 * health_percent, true, true);
+		AddHealthPoolToPlayer(EventPlayer(), HealthType.Armor, 0.4 * pHealthPercent, true, true);
 	}
-	is_gmut_enabled = false;
+	gIsGmutEnabled = false;
 }
 
 rule: "MUT Team 2 (Gamechanging Mutator): Adaptive Shield"
 Event.OngoingPlayer
 Team.Team2
-if (gmut_adaptive_shield)
+if (gGmutAdaptiveShield)
 if (IsAlive(EventPlayer()))
-if (!gmut_var)
+if (!pGmutVar)
 if (NormalizedHealth(EventPlayer()) <= 0.5)
 {
-	AbortIf(iv_is_portal);
+	AbortIf(pIvIsPortal);
 	if (SlotOf(EventPlayer()) == 1)
 	{
 		# Set Player Health converts the shield into regular HP, so wait until after
 		Wait(0.016, WaitBehavior.AbortWhenFalse);
 		AbortIfConditionIsFalse();
 	}
-	temp_1 = CountOf(FilteredArray(combatants, DistanceBetween(EventPlayer(), ArrayElement()) <= 8 && IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.EnemyBarriersBlock)));
-	if (temp_1)
+	gTemp1 = CountOf(FilteredArray(gCombatants, DistanceBetween(EventPlayer(), ArrayElement()) <= 8 && IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.EnemyBarriersBlock)));
+	if (gTemp1)
 	{
 		PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Blue, EventPlayer(), 1);
-		AddHealthPoolToPlayer(EventPlayer(), HealthType.Shields, 0.75 * temp_1 / combatants_count * MaxHealth(EventPlayer()), false, false);
-		HP_Pool[3] = LastCreatedHealthPool();
-		gmut_var = 1;
+		AddHealthPoolToPlayer(EventPlayer(), HealthType.Shields, 0.75 * gTemp1 / gCombatantsCount * MaxHealth(EventPlayer()), false, false);
+		pHpPool[3] = LastCreatedHealthPool();
+		pGmutVar = 1;
 		WaitUntil(!HealthOfType(EventPlayer(), HealthType.Shields), 7);
-		RemoveHealthPoolFromPlayer(HP_Pool[3]);
-		gmut_var = 2;
+		RemoveHealthPoolFromPlayer(pHpPool[3]);
+		pGmutVar = 2;
 	}
 	else
 	{
-		gmut_var = 2;
+		pGmutVar = 2;
 	}
 }
 
 rule: "MUT Team 2 (Gamechanging Mutator): Sympathy Gains"
 Event.OnDeath
 Team.Team2
-if (gmut_sympathy_gains)
-if (!iv_is_portal)
+if (gGmutSympathyGains)
+if (!pIvIsPortal)
 {
 	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Black, EventPlayer(), 1);
 	Wait(0.15, WaitBehavior.AbortWhenFalse);
 	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.White, PositionOf(EventPlayer()), 1);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Yellow, PositionOf(EventPlayer()), real_tier * 8 + 6);
-	Heal(PlayersWithinRadius(EventPlayer(), real_tier * 4 + 3, Team.Team2, RadiusLOS.Off), null, Min(MaxHealth(EventPlayer()) * 0.3, 500));
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Yellow, PositionOf(EventPlayer()), pRealTier * 8 + 6);
+	Heal(PlayersWithinRadius(EventPlayer(), pRealTier * 4 + 3, Team.Team2, RadiusLOS.Off), null, Min(MaxHealth(EventPlayer()) * 0.3, 500));
 }
 
 rule: "MUT Team 2 (Gamechanging Mutator): Fortified"
 Event.OngoingPlayer
 Team.Team2
-if (is_fortified)
+if (pIsFortified)
 if (HasStatus(EventPlayer(), Status.Stunned))
-if (gmut_fortified_bypass_end_t < TotalTimeElapsed())
+if (pGmutFortifiedBypassEndT < TotalTimeElapsed())
 {
 	if (HasStatus(EventPlayer(), Status.KnockedDown))
 	{
@@ -112,9 +112,9 @@ if (gmut_fortified_bypass_end_t < TotalTimeElapsed())
 rule: "MUT Team 2 (Gamechanging Mutator): Salvation"
 Event.OngoingPlayer
 Team.Team2
-if (gmut_salvation)
+if (gGmutSalvation)
 if (IsAlive(EventPlayer()))
-if (!is_living_boss)
+if (!pIsLivingBoss)
 {
 	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
 	WaitUntil(Health(EventPlayer()) <= 1, 99999);
@@ -128,43 +128,43 @@ if (!is_living_boss)
 rule: "Team 2 (Mutator): Artful Dodger"
 Event.OngoingPlayer
 Team.Team2
-if (mut_artful_dodger)
-if (!can_dodge)
+if (gGmutArtfulDodger)
+if (!pCanDodge)
 if (IsAlive(EventPlayer()))
 {
-	can_dodge = true;
+	pCanDodge = true;
 }
 
 rule: "MUT Team 2 (Mutator): Swan Song"
 Event.OngoingPlayer
 Team.Team2
-if (mut_swan_song)
+if (gMutSwanSong)
 if (IsAlive(EventPlayer()))
-if (is_living_boss)
+if (pIsLivingBoss)
 {
 	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
 	WaitUntil(Health(EventPlayer()) <= 1, 99999);
 	CreateEffect(AllPlayers(), Effect.EchoCloningEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
-	Effects_[1] = LastCreatedEntity();
+	pEffects[1] = LastCreatedEntity();
 	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Violet, EventPlayer(), 1);
 	SetStatus(EventPlayer(), null, Status.Stunned, 1);
 	WaitUntil(IsDead(EventPlayer()), 5);
 	ClearStatus(EventPlayer(), Status.Unkillable);
 	Kill(EventPlayer(), null);
-	DestroyEffect(Effects_[1]);
+	DestroyEffect(pEffects[1]);
 }
 
 rule: "MUT Team 2: Counterstrike"
 Event.OngoingPlayer
 Team.Team2
-if (mut_counterstrike)
-if (!is_using_boss_aggression)
-if (IsUsingUltimate(myTarget))
+if (gMutCounterStrike)
+if (!pIsUsingBossAggression)
+if (IsUsingUltimate(pMyTarget))
 {
-	is_aggressive = !is_aggressive;
+	pIsAggressive = !pIsAggressive;
 	Wait(4, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
-	is_aggressive = true;
+	pIsAggressive = true;
 	if (RandomInteger(1, 100) > 75 && HeroOf(EventPlayer()) != Hero.Soldier76)
 	{
 		Wait(RandomReal(3, 7), WaitBehavior.IgnoreCondition);
@@ -180,6 +180,6 @@ rule: "MUT Team 2 (Mutator): Low Blow"
 Event.PlayerDealtKnockback
 Team.Team2
 {
-	AbortIf(!mut_low_blow);
+	AbortIf(!gMutLowBlow);
 	Damage(Victim(), EventPlayer(), 0.5 * EventDamage());
 }

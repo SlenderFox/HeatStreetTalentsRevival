@@ -1,17 +1,17 @@
 import "globalvars.ostw";
 import "playervars.ostw";
 
-globalvar Boolean mut_heartburn; // Unused
-globalvar Number[] current_perks_huds_list;
-globalvar Number[] spawn_nearest_node_idx_list;
-globalvar Vector[] spawn_pos_list;
-globalvar Vector buy_menu_base_pos;
+globalvar Boolean gMutHeartBurn; // Unused
+globalvar Number[] gCurrentPerksHudsList;
+globalvar Number[] gSpawnNearestNodeIdxList;
+globalvar Vector[] gSpawnPosList;
+globalvar Vector gBuyMenuBasePos;
 
 # main(1) team1(1)
 void update_combatants() "Subroutine: Update Combatants"
 {
-	combatants = FilteredArray(AllPlayers(Team.Team1), ArrayElement().is_combatant);
-	combatants_count = CountOf(combatants);
+	gCombatants = FilteredArray(AllPlayers(Team.Team1), ArrayElement().pIsCombatant);
+	gCombatantsCount = CountOf(gCombatants);
 }
 
 # bots(1) domination(2) highvaluetarget(1) invasion(1) subroutines(1)
@@ -25,84 +25,84 @@ void play_incoming_sound_twice() "Subroutine: Play Incoming Sound Twice"
 # debug(1) main(2)
 void set_random_perks() "Subroutine: Set Random Perks"
 {
-	if (CountOf(current_perks_huds_list))
+	if (CountOf(gCurrentPerksHudsList))
 	{
-		DestroyInWorldText(current_perks_huds_list[0]);
-		DestroyInWorldText(current_perks_huds_list[1]);
+		DestroyInWorldText(gCurrentPerksHudsList[0]);
+		DestroyInWorldText(gCurrentPerksHudsList[1]);
 	}
-	current_perks_huds_list = [];
-	if (wave_number % 4 == 1)
+	gCurrentPerksHudsList = [];
+	if (gWaveNumber % 4 == 1)
 	{
-		current_perks = ArraySlice(RandomizedArray(RemoveFromArray([12, 13], current_perks)), 0, 2);
+		gCurrentPerks = ArraySlice(RandomizedArray(RemoveFromArray([12, 13], gCurrentPerks)), 0, 2);
 		for (gIterator = 0; 2; 1)
 		{
-			temp_2 = buy_menu_base_pos - (gIterator ? 25 : 2.5) * buy_menu_left_up_forward[1] - 112.5 * buy_menu_left_up_forward[0];
-			if (current_perks[gIterator] == 12)
+			gTemp2 = gBuyMenuBasePos - (gIterator ? 25 : 2.5) * gBuyMenuLeftUpForward[1] - 112.5 * gBuyMenuLeftUpForward[0];
+			if (gCurrentPerks[gIterator] == 12)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Hero Talent 1\n      $1600", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().Talent1 ? Color.Gray : Color.Purple, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Hero Talent 1\n      $1600", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pTalent1 ? Color.Gray : Color.Purple, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[gIterator] == 13)
+			else if (gCurrentPerks[gIterator] == 13)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Hero Talent 2\n      $1600", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().Talent2 ? Color.Gray : Color.Purple, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Hero Talent 2\n      $1600", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pTalent2 ? Color.Gray : Color.Purple, Spectators.DefaultVisibility);
 			}
-			ModifyVariable(current_perks_huds_list, Operation.AppendToArray, LastTextID());
+			ModifyVariable(gCurrentPerksHudsList, Operation.AppendToArray, LastTextID());
 		}
 	}
 	else
 	{
-		current_perks = ArraySlice(RandomizedArray(RemoveFromArray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], current_perks)), 0, 2);
+		gCurrentPerks = ArraySlice(RandomizedArray(RemoveFromArray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], gCurrentPerks)), 0, 2);
 		for (gIterator = 0; 2; 1)
 		{
-			temp_2 = buy_menu_base_pos - (gIterator ? 25 : 2.5) * buy_menu_left_up_forward[1] - 112.5 * buy_menu_left_up_forward[0];
-			if (current_perks[gIterator] == 0)
+			gTemp2 = gBuyMenuBasePos - (gIterator ? 25 : 2.5) * gBuyMenuLeftUpForward[1] - 112.5 * gBuyMenuLeftUpForward[0];
+			if (gCurrentPerks[gIterator] == 0)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Mystery Swap\n     500$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_mystery_swap ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Mystery Swap\n     500$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkMysterySwap ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[gIterator] == 1)
+			else if (gCurrentPerks[gIterator] == 1)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Bulletstorm\n   1000$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_bulletstorm ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Bulletstorm\n   1000$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkBulletStorm ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[gIterator] == 2)
+			else if (gCurrentPerks[gIterator] == 2)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Die Hard\n 700$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_die_hard ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Die Hard\n 700$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkDieHard ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[gIterator] == 3)
+			else if (gCurrentPerks[gIterator] == 3)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Brass Knuckles\n     700$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_brass_knuckles ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Brass Knuckles\n     700$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkBrassKnuckles ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[gIterator] == 4)
+			else if (gCurrentPerks[gIterator] == 4)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Vampiric\n   1000$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_vampiric ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Vampiric\n   1000$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkVampiric ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[gIterator] == 5)
+			else if (gCurrentPerks[gIterator] == 5)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Crash N' Dash\n      700$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_crash_n_dash ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Crash N' Dash\n      700$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkCrashNDash ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[gIterator] == 6)
+			else if (gCurrentPerks[gIterator] == 6)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Golden Hour\n    1000$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_golden_hour ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Golden Hour\n    1000$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkGoldenHour ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[gIterator] == 7)
+			else if (gCurrentPerks[gIterator] == 7)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Supercharge\n        700$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_super_charge ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Supercharge\n        700$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkSuperCharge ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[gIterator] == 8)
+			else if (gCurrentPerks[gIterator] == 8)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Nemesis\n   800$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_nemesis ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Nemesis\n   800$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkNemesis ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[gIterator] == 9)
+			else if (gCurrentPerks[gIterator] == 9)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Spec Ops\n 600$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_special_operator ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Spec Ops\n 600$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkSpecialOperator ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[gIterator] == 10)
+			else if (gCurrentPerks[gIterator] == 10)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Sharpshooter\n   900$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_sharpshooter ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Sharpshooter\n   900$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkSharpShooter ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			else if (current_perks[gIterator] == 11)
+			else if (gCurrentPerks[gIterator] == 11)
 			{
-				CreateInWorldText(FilteredArray(combatants, ArrayElement().in_buy_menu_start_t), "Shockproof\n        700$", temp_2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().perk_shockproof ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Shockproof\n        700$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkShockProof ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
 			}
-			ModifyVariable(current_perks_huds_list, Operation.AppendToArray, LastTextID());
+			ModifyVariable(gCurrentPerksHudsList, Operation.AppendToArray, LastTextID());
 		}
 	}
 }
@@ -110,108 +110,108 @@ void set_random_perks() "Subroutine: Set Random Perks"
 # perks(1) team1(27)
 void update_ab_string_and_play_sound() "Subroutine: Update Ability String and Play Sound"
 {
-	ab_bought_abilities_string = StringSlice(<"<0><1><2>", <"<0><1><2>", <"<0><1><2>", ["", "\nPriority A", "\nPriority B", "\nPriority C"][ab_priority], ["", "\nHeadhunter I", "\nHeadhunter II"][ab_headhunter], ["", "\nAntigens I", "\nAntigens II"][ab_antigens]>, <"<0><1><2>", ["", "\nQuick Fix I", "\nQuick Fix II"][ab_quick_fix], ["", "\nCharged I", "\nCharged II"][ab_charged], ["", "\nHaste I", "\nHaste II"][ab_haste]>, <"<0><1><2>", ["", "\nHeavy Impact I", "\nHeavy Impact II"][ab_heavy_impact], ["", "\nSecond Wind I", "\nSecond Wind II"][ab_second_wind], ["", "\nTriage I", "\nTriage II"][ab_triage]>>, <"<0><1><2>", <"<0><1><2>", ["", "\nResilience I", "\nResilience II"][ab_resilience], perk_mystery_swap ? "\nMystery Swap" : "", perk_bulletstorm ? "\nBulletstorm" : "">, <"<0><1><2>", perk_die_hard ? "\nDie Hard" : "", perk_brass_knuckles ? "\nBrass Knuckles" : "", perk_vampiric ? "\nVampiric" : "">, <"<0><1><2>", perk_crash_n_dash ? "\nCrash N' Dash" : "", perk_golden_hour ? "\nGolden Hour" : "", perk_super_charge ? "\nSupercharge" : "">>, <"<0><1><2>", <"<0><1><2>", perk_nemesis ? "\nNemesis" : "", perk_special_operator ? "\nSpec Ops" : "", perk_sharpshooter ? "\nSharpshooter" : "">, <"<0><1><2>", perk_shockproof ? "\nShockproof" : "", <"<0><1><2>", Talent1 ? <"\n<0> <1>", AbilityIconString(Hero.Pharah, Button.Jump), talent_text[1]> : "", Talent2 ? <"\n<0> <1>", AbilityIconString(Hero.Pharah, Button.Jump), talent_text[3]> : "", ab_health_bonus ? <"\n+<0>% Health", ab_health_bonus> : "">, ab_damage_bonus ? <"\n+<0>% Damage", ab_damage_bonus> : "">, ab_healing_bonus ? <"\n+<0>% Healing", ab_healing_bonus> : "">>, 1, 511);
+	pAbBoughtAbilitiesString = StringSlice(<"<0><1><2>", <"<0><1><2>", <"<0><1><2>", ["", "\nPriority A", "\nPriority B", "\nPriority C"][pAbPriority], ["", "\nHeadhunter I", "\nHeadhunter II"][pAbHeadhunter], ["", "\nAntigens I", "\nAntigens II"][pAbAntigens]>, <"<0><1><2>", ["", "\nQuick Fix I", "\nQuick Fix II"][pAbQuickFix], ["", "\nCharged I", "\nCharged II"][pAbCharged], ["", "\nHaste I", "\nHaste II"][pAbHaste]>, <"<0><1><2>", ["", "\nHeavy Impact I", "\nHeavy Impact II"][pAbHeavyImpact], ["", "\nSecond Wind I", "\nSecond Wind II"][pAbSecondWind], ["", "\nTriage I", "\nTriage II"][pAbTriage]>>, <"<0><1><2>", <"<0><1><2>", ["", "\nResilience I", "\nResilience II"][pAbResilience], pPerkMysterySwap ? "\nMystery Swap" : "", pPerkBulletStorm ? "\nBulletstorm" : "">, <"<0><1><2>", pPerkDieHard ? "\nDie Hard" : "", pPerkBrassKnuckles ? "\nBrass Knuckles" : "", pPerkVampiric ? "\nVampiric" : "">, <"<0><1><2>", pPerkCrashNDash ? "\nCrash N' Dash" : "", pPerkGoldenHour ? "\nGolden Hour" : "", pPerkSuperCharge ? "\nSupercharge" : "">>, <"<0><1><2>", <"<0><1><2>", pPerkNemesis ? "\nNemesis" : "", pPerkSpecialOperator ? "\nSpec Ops" : "", pPerkSharpShooter ? "\nSharpshooter" : "">, <"<0><1><2>", pPerkShockProof ? "\nShockproof" : "", <"<0><1><2>", pTalent1 ? <"\n<0> <1>", AbilityIconString(Hero.Pharah, Button.Jump), pTalentText[1]> : "", pTalent2 ? <"\n<0> <1>", AbilityIconString(Hero.Pharah, Button.Jump), pTalentText[3]> : "", pAbHealthBonus ? <"\n+<0>% Health", pAbHealthBonus> : "">, pAbDamageBonus ? <"\n+<0>% Damage", pAbDamageBonus> : "">, pAbHealingBonus ? <"\n+<0>% Healing", pAbHealingBonus> : "">>, 1, 511);
 }
 
 # bots(1) team1(2)
 void nwp_teleport() "Subroutine: Nearest Walkable Position Teleport"
 {
-	if (temp_1 == [])
+	if (gTemp1 == [])
 	{
-		Teleport(EventPlayer(), SortedArray(nodes, DistanceBetween(EventPlayer(), ArrayElement()))[0]);
+		Teleport(EventPlayer(), SortedArray(gNodes, DistanceBetween(EventPlayer(), ArrayElement()))[0]);
 	}
 	else
 	{
-		Teleport(EventPlayer(), temp_1);
+		Teleport(EventPlayer(), gTemp1);
 	}
 }
 
 # bots(1) domination(1) highvaluetarget(1) subroutines(1)
 void call_reinforcements() "Subroutine: Spawn Reinforcements"
 {
-	special_spawns_count += is_apocalyptic + (wave_number >= 5 ? 2 : 1);
+	gSpecialSpawnsCount += gIsApocalyptic + (gWaveNumber >= 5 ? 2 : 1);
 }
 
 # bots(2) pathing(1)
 void teleport_to_free_spawn() "Subroutine: Teleport to free Spawn"
 {
-	if (gamemode == 0 && (base_tier == -1 || special_spawns_count > 0) && !is_alive)
+	if (gGamemode == 0 && (pBaseTier == -1 || gSpecialSpawnsCount > 0) && !pIsAlive)
 	{
-		is_nav_reachable_node = false;
-		if (base_tier == -1 && objective_phase_number == 0)
+		pIsNavReachableNode = false;
+		if (pBaseTier == -1 && gObjectivePhaseNumber == 0)
 		{
 			Teleport(EventPlayer(), 100 * Up());
 		}
 		else
 		{
-			Teleport(EventPlayer(), iv_dom_objective_pos + Up());
+			Teleport(EventPlayer(), gIvDomObjectivePos + Up());
 		}
 	}
-	else if (gamemode == 1 && hvt_call_reinforcements_end_t >= TotalTimeElapsed() && special_spawns_count > 0 && !is_alive)
+	else if (gGamemode == 1 && gHvtCallReinforcementsEndT >= TotalTimeElapsed() && gSpecialSpawnsCount > 0 && !pIsAlive)
 	{
-		is_nav_reachable_node = false;
+		pIsNavReachableNode = false;
 		Teleport(EventPlayer(), PlayersInSlot(1, Team.Team2));
 	}
-	else if (gamemode == 2 && objective_phase_number == 0)
+	else if (gGamemode == 2 && gObjectivePhaseNumber == 0)
 	{
-		nav_idx = iv_dom_objective_pos[SlotOf(EventPlayer()) == 2 ? 2 : 3];
-		dom_nav_guard_idx = nav_idx;
-		nav_pos = nodes[nav_idx];
-		is_nav_reachable_node = true;
-		Teleport(EventPlayer(), nav_pos + 0.1 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(iv_dom_objective_pos[SlotOf(EventPlayer()) == 2 ? 0 : 1], nav_pos)), false));
+		pNavIdx = gIvDomObjectivePos[SlotOf(EventPlayer()) == 2 ? 2 : 3];
+		pDomNavGuardIdx = pNavIdx;
+		pNavPos = gNodes[pNavIdx];
+		pIsNavReachableNode = true;
+		Teleport(EventPlayer(), pNavPos + 0.1 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(gIvDomObjectivePos[SlotOf(EventPlayer()) == 2 ? 0 : 1], pNavPos)), false));
 	}
 	else
 	{
-		temp_2 = MappedArray(spawn_pos_list, false);
-		for (gIterator = 0; CountOf(spawn_pos_list); 1)
+		gTemp2 = MappedArray(gSpawnPosList, false);
+		for (gIterator = 0; CountOf(gSpawnPosList); 1)
 		{
-			if (IsTrueForAny(combatants, IsInLineOfSight(spawn_pos_list[gIterator] + Up(), EyePosition(ArrayElement()), BarrierLOS.NoBarriersBlock)))
+			if (IsTrueForAny(gCombatants, IsInLineOfSight(gSpawnPosList[gIterator] + Up(), EyePosition(ArrayElement()), BarrierLOS.NoBarriersBlock)))
 			{
-				temp_2[gIterator] = 2;
+				gTemp2[gIterator] = 2;
 			}
-			else if (IsTrueForAny(combatants, DistanceBetween(spawn_pos_list[gIterator], ArrayElement()) <= 10))
+			else if (IsTrueForAny(gCombatants, DistanceBetween(gSpawnPosList[gIterator], ArrayElement()) <= 10))
 			{
-				temp_2[gIterator] = 1;
+				gTemp2[gIterator] = 1;
 			}
 		}
-		temp_1 = SortedArray(spawn_pos_list, temp_2[CurrentArrayIndex()] + RandomReal(0, 0.5))[0];
-		nav_idx = spawn_nearest_node_idx_list[IndexOfArrayValue(spawn_pos_list, temp_1)];
-		nav_pos = nodes[nav_idx];
-		is_nav_reachable_node = true;
-		Teleport(EventPlayer(), temp_1);
+		gTemp1 = SortedArray(gSpawnPosList, gTemp2[CurrentArrayIndex()] + RandomReal(0, 0.5))[0];
+		pNavIdx = gSpawnNearestNodeIdxList[IndexOfArrayValue(gSpawnPosList, gTemp1)];
+		pNavPos = gNodes[pNavIdx];
+		pIsNavReachableNode = true;
+		Teleport(EventPlayer(), gTemp1);
 	}
 }
 
 # bots(1) pathing(13)
 void find_wp_near_nav() "Subroutine: Find WP near Nav (find a walkable position near the Nav and check if it's reachable)"
 {
-	temp_1 = NearestWalkablePosition(nav_pos);
+	gTemp1 = NearestWalkablePosition(pNavPos);
 	# If NWP is valid and not too far from the original destination
-	if (temp_1 != [] && DistanceBetween(nav_pos, temp_1) < 3)
+	if (gTemp1 != [] && DistanceBetween(pNavPos, gTemp1) < 3)
 	{
-		nav_pos = temp_1;
+		pNavPos = gTemp1;
 	}
 	else
 	{
 		# If original destination is not walkable
-		if (DistanceBetween(nav_pos + Up(), RayCastHitPosition(nav_pos + Up(), nav_pos + 2 * Down(), null, null, false)) >= 3)
+		if (DistanceBetween(pNavPos + Up(), RayCastHitPosition(pNavPos + Up(), pNavPos + 2 * Down(), null, null, false)) >= 3)
 		{
 			# Ranged bots stand still
-			if (is_load_limit_reached || is_ranged || DistanceBetween(EventPlayer(), myTarget) < 2)
+			if (gIsLoadLimitReached || pIsRanged || DistanceBetween(EventPlayer(), pMyTarget) < 2)
 			{
-				nav_pos = PositionOf(EventPlayer());
+				pNavPos = PositionOf(EventPlayer());
 				Abort();
 			}
 			else
 			{
-				nav_pos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), myTarget) - 2) * DirectionTowards(EventPlayer(), myTarget);
+				pNavPos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), pMyTarget) - 2) * DirectionTowards(EventPlayer(), pMyTarget);
 				if (IsOnGround(EventPlayer()))
 				{
 					# Check if destination is not walkable
-					if (DistanceBetween(nav_pos + Up(), RayCastHitPosition(nav_pos + Up(), nav_pos + 2 * Down(), null, null, false)) >= 3)
+					if (DistanceBetween(pNavPos + Up(), RayCastHitPosition(pNavPos + Up(), pNavPos + 2 * Down(), null, null, false)) >= 3)
 					{
-						nav_pos = PositionOf(EventPlayer());
-						is_using_combat_pathfinding -= 1;
+						pNavPos = PositionOf(EventPlayer());
+						pIsUsingCombatPathfinding -= 1;
 						Abort();
 					}
 				}
@@ -221,35 +221,35 @@ void find_wp_near_nav() "Subroutine: Find WP near Nav (find a walkable position 
 	# Check if the destination is reachable
 	if (IsOnGround(EventPlayer()))
 	{
-		temp_1 = PositionOf(EventPlayer()) + 1.75 * DirectionTowards(EventPlayer(), nav_pos) + Up();
+		gTemp1 = PositionOf(EventPlayer()) + 1.75 * DirectionTowards(EventPlayer(), pNavPos) + Up();
 		# If bot is near a ledge
-		if (DistanceBetween(temp_1, RayCastHitPosition(temp_1, temp_1 + 3 * Down(), null, null, false)) >= 3)
+		if (DistanceBetween(gTemp1, RayCastHitPosition(gTemp1, gTemp1 + 3 * Down(), null, null, false)) >= 3)
 		{
-			nav_pos = PositionOf(EventPlayer());
-			if (!is_ranged)
+			pNavPos = PositionOf(EventPlayer());
+			if (!pIsRanged)
 			{
-				is_using_combat_pathfinding -= 1;
+				pIsUsingCombatPathfinding -= 1;
 				Abort();
 			}
 		}
 	}
-	is_using_combat_pathfinding = 3;
+	pIsUsingCombatPathfinding = 3;
 }
 
 # bots(1) highvaluetarget(1) invasion(1)
 void upgrade_health_and_healing() "Subroutine: Upgrade Health and Healing"
 {
-	upgrade_count += 1;
-	SetHealingReceived(AllPlayers(Team.Team1), 85 + 2.5 * upgrade_count);
+	gUpgradeCount += 1;
+	SetHealingReceived(AllPlayers(Team.Team1), 85 + 2.5 * gUpgradeCount);
 	StartHealOverTime(AllPlayers(Team.Team1), null, 1, 100000);
 }
 # domnination(2) highvaluetarget(1) invasion(1)
 void start_kill_remaining_phase() "Subroutine: Start Kill remaining Phase"
 {
 	BigMessage(AllPlayers(Team.All), "Kill the remaining enemies!");
-	enable_normal_spawns = false;
-	AllPlayers(Team.Team2).is_expendable = false;
-	special_spawns_count = false;
-	objective_phase_number = 3;
-	Communicate(RandomValueInArray(combatants), Communication.PressTheAttack);
+	gEnableNormalSpawns = false;
+	AllPlayers(Team.Team2).pIsExpendable = false;
+	gSpecialSpawnsCount = false;
+	gObjectivePhaseNumber = 3;
+	Communicate(RandomValueInArray(gCombatants), Communication.PressTheAttack);
 }
