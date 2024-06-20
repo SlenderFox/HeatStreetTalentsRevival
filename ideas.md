@@ -10,6 +10,9 @@ If Blizz still haven't fixed new heroes in workshop, maybe shelve this.
 ### Shockproof
 Remove passthrough.
 ## Talents
+What if made 3 talents per hero, two abilities and one ult.
+### Ashe
+- White Phosphourous: Killing burning enemies sets nearby enemies on fire.
 ### D.va
 Something with her micro-missiles.
 ### Lifeweaver
