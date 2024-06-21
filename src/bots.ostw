@@ -563,7 +563,7 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 		pCanQuickMelee = HeroOf(EventPlayer()) != Hero.Brigitte && HeroOf(EventPlayer()) != Hero.Roadhog && HeroOf(EventPlayer()) != Hero.WreckingBall && HeroOf(EventPlayer()) != Hero.Reinhardt && !pIvIsPortal;
 		if (pIsLivingBoss)
 		{
-			pHealthPercent = (gIsmutatorModeEnabled ? 1.2 : 1) * (gIsGameLengthLong == false ? 1.25 : 1.5) * [4, 2.25, 2.25, 1][pRealTier - 1];
+			pHealthPercent = (gIsmutatorModeEnabled ? 1.2 : 1) * (!gIsGameLengthLong ? 1.25 : 1.5) * [4, 2.25, 2.25, 1][pRealTier - 1];
 			pDamageDealt = (gIsmutatorModeEnabled ? 1.2 : 1) * ((gGamemode == 0 ? 1.5 : 1.3) + gWaveNumber / 35) * [3.5, 2.25, 1.7, 1.05][pRealTier - 1];
 		}
 		else
