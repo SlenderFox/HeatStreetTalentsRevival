@@ -51,7 +51,7 @@ void check_if_enough_money() "Subroutine: Check if enough money"
 	if (gMoneyMult * gMoneyAmount - pMoneySpentAmount >= gTemp2)
 	{
 		pMoneySpentAmount += gTemp2;
-		SmallMessage(EventPlayer(), "Ability unlocked");
+		//SmallMessage(EventPlayer(), " Ability unlocked");
 		play_purchase_confirmation_sound();
 	}
 	else
@@ -183,7 +183,7 @@ if (IsAlive(EventPlayer()))
 {
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	pTutActive = false;
-	SmallMessage(EventPlayer(), <"press <0> + <1> to toggle hero changes", InputBindingString(Button.Crouch), InputBindingString(Button.Reload)>);
+	//SmallMessage(EventPlayer(), <" press <0> + <1> to toggle hero changes", InputBindingString(Button.Crouch), InputBindingString(Button.Reload)>);
 }
 
 rule: "[Tutorial] Open HUD"

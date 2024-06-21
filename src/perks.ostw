@@ -209,7 +209,7 @@ Team.Team1
 	AbortIf(!HasStatus(Victim(), Status.Stunned));
 	Wait(0.25, WaitBehavior.RestartWhenTrue);
 	Wait(15, WaitBehavior.IgnoreCondition);
-	SmallMessage(EventPlayer(), "Brass Knuckles Ready");
+	SmallMessage(EventPlayer(), " Brass Knuckles Ready");
 }
 
 rule: "Team 1 (Perk): Crash N' Dash"
