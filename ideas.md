@@ -4,7 +4,7 @@ Enemy spawn quota: The game expects an amount of each type of enemy to spawn and
 Enemy respawn times scale with difficulty.
 ## Abilities
 ### Haste
-Look into ways to get it working with charged abilities, Ashe's coach gun, and Bastion's turret form.
+Look into ways to get it working with charged abilities, Ashe's coach gun, and Bastion's turret form, Soldier: 76's helix rockets.
 ### Bulletstorm
 If Blizz still haven't fixed new heroes in workshop, maybe shelve this.
 ### Shockproof
