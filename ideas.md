@@ -6,7 +6,8 @@ Enemy respawn times scale with difficulty.
 ### Haste
 Look into ways to get it working with charged abilities, Ashe's coach gun, and Bastion's turret form, Soldier: 76's helix rockets.
 ### Bulletstorm
-If Blizz still haven't fixed new heroes in workshop, maybe shelve this.
+If Blizz still haven't fixed new heroes in workshop, maybe shelve this. 
+Also causes issues with peacekeeper alt fire.
 ### Shockproof
 Remove passthrough.
 ## Talents
