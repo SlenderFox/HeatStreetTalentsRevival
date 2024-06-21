@@ -79,7 +79,7 @@ if (IsOnGround(EventPlayer()))
 if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) <= 2 || YOf(gNodes[pMyTarget.pBestNavIdx]) - YOf(PositionOf(EventPlayer())) <= 1)
 if (pIsRanged || DistanceBetween(EventPlayer(), pMyTarget) <= 1 + DistanceBetween(pMyTarget, gNodes[pMyTarget.pBestNavIdx]))
 {
-	if (pMyTarget.pLastNavUpdateT + gCombatantsCount * 0.4 < TotalTimeElapsed())
+	if (pMyTarget.pLastNavUpdateT + CountOf(gCombatants) * 0.4 < TotalTimeElapsed())
 	{
 		update_target_nav();
 		AbortIfConditionIsFalse();
@@ -156,7 +156,7 @@ if (DistanceBetween(EventPlayer(), pNavPos) <= 1)
 		}
 		else if (pMyTarget.pIsCombatant)
 		{
-			if (pMyTarget.pLastNavUpdateT + gCombatantsCount * 0.4 < TotalTimeElapsed())
+			if (pMyTarget.pLastNavUpdateT + CountOf(gCombatants) * 0.4 < TotalTimeElapsed())
 			{
 				update_target_nav();
 			}

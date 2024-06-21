@@ -631,12 +631,12 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 		StartThrottleInDirection(EventPlayer(), VectorTowards(EventPlayer(), pNavPos), (pSlowedUntil >= TotalTimeElapsed() ? 0.3 : 1) * (DistanceBetween(EventPlayer(), Vector(XOf(pNavPos), YOf(PositionOf(EventPlayer())), ZOf(pNavPos))) >= 0.5), Relative.ToWorld, ThrottleBehavior.ReplaceExistingThrottle, ThrottleRev.DirectionAndMagnitude);
 	}
 	# pHealthPercent value in percent, health does not scale during a bot's live
-	pHealthPercent[0] *= gDiffHealthMult * (gIsmutatorModeEnabled ? 1.1 : 1) * (100 + 5 * (gWaveNumber - 1 + Max(0, gWaveNumber - 9))) * (0.111 + 0.222 * gCombatantsCount);
+	pHealthPercent[0] *= gDiffHealthMult * (gIsmutatorModeEnabled ? 1.1 : 1) * (100 + 5 * (gWaveNumber - 1 + Max(0, gWaveNumber - 9))) * (0.111 + 0.222 * CountOf(gCombatants));
 	SetMaxHealth(EventPlayer(), pHealthPercent[0]);
 	# pDamageDealt value as a factor, damage can scale during a bot's live
 	pDamageDealt[0] *= gDiffDamageMult;
-	SetDamageDealt(EventPlayer(), pDamageDealt * (gMutEmpRound ? 2 : 1) * (20 + 9.25 * (gWaveNumber - 1 + Max(0, gWaveNumber - 9))) * (0.111 + 0.222 * gCombatantsCount) * 9 / NumberOfPlayers(Team.Team2));
-	SetHealingReceived(EventPlayer(), pIvIsPortal ? 0 : gDiffHealthMult * (pIsLivingBoss ? 0.5 : 1) * (gIsmutatorModeEnabled ? 1.1 : 1) * (100 + 4 * (gWaveNumber - 1 + Max(0, gWaveNumber - 9))) * (0.111 + 0.222 * gCombatantsCount));
+	SetDamageDealt(EventPlayer(), pDamageDealt * (gMutEmpRound ? 2 : 1) * (20 + 9.25 * (gWaveNumber - 1 + Max(0, gWaveNumber - 9))) * (0.111 + 0.222 * CountOf(gCombatants)) * 9 / NumberOfPlayers(Team.Team2));
+	SetHealingReceived(EventPlayer(), pIvIsPortal ? 0 : gDiffHealthMult * (pIsLivingBoss ? 0.5 : 1) * (gIsmutatorModeEnabled ? 1.1 : 1) * (100 + 4 * (gWaveNumber - 1 + Max(0, gWaveNumber - 9))) * (0.111 + 0.222 * CountOf(gCombatants)));
 	SetKnockbackReceived(EventPlayer(), pIsFortified ? 60 : 100);
 	SetStatus(EventPlayer(), null, Status.Rooted, 1);
 	if (pCombatPathfindingType == 9)
@@ -1194,7 +1194,7 @@ if (!pMyTarget.pIsFlying)
 if (DistanceBetween(EventPlayer(), pMyTarget) <= 40)
 {
 	Wait(0.5, WaitBehavior.IgnoreCondition);
-	if (CountOf(gCombatants.Filter(p => p.pDownedStartT)) <= (gCombatantsCount >= 4 ? 1 : 0) && RandomInteger(0, 1))
+	if (CountOf(gCombatants.Filter(p => p.pDownedStartT)) <= (CountOf(gCombatants) >= 4 ? 1 : 0) && RandomInteger(0, 1))
 	{
 		SetUltimateCharge(EventPlayer(), 100);
 		PressButton(EventPlayer(), Button.Ultimate);

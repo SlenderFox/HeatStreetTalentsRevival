@@ -959,7 +959,7 @@ if (!pIsChangedHeroes)
 		SmallMessage(AllPlayers(), <"<0> was downed!", EventPlayer()>);
 		pDeathCamTarget = EyePosition(EventPlayer()) + 1000 * DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()), 0);
 		StartCamera(EventPlayer(), RayCastHitPosition(EyePosition(pSpectatedPlayer), EyePosition(pSpectatedPlayer) - (pDeathCamTarget ? 6.25 * DirectionTowards(EyePosition(pSpectatedPlayer), pDeathCamTarget) : 8.25 * DirectionFromAngles(HorizontalFacingAngleOf(pSpectatedPlayer), 20)), null, null, false) + 0.25 * (pDeathCamTarget ? DirectionTowards(EyePosition(pSpectatedPlayer), pDeathCamTarget) : DirectionFromAngles(HorizontalFacingAngleOf(pSpectatedPlayer), 20)), EyePosition(pSpectatedPlayer), pDeathCamTarget ? 10 : 20);
-		for (gIterator = 0; gCombatantsCount; 1)
+		for (gIterator = 0; CountOf(gCombatants); 1)
 		{
 			PlayEffect(gCombatants[gIterator], PlayEffect.RingExplosionSound, Color.White, gCombatants[gIterator], 200);
 			PlayEffect(gCombatants[gIterator], PlayEffect.RingExplosionSound, Color.White, gCombatants[gIterator], 200);
@@ -1041,7 +1041,7 @@ if (IsButtonHeld(EventPlayer(), Button.Jump))
 	}
 	else
 	{
-		pSpectatedPlayer = gCombatants[(IndexOfArrayValue(gCombatants, pSpectatedPlayer) + 1) % gCombatantsCount];
+		pSpectatedPlayer = gCombatants[(IndexOfArrayValue(gCombatants, pSpectatedPlayer) + 1) % CountOf(gCombatants)];
 	}
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 }

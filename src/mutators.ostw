@@ -48,7 +48,7 @@ if (NormalizedHealth(EventPlayer()) <= 0.5)
 	if (gTemp1)
 	{
 		PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Blue, EventPlayer(), 1);
-		AddHealthPoolToPlayer(EventPlayer(), HealthType.Shields, 0.75 * gTemp1 / gCombatantsCount * MaxHealth(EventPlayer()), false, false);
+		AddHealthPoolToPlayer(EventPlayer(), HealthType.Shields, 0.75 * gTemp1 / CountOf(gCombatants) * MaxHealth(EventPlayer()), false, false);
 		pHpPool[3] = LastCreatedHealthPool();
 		pGmutVar = 1;
 		WaitUntil(!HealthOfType(EventPlayer(), HealthType.Shields), 7);

@@ -1316,7 +1316,7 @@ if (NumberOfLivingPlayers(Team.Team2) < NumberOfPlayers(Team.Team2))
 			5,
 			TotalTimeElapsed() - gLastSpawnPhaseEndT - 25 - 20 * CountOf(
 				gCombatants.Filter(p => p.pDownedStartT)
-			) / gCombatantsCount
+			) / CountOf(gCombatants)
 		)
 	)
 	{
@@ -1390,7 +1390,7 @@ Event.OnPlayerLeave
 	{
 		SetDamageDealt(
 			AllLivingPlayers(Team.Team2)[gIterator],
-			AllLivingPlayers(Team.Team2)[gIterator].pDamageDealt * (gMutEmpRound ? 2 : 1) * (20 + 8.25 * (gWaveNumber - 1 + Max(0, gWaveNumber - 9))) * (0.139 + 0.2 * gCombatantsCount) * 9 / NumberOfPlayers(Team.Team2)
+			AllLivingPlayers(Team.Team2)[gIterator].pDamageDealt * (gMutEmpRound ? 2 : 1) * (20 + 8.25 * (gWaveNumber - 1 + Max(0, gWaveNumber - 9))) * (0.139 + 0.2 * CountOf(gCombatants)) * 9 / NumberOfPlayers(Team.Team2)
 		);
 	}
 }

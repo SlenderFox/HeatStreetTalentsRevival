@@ -11,7 +11,6 @@ globalvar Vector gBuyMenuBasePos;
 void update_combatants() "Subroutine: Update Combatants"
 {
 	gCombatants = FilteredArray(AllPlayers(Team.Team1), ArrayElement().pIsCombatant);
-	gCombatantsCount = CountOf(gCombatants);
 }
 
 # bots(1) domination(2) highvaluetarget(1) invasion(1) subroutines(1)

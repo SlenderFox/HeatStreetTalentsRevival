@@ -22,8 +22,6 @@ globalvar Number gHvtDomObjectiveKilledCount; // Often used as boolean
 globalvar Number gHvtCallReinforcementsEndT;
 # bots(4) domination(2) highvaluetarget(1) main(47) mutators(1) subroutines(19) team1(9)
 globalvar Player[] gCombatants;
-# bots(4) main(2) mutators(1) pathing(2) subroutines(1) team1(2)
-globalvar Number gCombatantsCount;
 # bots(7) main(2) pathing(8) subroutines(1)
 globalvar Boolean gIsLoadLimitReached;
 # bots(42) invasion(5) main(41) mutators(3) pathing(15) subroutines(13) team1(72)
