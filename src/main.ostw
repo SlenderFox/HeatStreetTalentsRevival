@@ -42,13 +42,18 @@ void mut_add_mutator() "MUT Subroutine: Add Mutator"
 	{
 		BigMessage(AllPlayers(Team.All), "Gamechanging Mutator added!");
 		gIsGmutEnabled = true;
-		gTemp1 = RandomValueInArray(gGmutList);
+		gTemp1 = gGmutList.Random();
 		ModifyVariable(gGmutList, Operation.RemoveFromArrayByValue, gTemp1);
 		if (gTemp1 == 0)
 		{
 			gGmutStormRaging = true;
 			CreateHudText(AllPlayers(Team.All), null, "Storm Raging: Some enemies are enraged, killing them spreads the rage", null, Location.Right, gTemp2 - 0.5, null, Color.Orange, Color.Orange, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
-			StartDamageModification(gCombatants, FilteredArray(AllPlayers(Team.Team2), ArrayElement().pGmutVar), 140, DamageModificationRev.ReceiversAndDamagers);
+			StartDamageModification(
+				gCombatants,
+				AllPlayers(Team.Team2).Filter(p => p.pGmutVar),
+				140,
+				DamageModificationRev.ReceiversAndDamagers
+			);
 		}
 		else if (gTemp1 == 1)
 		{
@@ -74,7 +79,7 @@ void mut_add_mutator() "MUT Subroutine: Add Mutator"
 	else if (CountOf(gMutatorsList))
 	{
 		BigMessage(AllPlayers(Team.All), "New Mutator added!");
-		gTemp1 = RandomValueInArray(gMutatorsList);
+		gTemp1 = gMutatorsList.Random();
 		ModifyVariable(gMutatorsList, Operation.RemoveFromArrayByValue, gTemp1);
 		if (gTemp1 == 0)
 		{
@@ -99,7 +104,12 @@ void mut_add_mutator() "MUT Subroutine: Add Mutator"
 		else if (gTemp1 == 4)
 		{
 			CreateHudText(AllPlayers(Team.All), null, "Berserk: Enemies below 50% health deal 25% more damage", null, Location.Right, gTemp2, null, Color.Green, null, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
-			StartDamageModification(gCombatants, FilteredArray(AllPlayers(Team.Team2), NormalizedHealth(ArrayElement()) <= 0.5), 125, DamageModificationRev.ReceiversAndDamagers);
+			StartDamageModification(
+				gCombatants,
+				AllPlayers(Team.Team2).Filter(p => NormalizedHealth(p) <= 0.5),
+				125,
+				DamageModificationRev.ReceiversAndDamagers
+			);
 		}
 		else if (gTemp1 == 5)
 		{
@@ -121,7 +131,14 @@ void mut_add_mutator() "MUT Subroutine: Add Mutator"
 		{
 			gMutHeartBurn = true;
 			CreateHudText(AllPlayers(Team.All), null, "Heartburn: Healing in combat is reduced by 30%", null, Location.Right, gTemp2, null, Color.Green, null, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
-			StartHealingModification(FilteredArray(gCombatants, ArrayElement().pLastDamageTakenT + (ArrayElement().pPerkDieHard ? 0.5 : 1) * (gMutDeepWounds ? 5 : 2.5) > TotalTimeElapsed()), gCombatants, 70, HealingModificationRev.ReceiversDamagersAndDamagePercent);
+			StartHealingModification(
+				gCombatants.Filter(
+					p => p.pLastDamageTakenT + (p.pPerkDieHard ? 0.5 : 1) * (gMutDeepWounds ? 5 : 2.5) > TotalTimeElapsed()
+				),
+				gCombatants,
+				70,
+				HealingModificationRev.ReceiversDamagersAndDamagePercent
+			);
 		}
 		else if (gTemp1 == 9)
 		{
@@ -136,7 +153,12 @@ void mut_add_mutator() "MUT Subroutine: Add Mutator"
 		else if (gTemp1 == 11)
 		{
 			CreateHudText(AllPlayers(Team.All), null, "Last Men Standing: The final enemies take 25% less damage", null, Location.Right, gTemp2, null, Color.Green, null, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
-			StartDamageModification(AllPlayers(Team.Team2), gCombatants, gObjectivePhaseNumber == 3 ? 75 : 100, DamageModificationRev.ReceiversDamagersAndDamagePercent);
+			StartDamageModification(
+				AllPlayers(Team.Team2),
+				gCombatants,
+				gObjectivePhaseNumber == 3 ? 75 : 100,
+				DamageModificationRev.ReceiversDamagersAndDamagePercent
+			);
 		}
 		else if (gTemp1 == 12)
 		{
@@ -219,6 +241,7 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 	}
 	if (CountOf(gGamemode))
 	{
+		// Stays like this until gGamemode is sorted out
 		gGamemode = RandomValueInArray(gGamemode);
 	}
 	else
@@ -304,7 +327,10 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 		CreateHudText(AllPlayers(), "\n\n\n\n\n\n\n\n\n\n\n\n\n\n     This Map is not supported! Restart and choose a valid map.     \n\n\n\n\n\n\n\n\n\n\n\n\n\n", null, null, Location.Top, -1000, Color.Yellow, null, null, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
 	}
 	gNodesCount = CountOf(gNodes);
-	gBuyMenuLeftUpForward[1] = DirectionFromAngles(HorizontalAngleFromDirection(gBuyMenuLeftUpForward[2]), VerticalAngleFromDirection(gBuyMenuLeftUpForward[2]) - 90);
+	gBuyMenuLeftUpForward[1] = DirectionFromAngles(
+		HorizontalAngleFromDirection(gBuyMenuLeftUpForward[2]),
+		VerticalAngleFromDirection(gBuyMenuLeftUpForward[2]) - 90
+	);
 	gBuyMenuLeftUpForward[0] = CrossProduct(gBuyMenuLeftUpForward[1], gBuyMenuLeftUpForward[2]);
 	gBuyMenuBasePos = gBuyMenuCamPos - (9 * gBuyMenuLeftUpForward[1]) + (142 * gBuyMenuLeftUpForward[2]);
 	# Workaround: Need to reduce Slots because of spectator bug
@@ -313,80 +339,829 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 		CreateHudText(AllPlayers(), "\n\n\n\n\n\n\n\n\n\n\n\n\n\n     Too many player slots! Set Max Team 1 Players to 5 or lower and restart.     \n\n\n\n\n\n\n\n\n\n\n\n\n\n", null, null, Location.Top, -1000, Color.Yellow, null, null, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
 	}
 	# Create HUDs
-	CreateHudText(AllPlayers(), null, null, <"Heat Street: Talents - 3.4.6 | KFVAY - Chateau Guillard)​ ​-​ ​<0><1>", ["Invasion", "High Value Target", "Domination"][gGamemode], MatchTime() ? <"<0><1><2>", MatchTime() > 10 ? "0:" : "", RoundToInteger(RoundToInteger(10 * MatchTime(), Rounding.Up) / 10, Rounding.Down), MatchTime() > 10 ? "" : <".<0>", RoundToInteger(10 * MatchTime(), Rounding.Up) % 10>> : "">, Location.Top, -100, null, null, Color.White, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
-	if (gIsGameLengthLong == false)
+	CreateHudText(
+		AllPlayers(),
+		null,
+		null,
+		"Heat Street Talents Revival [WSCODE 4.0.0] | Chateau Guillard ​-​ {0} {1}".Format([
+			["Invasion", "High Value Target", "Domination"][gGamemode],
+			MatchTime()
+				? "{0}{1}{2}".Format([
+					MatchTime() > 10 ? "0:" : "",
+					RoundToInteger(RoundToInteger(10 * MatchTime(), Rounding.Up) / 10, Rounding.Down),
+					MatchTime() > 10 ? "" : ".{0}".Format([
+						RoundToInteger(10 * MatchTime(), Rounding.Up) % 10
+					])
+				])
+				: ""
+		]),
+		Location.Top,
+		-100,
+		null,
+		null,
+		Color.White,
+		HudTextRev.VisibleToAndString,
+		Spectators.DefaultVisibility
+	);
+	if (!gIsGameLengthLong)
 	{
-		CreateHudText(AllPlayers(), <"Wave <0>/15 ", gWaveNumber>, null, null, Location.Top, -99, Color.White, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
+		CreateHudText(
+			AllPlayers(),
+			"Wave {0}/{1} ".Format([
+				gWaveNumber,
+				gIsGameLengthLong ? "22" : "15"
+			]),
+			null,
+			null,
+			Location.Top,
+			-99,
+			Color.White,
+			null,
+			null,
+			HudTextRev.VisibleToAndString,
+			Spectators.DefaultVisibility
+		);
 	}
-	else if (gIsGameLengthLong == true)
-	{
-		CreateHudText(AllPlayers(), <"Wave <0>/22 ", gWaveNumber>, null, null, Location.Top, -99, Color.White, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
-	}
-	if (gGamemode == 2)
-	{
-		CreateHudText(AllPlayers(), null, gObjectivePhaseNumber == 1 ? "" : "\n\n\n", null, Location.Top, -98, null, Color.White, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
-	}
-	else
-	{
-		CreateHudText(AllPlayers(), null, gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2 ? "" : "\n\n\n", null, Location.Top, -98, null, Color.White, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
-	}
-	CreateHudText(FilteredArray(gCombatants, DistanceBetween(ArrayElement(), gAbilityShopPos) > 2), <"\n<0>\n\n Press <1> to Start \n", ["   Invasion", "High Value Target", "    Domination"][gGamemode], InputBindingString(Button.Interact)>, null, null, Location.Top, -92, Color.White, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
+	CreateHudText(
+		AllPlayers(),
+		null,
+		gObjectivePhaseNumber == 1 || (gObjectivePhaseNumber == 2 && gGamemode != 2) ? "" : "\n\n",
+		null,
+		Location.Top,
+		-98,
+		null,
+		Color.White,
+		null,
+		HudTextRev.VisibleToAndString,
+		Spectators.DefaultVisibility
+	);
+	//> Spacing char " "
+	CreateHudText(
+		gCombatants.Filter(p => DistanceBetween(p, gAbilityShopPos) > 2),
+		"\n{0}\n Press {1} to start \n".Format([
+			["   Invasion", "  High Value Target", "    Domination"][gGamemode],
+			InputBindingString(Button.Interact)
+		]),
+		null,
+		null,
+		Location.Top,
+		-92,
+		Color.White,
+		null,
+		null,
+		HudTextRev.VisibleToAndString,
+		Spectators.DefaultVisibility
+	);
 	gGameOrMutatorsStartHuds[0] = LastTextID();
-	CreateHudText(FilteredArray(gCombatants, DistanceBetween(ArrayElement(), gAbilityShopPos) > 2), null, null, "Change the Objective in the Workshop Settings", Location.Top, -91, null, null, Color.Green, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
+	CreateHudText(
+		gCombatants.Filter(p => DistanceBetween(p, gAbilityShopPos) > 2),
+		null,
+		null,
+		"Change the Objective in the Workshop Settings",
+		Location.Top,
+		-91,
+		null,
+		null,
+		Color.Green,
+		HudTextRev.VisibleTo,
+		Spectators.DefaultVisibility
+	);
 	gGameOrMutatorsStartHuds[1] = LastTextID();
-	CreateHudText(FilteredArray(gCombatants, !ArrayElement().pDownedStartT && (ArrayElement().pIsChangedHeroes || gObjectivePhaseNumber == 0 && !ArrayElement().pInBuyMenu)), <"\n\n\n    You can change Heroes now\n\n Hold <0> to open the Hero menu \n", InputBindingString(Button.Reload)>, null, null, Location.Top, -90, Color.Yellow, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
-	CreateHudText(FilteredArray(gCombatants, ArrayElement().pDownedStartT), null, null, <"Waiting for revival. Press <0> to spectate the next player.", InputBindingString(Button.Jump)>, Location.Top, -70, null, null, Color.Yellow, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
-	CreateHudText(LocalPlayer(), null, null, LocalPlayer().pTutActive ? "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" : <"Press [<0>] + [<1>] to toggle hud", InputBindingString(Button.Crouch), InputBindingString(Button.Reload)>, Location.Left, 9, null, null, Color.Orange, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
-	CreateProgressBarHudText(LocalPlayer().pDownedStartT ? LocalPlayer().pReviveTimer : IsTrueForAny(gCombatants, ArrayContains(ArrayElement().pRevivers, LocalPlayer())) ? LocalPlayer() : [], LocalPlayer().pDownedStartT ? LocalPlayer().pReviveTimer : LastOf(SortedArray(FilteredArray(gCombatants, ArrayContains(ArrayElement().pRevivers, LocalPlayer())), ArrayElement().pReviveTimer)).pReviveTimer, LocalPlayer().pDownedStartT ? "You are being revived" : <"Reviving <0>", CountOf(FilteredArray(gCombatants, ArrayContains(ArrayElement().pRevivers, LocalPlayer()))) > 1 ? <"<0> Teammates", CountOf(FilteredArray(gCombatants, ArrayContains(ArrayElement().pRevivers, LocalPlayer())))> : FilteredArray(gCombatants, ArrayContains(ArrayElement().pRevivers, LocalPlayer()))[0]>, Location.Top, -60, LocalPlayer().pDownedStartT ? LocalPlayer().pIsReviveSlow : IsTrueForAll(gCombatants, !ArrayContains(ArrayElement().pRevivers, LocalPlayer()) || ArrayElement().pIsReviveSlow) ? Color.Orange : Color.SkyBlue, Color.White, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
-	CreateHudText(gIsInfrasightOn ? AllPlayers() : [], <"<0> Enemies have improved aim!", AbilityIconString(Hero.Widowmaker, Button.Ultimate)>, null, null, Location.Top, -50, Color.Violet, null, null, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
-	CreateHudText(IsTrueForAny(PlayersOnHero(Hero.Soldier76, Team.Team2), ArrayElement().pAbVar1 && ArrayElement().pMyTarget == LocalPlayer()) ? LocalPlayer() : [], <"<0> Locked on!", AbilityIconString(Hero.Soldier76, Button.Ultimate)>, null, null, Location.Top, -49, CustomColor(245 + 10 * SineFromRadians(4 * TotalTimeElapsed()), 205 + 50 * SineFromRadians(4 * TotalTimeElapsed()), 200 * SineFromRadians(4 * TotalTimeElapsed()), 255), null, null, HudTextRev.VisibleToAndColor, Spectators.DefaultVisibility);
-	CreateHudText(AllPlayers(), null, null, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", Location.Top, -1, null, null, Color.White, HudTextRev.VisibleTo, Spectators.DefaultVisibility);
-	CreateHudText(AllPlayers(Team.Team2), <"Server Load: <0>, Average: <1>, Peak: <2>", ServerLoad(), ServerLoadAverage(), ServerLoadPeak()>, null, null, Location.Left, -110, gIsWaitingToRemoveBot ? Color.Yellow : Color.White, null, null, HudTextRev.VisibleToStringAndColor, Spectators.DefaultVisibility);
-	CreateHudText([], null, "Mod by Lemonaid:\nChateau Guillard: KFVAY\nKanezaka: H4H7K\nDorado: NNNS6\nEichenwalde: MH9DN\nHollywood: K3235\nMalevento: 8GRV8\\Rout", "____\nCredits to:\n Shingen\n SgtMoody\nDevelopful\n", Location.Left, -1000, Color.White, Color.LimeGreen, Color.Green, HudTextRev.VisibleTo, Spectators.VisibleAlways);
+	CreateHudText(
+		gCombatants.Filter(
+			p => !p.pDownedStartT
+			&& (p.pIsChangedHeroes || gObjectivePhaseNumber == 0 && !p.pInBuyMenu)
+		),
+		"\n Hold {0} to change heroes \n".Format([
+			InputBindingString(Button.Reload)
+		]),
+		null,
+		null,
+		Location.Top,
+		-90,
+		Color.Yellow,
+		null,
+		null,
+		HudTextRev.VisibleToAndString,
+		Spectators.DefaultVisibility
+	);
+	CreateHudText(
+		gCombatants.Filter(p => p.pDownedStartT),
+		null,
+		null,
+		"Waiting for revival. Press {0} to spectate the next player.".Format([
+			InputBindingString(Button.Jump)
+		]),
+		Location.Top,
+		-70,
+		null,
+		null,
+		Color.Yellow,
+		HudTextRev.VisibleToAndString,
+		Spectators.DefaultVisibility
+	);
+	CreateHudText(
+		LocalPlayer(),
+		null,
+		LocalPlayer().pTutActive
+			? "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+			: "Press [{0}] + [{1}] to toggle hud".Format([
+				InputBindingString(Button.Crouch),
+				InputBindingString(Button.Reload)
+			]),
+		null,
+		Location.Left,
+		-90,
+		null,
+		Color.Orange,
+		null,
+		HudTextRev.VisibleToAndString,
+		Spectators.DefaultVisibility
+	);
+	CreateProgressBarHudText(
+		LocalPlayer().pDownedStartT
+			? LocalPlayer().pReviveTimer
+			: gCombatants.IsTrueForAny(p => p.pRevivers.Contains(LocalPlayer()))
+				? LocalPlayer()
+				: [],
+		LocalPlayer().pDownedStartT
+			? LocalPlayer().pReviveTimer
+			: gCombatants.Filter(
+				p => p.pRevivers.Contains(LocalPlayer())
+			).Sort(p => p.pReviveTimer).Last.pReviveTimer,
+		LocalPlayer().pDownedStartT
+			? "You are being revived"
+			: "Reviving {0}".Format([
+				CountOf(gCombatants.Filter(
+					p => ArrayContains(p.pRevivers, LocalPlayer())
+				)) > 1
+					? "{0} Teammates".Format([
+						CountOf(gCombatants.Filter(p => p.pRevivers.Contains(LocalPlayer())))
+					])
+					: gCombatants.Filter(p => p.pRevivers.Contains(LocalPlayer()))[0]
+			]),
+		Location.Top,
+		-60,
+		LocalPlayer().pDownedStartT
+			? LocalPlayer().pIsReviveSlow
+			: gCombatants.IsTrueForAll(
+				p => !p.pRevivers.Contains(LocalPlayer()) || p.pIsReviveSlow
+			)
+				? Color.Orange
+				: Color.SkyBlue,
+		Color.White,
+		ProgressBarHudEvaluation.VisibleToValuesAndColor,
+		Spectators.DefaultVisibility
+	);
+	CreateHudText(
+		gIsInfrasightOn ? AllPlayers() : [],
+		"{0} Enemies have improved aim!".Format([
+			AbilityIconString(Hero.Widowmaker, Button.Ultimate)
+		]),
+		null,
+		null,
+		Location.Top,
+		-50,
+		Color.Violet,
+		null,
+		null,
+		HudTextRev.VisibleTo,
+		Spectators.DefaultVisibility
+	);
+	/*CreateHudText(
+		PlayersOnHero(Hero.Soldier76, Team.Team2).IsTrueForAny(p => p.pAbVar1 && p.pMyTarget == LocalPlayer()) ? LocalPlayer() : [],
+		"{0} Locked on!".Format([
+			AbilityIconString(Hero.Soldier76, Button.Ultimate)
+		]),
+		null,
+		null,
+		Location.Top,
+		-49,
+		CustomColor(
+			245 + 10 * SineFromRadians(4 * TotalTimeElapsed()),
+			205 + 50 * SineFromRadians(4 * TotalTimeElapsed()),
+			200 * SineFromRadians(4 * TotalTimeElapsed()),
+			255
+		),
+		null,
+		null,
+		HudTextRev.VisibleToAndColor,
+		Spectators.DefaultVisibility
+	);*/
+	# Hide the default hud
+	CreateHudText(
+		AllPlayers(),
+		null,
+		null,
+		"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+		Location.Top,
+		-1,
+		null,
+		null,
+		Color.White,
+		HudTextRev.VisibleTo,
+		Spectators.DefaultVisibility
+	);
+	CreateHudText(
+		AllPlayers(Team.Team2),
+		"Server Load: {0}, Average: {1}, Peak: {2}".Format([
+			ServerLoad(),
+			ServerLoadAverage(),
+			ServerLoadPeak()
+		]),
+		null,
+		null,
+		Location.Left,
+		-110,
+		gIsWaitingToRemoveBot ? Color.Yellow : Color.White,
+		null,
+		null,
+		HudTextRev.VisibleToStringAndColor,
+		Spectators.DefaultVisibility
+	);
+	CreateHudText(
+		[],
+		null,
+		"Mod by Lemonaid:\nChateau Guillard: KFVAY\nKanezaka: H4H7K\nDorado: NNNS6\nEichenwalde: MH9DN\nHollywood: K3235\nMalevento: 8GRV8\\Rout", "____\nCredits to:\n Shingen\n SgtMoody\nDevelopful\n",
+		Location.Left,
+		-1000,
+		Color.White,
+		Color.LimeGreen,
+		Color.Green,
+		HudTextRev.VisibleTo,
+		Spectators.VisibleAlways
+	);
 	# Create Sombra Stealth Timer IWT
-	CreateProgressBarInWorldText(HeroOf(LocalPlayer()) == Hero.Sombra && LocalPlayer().pIsInvisible ? LocalPlayer() : [], LocalPlayer().pSombraStealthTimer, "Invisible", UpdateEveryFrame(EyePosition(LocalPlayer()) + 100 * DirectionFromAngles(HorizontalFacingAngleOf(LocalPlayer()), VerticalFacingAngleOf(LocalPlayer()) + 13.5)), 1.2, Clipping.DoNotClip, Color.Purple, Color.White, ProgressBarWorldEvaluation.VisibleToPositionAndValues, Spectators.DefaultVisibility);
+	CreateProgressBarInWorldText(
+		HeroOf(LocalPlayer()) == Hero.Sombra && LocalPlayer().pIsInvisible ? LocalPlayer() : [],
+		LocalPlayer().pSombraStealthTimer,
+		"Invisible",
+		UpdateEveryFrame(
+			EyePosition(LocalPlayer()) + 100 * DirectionFromAngles(
+				HorizontalFacingAngleOf(LocalPlayer()),
+				VerticalFacingAngleOf(LocalPlayer()) + 13.5
+			)
+		),
+		1.2,
+		Clipping.DoNotClip,
+		Color.Purple,
+		Color.White,
+		ProgressBarWorldEvaluation.VisibleToPositionAndValues,
+		Spectators.DefaultVisibility
+	);
 	gMoneyAmount = 1400;
 	set_random_perks();
 	# Priority A: Players to Bots Damage Increase
-	StartDamageModification(FilteredArray(AllPlayers(Team.Team2), ArrayElement().pIsTargetInLos && ArrayElement().pMyTarget.pAbPriority == 1), gCombatants, 125, DamageModificationRev.ReceiversAndDamagers);
+	StartDamageModification(
+		AllPlayers(Team.Team2).Filter(p => p.pIsTargetInLos && p.pMyTarget.pAbPriority == 1),
+		gCombatants,
+		125,
+		DamageModificationRev.ReceiversAndDamagers
+	);
 	# Priority A: Bots to Players Damage Decrease
-	StartDamageModification(gCombatants, FilteredArray(AllPlayers(Team.Team2), ArrayElement().pIsTargetInLos && ArrayElement().pMyTarget.pAbPriority == 1), 75, DamageModificationRev.ReceiversAndDamagers);
+	StartDamageModification(
+		gCombatants,
+		AllPlayers(Team.Team2).Filter(p => p.pIsTargetInLos && p.pMyTarget.pAbPriority == 1),
+		75,
+		DamageModificationRev.ReceiversAndDamagers
+	);
 	# Priority C: Players to Players Healing Increase
-	StartHealingModification(FilteredArray(gCombatants, NormalizedHealth(ArrayElement()) <= 0.5 && ArrayElement().pLastDamageTakenT + 2.5 > TotalTimeElapsed()), FilteredArray(gCombatants, ArrayElement().pAbPriority == 3), 140, HealingModificationRev.ReceiversDamagersAndDamagePercent);
+	StartHealingModification(
+		gCombatants.Filter(
+			p => NormalizedHealth(p) <= 0.5
+			&& p.pLastDamageTakenT + 2.5 > TotalTimeElapsed()
+		),
+		gCombatants.Filter(p => p.pAbPriority == 3),
+		140,
+		HealingModificationRev.ReceiversDamagersAndDamagePercent
+	);
 	# Nemesis: Your Nemesis IWT
-	CreateInWorldText(LocalPlayer().pPerkNemesisKiller ? LocalPlayer() : [], "Your Nemesis", LocalPlayer().pPerkNemesisKiller, 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndPosition, Color.Team2, Spectators.DefaultVisibility);
-	CreateEffect(AllPlayers(), Effect.Ring, Color.SkyBlue, gAbilityShopPos, 2, EffectRev.VisibleTo);
-	CreateInWorldText(AllPlayers(), "Ability Shop", gAbilityShopPos, 1.5, Clipping.DoNotClip, InworldTextRev.VisibleTo, Color.SkyBlue, Spectators.DefaultVisibility);
-	CreateHudText(!LocalPlayer().pIsCombatant || LocalPlayer().pDownedStartT || LocalPlayer().pInBuyMenu || LocalPlayer().pIsChangedHeroes ? [] : LocalPlayer(), DistanceBetween(LocalPlayer(), gAbilityShopPos) <= 2 ? MatchTime() ? <"Press <0> to buy Abilities", InputBindingString(Button.Interact)> : <"\n Press <0> to buy Abilities \n", InputBindingString(Button.Interact)> : LocalPlayer().pCanUseDropInBuyMenu || MatchTime() ? <"Hold <0> to buy Abilities", InputBindingString(Button.Interact)> : "", null, null, Location.Top, -80, Color.Green, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
+	CreateInWorldText(
+		LocalPlayer().pPerkNemesisKiller ? LocalPlayer() : [],
+		"Your Nemesis",
+		LocalPlayer().pPerkNemesisKiller,
+		1.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToAndPosition,
+		Color.Team2,
+		Spectators.DefaultVisibility
+	);
+	CreateEffect(
+		AllPlayers(),
+		Effect.Ring,
+		Color.SkyBlue,
+		gAbilityShopPos,
+		2,
+		EffectRev.VisibleTo
+	);
+	CreateInWorldText(
+		AllPlayers(),
+		"Ability Shop",
+		gAbilityShopPos, 1.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleTo,
+		Color.SkyBlue,
+		Spectators.DefaultVisibility
+	);
+	CreateHudText(
+		!LocalPlayer().pIsCombatant || LocalPlayer().pDownedStartT || LocalPlayer().pInBuyMenu || LocalPlayer().pIsChangedHeroes
+			? []
+			: LocalPlayer(),
+		DistanceBetween(LocalPlayer(), gAbilityShopPos) <= 2
+			? MatchTime()
+				? "\n Press {0} to buy Abilities \n".Format([InputBindingString(Button.Interact)])
+				: "\n Press {0} to buy Abilities \n".Format([InputBindingString(Button.Interact)])
+			: LocalPlayer().pCanUseDropInBuyMenu || MatchTime()
+				? "\n Hold {0} to buy Abilities \n".Format([InputBindingString(Button.Interact)])
+				: "",
+		null,
+		null,
+		Location.Top,
+		-80,
+		Color.Green,
+		null,
+		null,
+		HudTextRev.VisibleToAndString,
+		Spectators.DefaultVisibility
+	);
 	# Create Buy Menu IWTs, on scale 2.5 1 space is 8.5 pixels
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃", gBuyMenuBasePos - 21 * gBuyMenuLeftUpForward[1] + 90 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleTo, Color.White, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃", gBuyMenuBasePos - 21 * gBuyMenuLeftUpForward[1] - 90 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleTo, Color.White, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Refund", gBuyMenuBasePos + 45 * gBuyMenuLeftUpForward[1] + 90 * gBuyMenuLeftUpForward[0], 3, Clipping.DoNotClip, InworldTextRev.VisibleTo, Color.Green, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), <"[<0>] <1>", InputBindingString(Button.Melee), LocalPlayer().pIsShowingActiveAbilities ? "Show passive Abilities" : "Show active Abilities">, gBuyMenuBasePos + 45 * gBuyMenuLeftUpForward[1], 3, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.Green, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), <"[<0>] Leave", InputBindingString(Button.Interact)>, gBuyMenuBasePos + 45 * gBuyMenuLeftUpForward[1] - 90 * gBuyMenuLeftUpForward[0], 3, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.Green, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pAbPriority ? "Priority A\n  Swap" : "Priority A\n 1200$", gBuyMenuBasePos + 20 * gBuyMenuLeftUpForward[1] + 112.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pAbPriority ? Color.Yellow : CustomColor(0, 134, 171, 255), Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pAbPriority ? "Priority B\n  Swap" : "Priority B\n 1200$", gBuyMenuBasePos - 2.5 * gBuyMenuLeftUpForward[1] + 112.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pAbPriority ? Color.Yellow : CustomColor(0, 134, 171, 255), Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pAbPriority ? "Priority C\n  Swap" : "Priority C\n 1200$", gBuyMenuBasePos - 25 * gBuyMenuLeftUpForward[1] + 112.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pAbPriority ? Color.Yellow : CustomColor(0, 134, 171, 255), Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? "Stim Infusion\n    Swap" : "Stim Infusion\n   1200$" : LocalPlayer().pAbHeadhunter ? "Headhunter II\n  800$" : "Headhunter I\n  800$", gBuyMenuBasePos + 20 * gBuyMenuLeftUpForward[1] + 67.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? Color.Yellow : Color.Green : LocalPlayer().pAbHeadhunter < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? "Smoke Bomb\n    Swap" : "Smoke Bomb\n   1200$" : LocalPlayer().pAbAntigens ? "Antigens II\n   600$" : "Antigens I\n   600$", gBuyMenuBasePos - 2.5 * gBuyMenuLeftUpForward[1] + 67.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? Color.Yellow : Color.Green : LocalPlayer().pAbAntigens < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pIsShowingActiveAbilities ? "" : LocalPlayer().pAbQuickFix ? "Quick Fix II\n  700$" : "Quick Fix I\n  700$", gBuyMenuBasePos - 25 * gBuyMenuLeftUpForward[1] + 67.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pAbQuickFix < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? "Cloak\n Swap" : "Cloak\n1200$" : LocalPlayer().pAbCharged ? "Charged II\n  700$" : "Charged I\n  700$", gBuyMenuBasePos + 20 * gBuyMenuLeftUpForward[1] + 22.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? Color.Yellow : Color.Green : LocalPlayer().pAbCharged < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? "Resurgence\n   Swap" : "Resurgence\n  1200$" : LocalPlayer().pAbHaste ? "Haste II\n  800$" : "Haste I\n  800$", gBuyMenuBasePos - 2.5 * gBuyMenuLeftUpForward[1] + 22.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? Color.Yellow : Color.Green : LocalPlayer().pAbHaste < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pIsShowingActiveAbilities ? "" : LocalPlayer().pAbHeavyImpact ? "Heavy Impact II\n  1000$" : "Heavy Impact I\n  1000$", gBuyMenuBasePos - 25 * gBuyMenuLeftUpForward[1] + 22.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pAbHeavyImpact < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? "Feint\nSwap" : "Feint\n1200$" : LocalPlayer().pAbSecondWind ? "Second Wind II\n   1000$" : "Second Wind I\n   1000$", gBuyMenuBasePos + 20 * gBuyMenuLeftUpForward[1] - 22.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? Color.Yellow : Color.Green : LocalPlayer().pAbSecondWind < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? "Tear Gas\n Swap" : "Tear Gas\n   1200$" : LocalPlayer().pAbTriage ? "Triage II\n  700$" : "Triage I\n  700$", gBuyMenuBasePos - 2.5 * gBuyMenuLeftUpForward[1] - 22.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? Color.Yellow : Color.Green : LocalPlayer().pAbTriage < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pIsShowingActiveAbilities ? "" : LocalPlayer().pAbResilience ? "Resilience II\n   800$" : "Resilience I\n   800$", gBuyMenuBasePos - 25 * gBuyMenuLeftUpForward[1] - 22.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pAbResilience < 2 ? Color.Green : Color.Gray, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? "Frenzy\n  Swap" : "Frenzy\n 1200$" : "+5% Health\n   500$", gBuyMenuBasePos + 20 * gBuyMenuLeftUpForward[1] - 67.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? Color.Yellow : Color.Green : Color.Green, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? "Chain Hack\n   Swap" : "Chain Hack\n  1200$" : "+5% Damage\n  500$", gBuyMenuBasePos - 2.5 * gBuyMenuLeftUpForward[1] - 67.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer().pActiveAbNumber ? Color.Yellow : Color.Green : Color.Green, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), LocalPlayer().pIsShowingActiveAbilities ? "" : "+5% Healing\n  500$", gBuyMenuBasePos - 25 * gBuyMenuLeftUpForward[1] - 67.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.Green, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Limited offer!", gBuyMenuBasePos + 22.5 * gBuyMenuLeftUpForward[1] - 112.5 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.White, Spectators.DefaultVisibility);
-	CreateInWorldText(LocalPlayer().pInBuyMenu && LocalPlayer().pIsShowingActiveAbilities ? LocalPlayer() : [], <"Hold or double tap <0> to use your active ability\n", InputBindingString(Button.Melee)>, gBuyMenuBasePos - 25 * gBuyMenuLeftUpForward[1], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.White, Spectators.DefaultVisibility);
-	CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), <"Press <0> to buy\n", InputBindingString(Button.PrimaryFire)>, gBuyMenuBasePos - 74 * gBuyMenuLeftUpForward[1] - 55 * gBuyMenuLeftUpForward[0], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.White, Spectators.DefaultVisibility);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		"┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃",
+		gBuyMenuBasePos - 21 * gBuyMenuLeftUpForward[1] + 90 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleTo,
+		Color.White,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		"┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃",
+		gBuyMenuBasePos - 21 * gBuyMenuLeftUpForward[1] - 90 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleTo,
+		Color.White,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		"Refund",
+		gBuyMenuBasePos + 45 * gBuyMenuLeftUpForward[1] + 90 * gBuyMenuLeftUpForward[0],
+		3,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleTo,
+		Color.Green,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		"[{0}] {1}".Format([
+			InputBindingString(Button.Melee),
+			LocalPlayer().pIsShowingActiveAbilities ? "Show passive Abilities" : "Show active Abilities"
+		]),
+		gBuyMenuBasePos + 45 * gBuyMenuLeftUpForward[1],
+		3,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToAndString,
+		Color.Green,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		"[{0}] Leave".Format([InputBindingString(Button.Interact)]),
+		gBuyMenuBasePos + 45 * gBuyMenuLeftUpForward[1] - 90 * gBuyMenuLeftUpForward[0],
+		3,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToAndString,
+		Color.Green,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pAbPriority ? "Priority A\n  Swap" : "Priority A\n 1200$",
+		gBuyMenuBasePos + 20 * gBuyMenuLeftUpForward[1] + 112.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pAbPriority ? Color.Yellow : CustomColor(0, 134, 171, 255),
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pAbPriority ? "Priority B\n  Swap" : "Priority B\n 1200$",
+		gBuyMenuBasePos - 2.5 * gBuyMenuLeftUpForward[1] + 112.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pAbPriority ? Color.Yellow : CustomColor(0, 134, 171, 255),
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pAbPriority ? "Priority C\n  Swap" : "Priority C\n 1200$",
+		gBuyMenuBasePos - 25 * gBuyMenuLeftUpForward[1] + 112.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pAbPriority ? Color.Yellow : CustomColor(0, 134, 171, 255),
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? "Stim Infusion\n    Swap"
+				: "Stim Infusion\n   1200$"
+			: LocalPlayer().pAbHeadhunter
+				? "Headhunter II\n  800$"
+				: "Headhunter I\n  800$",
+		gBuyMenuBasePos + 20 * gBuyMenuLeftUpForward[1] + 67.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? Color.Yellow
+				: Color.Green
+			: LocalPlayer().pAbHeadhunter < 2
+				? Color.Green
+				: Color.Gray,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? "Smoke Bomb\n    Swap"
+				: "Smoke Bomb\n   1200$"
+			: LocalPlayer().pAbAntigens
+				? "Antigens II\n   600$"
+				: "Antigens I\n   600$",
+		gBuyMenuBasePos - 2.5 * gBuyMenuLeftUpForward[1] + 67.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? Color.Yellow
+				: Color.Green
+			: LocalPlayer().pAbAntigens < 2
+				? Color.Green
+				: Color.Gray,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pIsShowingActiveAbilities
+			? ""
+			: LocalPlayer().pAbQuickFix
+				? "Quick Fix II\n  700$"
+				: "Quick Fix I\n  700$",
+		gBuyMenuBasePos - 25 * gBuyMenuLeftUpForward[1] + 67.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pAbQuickFix < 2 ? Color.Green : Color.Gray,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? "Cloak\n Swap"
+				: "Cloak\n1200$"
+			: LocalPlayer().pAbCharged
+				? "Charged II\n  700$"
+				: "Charged I\n  700$",
+		gBuyMenuBasePos + 20 * gBuyMenuLeftUpForward[1] + 22.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? Color.Yellow
+				: Color.Green
+			: LocalPlayer().pAbCharged < 2
+				? Color.Green
+				: Color.Gray,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? "Resurgence\n   Swap"
+				: "Resurgence\n  1200$"
+			: LocalPlayer().pAbHaste
+				? "Haste II\n  800$"
+				: "Haste I\n  800$",
+		gBuyMenuBasePos - 2.5 * gBuyMenuLeftUpForward[1] + 22.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? Color.Yellow
+				: Color.Green
+			: LocalPlayer().pAbHaste < 2
+				? Color.Green
+				: Color.Gray,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pIsShowingActiveAbilities
+			? ""
+			: LocalPlayer().pAbHeavyImpact
+				? "Heavy Impact II\n  1000$"
+				: "Heavy Impact I\n  1000$",
+		gBuyMenuBasePos - 25 * gBuyMenuLeftUpForward[1] + 22.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pAbHeavyImpact < 2
+			? Color.Green
+			: Color.Gray,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? "Feint\nSwap"
+				: "Feint\n1200$"
+			: LocalPlayer().pAbSecondWind
+				? "Second Wind II\n   1000$"
+				: "Second Wind I\n   1000$",
+		gBuyMenuBasePos + 20 * gBuyMenuLeftUpForward[1] - 22.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? Color.Yellow
+				: Color.Green
+			: LocalPlayer().pAbSecondWind < 2
+				? Color.Green
+				: Color.Gray,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? "Tear Gas\n Swap"
+				: "Tear Gas\n   1200$"
+			: LocalPlayer().pAbTriage
+				? "Triage II\n  700$"
+				: "Triage I\n  700$",
+		gBuyMenuBasePos - 2.5 * gBuyMenuLeftUpForward[1] - 22.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? Color.Yellow
+				: Color.Green
+			: LocalPlayer().pAbTriage < 2
+				? Color.Green
+				: Color.Gray,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pIsShowingActiveAbilities
+			? ""
+			: LocalPlayer().pAbResilience
+				? "Resilience II\n   800$"
+				: "Resilience I\n   800$",
+		gBuyMenuBasePos - 25 * gBuyMenuLeftUpForward[1] - 22.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pAbResilience < 2
+			? Color.Green
+			: Color.Gray,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? "Frenzy\n  Swap"
+				: "Frenzy\n 1200$"
+			: "+5% Health\n   500$",
+		gBuyMenuBasePos + 20 * gBuyMenuLeftUpForward[1] - 67.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? Color.Yellow
+				: Color.Green
+			: Color.Green,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? "Chain Hack\n   Swap"
+				: "Chain Hack\n  1200$"
+			: "+5% Damage\n  500$",
+		gBuyMenuBasePos - 2.5 * gBuyMenuLeftUpForward[1] - 67.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToStringAndColor,
+		LocalPlayer().pIsShowingActiveAbilities
+			? LocalPlayer().pActiveAbNumber
+				? Color.Yellow
+				: Color.Green
+			: Color.Green,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		LocalPlayer().pIsShowingActiveAbilities
+			? ""
+			: "+5% Healing\n  500$",
+		gBuyMenuBasePos - 25 * gBuyMenuLeftUpForward[1] - 67.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToAndString,
+		Color.Green,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		"Limited offer!",
+		gBuyMenuBasePos + 22.5 * gBuyMenuLeftUpForward[1] - 112.5 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToAndString,
+		Color.White,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		LocalPlayer().pInBuyMenu && LocalPlayer().pIsShowingActiveAbilities  ? LocalPlayer() : [],
+		"Hold or double tap {0} to use your active ability\n".Format([InputBindingString(Button.Melee)]),
+		gBuyMenuBasePos - 25 * gBuyMenuLeftUpForward[1],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToAndString,
+		Color.White,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		"Press {0} to buy\n".Format([InputBindingString(Button.PrimaryFire)]),
+		gBuyMenuBasePos - 74 * gBuyMenuLeftUpForward[1] - 55 * gBuyMenuLeftUpForward[0],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToAndString,
+		Color.White,
+		Spectators.DefaultVisibility
+	);
 	# Create Ability Entities and Cursor
-	CreateInWorldText(LocalPlayer().pInBuyMenu ? LocalPlayer() : [], <"<0>$\n", RoundToInteger(gMoneyMult * gMoneyAmount - LocalPlayer().pMoneySpentAmount, Rounding.Down)>, gBuyMenuBasePos - 74 * gBuyMenuLeftUpForward[1], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.White, Spectators.DefaultVisibility);
-	CreateInWorldText(LocalPlayer().pInBuyMenu ? LocalPlayer() : [], "▲", UpdateEveryFrame(gBuyMenuBasePos - (4 + VerticalFacingAngleOf(LocalPlayer())) * gBuyMenuLeftUpForward[1] + HorizontalFacingAngleOf(LocalPlayer()) * gBuyMenuLeftUpForward[0]), 4, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndColor, CustomColor(245 + 10 * SineFromRadians(4 * TotalTimeElapsed()), 205 + 50 * SineFromRadians(4 * TotalTimeElapsed()), 200 * SineFromRadians(4 * TotalTimeElapsed()), 255), Spectators.DefaultVisibility);
+	CreateInWorldText(
+		LocalPlayer().pInBuyMenu ? LocalPlayer() : [],
+		"{0}$\n".Format([
+			RoundToInteger(gMoneyMult * gMoneyAmount - LocalPlayer().pMoneySpentAmount, Rounding.Down)
+		]),
+		gBuyMenuBasePos - 74 * gBuyMenuLeftUpForward[1],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToAndString,
+		Color.White,
+		Spectators.DefaultVisibility
+	);
+	CreateInWorldText(
+		LocalPlayer().pInBuyMenu ? LocalPlayer() : [],
+		"▲",
+		UpdateEveryFrame(gBuyMenuBasePos - (4 + VerticalFacingAngleOf(LocalPlayer())) * gBuyMenuLeftUpForward[1] + HorizontalFacingAngleOf(LocalPlayer()) * gBuyMenuLeftUpForward[0]),
+		4,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToPositionAndColor,
+		CustomColor(
+			245 + 10 * SineFromRadians(4 * TotalTimeElapsed()),
+			205 + 50 * SineFromRadians(4 * TotalTimeElapsed()),
+			200 * SineFromRadians(4 * TotalTimeElapsed()),
+			255
+		),
+		Spectators.DefaultVisibility
+	);
 	# Use Update Every Frame to avoid showing the String when the cursor is out of bounds, resulting in 0
-	CreateInWorldText(UpdateEveryFrame(LocalPlayer().pInBuyMenu && AbsoluteValue(HorizontalFacingAngleOf(LocalPlayer())) < 135 && AbsoluteValue(VerticalFacingAngleOf(LocalPlayer()) + 11.25) < 45 ? LocalPlayer() : []), UpdateEveryFrame(VerticalFacingAngleOf(LocalPlayer()) < -33.75 ? ["Leave Buy Menu\n", LocalPlayer().pIsShowingActiveAbilities ? "Swap to the passive abilities page\n" : "Swap to the active abilities page\n", "Refund your money\n"][RoundToInteger((HorizontalFacingAngleOf(LocalPlayer()) + 135) / 90, Rounding.Down)] : [VerticalFacingAngleOf(LocalPlayer()) < -11.25 ? "The limited offer changes every wave\n" : ["Mystery Swap: Periodically swap to a random hero with a free ult\n         Health, damage and healing is increased by 20%", "Bulletstorm: Your weapon can hold unlimited ammo\n", "Die Hard: Your health regeneration delay is halved\n", <"Brass Knuckles: While using quick melee you are immune to Cloakers' charge attack\n<0>", "     Your quick melee attack knocks enemies down (15 second cooldown)">, "Vampiric: Heal for 30% of all dealt damage\n", "Crash N' Dash: Regenerate health while moving faster than 8 meters per second\n", "Golden Hour: You can be revived twice as fast\n", "Supercharge: Healing allies slowly charges their ultimate\n", "Nemesis: After going down automatically revive yourself when your killer dies\n", "Spec Ops: Gain 50 armour and immunity to grenadier smokes\n", "Sharpshooter: Deal 50% more damage to enemies that are further than 20 meters away\n", "Shockproof: Gain +15% speed and pass through enemies. \nBecome immune and deflect Taser electrocution attempts", <"<0>: <1>", LocalPlayer().pTalentText[1], LocalPlayer().pTalentText[2]>, <"<0>: <1>", LocalPlayer().pTalentText[3], LocalPlayer().pTalentText[4]>][gCurrentPerks[VerticalFacingAngleOf(LocalPlayer()) >= 11.25]], (LocalPlayer().pIsShowingActiveAbilities ? ["Frenzy: Become invincible and force enemies to target you\n", <"          Chain Hack: Hack and electrocute an enemy\n<0>", "Can jump to nearby enemies up to 3 times with a shorter duration after each jump">, ""] : ["Increase your health by 5%\n", "Increase your damage by 5%\n", "Increase your healing by 5%\n"])[RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)], (LocalPlayer().pIsShowingActiveAbilities ? ["Feint: Dodge and dash into any direction, creating an explosion from start to finish", "Tear Gas: Launch a grenade that releases lingering noxious gas\n                 Enemies in the gas get stunned", ""] : [LocalPlayer().pAbSecondWind ? "Second Wind II: Revive yourself when downed. Can only happen once every 60 seconds" : "Second Wind I: Revive yourself when downed. Can only happen once every 90 seconds", LocalPlayer().pAbTriage ? "Triage II: Heal 50% more to players under 50% health\n" : "Triage I: Heal 25% more to players under 50% health\n", LocalPlayer().pAbResilience ? "Resilience II: Receive 20% less damage\nReceive 60% less knockback and inflict 60% more" : "Resilience I: Receive 20% less damage\nReceive 30% less knockback and inflict 30% more"])[RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)], (LocalPlayer().pIsShowingActiveAbilities ? ["Cloak: Become invisible and freeze nearby enemies when you become visible again\n", "   Resurgence: Heal yourself for 300 health per second\nIf you are at full health, heal a nearby injured ally instead", ""] : [LocalPlayer().pAbCharged ? "Charged II: Ultimates cost 30% less\n" : "Charged I: Ultimates cost 15% less\n", LocalPlayer().pAbHaste ? "Haste II: Ability cooldown is reduced by 50%\nDoes not affect abilities with multiple charges" : "Haste I: Ability cooldown is reduced by 25%\nDoes not affect abilities with multiple charges", LocalPlayer().pAbHeavyImpact ? "Heavy Impact II: Every hit has a chance to stun the enemy for 2 seconds\n" : "Heavy Impact I: Every hit has a chance to stun the enemy for 1 second\n"])[RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)], (LocalPlayer().pIsShowingActiveAbilities ? ["Stim Infusion: Instantly start health regeneration\nGain +100% damage, +100% healing and +50% speed", "      Smoke Bomb: Create a smoke screen\nEnemies are less accurate when targeting allies in the smoke", ""] : [LocalPlayer().pAbHeadhunter ? "Headhunter II: Critical hits deal 60% more damage\n" : "Headhunter I: Critical hits deal 30% more damage\n", LocalPlayer().pAbAntigens ? "Antigens II: Receive 40% more healing and a natural overtime heal" : "Antigens I: Receive 20% more healing and a natural overtime heal", LocalPlayer().pAbQuickFix ? "Quick Fix II: Eliminations restore 100 HP and shortly increase speed by 30%\n" : "Quick Fix I: Eliminations restore 50 HP and shortly increase speed by 15%\n"])[RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)], ["    Priority A: Enemies are more likely to target you\nEnemies targeting you take 25% more and deal 25% less damage", <"         Priority B: Enemies are less likely to target you\n<0>", "Gain +20% damage and speed if you did not take damage in the last 3 seconds">, <"  Priority C: Enemies are much less likely to target you\n<0>", "Heal 40% more to allies in combat. Heal for 25% of dealt healing">][RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)]][RoundToInteger((HorizontalFacingAngleOf(LocalPlayer()) + 135) / 45, Rounding.Down)]), gBuyMenuBasePos - 55 * gBuyMenuLeftUpForward[1], 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.White, Spectators.DefaultVisibility);
+	CreateInWorldText(
+		UpdateEveryFrame(
+			LocalPlayer().pInBuyMenu
+			&& AbsoluteValue(HorizontalFacingAngleOf(LocalPlayer())) < 135
+			&& AbsoluteValue(VerticalFacingAngleOf(LocalPlayer()) + 11.25) < 45
+				? LocalPlayer()
+				: []
+		),
+		UpdateEveryFrame(VerticalFacingAngleOf(LocalPlayer()) < -33.75
+			? [
+				"Leave Buy Menu\n", LocalPlayer().pIsShowingActiveAbilities
+					? "Swap to the passive abilities page\n"
+					: "Swap to the active abilities page\n", "Refund your money\n"
+			][RoundToInteger((HorizontalFacingAngleOf(LocalPlayer()) + 135) / 90, Rounding.Down)]
+			: [
+				VerticalFacingAngleOf(LocalPlayer()) < -11.25
+					? "The limited offer changes every wave\n"
+					: [
+						"Mystery Swap: Periodically swap to a random hero with a free ult.\nHealth, damage and healing are increased by 20%",
+						"Bulletstorm: Your weapon can hold unlimited ammo\n",
+						"Die Hard: Your health regeneration delay is halved\n",
+						"Brass Knuckles: While using quick melee you are immune to Cloakers' charge attack\nYour quick melee attack knocks enemies down (15 second cooldown)",
+						"Vampiric: Heal for 30% of all dealt damage\n",
+						"Crash N' Dash: Regenerate health while moving faster than 8 meters per second\n",
+						"Golden Hour: You can be revived twice as fast\n",
+						"Supercharge: Healing allies slowly charges their ultimate\n",
+						"Nemesis: After going down automatically revive yourself when your killer dies\n",
+						"Spec Ops: Gain 50 armour and immunity to grenadier smokes\n",
+						"Sharpshooter: Deal 50% more damage to enemies that are further than 20 meters away\n",
+						"Shockproof: Gain +15% speed and pass through enemies.\nBecome immune and deflect Taser electrocution attempts",
+						"{0}: {1}".Format([LocalPlayer().pTalentText[1], LocalPlayer().pTalentText[2]]),
+						"{0}: {1}".Format([LocalPlayer().pTalentText[3], LocalPlayer().pTalentText[4]])
+					][gCurrentPerks[VerticalFacingAngleOf(LocalPlayer()) >= 11.25]],
+				(LocalPlayer().pIsShowingActiveAbilities
+					? [
+						"Frenzy: Become invincible and force enemies to target you\n",
+						"          Chain Hack: Hack and electrocute an enemy\nCan jump to nearby enemies up to 3 times with a shorter duration after each jump",
+						""
+					]
+					: [
+						"Increase your health by 5%\n",
+						"Increase your damage by 5%\n",
+						"Increase your healing by 5%\n"
+					])[RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)],
+				(LocalPlayer().pIsShowingActiveAbilities
+					? [
+						"Feint: Dodge and dash into any direction, creating an explosion from start to finish",
+						"Tear Gas: Launch a grenade that releases lingering noxious gas\n                 Enemies in the gas get stunned",
+						""
+					]
+					: [
+						LocalPlayer().pAbSecondWind
+							? "Second Wind II: Revive yourself when downed. Can only happen once every 60 seconds"
+							: "Second Wind I: Revive yourself when downed. Can only happen once every 90 seconds",
+						LocalPlayer().pAbTriage
+							? "Triage II: Heal 50% more to players under 50% health\n"
+							: "Triage I: Heal 25% more to players under 50% health\n",
+						LocalPlayer().pAbResilience
+							? "Resilience II: Receive 20% less damage\nReceive 60% less knockback and inflict 60% more"
+							: "Resilience I: Receive 20% less damage\nReceive 30% less knockback and inflict 30% more"
+					])[RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)],
+				(LocalPlayer().pIsShowingActiveAbilities
+					? [
+						"Cloak: Become invisible and freeze nearby enemies when you become visible again\n",
+						"   Resurgence: Heal yourself for 300 health per second\nIf you are at full health, heal a nearby injured ally instead",
+						""
+					]
+					: [
+						LocalPlayer().pAbCharged
+							? "Charged II: Ultimates cost 30% less\n"
+							: "Charged I: Ultimates cost 15% less\n",
+						LocalPlayer().pAbHaste
+							? "Haste II: Ability cooldown is reduced by 50%\nDoes not affect abilities with multiple charges"
+							: "Haste I: Ability cooldown is reduced by 25%\nDoes not affect abilities with multiple charges",
+						LocalPlayer().pAbHeavyImpact
+							? "Heavy Impact II: Every hit has a chance to stun the enemy for 2 seconds\n"
+							: "Heavy Impact I: Every hit has a chance to stun the enemy for 1 second\n"
+					])[RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)],
+				(LocalPlayer().pIsShowingActiveAbilities
+					? [
+						"Stim Infusion: Instantly start health regeneration\nGain +100% damage, +100% healing and +50% speed",
+						"      Smoke Bomb: Create a smoke screen\nEnemies are less accurate when targeting allies in the smoke",
+						""
+					]
+					: [
+						LocalPlayer().pAbHeadhunter
+							? "Headhunter II: Critical hits deal 60% more damage\n"
+							: "Headhunter I: Critical hits deal 30% more damage\n",
+						LocalPlayer().pAbAntigens
+							? "Antigens II: Receive 40% more healing and a natural overtime heal"
+							: "Antigens I: Receive 20% more healing and a natural overtime heal",
+						LocalPlayer().pAbQuickFix
+							? "Quick Fix II: Eliminations restore 100 HP and shortly increase speed by 30%\n"
+							: "Quick Fix I: Eliminations restore 50 HP and shortly increase speed by 15%\n"
+					])[RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)],
+				[
+					"    Priority A: Enemies are more likely to target you\nEnemies targeting you take 25% more and deal 25% less damage",
+					"         Priority B: Enemies are less likely to target you\nGain +20% damage and speed if you did not take damage in the last 3 seconds",
+					"  Priority C: Enemies are much less likely to target you\nHeal 40% more to allies in combat. Heal for 25% of dealt healing"
+				][RoundToInteger((VerticalFacingAngleOf(LocalPlayer()) + 33.75) / 22.5, Rounding.Down)]
+			][RoundToInteger((HorizontalFacingAngleOf(LocalPlayer()) + 135) / 45, Rounding.Down)]
+		),
+		gBuyMenuBasePos - 55 * gBuyMenuLeftUpForward[1],
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToAndString,
+		Color.White,
+		Spectators.DefaultVisibility
+	);
 	# Skip Assembling Heroes
 	SetMatchTime(3);
 	WaitUntil(IsGameInProgress(), 3.5);
@@ -425,7 +1200,9 @@ rule: "Special thanks"
 
 rule: "Global (First Wave): Create Mutator Start HUD, Scale Values, Set Level"
 if (gWaveNumber == 0)
-if (IsTrueForAny(gCombatants, IsButtonHeld(ArrayElement(), Button.Interact) && DistanceBetween(ArrayElement(), gAbilityShopPos) > 2))
+if (gCombatants.IsTrueForAny(
+	p => IsButtonHeld(p, Button.Interact) && DistanceBetween(p, gAbilityShopPos) > 2
+))
 {
 	DestroyHudText(gGameOrMutatorsStartHuds[0]);
 	DestroyHudText(gGameOrMutatorsStartHuds[1]);
@@ -438,7 +1215,7 @@ if (IsTrueForAny(gCombatants, IsButtonHeld(ArrayElement(), Button.Interact) && D
 	if (gGamemode == 2)
 	{
 		gEnableObjectiveEnemySpawns = 2;
-		gIvDomObjectivePos = RandomValueInArray(gIvDomObjectiveAllPosList);
+		gIvDomObjectivePos = gIvDomObjectiveAllPosList.Random();
 		gObjectiveProgress = [0, 0];
 	}
 	else
@@ -452,16 +1229,16 @@ rule: "Global (Next Wave): Revive Players, Scale Values, Set Level, Set Mutators
 if (gObjectivePhaseNumber == 3)
 if (NumberOfLivingPlayers(Team.Team2) == 0)
 {
-	if (gWaveNumber >= 15 && gIsGameLengthLong == false)
+	if (gWaveNumber >= 15 && !gIsGameLengthLong)
 	{
 		async! declare_victory();
 	}
-	else if (gWaveNumber >= 22 && gIsGameLengthLong == true)
+	else if (gWaveNumber >= 22 && gIsGameLengthLong)
 	{
 		async! declare_victory();
 	}
 	gObjectivePhaseNumber = 0;
-	(<Player>FilteredArray(gCombatants, ArrayElement().pDownedStartT && ArrayElement().pDownedStartT + 0.1 < TotalTimeElapsed())).pDownedStartT = false;
+	gCombatants.Filter(p => p.pDownedStartT && p.pDownedStartT + 0.1 < TotalTimeElapsed()).pDownedStartT = false;
 	BigMessage(AllPlayers(), "Wave cleared!");
 	gMoneyAmount += (gWaveNumber >= 2 ? 30 : 45) + 25 * gWaveNumber;
 	set_random_perks();
@@ -485,7 +1262,7 @@ if (NumberOfLivingPlayers(Team.Team2) == 0)
 	{
 		gEnableObjectiveEnemySpawns = 2;
 		gHvtDomObjectiveKilledCount = false;
-		gIvDomObjectivePos = RandomValueInArray(RemoveFromArray(gIvDomObjectiveAllPosList, gIvDomObjectivePos));
+		gIvDomObjectivePos = gIvDomObjectiveAllPosList.Remove(gIvDomObjectivePos).Random();
 		gObjectiveProgress = [0, 0];
 	}
 	else
@@ -519,7 +1296,7 @@ if (NumberOfLivingPlayers(Team.Team2) == 0)
 		(<Player>PlayersInSlot(4, Team.Team2)).pBaseTier = 3;
 	}
 	AbortIf(!pGmutExpendable);
-	(<Player>FilteredArray(PlayersOnHero(Hero.Soldier76, Team.Team2), ArrayElement().pBaseTier <= 2)).pIsExpendable = true;
+	PlayersOnHero(Hero.Soldier76, Team.Team2).Filter(p => p.pBaseTier <= 2).pIsExpendable = true;
 }
 
 rule: "Global: Enable normal Spawns"
@@ -527,11 +1304,33 @@ if (gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2)
 if (!gEnableNormalSpawns)
 if (NumberOfLivingPlayers(Team.Team2) < NumberOfPlayers(Team.Team2))
 {
-	gTemp1 = FilteredArray(AllLivingPlayers(Team.Team2), !ArrayElement().pIsLivingBoss);
-	gTemp1 = 2 * CountOf(FilteredArray(gTemp1, ArrayElement().pRealTier <= 2)) + 5 * CountOf(FilteredArray(gTemp1, ArrayElement().pRealTier == 3)) + 10 * CountOf(FilteredArray(gTemp1, ArrayElement().pRealTier == 4));
-	if (gTemp1 <= Max(5, TotalTimeElapsed() - gLastSpawnPhaseEndT - 25 - 20 * CountOf(FilteredArray(gCombatants, ArrayElement().pDownedStartT)) / gCombatantsCount))
+	//> TODO arithmetic stuff here
+	if (
+		(2 * CountOf(
+			AllLivingPlayers(Team.Team2).Filter(p => !p.pIsLivingBoss).Filter(p => p.pRealTier <= 2)
+		) + 5 * CountOf(
+			AllLivingPlayers(Team.Team2).Filter(p => !p.pIsLivingBoss).Filter(p => p.pRealTier == 3)
+		) + 10 * CountOf(
+			AllLivingPlayers(Team.Team2).Filter(p => !p.pIsLivingBoss).Filter(p => p.pRealTier == 4)
+		)) <= Max(
+			5,
+			TotalTimeElapsed() - gLastSpawnPhaseEndT - 25 - 20 * CountOf(
+				gCombatants.Filter(p => p.pDownedStartT)
+			) / gCombatantsCount
+		)
+	)
 	{
-		Wait((gGamemode == 1 && gObjectivePhaseNumber == 1 || gGamemode == 2 && IsTrueForAny(AllLivingPlayers(Team.Team2), ArrayElement().pIsLivingBoss) ? 11 : 6) - (gMutReinforcements ? 3 : 0), WaitBehavior.AbortWhenFalse);
+		Wait(
+			(
+				gGamemode == 1
+				&& gObjectivePhaseNumber == 1
+				|| gGamemode == 2
+				&& AllLivingPlayers(Team.Team2).IsTrueForAny(p => p.pIsLivingBoss)
+					? 11
+					: 6
+			) - (gMutReinforcements ? 3 : 0),
+			WaitBehavior.AbortWhenFalse
+		);
 		AbortIfConditionIsFalse();
 		gEnableNormalSpawns = true;
 		ModifyTeamScore(Team.Team1, 1);
@@ -587,10 +1386,12 @@ rule: "All Teams: Player left Match, Scale Damage"
 Event.OnPlayerLeave
 {
 	update_combatants();
-	gTemp2 = (gMutEmpRound ? 2 : 1) * (20 + 8.25 * (gWaveNumber - 1 + Max(0, gWaveNumber - 9))) * (0.139 + 0.2 * gCombatantsCount) * 9 / NumberOfPlayers(Team.Team2);
 	for (gIterator = 0; NumberOfLivingPlayers(Team.Team2); 1)
 	{
-		SetDamageDealt(AllLivingPlayers(Team.Team2)[gIterator], AllLivingPlayers(Team.Team2)[gIterator].pDamageDealt * gTemp2);
+		SetDamageDealt(
+			AllLivingPlayers(Team.Team2)[gIterator],
+			AllLivingPlayers(Team.Team2)[gIterator].pDamageDealt * (gMutEmpRound ? 2 : 1) * (20 + 8.25 * (gWaveNumber - 1 + Max(0, gWaveNumber - 9))) * (0.139 + 0.2 * gCombatantsCount) * 9 / NumberOfPlayers(Team.Team2)
+		);
 	}
 }
 
