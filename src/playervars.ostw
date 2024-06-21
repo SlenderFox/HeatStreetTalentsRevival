@@ -25,7 +25,7 @@ playervar Number pTasedEndT;
 # bots(17) pathing(4) team1(3)
 playervar Boolean pIsFlying;
 # bots(7) domination(2) highvaluetarget(1) main(1) perks(1) team1(11)
-playervar Boolean pIsInvisible;
+playervar Number pIsInvisible; // Mostly a bool but randomly goes to 2
 # main(2) team1(7)
 playervar Boolean pIsChangedHeroes;
 # main(28) subroutines(14) team1(14)
