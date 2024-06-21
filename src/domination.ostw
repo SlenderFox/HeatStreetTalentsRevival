@@ -25,7 +25,13 @@ Player.Slot2
 if (gObjectivePhaseNumber == 1)
 if (gObjectiveProgress[0] < 100)
 {
-	gDomPointAContesters = FilteredArray(gCombatants, !ArrayElement().pDownedStartT && !(ArrayElement().pIsInvisible % 3) && DistanceBetween(gIvDomObjectivePos[0], Vector(XOf(PositionOf(ArrayElement())), YOf(gIvDomObjectivePos[0]), ZOf(PositionOf(ArrayElement())))) <= 3 && AbsoluteValue(YOf(PositionOf(gIvDomObjectivePos[0])) - YOf(PositionOf(ArrayElement()))) <= 3 && IsInLineOfSight(gIvDomObjectivePos[0] + Up(), ArrayElement(), BarrierLOS.NoBarriersBlock));
+	gDomPointAContesters = gCombatants.Filter(
+		p => !p.pDownedStartT
+		&& !(p.pIsInvisible % 3)
+		&& DistanceBetween(gIvDomObjectivePos[0], Vector(XOf(PositionOf(p)), YOf(gIvDomObjectivePos[0]), ZOf(PositionOf(p)))) <= 3
+		&& AbsoluteValue(YOf(PositionOf(gIvDomObjectivePos[0])) - YOf(PositionOf(p))) <= 3
+		&& IsInLineOfSight(gIvDomObjectivePos[0] + Up(), p, BarrierLOS.NoBarriersBlock)
+	);
 	if (!PlayersInSlot(2, Team.Team2).pIsLivingBoss && CountOf(gDomPointAContesters))
 	{
 		gObjectiveProgress[0] += 2;
@@ -63,7 +69,13 @@ Player.Slot2
 if (gObjectivePhaseNumber == 1)
 if (gObjectiveProgress[1] < 100)
 {
-	gDomPointBContesters = FilteredArray(gCombatants, !ArrayElement().pDownedStartT && !(ArrayElement().pIsInvisible % 3) && DistanceBetween(gIvDomObjectivePos[1], Vector(XOf(PositionOf(ArrayElement())), YOf(gIvDomObjectivePos[1]), ZOf(PositionOf(ArrayElement())))) <= 3 && AbsoluteValue(YOf(PositionOf(gIvDomObjectivePos[1])) - YOf(PositionOf(ArrayElement()))) <= 3 && IsInLineOfSight(gIvDomObjectivePos[1] + Up(), ArrayElement(), BarrierLOS.NoBarriersBlock));
+	gDomPointBContesters = gCombatants.Filter(
+		p => !p.pDownedStartT
+		&& !(p.pIsInvisible % 3)
+		&& DistanceBetween(gIvDomObjectivePos[1], Vector(XOf(PositionOf(p)), YOf(gIvDomObjectivePos[1]), ZOf(PositionOf(p)))) <= 3
+		&& AbsoluteValue(YOf(PositionOf(gIvDomObjectivePos[1])) - YOf(PositionOf(p))) <= 3
+		&& IsInLineOfSight(gIvDomObjectivePos[1] + Up(), p, BarrierLOS.NoBarriersBlock)
+	);
 	if (!PlayersInSlot(3, Team.Team2).pIsLivingBoss && CountOf(gDomPointBContesters))
 	{
 		gObjectiveProgress[1] += 2;

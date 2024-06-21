@@ -13,7 +13,11 @@ void iv_defend_portal() "IV Subroutine: Defend Portal"
 		async! play_incoming_sound_twice();
 		pAbVar2 = TotalTimeElapsed() + 10;
 	}
-	gTemp2 = FilteredArray(PlayersWithinRadius(gIvDomObjectivePos, 15, Team.Team1, RadiusLOS.Surfaces), ArrayElement().pIsCombatant && !HasStatus(ArrayElement(), Status.PhasedOut) && IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.EnemyBarriersBlock));
+	gTemp2 = PlayersWithinRadius(gIvDomObjectivePos, 15, Team.Team1, RadiusLOS.Surfaces).Filter(
+		p => p.pIsCombatant
+		&& !HasStatus(p, Status.PhasedOut)
+		&& IsInLineOfSight(EventPlayer(), p, BarrierLOS.EnemyBarriersBlock)
+	);
 	for (gIterator = 0; CountOf(gTemp2); 1)
 	{
 		ApplyImpulse(gTemp2[gIterator], DirectionFromAngles(HorizontalAngleFromDirection(VectorTowards(gIvDomObjectivePos, gTemp2[gIterator])), -20), 25, Relative.ToWorld, ContraryMotion.CancelXYZ);
@@ -54,7 +58,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Torbjorn
 {
-	gIvDomObjectivePos = RandomValueInArray(RemoveFromArray(gIvDomObjectiveAllPosList, gIvDomObjectivePos));
+	gIvDomObjectivePos = gIvDomObjectiveAllPosList.Remove(gIvDomObjectivePos).Random();
 	StartForcingPlayerPosition(EventPlayer(), gIvDomObjectivePos, false);
 	DisableMovementCollisionWithEnvironment(EventPlayer(), true);
 	SetInvisible(EventPlayer(), InvisibleTo.All);

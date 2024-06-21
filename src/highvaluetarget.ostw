@@ -44,7 +44,13 @@ Team.Team2
 Player.Slot1
 if (gObjectivePhaseNumber == 2)
 {
-	pRevivers = FilteredArray(gCombatants, !ArrayElement().pDownedStartT && !(ArrayElement().pIsInvisible % 3) && DistanceBetween(EventPlayer(), Vector(XOf(PositionOf(ArrayElement())), YOf(PositionOf(EventPlayer())), ZOf(PositionOf(ArrayElement())))) <= 10 && AbsoluteValue(YOf(PositionOf(EventPlayer())) - YOf(PositionOf(ArrayElement()))) <= 5 && IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock));
+	pRevivers = gCombatants.Filter(
+		p => !p.pDownedStartT
+		&& !(p.pIsInvisible % 3)
+		&& DistanceBetween(EventPlayer(), Vector(XOf(PositionOf(p)), YOf(PositionOf(EventPlayer())), ZOf(PositionOf(p)))) <= 10
+		&& AbsoluteValue(YOf(PositionOf(EventPlayer())) - YOf(PositionOf(p))) <= 5
+		&& IsInLineOfSight(EventPlayer(), p, BarrierLOS.NoBarriersBlock)
+	);
 	if (CountOf(pRevivers))
 	{
 		pDownedStartT = 2;
