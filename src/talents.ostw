@@ -496,8 +496,8 @@ if (pChainReactionOn)
 	Wait(0.1, WaitBehavior.IgnoreCondition);
 	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Aqua, EventPlayer(), 3);
 	//Damage(EventPlayer(), PlayersOnHero(Hero.Tracer, Team.Team1), 200);
-	# Picks the first person on tracer (bad)
-	Damage(EventPlayer(), PlayersOnHero(Hero.Tracer, Team.Team1)[0], 200);
+	# Picks the tracer with the lowest ult charge
+	Damage(EventPlayer(), PlayersOnHero(Hero.Tracer, Team.Team1).Sort(p => UltimateChargePercent(p))[0], 200);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	pChainReactionImmune = true;
 	pChainReactionOn = false;
