@@ -395,6 +395,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 		{
 			if (gTemp1[1] >= 2)
 			{
+				// Current perks contains the two perks, access using boolean value
 				gTemp2 = gCurrentPerks[gTemp1[1] >= 3];
 				if (gTemp2 == 0)
 				{

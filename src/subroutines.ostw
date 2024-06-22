@@ -21,6 +21,20 @@ void play_incoming_sound_twice() "Subroutine: Play Incoming Sound Twice"
 	ModifyTeamScore(Team.Team1, 1);
 }
 
+void create_perk_text(in String text, in Number perk)
+{
+	CreateInWorldText(
+		gCombatants.Filter(p => p.pInBuyMenu),
+		text,
+		gTemp2,
+		2.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToAndColor,
+		perk ? Color.Gray : Color.LimeGreen,
+		Spectators.DefaultVisibility
+	);
+}
+
 # debug(1) main(2)
 void set_random_perks() "Subroutine: Set Random Perks"
 {
@@ -32,76 +46,219 @@ void set_random_perks() "Subroutine: Set Random Perks"
 	gCurrentPerksHudsList = [];
 	if (gWaveNumber % 4 == 1)
 	{
-		gCurrentPerks = ArraySlice(RandomizedArray(RemoveFromArray([12, 13], gCurrentPerks)), 0, 2);
-		for (gIterator = 0; 2; 1)
-		{
-			gTemp2 = gBuyMenuBasePos - (gIterator ? 25 : 2.5) * gBuyMenuLeftUpForward[1] - 112.5 * gBuyMenuLeftUpForward[0];
-			if (gCurrentPerks[gIterator] == 12)
-			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Hero Talent 1\n      $1600", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pTalent1 ? Color.Gray : Color.Purple, Spectators.DefaultVisibility);
-			}
-			else if (gCurrentPerks[gIterator] == 13)
-			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Hero Talent 2\n      $1600", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToStringAndColor, LocalPlayer().pTalent2 ? Color.Gray : Color.Purple, Spectators.DefaultVisibility);
-			}
-			ModifyVariable(gCurrentPerksHudsList, Operation.AppendToArray, LastTextID());
-		}
+		gCurrentPerks = [12, 13];
+		gCurrentPerksHudsList.ModAppend(CreateInWorldText(
+			gCombatants.Filter(p => p.pInBuyMenu),
+			"Hero Talent 1\n      $1600",
+			gBuyMenuBasePos - (25 * gBuyMenuLeftUpForward[1]) - (112.5 * gBuyMenuLeftUpForward[0]),
+			2.5,
+			Clipping.DoNotClip,
+			InworldTextRev.VisibleToStringAndColor,
+			LocalPlayer().pTalent1
+				? Color.Gray
+				: Color.Purple,
+			Spectators.DefaultVisibility
+		));
+		gCurrentPerksHudsList.ModAppend(CreateInWorldText(
+			gCombatants.Filter(p => p.pInBuyMenu),
+			"Hero Talent 2\n      $1600",
+			gBuyMenuBasePos - (2.5 * gBuyMenuLeftUpForward[1]) - (112.5 * gBuyMenuLeftUpForward[0]),
+			2.5,
+			Clipping.DoNotClip,
+			InworldTextRev.VisibleToStringAndColor,
+			LocalPlayer().pTalent2
+				? Color.Gray
+				: Color.Purple,
+			Spectators.DefaultVisibility
+		));
 	}
 	else
 	{
-		gCurrentPerks = ArraySlice(RandomizedArray(RemoveFromArray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], gCurrentPerks)), 0, 2);
+		gCurrentPerks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].Remove(gCurrentPerks).Randomize().Slice(0, 2);
 		for (gIterator = 0; 2; 1)
 		{
 			gTemp2 = gBuyMenuBasePos - (gIterator ? 25 : 2.5) * gBuyMenuLeftUpForward[1] - 112.5 * gBuyMenuLeftUpForward[0];
 			if (gCurrentPerks[gIterator] == 0)
 			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Mystery Swap\n     500$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkMysterySwap ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(
+					gCombatants.Filter(p => p.pInBuyMenu),
+					"Mystery Swap\n     500$",
+					gTemp2,
+					2.5,
+					Clipping.DoNotClip,
+					InworldTextRev.VisibleToAndColor,
+					LocalPlayer().pPerkMysterySwap
+						? Color.Gray
+						: Color.LimeGreen,
+					Spectators.DefaultVisibility
+				);
 			}
 			else if (gCurrentPerks[gIterator] == 1)
 			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Bulletstorm\n   1000$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkBulletStorm ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(
+					gCombatants.Filter(p => p.pInBuyMenu),
+					"Bulletstorm\n   1000$",
+					gTemp2,
+					2.5,
+					Clipping.DoNotClip,
+					InworldTextRev.VisibleToAndColor,
+					LocalPlayer().pPerkBulletStorm
+						? Color.Gray
+						: Color.LimeGreen,
+					Spectators.DefaultVisibility
+				);
 			}
 			else if (gCurrentPerks[gIterator] == 2)
 			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Die Hard\n 700$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkDieHard ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(
+					gCombatants.Filter(p => p.pInBuyMenu),
+					"Die Hard\n 700$",
+					gTemp2,
+					2.5,
+					Clipping.DoNotClip,
+					InworldTextRev.VisibleToAndColor,
+					LocalPlayer().pPerkDieHard
+						? Color.Gray
+						: Color.LimeGreen,
+					Spectators.DefaultVisibility
+				);
 			}
 			else if (gCurrentPerks[gIterator] == 3)
 			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Brass Knuckles\n     700$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkBrassKnuckles ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(
+					gCombatants.Filter(p => p.pInBuyMenu),
+					"Brass Knuckles\n     700$",
+					gTemp2,
+					2.5,
+					Clipping.DoNotClip,
+					InworldTextRev.VisibleToAndColor,
+					LocalPlayer().pPerkBrassKnuckles
+						? Color.Gray
+						: Color.LimeGreen,
+					Spectators.DefaultVisibility
+				);
 			}
 			else if (gCurrentPerks[gIterator] == 4)
 			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Vampiric\n   1000$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkVampiric ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(
+					gCombatants.Filter(p => p.pInBuyMenu),
+					"Vampiric\n   1000$",
+					gTemp2,
+					2.5,
+					Clipping.DoNotClip,
+					InworldTextRev.VisibleToAndColor,
+					LocalPlayer().pPerkVampiric
+						? Color.Gray
+						: Color.LimeGreen,
+					Spectators.DefaultVisibility
+				);
 			}
 			else if (gCurrentPerks[gIterator] == 5)
 			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Crash N' Dash\n      700$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkCrashNDash ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(
+					gCombatants.Filter(p => p.pInBuyMenu),
+					"Crash N' Dash\n      700$",
+					gTemp2,
+					2.5,
+					Clipping.DoNotClip,
+					InworldTextRev.VisibleToAndColor,
+					LocalPlayer().pPerkCrashNDash
+						? Color.Gray
+						: Color.LimeGreen,
+					Spectators.DefaultVisibility
+				);
 			}
 			else if (gCurrentPerks[gIterator] == 6)
 			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Golden Hour\n    1000$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkGoldenHour ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(
+					gCombatants.Filter(p => p.pInBuyMenu),
+					"Golden Hour\n    1000$",
+					gTemp2,
+					2.5,
+					Clipping.DoNotClip,
+					InworldTextRev.VisibleToAndColor,
+					LocalPlayer().pPerkGoldenHour
+						? Color.Gray
+						: Color.LimeGreen,
+					Spectators.DefaultVisibility
+				);
 			}
 			else if (gCurrentPerks[gIterator] == 7)
 			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Supercharge\n        700$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkSuperCharge ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(
+					gCombatants.Filter(p => p.pInBuyMenu),
+					"Supercharge\n        700$",
+					gTemp2,
+					2.5,
+					Clipping.DoNotClip,
+					InworldTextRev.VisibleToAndColor,
+					LocalPlayer().pPerkSuperCharge
+						? Color.Gray
+						: Color.LimeGreen,
+					Spectators.DefaultVisibility
+				);
 			}
 			else if (gCurrentPerks[gIterator] == 8)
 			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Nemesis\n   800$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkNemesis ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(
+					gCombatants.Filter(p => p.pInBuyMenu),
+					"Nemesis\n   800$",
+					gTemp2,
+					2.5,
+					Clipping.DoNotClip,
+					InworldTextRev.VisibleToAndColor,
+					LocalPlayer().pPerkNemesis
+						? Color.Gray
+						: Color.LimeGreen,
+					Spectators.DefaultVisibility
+				);
 			}
 			else if (gCurrentPerks[gIterator] == 9)
 			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Spec Ops\n 600$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkSpecialOperator ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(
+					gCombatants.Filter(p => p.pInBuyMenu),
+					"Spec Ops\n 600$",
+					gTemp2,
+					2.5,
+					Clipping.DoNotClip,
+					InworldTextRev.VisibleToAndColor,
+					LocalPlayer().pPerkSpecialOperator
+						? Color.Gray
+						: Color.LimeGreen,
+					Spectators.DefaultVisibility
+				);
 			}
 			else if (gCurrentPerks[gIterator] == 10)
 			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Sharpshooter\n   900$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkSharpShooter ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(
+					gCombatants.Filter(p => p.pInBuyMenu),
+					"Sharpshooter\n   900$",
+					gTemp2,
+					2.5,
+					Clipping.DoNotClip,
+					InworldTextRev.VisibleToAndColor,
+					LocalPlayer().pPerkSharpShooter
+						? Color.Gray
+						: Color.LimeGreen,
+					Spectators.DefaultVisibility
+				);
 			}
 			else if (gCurrentPerks[gIterator] == 11)
 			{
-				CreateInWorldText(FilteredArray(gCombatants, ArrayElement().pInBuyMenu), "Shockproof\n        700$", gTemp2, 2.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndColor, LocalPlayer().pPerkShockProof ? Color.Gray : Color.LimeGreen, Spectators.DefaultVisibility);
+				CreateInWorldText(
+					gCombatants.Filter(p => p.pInBuyMenu),
+					"Shockproof\n        700$",
+					gTemp2,
+					2.5,
+					Clipping.DoNotClip,
+					InworldTextRev.VisibleToAndColor,
+					LocalPlayer().pPerkShockProof
+						? Color.Gray
+						: Color.LimeGreen,
+					Spectators.DefaultVisibility
+				);
 			}
-			ModifyVariable(gCurrentPerksHudsList, Operation.AppendToArray, LastTextID());
+			gCurrentPerksHudsList.ModAppend(LastTextID());
 		}
 	}
 }
