@@ -20,20 +20,20 @@ void check_drop() "Subroutine: Check Drop (Avoid dropping too low)"
 {
 	if (gIsLoadLimitReached)
 	{
-		pNavPos = PositionOf(EventPlayer());
+		pNavPos = EventPlayer().Position();
 		Abort();
 	}
-	gTemp1 = PositionOf(EventPlayer()) + 1.75 * DirectionTowards(EventPlayer(), Vector(XOf(pNavPos), YOf(PositionOf(EventPlayer())), ZOf(pNavPos))) + Up();
+	gTemp1 = EventPlayer().Position() + 1.75 * DirectionTowards(EventPlayer(), Vector(XOf(pNavPos), YOf(EventPlayer().Position()), ZOf(pNavPos))) + Up();
 	if (DistanceBetween(gTemp1, RayCastHitPosition(gTemp1, gTemp1 + 30 * Down(), null, null, false)) >= YOf(gTemp1) - YOf(PositionOf(pMyTarget)) + 5)
 	{
-		pNavPos = PositionOf(EventPlayer());
+		pNavPos = EventPlayer().Position();
 		pIsUsingCombatPathfinding -= 1;
 		Abort();
 	}
-	gTemp1 = PositionOf(EventPlayer()) + 3.5 * DirectionTowards(EventPlayer(), Vector(XOf(pNavPos), YOf(PositionOf(EventPlayer())), ZOf(pNavPos))) + Up();
+	gTemp1 = EventPlayer().Position() + 3.5 * DirectionTowards(EventPlayer(), Vector(XOf(pNavPos), YOf(EventPlayer().Position()), ZOf(pNavPos))) + Up();
 	if (DistanceBetween(gTemp1, RayCastHitPosition(gTemp1, gTemp1 + 30 * Down(), null, null, false)) >= YOf(gTemp1) - YOf(PositionOf(pMyTarget)) + 5)
 	{
-		pNavPos = PositionOf(EventPlayer());
+		pNavPos = EventPlayer().Position();
 		pIsUsingCombatPathfinding -= 1;
 		Abort();
 	}
@@ -60,7 +60,7 @@ if (pIsAlive)
 if (IsInAir(EventPlayer()))
 if (pIsUsingCombatPathfinding == 0)
 if (HorizontalSpeedOf(EventPlayer()) >= 5)
-if (DistanceBetween(EventPlayer(), Vector(XOf(pNavPos), YOf(PositionOf(EventPlayer())), ZOf(pNavPos))) <= 0.5)
+if (DistanceBetween(EventPlayer(), Vector(XOf(pNavPos), YOf(EventPlayer().Position()), ZOf(pNavPos))) <= 0.5)
 {
 	ApplyImpulse(EventPlayer(), -1 * DirectionFromAngles(HorizontalAngleFromDirection(VelocityOf(EventPlayer())), 0), 0.001, Relative.ToWorld, ContraryMotion.CancelXYZ);
 	Wait(0.25, WaitBehavior.IgnoreCondition);
@@ -76,7 +76,7 @@ if (pIsUsingCombatPathfinding == 0)
 if (pIsTargetInLos >= 5)
 if (pIsAggressive)
 if (IsOnGround(EventPlayer()))
-if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) <= 2 || YOf(gNodes[pMyTarget.pBestNavIdx]) - YOf(PositionOf(EventPlayer())) <= 1)
+if (YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) <= 2 || YOf(gNodes[pMyTarget.pBestNavIdx]) - YOf(EventPlayer().Position()) <= 1)
 if (pIsRanged || DistanceBetween(EventPlayer(), pMyTarget) <= 1 + DistanceBetween(pMyTarget, gNodes[pMyTarget.pBestNavIdx]))
 {
 	if (pMyTarget.pLastNavUpdateT + CountOf(gCombatants) * 0.4 < TotalTimeElapsed())
@@ -84,7 +84,7 @@ if (pIsRanged || DistanceBetween(EventPlayer(), pMyTarget) <= 1 + DistanceBetwee
 		update_target_nav();
 		AbortIfConditionIsFalse();
 	}
-	if (IsTrueForAny(gElevatorNodes, DistanceBetween(EventPlayer(), Vector(XOf(ArrayElement()), YOf(PositionOf(EventPlayer())), ZOf(ArrayElement()))) < 1.5))
+	if (IsTrueForAny(gElevatorNodes, DistanceBetween(EventPlayer(), Vector(XOf(ArrayElement()), YOf(EventPlayer().Position()), ZOf(ArrayElement()))) < 1.5))
 	{
 		Wait(1, WaitBehavior.IgnoreCondition);
 		AbortIfConditionIsFalse();
@@ -190,7 +190,7 @@ if (pIsUsingCombatPathfinding)
 {
 	if (!(gIsLoadLimitReached || pIsPathfindingDisabled || HasStatus(EventPlayer(), Status.Rooted) || HasStatus(EventPlayer(), Status.Stunned)))
 	{
-		if (IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(pMyTarget) + pMyTarget.pEyeOffset, BarrierLOS.NoBarriersBlock))
+		if (IsInLineOfSight(EventPlayer().EyePosition(), EyePosition(pMyTarget) + pMyTarget.pEyeOffset, BarrierLOS.NoBarriersBlock))
 		{
 			pTargetLastSeenPos = PositionOf(pMyTarget);
 			if (pIsFlying)
@@ -201,7 +201,7 @@ if (pIsUsingCombatPathfinding)
 			else if (pMyTarget.pIsFlying && pCombatPathfindingType != 4)
 			{
 				# Roam
-				pNavPos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
+				pNavPos = EventPlayer().Position() + 3.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
 				find_wp_near_nav();
 			}
 			else
@@ -211,19 +211,19 @@ if (pIsUsingCombatPathfinding)
 				{
 					if (DistanceBetween(EventPlayer(), pMyTarget) <= (HeroOf(EventPlayer()) == Hero.Baptiste ? 20 : 15))
 					{
-						pNavPos = PositionOf(EventPlayer()) + 2.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
+						pNavPos = EventPlayer().Position() + 2.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
 					}
 					else
 					{
-						pNavPos = PositionOf(EventPlayer()) + 2.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), pMyTarget)) + RandomValueInArray([-45, 0, 45]), 0);
+						pNavPos = EventPlayer().Position() + 2.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), pMyTarget)) + RandomValueInArray([-45, 0, 45]), 0);
 					}
 					find_wp_near_nav();
 				}
 				else if (pCombatPathfindingType == 1)
 				{
-					if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) > -2)
+					if (YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) > -2)
 					{
-						pNavPos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), pMyTarget) - 2) * DirectionTowards(EventPlayer(), pMyTarget);
+						pNavPos = EventPlayer().Position() + Min(3.5, DistanceBetween(EventPlayer(), pMyTarget) - 2) * DirectionTowards(EventPlayer(), pMyTarget);
 						find_wp_near_nav();
 					}
 					else
@@ -234,15 +234,15 @@ if (pIsUsingCombatPathfinding)
 				}
 				else if (pCombatPathfindingType == 2)
 				{
-					pNavPos = PositionOf(EventPlayer()) + Min(1.5, DistanceBetween(EventPlayer(), pMyTarget) - 2) * DirectionTowards(EventPlayer(), pMyTarget);
+					pNavPos = EventPlayer().Position() + Min(1.5, DistanceBetween(EventPlayer(), pMyTarget) - 2) * DirectionTowards(EventPlayer(), pMyTarget);
 					find_wp_near_nav();
 				}
 				else if (pCombatPathfindingType == 3)
 				{
 					pNavPos = PositionOf(pMyTarget) + 5 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget) + RandomValueInArray([-45, 45]), 0);
-					if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) > -2)
+					if (YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) > -2)
 					{
-						pNavPos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), pNavPos)) * DirectionTowards(EventPlayer(), pNavPos);
+						pNavPos = EventPlayer().Position() + Min(3.5, DistanceBetween(EventPlayer(), pNavPos)) * DirectionTowards(EventPlayer(), pNavPos);
 						find_wp_near_nav();
 					}
 					else
@@ -254,20 +254,20 @@ if (pIsUsingCombatPathfinding)
 				{
 					if (DistanceBetween(EventPlayer(), pMyTarget) <= 12)
 					{
-						pNavPos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(pMyTarget, EventPlayer())) + (DistanceBetween(EventPlayer(), pMyTarget) <= 8 && pRealSpeed <= 1 ? RandomValueInArray([-135, 135]) : 0), 0);
+						pNavPos = EventPlayer().Position() + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(pMyTarget, EventPlayer())) + (DistanceBetween(EventPlayer(), pMyTarget) <= 8 && pRealSpeed <= 1 ? RandomValueInArray([-135, 135]) : 0), 0);
 						find_wp_near_nav();
 					}
 					else
 					{
-						pNavPos = PositionOf(EventPlayer());
+						pNavPos = EventPlayer().Position();
 					}
 				}
 				else if (pCombatPathfindingType == 5)
 				{
 					pNavPos = PositionOf(pMyTarget) + 3 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget), 0);
-					if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) > -2)
+					if (YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) > -2)
 					{
-						pNavPos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), pNavPos)) * DirectionTowards(EventPlayer(), pNavPos);
+						pNavPos = EventPlayer().Position() + Min(3.5, DistanceBetween(EventPlayer(), pNavPos)) * DirectionTowards(EventPlayer(), pNavPos);
 						find_wp_near_nav();
 					}
 					else
@@ -278,9 +278,9 @@ if (pIsUsingCombatPathfinding)
 				else if (pCombatPathfindingType == 6)
 				{
 					pNavPos = PositionOf(pMyTarget) + 1.5 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget) + (HorizontalAngleTowards(pMyTarget, EventPlayer()) > 0 ? 90 : -90), 0);
-					if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) > -2)
+					if (YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) > -2)
 					{
-						pNavPos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), pNavPos)) * DirectionTowards(EventPlayer(), pNavPos);
+						pNavPos = EventPlayer().Position() + Min(3.5, DistanceBetween(EventPlayer(), pNavPos)) * DirectionTowards(EventPlayer(), pNavPos);
 						find_wp_near_nav();
 					}
 					else
@@ -292,11 +292,11 @@ if (pIsUsingCombatPathfinding)
 				{
 					if (DistanceBetween(EventPlayer(), pMyTarget) <= 17)
 					{
-						pNavPos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
+						pNavPos = EventPlayer().Position() + 3.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
 					}
 					else
 					{
-						pNavPos = PositionOf(EventPlayer()) + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), pMyTarget)) + RandomValueInArray([-45, 0, 45]), 0);
+						pNavPos = EventPlayer().Position() + 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(EventPlayer(), pMyTarget)) + RandomValueInArray([-45, 0, 45]), 0);
 					}
 					find_wp_near_nav();
 				}
@@ -305,21 +305,21 @@ if (pIsUsingCombatPathfinding)
 					gTemp1 = RemoveFromArray(FilteredArray(PlayersWithinRadius(EventPlayer(), 3, Team.Team2, RadiusLOS.Off), ArrayElement().pIsAlive), EventPlayer());
 					if (CountOf(gTemp1))
 					{
-						pNavPos = PositionOf(EventPlayer()) + 3.5 * DirectionTowards(SortedArray(gTemp1, DistanceBetween(EventPlayer(), ArrayElement()))[0], EventPlayer());
+						pNavPos = EventPlayer().Position() + 3.5 * DirectionTowards(SortedArray(gTemp1, DistanceBetween(EventPlayer(), ArrayElement()))[0], EventPlayer());
 						find_wp_near_nav();
 					}
 					else
 					{
-						pNavPos = PositionOf(EventPlayer());
+						pNavPos = EventPlayer().Position();
 					}
 				}
 				else if (pCombatPathfindingType == 9)
 				{
 					if (pAbVar1)
 					{
-						if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) > -2)
+						if (YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) > -2)
 						{
-							pNavPos = PositionOf(EventPlayer()) + 6 * DirectionTowards(EventPlayer(), pMyTarget);
+							pNavPos = EventPlayer().Position() + 6 * DirectionTowards(EventPlayer(), pMyTarget);
 							find_wp_near_nav();
 						}
 						else
@@ -338,9 +338,9 @@ if (pIsUsingCombatPathfinding)
 						{
 							pNavPos = PositionOf(pMyTarget) + 5 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget) + RandomValueInArray([-45, 45]), 0);
 						}
-						if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) > -2)
+						if (YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) > -2)
 						{
-							pNavPos = PositionOf(EventPlayer()) + Min(4, DistanceBetween(EventPlayer(), pNavPos)) * DirectionTowards(EventPlayer(), pNavPos);
+							pNavPos = EventPlayer().Position() + Min(4, DistanceBetween(EventPlayer(), pNavPos)) * DirectionTowards(EventPlayer(), pNavPos);
 							find_wp_near_nav();
 						}
 						else
@@ -357,7 +357,7 @@ if (pIsUsingCombatPathfinding)
 		}
 		else
 		{
-			if (DistanceBetween(EventPlayer(), Vector(XOf(pTargetLastSeenPos), YOf(PositionOf(EventPlayer())), ZOf(pTargetLastSeenPos))) < 0.5)
+			if (DistanceBetween(EventPlayer(), Vector(XOf(pTargetLastSeenPos), YOf(EventPlayer().Position()), ZOf(pTargetLastSeenPos))) < 0.5)
 			{
 				pTargetLastSeenPos = PositionOf(pMyTarget);
 			}
@@ -367,7 +367,7 @@ if (pIsUsingCombatPathfinding)
 			}
 			else
 			{
-				pNavPos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), pTargetLastSeenPos)) * DirectionTowards(EventPlayer(), pTargetLastSeenPos);
+				pNavPos = EventPlayer().Position() + Min(3.5, DistanceBetween(EventPlayer(), pTargetLastSeenPos)) * DirectionTowards(EventPlayer(), pTargetLastSeenPos);
 				find_wp_near_nav();
 			}
 			if (pCombatPathfindingType == 0)
@@ -393,7 +393,7 @@ if (pIsAlive)
 	}
 	else
 	{
-		pRealSpeedPos1 = PositionOf(EventPlayer());
+		pRealSpeedPos1 = EventPlayer().Position();
 		if (IsJumping(EventPlayer()))
 		{
 			pLastJumpT = TotalTimeElapsed();
@@ -407,7 +407,7 @@ if (pIsAlive)
 			pRealSpeed = DistanceBetween(pRealSpeedPos1, pRealSpeedPos2) / 0.112;
 		}
 		Wait(0.112, WaitBehavior.AbortWhenFalse);
-		pRealSpeedPos2 = PositionOf(EventPlayer());
+		pRealSpeedPos2 = EventPlayer().Position();
 		if (IsJumping(EventPlayer()))
 		{
 			pLastJumpT = TotalTimeElapsed();
@@ -434,11 +434,11 @@ if (!pIsFlying)
 if (pSlowedUntil < TotalTimeElapsed())
 if (!HasStatus(EventPlayer(), Status.Rooted))
 if (!HasStatus(EventPlayer(), Status.Stunned))
-if (DistanceBetween(EventPlayer(), Vector(XOf(pNavPos), YOf(pIsUsingCombatPathfinding ? PositionOf(EventPlayer()) : pNavPos), ZOf(pNavPos))) >= 0.5)
+if (DistanceBetween(EventPlayer(), Vector(XOf(pNavPos), YOf(pIsUsingCombatPathfinding ? EventPlayer().Position() : pNavPos), ZOf(pNavPos))) >= 0.5)
 {
 	Wait(0.5, WaitBehavior.AbortWhenFalse);
 	LoopIf(HeroOf(EventPlayer()) == Hero.Reinhardt && IsUsingUltimate(EventPlayer()));
-	if (IsTrueForAny(gElevatorNodes, DistanceBetween(EventPlayer(), Vector(XOf(ArrayElement()), YOf(PositionOf(EventPlayer())), ZOf(ArrayElement()))) < 1.5))
+	if (IsTrueForAny(gElevatorNodes, DistanceBetween(EventPlayer(), Vector(XOf(ArrayElement()), YOf(EventPlayer().Position()), ZOf(ArrayElement()))) < 1.5))
 	{
 		Wait(1.5, WaitBehavior.AbortWhenFalse);
 	}

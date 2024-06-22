@@ -9,10 +9,10 @@ Player.Slot1
 	CreateProgressBarHudText(gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2 ? AllPlayers() : [], gObjectivePhaseNumber == 1 ? 100 * NormalizedHealth(EventPlayer()) : (pDownedStartT ? gObjectiveProgress : pReviveTimer) / 1.5, gObjectivePhaseNumber == 1 ? "Subdue the High Value Target" : pDownedStartT ? ArrayContains(pRevivers, LocalPlayer()) ? "Capturing..." : "Capture the High Value Target" : "High Value Target is being revived", Location.Top, -97, gObjectivePhaseNumber == 1 ? CustomColor(Max(200, 255 - (TotalTimeElapsed() - gHvtCallReinforcementsEndT) * 165), Max(0, 255 - (TotalTimeElapsed() - gHvtCallReinforcementsEndT) * 765), Max(19, 255 - (TotalTimeElapsed() - gHvtCallReinforcementsEndT) * 708), 255) : pDownedStartT ? pDownedStartT == 2 ? Color.Green : Color.Blue : Color.Red, gObjectivePhaseNumber == 1 ? Color.Blue : pDownedStartT ? Color.Blue : Color.Yellow, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
 	CreateIcon(gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2 ? AllPlayers() : [], EventPlayer(), Icon.ExclamationMark, IconRev.VisibleTo, Color.Yellow, true);
 	CreateInWorldText(gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2 ? AllPlayers() : [], gHvtCallReinforcementsEndT >= TotalTimeElapsed() ? "Calling Reinforcements" : gObjectivePhaseNumber == 1 ? "Subdue Target" : "Capture Target", EventPlayer(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToAndString, Color.Yellow, Spectators.DefaultVisibility);
-	CreateEffect(gObjectivePhaseNumber == 2 ? AllPlayers() : [], Effect.Ring, pDownedStartT ? pDownedStartT == 2 ? Color.Green : Color.White : Color.Red, PositionOf(EventPlayer()) + 0.65 * Up(), 10, EffectRev.VisibleToPositionRadiusAndColor);
-	CreateEffect(gObjectivePhaseNumber == 2 ? AllPlayers() : [], Effect.Ring, pDownedStartT ? pDownedStartT == 2 ? Color.Green : Color.White : Color.Red, PositionOf(EventPlayer()) + 0.65 * Down(), 10, EffectRev.VisibleToPositionRadiusAndColor);
-	CreateEffect(gObjectivePhaseNumber == 2 ? AllPlayers() : [], Effect.Ring, pDownedStartT ? pDownedStartT == 2 ? Color.Green : Color.White : Color.Red, PositionOf(EventPlayer()), (TotalTimeElapsed() % 1.333 < 0.666) * 15 * TotalTimeElapsed() % 10, EffectRev.VisibleToPositionRadiusAndColor);
-	CreateEffect(gHvtCallReinforcementsEndT >= TotalTimeElapsed() ? AllPlayers() : [], Effect.LightShaft, Color.White, UpdateEveryFrame(PositionOf(EventPlayer())), 1, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(gObjectivePhaseNumber == 2 ? AllPlayers() : [], Effect.Ring, pDownedStartT ? pDownedStartT == 2 ? Color.Green : Color.White : Color.Red, EventPlayer().Position() + 0.65 * Up(), 10, EffectRev.VisibleToPositionRadiusAndColor);
+	CreateEffect(gObjectivePhaseNumber == 2 ? AllPlayers() : [], Effect.Ring, pDownedStartT ? pDownedStartT == 2 ? Color.Green : Color.White : Color.Red, EventPlayer().Position() + 0.65 * Down(), 10, EffectRev.VisibleToPositionRadiusAndColor);
+	CreateEffect(gObjectivePhaseNumber == 2 ? AllPlayers() : [], Effect.Ring, pDownedStartT ? pDownedStartT == 2 ? Color.Green : Color.White : Color.Red, EventPlayer().Position(), (TotalTimeElapsed() % 1.333 < 0.666) * 15 * TotalTimeElapsed() % 10, EffectRev.VisibleToPositionRadiusAndColor);
+	CreateEffect(gHvtCallReinforcementsEndT >= TotalTimeElapsed() ? AllPlayers() : [], Effect.LightShaft, Color.White, UpdateEveryFrame(EventPlayer().Position()), 1, EffectRev.VisibleToPositionAndRadius);
 }
 
 rule: "HVT Team 2 Slot 1: HVT subdued fallback"
@@ -47,8 +47,8 @@ if (gObjectivePhaseNumber == 2)
 	pRevivers = gCombatants.Filter(
 		p => !p.pDownedStartT
 		&& !(p.pIsInvisible % 3)
-		&& DistanceBetween(EventPlayer(), Vector(XOf(PositionOf(p)), YOf(PositionOf(EventPlayer())), ZOf(PositionOf(p)))) <= 10
-		&& AbsoluteValue(YOf(PositionOf(EventPlayer())) - YOf(PositionOf(p))) <= 5
+		&& DistanceBetween(EventPlayer(), Vector(XOf(PositionOf(p)), YOf(EventPlayer().Position()), ZOf(PositionOf(p)))) <= 10
+		&& AbsoluteValue(YOf(EventPlayer().Position()) - YOf(PositionOf(p))) <= 5
 		&& IsInLineOfSight(EventPlayer(), p, BarrierLOS.NoBarriersBlock)
 	);
 	if (CountOf(pRevivers))
@@ -74,8 +74,8 @@ if (gObjectivePhaseNumber == 2)
 		ClearStatus(EventPlayer(), Status.KnockedDown);
 		ClearStatus(EventPlayer(), Status.PhasedOut);
 		ClearStatus(EventPlayer(), Status.Invincible);
-		PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Yellow, PositionOf(EventPlayer()), 1);
-		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, PositionOf(EventPlayer()), 200);
+		PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Yellow, EventPlayer().Position(), 1);
+		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer().Position(), 200);
 		Teleport(EventPlayer(), 1000 * Down());
 		start_kill_remaining_phase();
 		gObjectiveProgress = false;

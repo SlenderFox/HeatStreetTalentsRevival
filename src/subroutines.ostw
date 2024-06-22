@@ -240,7 +240,7 @@ void teleport_to_free_spawn() "Subroutine: Teleport to free Spawn"
 		gTemp2 = MappedArray(gSpawnPosList, false);
 		for (gIterator = 0; CountOf(gSpawnPosList); 1)
 		{
-			if (gCombatants.IsTrueForAny(p => IsInLineOfSight(gSpawnPosList[gIterator] + Up(), EyePosition(p), BarrierLOS.NoBarriersBlock)))
+			if (gCombatants.IsTrueForAny(p => IsInLineOfSight(gSpawnPosList[gIterator] + Up(), p.EyePosition(), BarrierLOS.NoBarriersBlock)))
 			{
 				gTemp2[gIterator] = 2;
 			}
@@ -274,18 +274,18 @@ void find_wp_near_nav() "Subroutine: Find WP near Nav (find a walkable position 
 			# Ranged bots stand still
 			if (gIsLoadLimitReached || pIsRanged || DistanceBetween(EventPlayer(), pMyTarget) < 2)
 			{
-				pNavPos = PositionOf(EventPlayer());
+				pNavPos = EventPlayer().Position();
 				Abort();
 			}
 			else
 			{
-				pNavPos = PositionOf(EventPlayer()) + Min(3.5, DistanceBetween(EventPlayer(), pMyTarget) - 2) * DirectionTowards(EventPlayer(), pMyTarget);
+				pNavPos = EventPlayer().Position() + Min(3.5, DistanceBetween(EventPlayer(), pMyTarget) - 2) * DirectionTowards(EventPlayer(), pMyTarget);
 				if (IsOnGround(EventPlayer()))
 				{
 					# Check if destination is not walkable
 					if (DistanceBetween(pNavPos + Up(), RayCastHitPosition(pNavPos + Up(), pNavPos + 2 * Down(), null, null, false)) >= 3)
 					{
-						pNavPos = PositionOf(EventPlayer());
+						pNavPos = EventPlayer().Position();
 						pIsUsingCombatPathfinding -= 1;
 						Abort();
 					}
@@ -296,11 +296,11 @@ void find_wp_near_nav() "Subroutine: Find WP near Nav (find a walkable position 
 	# Check if the destination is reachable
 	if (IsOnGround(EventPlayer()))
 	{
-		gTemp1 = PositionOf(EventPlayer()) + 1.75 * DirectionTowards(EventPlayer(), pNavPos) + Up();
+		gTemp1 = EventPlayer().Position() + 1.75 * DirectionTowards(EventPlayer(), pNavPos) + Up();
 		# If bot is near a ledge
 		if (DistanceBetween(gTemp1, RayCastHitPosition(gTemp1, gTemp1 + 3 * Down(), null, null, false)) >= 3)
 		{
-			pNavPos = PositionOf(EventPlayer());
+			pNavPos = EventPlayer().Position();
 			if (!pIsRanged)
 			{
 				pIsUsingCombatPathfinding -= 1;

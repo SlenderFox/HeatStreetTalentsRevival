@@ -69,8 +69,8 @@ if (!pIvIsPortal)
 {
 	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Black, EventPlayer(), 1);
 	Wait(0.15, WaitBehavior.AbortWhenFalse);
-	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.White, PositionOf(EventPlayer()), 1);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Yellow, PositionOf(EventPlayer()), pRealTier * 8 + 6);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.White, EventPlayer().Position(), 1);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Yellow, EventPlayer().Position(), pRealTier * 8 + 6);
 	Heal(PlayersWithinRadius(EventPlayer(), pRealTier * 4 + 3, Team.Team2, RadiusLOS.Off), null, Min(MaxHealth(EventPlayer()) * 0.3, 500));
 }
 
@@ -118,7 +118,7 @@ if (!pIsLivingBoss)
 {
 	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
 	WaitUntil(Health(EventPlayer()) <= 1, 99999);
-	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Purple, PositionOf(EventPlayer()), 1);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Purple, EventPlayer().Position(), 1);
 	SetStatus(EventPlayer(), null, Status.Stunned, 1.333);
 	SetStatus(EventPlayer(), null, Status.Invincible, 0.1);
 	Heal(EventPlayer(), null, MaxHealth(EventPlayer()) * 0.05);
@@ -148,7 +148,7 @@ if (pIsLivingBoss)
 	pEffects[1] = LastCreatedEntity();
 	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Violet, EventPlayer(), 1);
 	SetStatus(EventPlayer(), null, Status.Stunned, 1);
-	WaitUntil(IsDead(EventPlayer()), 5);
+	WaitUntil(EventPlayer().IsDead(), 5);
 	ClearStatus(EventPlayer(), Status.Unkillable);
 	Kill(EventPlayer(), null);
 	DestroyEffect(pEffects[1]);

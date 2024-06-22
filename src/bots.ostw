@@ -37,23 +37,23 @@ void start_facing() "Subroutine: Start Facing"
 	{
 		if (pRealTier == 4)
 		{
-			StartFacing(EventPlayer(), (pIsTargetInLos && (!pAbVar1 || pIsUsingCombatPathfinding) ? Vector(false, false, false) : 1.5 * DirectionTowards(EventPlayer(), pNavPos)) + (pMyTarget.pIsCombatant ? DirectionTowards(EyePosition(EventPlayer()), EyePosition(pMyTarget) + pMyTarget.pEyeOffset) : Vector(false, false, false)), HasStatus(EventPlayer(), Status.Stunned) ? 0 : pAbVar1 ? 1000 : 300, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
+			StartFacing(EventPlayer(), (pIsTargetInLos && (!pAbVar1 || pIsUsingCombatPathfinding) ? Vector(false, false, false) : 1.5 * DirectionTowards(EventPlayer(), pNavPos)) + (pMyTarget.pIsCombatant ? DirectionTowards(EventPlayer().EyePosition(), EyePosition(pMyTarget) + pMyTarget.pEyeOffset) : Vector(false, false, false)), HasStatus(EventPlayer(), Status.Stunned) ? 0 : pAbVar1 ? 1000 : 300, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
 		}
 		else
 		{
-			StartFacing(EventPlayer(), (pIsTargetInLos ? Vector(false, false, false) : 1.5 * DirectionTowards(EventPlayer(), pNavPos)) + (pMyTarget.pIsCombatant ? DirectionTowards(EyePosition(EventPlayer()), EyePosition(pMyTarget) + pMyTarget.pEyeOffset) : Vector(false, false, false)), HasStatus(EventPlayer(), Status.Stunned) ? 0 : pSlowedUntil >= TotalTimeElapsed() ? 50 : 300, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
+			StartFacing(EventPlayer(), (pIsTargetInLos ? Vector(false, false, false) : 1.5 * DirectionTowards(EventPlayer(), pNavPos)) + (pMyTarget.pIsCombatant ? DirectionTowards(EventPlayer().EyePosition(), EyePosition(pMyTarget) + pMyTarget.pEyeOffset) : Vector(false, false, false)), HasStatus(EventPlayer(), Status.Stunned) ? 0 : pSlowedUntil >= TotalTimeElapsed() ? 50 : 300, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
 		}
 	}
 	else
 	{
 		if (HeroOf(EventPlayer()) == Hero.Widowmaker || HeroOf(EventPlayer()) == Hero.Hanzo)
 		{
-			StartFacing(EventPlayer(), pFacingOverrideDirection ? pFacingOverrideDirection : (pIsTargetInLos ? Vector(false, false, false) : 1.5 * DirectionTowards(EventPlayer(), pNavPos)) + (pMyTarget.pIsCombatant ? DirectionTowards(EyePosition(EventPlayer()), EyePosition(pMyTarget) + pMyTarget.pEyeOffset) : Vector(false, false, false)), HasStatus(EventPlayer(), Status.Stunned) ? 0 : 300, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
+			StartFacing(EventPlayer(), pFacingOverrideDirection ? pFacingOverrideDirection : (pIsTargetInLos ? Vector(false, false, false) : 1.5 * DirectionTowards(EventPlayer(), pNavPos)) + (pMyTarget.pIsCombatant ? DirectionTowards(EventPlayer().EyePosition(), EyePosition(pMyTarget) + pMyTarget.pEyeOffset) : Vector(false, false, false)), HasStatus(EventPlayer(), Status.Stunned) ? 0 : 300, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
 			pFacingOverrideDirection = false;
 		}
 		else if (!pIvIsPortal)
 		{
-			StartFacing(EventPlayer(), (pIsTargetInLos ? Vector(false, false, false) : 1.5 * DirectionTowards(EventPlayer(), pNavPos)) + (pMyTarget.pIsCombatant ? DirectionTowards(EyePosition(EventPlayer()), EyePosition(pMyTarget) + pMyTarget.pEyeOffset) : Vector(false, false, false)), HasStatus(EventPlayer(), Status.Stunned) ? 0 : pSlowedUntil >= TotalTimeElapsed() ? 50 : 300, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
+			StartFacing(EventPlayer(), (pIsTargetInLos ? Vector(false, false, false) : 1.5 * DirectionTowards(EventPlayer(), pNavPos)) + (pMyTarget.pIsCombatant ? DirectionTowards(EventPlayer().EyePosition(), EyePosition(pMyTarget) + pMyTarget.pEyeOffset) : Vector(false, false, false)), HasStatus(EventPlayer(), Status.Stunned) ? 0 : pSlowedUntil >= TotalTimeElapsed() ? 50 : 300, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
 		}
 	}
 }
@@ -96,7 +96,7 @@ if (pIsAlive)
 	{
 		if (pIsIgnoringOtherTargets)
 		{
-			gTemp1 = pMyTarget.pIsCombatant && !pMyTarget.pDownedStartT && !pMyTarget.pActiveAbIsCloaked && !(pMyTarget.pIsInvisible && DistanceBetween(EventPlayer(), pMyTarget) > 2.4) && IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(pMyTarget) + pMyTarget.pEyeOffset, BarrierLOS.NoBarriersBlock) ? pMyTarget : null;
+			gTemp1 = pMyTarget.pIsCombatant && !pMyTarget.pDownedStartT && !pMyTarget.pActiveAbIsCloaked && !(pMyTarget.pIsInvisible && DistanceBetween(EventPlayer(), pMyTarget) > 2.4) && IsInLineOfSight(EventPlayer().EyePosition(), EyePosition(pMyTarget) + pMyTarget.pEyeOffset, BarrierLOS.NoBarriersBlock) ? pMyTarget : null;
 		}
 		else
 		{
@@ -104,7 +104,7 @@ if (pIsAlive)
 				p => !p.pDownedStartT
 				&& !p.pActiveAbIsCloaked
 				&& !(p.pIsInvisible && DistanceBetween(EventPlayer(), p) > 2.4)
-				&& IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(p) + p.pEyeOffset, BarrierLOS.NoBarriersBlock)
+				&& IsInLineOfSight(EventPlayer().EyePosition(), p.EyePosition() + p.pEyeOffset, BarrierLOS.NoBarriersBlock)
 			).Sort(
 				p => [1, 0.25, 2, 4][p.pAbPriority] * (p == pMyTarget ? 0.25 : 1) * DistanceBetween(EventPlayer(), p) + (!pIsRanged && p.pIsFlying ? 500 : 0) + (HasStatus(p, Status.Asleep) ? 1000 : 0) + (HasStatus(p, Status.Invincible) || HasStatus(p, Status.PhasedOut) ? 2000 : 0) + (p.pActiveAbIsFrenzied ? -5000 : 0)
 			)[0];
@@ -124,7 +124,7 @@ if (pIsAlive)
 			}
 			else if (pIsTargetInLos)
 			{
-				if (!pIsFlying && YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) > 2)
+				if (!pIsFlying && YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) > 2)
 				{
 					pIsUsingCombatPathfinding = 0;
 				}
@@ -208,7 +208,7 @@ Team.Team2
 	}
 	if (gGmutStormRaging && pGmutVar)
 	{
-		gTemp1 = PlayersWithinRadius(EyePosition(EventPlayer()), 8, Team.Team2, RadiusLOS.Surfaces).Filter(
+		gTemp1 = PlayersWithinRadius(EventPlayer().EyePosition(), 8, Team.Team2, RadiusLOS.Surfaces).Filter(
 			p => p.pIsAlive
 			&& !p.pGmutVar
 			&& !p.pIvIsPortal
@@ -459,7 +459,7 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 			}
 		}
 		# Selected Hero is the same as current Hero
-		if (IsDead(EventPlayer()))
+		if (EventPlayer().IsDead())
 		{
 			Resurrect(EventPlayer());
 			SetAmmo(EventPlayer(), false, MaxAmmo(EventPlayer(), false));
@@ -624,11 +624,11 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 	start_facing();
 	if (SlotOf(EventPlayer()) == 1)
 	{
-		StartThrottleInDirection(EventPlayer(), VectorTowards(EventPlayer(), pNavPos), (pSlowedUntil >= TotalTimeElapsed() ? 0.3 : 1) * (DistanceBetween(EventPlayer(), Vector(XOf(pNavPos), YOf(PositionOf(EventPlayer())), ZOf(pNavPos))) >= 0.5 ? pIsAggressive ? 1 : 0.9 : 0), Relative.ToWorld, ThrottleBehavior.ReplaceExistingThrottle, ThrottleRev.DirectionAndMagnitude);
+		StartThrottleInDirection(EventPlayer(), VectorTowards(EventPlayer(), pNavPos), (pSlowedUntil >= TotalTimeElapsed() ? 0.3 : 1) * (DistanceBetween(EventPlayer(), Vector(XOf(pNavPos), YOf(EventPlayer().Position()), ZOf(pNavPos))) >= 0.5 ? pIsAggressive ? 1 : 0.9 : 0), Relative.ToWorld, ThrottleBehavior.ReplaceExistingThrottle, ThrottleRev.DirectionAndMagnitude);
 	}
 	else if (!pIvIsPortal)
 	{
-		StartThrottleInDirection(EventPlayer(), VectorTowards(EventPlayer(), pNavPos), (pSlowedUntil >= TotalTimeElapsed() ? 0.3 : 1) * (DistanceBetween(EventPlayer(), Vector(XOf(pNavPos), YOf(PositionOf(EventPlayer())), ZOf(pNavPos))) >= 0.5), Relative.ToWorld, ThrottleBehavior.ReplaceExistingThrottle, ThrottleRev.DirectionAndMagnitude);
+		StartThrottleInDirection(EventPlayer(), VectorTowards(EventPlayer(), pNavPos), (pSlowedUntil >= TotalTimeElapsed() ? 0.3 : 1) * (DistanceBetween(EventPlayer(), Vector(XOf(pNavPos), YOf(EventPlayer().Position()), ZOf(pNavPos))) >= 0.5), Relative.ToWorld, ThrottleBehavior.ReplaceExistingThrottle, ThrottleRev.DirectionAndMagnitude);
 	}
 	# pHealthPercent value in percent, health does not scale during a bot's live
 	pHealthPercent[0] *= gDiffHealthMult * (gIsmutatorModeEnabled ? 1.1 : 1) * (100 + 5 * (gWaveNumber - 1 + Max(0, gWaveNumber - 9))) * (0.111 + 0.222 * CountOf(gCombatants));
@@ -694,11 +694,11 @@ Team.Team2
 	{
 		if (pCombatPathfindingType == 4)
 		{
-			pNavPos = PositionOf(EventPlayer()) - gGmutArtfulDodger ? 7 : 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(VectorTowards(EventPlayer(), pMyTarget)) + RandomInteger(-90, 90), false);
+			pNavPos = EventPlayer().Position() - gGmutArtfulDodger ? 7 : 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(VectorTowards(EventPlayer(), pMyTarget)) + RandomInteger(-90, 90), false);
 		}
 		else
 		{
-			pNavPos = PositionOf(EventPlayer()) + gGmutArtfulDodger ? 7 : 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(VectorTowards(EventPlayer(), pMyTarget)) + RandomInteger(-90, 90), false);
+			pNavPos = EventPlayer().Position() + gGmutArtfulDodger ? 7 : 3.5 * DirectionFromAngles(HorizontalAngleFromDirection(VectorTowards(EventPlayer(), pMyTarget)) + RandomInteger(-90, 90), false);
 		}
 		find_wp_near_nav();
 	}
@@ -847,7 +847,7 @@ Team.Team2
 Player.Zarya
 if (pIsTargetInLos >= 4)
 {
-	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	if (DistanceBetween(EventPlayer(), pMyTarget) > 10)
 	{
@@ -915,7 +915,7 @@ Team.Team2
 Player.Lucio
 if (pIsTargetInLos >= 4)
 {
-	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	PressButton(EventPlayer(), Button.Ability1);
 	// Why is this sorting by nothing??
@@ -973,8 +973,8 @@ if ((pIsAlive && NormalizedHealth(EventPlayer()) <= 0.5) == pIsAggressive)
 	ChaseVariableOverTime(pAbVar1, 0, 3, TimeChaseReevaluation.DestinationAndDuration);
 	Wait(3, WaitBehavior.IgnoreCondition);
 	StopChasingVariable(pAbVar1);
-	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Turquoise, PositionOf(EventPlayer()), 1);
-	PlayEffect(AllPlayers(), PlayEffect.BadPickupEffect, Color.White, PositionOf(EventPlayer()), 200);
+	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Turquoise, EventPlayer().Position(), 1);
+	PlayEffect(AllPlayers(), PlayEffect.BadPickupEffect, Color.White, EventPlayer().Position(), 200);
 	MinWait();
 	SkipIf(HasStatus(EventPlayer(), Status.Stunned), 1);
 	teleport_to_free_spawn();
@@ -1055,7 +1055,7 @@ Player.Cassidy
 if (pIsTargetInLos >= 4)
 if (!IsUsingUltimate(EventPlayer()))
 {
-	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	if (gMutLockNLoad || DistanceBetween(EventPlayer(), pMyTarget) > 5)
 	{
@@ -1079,7 +1079,7 @@ Player.Cassidy
 	AbortIf(gIsLoadLimitReached);
 	AbortIf(!pIsUsingCombatPathfinding);
 	AbortIf(RandomInteger(1, 100) > 30);
-	gTemp1 = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + 6 * WorldVectorOf(ThrottleOf(EventPlayer()) == Vector(false, false, false) ? Forward() : ThrottleOf(EventPlayer()), EventPlayer(), LocalVector.Rotation), null, null, false);
+	gTemp1 = RayCastHitPosition(EventPlayer().EyePosition(), EventPlayer().EyePosition() + 6 * WorldVectorOf(ThrottleOf(EventPlayer()) == Vector(false, false, false) ? Forward() : ThrottleOf(EventPlayer()), EventPlayer(), LocalVector.Rotation), null, null, false);
 	if (DistanceBetween(gTemp1, RayCastHitPosition(gTemp1, gTemp1 + 5 * Down(), null, null, false)) < 5)
 	{
 		PressButton(EventPlayer(), Button.Ability1);
@@ -1098,7 +1098,7 @@ Player.Soldier76
 if (!pAbVar1)
 if (pIsTargetInLos >= 4)
 {
-	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	if (pRealTier == 3)
 	{
@@ -1167,13 +1167,13 @@ if (NormalizedHealth(EventPlayer()) <= 0.5)
 		for (gIterator = 5; 0; -1)
 		{
 			PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.White, EventPlayer(), 0.1);
-			if (IsDead(EventPlayer()))
+			if (EventPlayer().IsDead())
 			{
 				break;
 			}
 			Wait(0.2, WaitBehavior.IgnoreCondition);
 		}
-		PlayersWithinRadius(EyePosition(EventPlayer()), 7, Team.Team1, RadiusLOS.Surfaces).pSmokedScreen = true;
+		PlayersWithinRadius(EventPlayer().EyePosition(), 7, Team.Team1, RadiusLOS.Surfaces).pSmokedScreen = true;
 		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.White, EventPlayer(), 7);
 		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Gray, EventPlayer(), 7);
 		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
@@ -1300,7 +1300,7 @@ Team.Team2
 Player.Baptiste
 if (pIsTargetInLos >= 4)
 {
-	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	PressButton(EventPlayer(), Button.PrimaryFire);
 	Wait(RandomReal(0.7, 1.1), WaitBehavior.IgnoreCondition);
@@ -1329,7 +1329,7 @@ Team.Team2
 Player.Echo
 if (pIsTargetInLos >= 4)
 {
-	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	StartHoldingButton(EventPlayer(), Button.PrimaryFire);
 	Wait(1.1, WaitBehavior.IgnoreCondition);
@@ -1406,18 +1406,18 @@ Event.OngoingPlayer
 Team.Team2
 Player.Echo
 if (pIsFlying)
-if (AbsoluteValue(YOf(PositionOf(EventPlayer())) - YOf(pNavPos)) >= 1)
+if (AbsoluteValue(YOf(EventPlayer().Position()) - YOf(pNavPos)) >= 1)
 {
-	if (YOf(PositionOf(EventPlayer())) < YOf(pNavPos))
+	if (YOf(EventPlayer().Position()) < YOf(pNavPos))
 	{
 		StartHoldingButton(EventPlayer(), Button.Jump);
-		WaitUntil(!(pIsFlying && YOf(pNavPos) - YOf(PositionOf(EventPlayer())) >= 1), 99999);
+		WaitUntil(!(pIsFlying && YOf(pNavPos) - YOf(EventPlayer().Position()) >= 1), 99999);
 		StopHoldingButton(EventPlayer(), Button.Jump);
 	}
 	else
 	{
 		StartHoldingButton(EventPlayer(), Button.Crouch);
-		WaitUntil(!(pIsFlying && YOf(PositionOf(EventPlayer())) - YOf(pNavPos) >= 1), 99999);
+		WaitUntil(!(pIsFlying && YOf(EventPlayer().Position()) - YOf(pNavPos) >= 1), 99999);
 		StopHoldingButton(EventPlayer(), Button.Crouch);
 	}
 }
@@ -1441,7 +1441,7 @@ Player.Mei
 if (pIsTargetInLos >= 4)
 if (!IsUsingAbility1(EventPlayer()))
 {
-	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	if (DistanceBetween(EventPlayer(), pMyTarget) > 8)
 	{
@@ -1504,7 +1504,7 @@ Player.Sombra
 if (pIsTargetInLos >= 4)
 if (pAbPlayer == null)
 {
-	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	StartHoldingButton(EventPlayer(), Button.PrimaryFire);
 	Wait(0.7, WaitBehavior.IgnoreCondition);
@@ -1526,7 +1526,7 @@ if (pIsAggressive)
 if (!pMyTarget.pIsFlying)
 if (DistanceBetween(EventPlayer(), pMyTarget) >= 7.5)
 if (DistanceBetween(EventPlayer(), pMyTarget) <= 25)
-if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) >= 3)
+if (YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) >= 3)
 if (IsInViewAngle(EventPlayer(), pMyTarget, 5))
 {
 	if (IsUsingAbility2(EventPlayer()))
@@ -1559,7 +1559,7 @@ if (gWaveNumber >= 13 || pIsLivingBoss)
 	LoopIf(RandomInteger(1, 100) > (pAbVar1 ? 60 : 30));
 	LoopIf(HasStatus(EventPlayer(), Status.Hacked) || HasStatus(EventPlayer(), Status.Stunned));
 	LoopIf(DistanceBetween(EventPlayer(), pMyTarget) >= 12);
-	LoopIf(!IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(pMyTarget), BarrierLOS.NoBarriersBlock));
+	LoopIf(!IsInLineOfSight(EventPlayer().EyePosition(), EyePosition(pMyTarget), BarrierLOS.NoBarriersBlock));
 	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Purple, EventPlayer(), 1);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	SetUltimateCharge(EventPlayer(), 100);
@@ -1590,11 +1590,11 @@ if (pIsTargetInLos)
 	AbortIfConditionIsFalse();
 	LoopIf(RandomInteger(1, 100) > (pMyTarget.pIsFlying ? 80 : 40));
 	LoopIf(HasStatus(EventPlayer(), Status.Hacked) || HasStatus(EventPlayer(), Status.Stunned));
-	LoopIf(IsDead(EventPlayer()));
+	LoopIf(EventPlayer().IsDead());
 	LoopIf(pMyTarget.pTasedEndT >= TotalTimeElapsed());
 	LoopIf(HasStatus(pMyTarget, Status.Invincible) || HasStatus(pMyTarget, Status.PhasedOut) || IsUsingUltimate(pMyTarget));
 	LoopIf(DistanceBetween(EventPlayer(), pMyTarget) >= 12);
-	LoopIf(!IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(pMyTarget), BarrierLOS.AllBarriersBlock));
+	LoopIf(!IsInLineOfSight(EventPlayer().EyePosition(), EyePosition(pMyTarget), BarrierLOS.AllBarriersBlock));
 	pAbPlayer = pMyTarget;
 	pAbVar2 = false;
 	pAbVar3 = Health(EventPlayer());
@@ -1613,13 +1613,13 @@ Event.OngoingPlayer
 Team.Team2
 Player.Sombra
 if (pAbPlayer != null)
-if (pAbPlayer.pTasedEndT < TotalTimeElapsed() || pAbVar2 || Health(EventPlayer()) < pAbVar3 || pAbPlayer.pDownedStartT || !pAbPlayer.pIsCombatant || HasStatus(EventPlayer(), Status.Hacked) || HasStatus(EventPlayer(), Status.Stunned) || DistanceBetween(EventPlayer(), pAbPlayer) >= 11 || !IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(pAbPlayer), BarrierLOS.AllBarriersBlock))
+if (pAbPlayer.pTasedEndT < TotalTimeElapsed() || pAbVar2 || Health(EventPlayer()) < pAbVar3 || pAbPlayer.pDownedStartT || !pAbPlayer.pIsCombatant || HasStatus(EventPlayer(), Status.Hacked) || HasStatus(EventPlayer(), Status.Stunned) || DistanceBetween(EventPlayer(), pAbPlayer) >= 11 || !IsInLineOfSight(EventPlayer().EyePosition(), EyePosition(pAbPlayer), BarrierLOS.AllBarriersBlock))
 {
 	if (pAbPlayer.pPerkShockProof)
 	{
 		Damage(EventPlayer(), pAbPlayer, 50);
 		SetStatus(
-			PlayersWithinRadius(EyePosition(EventPlayer()), 10, Team.Team2, RadiusLOS.Surfaces).Filter(
+			PlayersWithinRadius(EventPlayer().EyePosition(), 10, Team.Team2, RadiusLOS.Surfaces).Filter(
 				p => !HasStatus(p, Status.PhasedOut)
 			), null, Status.Hacked, 2
 		);
@@ -1676,7 +1676,7 @@ if (pIsTargetInLos >= 4)
 {
 	if (DistanceBetween(EventPlayer(), pMyTarget) < 8 || !pIsLivingBoss && HasStatus(EventPlayer(), Status.Hacked))
 	{
-		Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+		Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 		AbortIfConditionIsFalse();
 		StartHoldingButton(EventPlayer(), Button.PrimaryFire);
 		Wait(0.25, WaitBehavior.IgnoreCondition);
@@ -1721,7 +1721,7 @@ if (pIsUsingCombatPathfinding)
 		Wait(0.16, WaitBehavior.IgnoreCondition);
 		pFacingOverrideDirection = false;
 		WaitUntil(!IsUsingAbility1(EventPlayer()), 99999);
-		pNavPos = PositionOf(EventPlayer());
+		pNavPos = EventPlayer().Position();
 		Wait(8, WaitBehavior.IgnoreCondition);
 	}
 	LoopIfConditionIsTrue();
@@ -1788,7 +1788,7 @@ Team.Team2
 Player.Pharah
 if (pIsTargetInLos >= 4)
 {
-	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	PressButton(EventPlayer(), Button.PrimaryFire);
 	Wait(RandomReal(0.6, 1.3), WaitBehavior.IgnoreCondition);
@@ -1802,7 +1802,7 @@ Player.Reaper
 if (pIsTargetInLos >= 4)
 if (!IsUsingAbility1(EventPlayer()))
 {
-	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	PressButton(EventPlayer(), Button.PrimaryFire);
 	Wait(0.6, WaitBehavior.IgnoreCondition);
@@ -1825,7 +1825,7 @@ if (DistanceBetween(EventPlayer(), pMyTarget) <= 40)
 	PressButton(EventPlayer(), Button.Ability1);
 	if (IsUsingAbility1(EventPlayer()))
 	{
-		pAbWraithPos = PositionOf(EventPlayer());
+		pAbWraithPos = EventPlayer().Position();
 		ChaseVariableAtRate(pAbWraithPos, PositionOf(pMyTarget) + 0.5 * Up(), 15, RateChaseReevaluation.DestinationAndRate);
 		StartForcingPlayerPosition(EventPlayer(), pAbWraithPos, true);
 		DisableMovementCollisionWithEnvironment(EventPlayer(), true);
@@ -1848,7 +1848,7 @@ Player.Reaper
 if (pIsWraith)
 if (IsUsingAbility1(EventPlayer()))
 if (DistanceBetween(EventPlayer(), pMyTarget) <= 3)
-if (IsInLineOfSight(pMyTarget, PositionOf(EventPlayer()), BarrierLOS.NoBarriersBlock))
+if (IsInLineOfSight(pMyTarget, EventPlayer().Position(), BarrierLOS.NoBarriersBlock))
 {
 	if (DistanceBetween(EventPlayer(), RayCastHitPosition(EventPlayer(), EventPlayer().Position() + 5 * Down(), null, null, false)) >= 5)
 	{
@@ -1907,7 +1907,7 @@ if (pIsTargetInLos >= 4)
 	if (DistanceBetween(EventPlayer(), pMyTarget) < 8 || !pIsLivingBoss && HasStatus(EventPlayer(), Status.Hacked))
 	{
 		StopHoldingButton(EventPlayer(), Button.SecondaryFire);
-		Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+		Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 		AbortIfConditionIsFalse();
 	}
 	else
@@ -2173,7 +2173,7 @@ Player.Roadhog
 if (pIsTargetInLos >= 4)
 if (!IsUsingAbility1(EventPlayer()))
 {
-	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	if (DistanceBetween(EventPlayer(), pMyTarget) > 9)
 	{
@@ -2238,7 +2238,7 @@ Team.Team2
 Player.Tracer
 if (pIsTargetInLos >= 4)
 {
-	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	StartHoldingButton(EventPlayer(), Button.PrimaryFire);
 	Wait(0.45, WaitBehavior.IgnoreCondition);
@@ -2262,7 +2262,7 @@ if (AbsoluteValue(HorizontalAngleTowards(pMyTarget, EventPlayer())) <= 45)
 {
 	if (!gIsLoadLimitReached && AbilityCharge(EventPlayer(), Button.Ability1))
 	{
-		gTemp1 = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + 7.5 * WorldVectorOf(ThrottleOf(EventPlayer()) == Vector(false, false, false) ? Forward() : ThrottleOf(EventPlayer()), EventPlayer(), LocalVector.Rotation), null, null, false);
+		gTemp1 = RayCastHitPosition(EventPlayer().EyePosition(), EventPlayer().EyePosition() + 7.5 * WorldVectorOf(ThrottleOf(EventPlayer()) == Vector(false, false, false) ? Forward() : ThrottleOf(EventPlayer()), EventPlayer(), LocalVector.Rotation), null, null, false);
 		if (DistanceBetween(gTemp1, RayCastHitPosition(gTemp1, gTemp1 + 5 * Down(), null, null, false)) < 5)
 		{
 			PressButton(EventPlayer(), Button.Ability1);
@@ -2281,7 +2281,7 @@ if (pIsAggressive)
 if (pRecallBlockEndT < TotalTimeElapsed())
 if (!pMyTarget.pIsFlying)
 if (DistanceBetween(EventPlayer(), pMyTarget) <= 20)
-if (YOf(PositionOf(pMyTarget)) - YOf(PositionOf(EventPlayer())) >= 3)
+if (YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) >= 3)
 {
 	SetAbilityCooldown(EventPlayer(), Button.Ability2, false);
 	PressButton(EventPlayer(), Button.Ability2);
@@ -2381,7 +2381,7 @@ if (!IsUsingAbility2(EventPlayer()))
 {
 	if (!gIsLoadLimitReached)
 	{
-		gTemp1 = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + 15 * FacingDirectionOf(EventPlayer()), null, null, false);
+		gTemp1 = RayCastHitPosition(EventPlayer().EyePosition(), EventPlayer().EyePosition() + 15 * EventPlayer().FacingDirection(), null, null, false);
 		if (DistanceBetween(gTemp1, RayCastHitPosition(gTemp1, gTemp1 + 20 * Down(), null, null, false)) < 20)
 		{
 			PressButton(EventPlayer(), Button.Ability1);
@@ -2440,7 +2440,7 @@ Player.Hanzo
 	AbortIf(RandomInteger(1, 100) > 50);
 	PressButton(EventPlayer(), Button.Jump);
 	Wait(0.4, WaitBehavior.IgnoreCondition);
-	gTemp1 = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + 7.85 * WorldVectorOf(ThrottleOf(EventPlayer()) == Vector(false, false, false) ? Forward() : ThrottleOf(EventPlayer()), EventPlayer(), LocalVector.Rotation), null, null, false);
+	gTemp1 = RayCastHitPosition(EventPlayer().EyePosition(), EventPlayer().EyePosition() + 7.85 * WorldVectorOf(ThrottleOf(EventPlayer()) == Vector(false, false, false) ? Forward() : ThrottleOf(EventPlayer()), EventPlayer(), LocalVector.Rotation), null, null, false);
 	if (DistanceBetween(gTemp1, RayCastHitPosition(gTemp1, gTemp1 + 5 * Down(), null, null, false)) < 5)
 	{
 		PressButton(EventPlayer(), Button.Jump);
@@ -2614,7 +2614,7 @@ if (pIsTargetInLos >= 4)
 if (!IsFiringSecondary(EventPlayer()))
 if (!IsUsingUltimate(EventPlayer()))
 {
-	Wait(AngleBetweenVectors(FacingDirectionOf(EventPlayer()), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
+	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	PressButton(EventPlayer(), Button.PrimaryFire);
 	Wait(RandomReal(0.9, 1.5), WaitBehavior.IgnoreCondition);

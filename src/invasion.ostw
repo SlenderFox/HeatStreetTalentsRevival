@@ -72,7 +72,7 @@ Team.Team2
 Player.Torbjorn
 if (IsUsingUltimate(EventPlayer()))
 {
-	SetFacing(EventPlayer(), DirectionTowards(EyePosition(EventPlayer()), Vector(RandomInteger(-500, 500), RandomInteger(-500, 500), RandomInteger(-500, 500))), Relative.ToWorld);
+	SetFacing(EventPlayer(), DirectionTowards(EventPlayer().EyePosition(), Vector(RandomInteger(-500, 500), RandomInteger(-500, 500), RandomInteger(-500, 500))), Relative.ToWorld);
 	PressButton(EventPlayer(), Button.PrimaryFire);
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
@@ -90,7 +90,7 @@ if (NormalizedHealth(EventPlayer()) <= 0.333)
 	SetPlayerHealth(EventPlayer(), 0.166 * MaxHealth(EventPlayer()));
 	iv_defend_portal();
 	ClearStatus(EventPlayer(), Status.Unkillable);
-	WaitUntil(IsDead(EventPlayer()), 99999);
+	WaitUntil(EventPlayer().IsDead(), 99999);
 	gObjectivePhaseNumber = 2;
 	iv_defend_portal();
 	upgrade_health_and_healing();
@@ -148,10 +148,10 @@ if (gGamemode == 0)
 if (gObjectivePhaseNumber == 1)
 if (IsFiringSecondary(EventPlayer()))
 {
-	if (DistanceBetween(EyePosition(EventPlayer()), gIvDomObjectivePos + 1.11 * Up()) <= 20 && IsInLineOfSight(EyePosition(EventPlayer()), gIvDomObjectivePos + 1.11 * Up(), BarrierLOS.NoBarriersBlock))
+	if (DistanceBetween(EventPlayer().EyePosition(), gIvDomObjectivePos + 1.11 * Up()) <= 20 && IsInLineOfSight(EventPlayer().EyePosition(), gIvDomObjectivePos + 1.11 * Up(), BarrierLOS.NoBarriersBlock))
 	{
 		# If Facing ray intersects sphere
-		if (DistanceBetween(gIvDomObjectivePos + 1.11 * Up(), EyePosition(EventPlayer()) + Max(0, DotProduct(FacingDirectionOf(EventPlayer()), VectorTowards(EyePosition(EventPlayer()), gIvDomObjectivePos + 1.11 * Up()))) * FacingDirectionOf(EventPlayer())) <= 0.85)
+		if (DistanceBetween(gIvDomObjectivePos + 1.11 * Up(), EventPlayer().EyePosition() + Max(0, DotProduct(EventPlayer().FacingDirection(), VectorTowards(EventPlayer().EyePosition(), gIvDomObjectivePos + 1.11 * Up()))) * EventPlayer().FacingDirection()) <= 0.85)
 		{
 			Damage(PlayersInSlot(0, Team.Team2), EventPlayer(), 9.6);
 		}

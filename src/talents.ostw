@@ -85,7 +85,7 @@ if (IsUsingAbility2(EventPlayer()))
 {
 	while (IsUsingAbility2(EventPlayer()))
 	{
-		CreateProjectile(ProjectileType.OrisaFusionDriver, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(RandomReal(-0.8, 0.8), RandomReal(-0.8, -0.8), 0), EventPlayer(), LocalVector.Rotation), null, Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 25, 2, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 60, 2, 10, 1, 0);
+		CreateProjectile(ProjectileType.OrisaFusionDriver, EventPlayer(), EventPlayer().EyePosition() + WorldVectorOf(Vector(RandomReal(-0.8, 0.8), RandomReal(-0.8, -0.8), 0), EventPlayer(), LocalVector.Rotation), null, Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 25, 2, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 60, 2, 10, 1, 0);
 		Wait(0.02, WaitBehavior.IgnoreCondition);
 	}
 	CreateProjectile(ProjectileType.OrisaFusionDriver, EventPlayer(), null, null, Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 80, 2, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0.15, 60, 2, 20, 1, 0);
@@ -138,8 +138,8 @@ if (pTalent2)
 if (IsUsingAbility1(EventPlayer()))
 {
 	Wait(1.8, WaitBehavior.AbortWhenFalse);
-	pAbilityProjectile = EyePosition(EventPlayer());
-	pAbilityEnd = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 50, AllPlayers(Team.Team2), EventPlayer(), true);
+	pAbilityProjectile = EventPlayer().EyePosition();
+	pAbilityEnd = RayCastHitPosition(EventPlayer().EyePosition(), EventPlayer().EyePosition() + EventPlayer().FacingDirection() * 50, AllPlayers(Team.Team2), EventPlayer(), true);
 	ChaseVariableAtRate(pAbilityProjectile, pAbilityEnd, 40, RateChaseReevaluation.DestinationAndRate);
 	CreateEffect(AllPlayers(), Effect.Sphere, Color.Violet, pAbilityProjectile, 0.6, EffectRev.VisibleToPositionAndRadius);
 	pEffects[1] = LastCreatedEntity();
@@ -228,8 +228,8 @@ Player.Torbjorn
 if (pTalent1)
 if (IsUsingAbility2(EventPlayer()) || IsUsingUltimate(EventPlayer()))
 {
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), 11);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), 12);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, EventPlayer().Position(), 11);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, EventPlayer().Position(), 12);
 	StartDamageOverTime(RemoveFromArray(PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer()), EventPlayer(), 3, 20);
 	SetStatus(RemoveFromArray(PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer()), EventPlayer(), Status.Burning, 3);
 	Damage(PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 15);
@@ -258,7 +258,7 @@ if (pTalent2)
 if (Weapon(EventPlayer()) == 2)
 {
 	pMoveSpeed += 40;
-	WaitUntil(Weapon(EventPlayer()) != 2 || IsDead(EventPlayer()) || !pTalent2, 99999);
+	WaitUntil(Weapon(EventPlayer()) != 2 || EventPlayer().IsDead() || !pTalent2, 99999);
 	pMoveSpeed -= 40;
 }
 
@@ -287,7 +287,7 @@ if (IsOnGround(EventPlayer()))
 	{
 		Wait(0.032, WaitBehavior.IgnoreCondition);
 		Damage(PlayersWithinRadius(EventPlayer(), gIterator * 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 50);
-		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), gIterator * 20);
+		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, EventPlayer().Position(), gIterator * 20);
 	}
 	Wait(5, WaitBehavior.IgnoreCondition);
 }
@@ -301,14 +301,14 @@ if (pAbilityAvailable)
 {
 	CreateEffect(AllPlayers(), Effect.EchoCloningEffect, Team.Team1, EventPlayer(), 0.4, EffectRev.VisibleToPositionAndRadius);
 	pEffects[1] = LastCreatedEntity();
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, EyePosition(EventPlayer()), 15);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, EventPlayer().EyePosition(), 15);
 	Heal(PlayersWithinRadius(EventPlayer(), 15, Team.Team1, RadiusLOS.Off), EventPlayer(), 200);
 	pDamageDealt += 150;
 	pMoveSpeed += 75;
 	AddHealthPoolToPlayer(EventPlayer(), HealthType.Armor, MaxHealth(EventPlayer()) / 3, false, true);
 	pHpPool[1] = LastCreatedHealthPool();
 	Wait(1, WaitBehavior.IgnoreCondition);
-	WaitUntil(!pTalent1 || IsDead(EventPlayer()) || pAbilityAvailable, 6);
+	WaitUntil(!pTalent1 || EventPlayer().IsDead() || pAbilityAvailable, 6);
 	pDamageDealt -= 150;
 	pMoveSpeed -= 75;
 	RemoveHealthPoolFromPlayer(pHpPool[1]);
@@ -399,7 +399,7 @@ if (IsUsingAbility1(EventPlayer()))
 		Damage(FilteredArray(PlayersWithinRadius(EventPlayer(), 4, Team.Team2, RadiusLOS.Surfaces), !HasStatus(ArrayElement(), Status.KnockedDown)), EventPlayer(), 35);
 		SetStatus(PlayersWithinRadius(EventPlayer(), 4, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.KnockedDown, 0.8);
 		ApplyImpulse(PlayersWithinRadius(EventPlayer(), 4, Team.Team2, RadiusLOS.Surfaces), Normalize(VelocityOf(EventPlayer())) + DirectionTowards(EventPlayer(), ThrottleOf(EventPlayer())) + Up() * 1.1, 7.5, Relative.ToWorld, ContraryMotion.Cancel);
-		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Yellow, PositionOf(EventPlayer()), 0.15);
+		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Yellow, EventPlayer().Position(), 0.15);
 	}
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
@@ -414,9 +414,9 @@ if (IsUsingUltimate(EventPlayer()))
 {
 	CreateEffect(AllPlayers(), Effect.Orb, Color.Yellow, pAbilityProjectile, 1, EffectRev.VisibleToPositionAndRadius);
 	pEffects[1] = LastCreatedEntity();
-	pAbilityProjectile = EyePosition(EventPlayer());
+	pAbilityProjectile = EventPlayer().EyePosition();
 	ChaseVariableAtRate(pAbilityProjectile, pAbilityEnd, 100, RateChaseReevaluation.DestinationAndRate);
-	pAbilityEnd = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 60, AllLivingPlayers(Team.Team2), AllPlayers(Team.Team1), true);
+	pAbilityEnd = RayCastHitPosition(EventPlayer().EyePosition(), EventPlayer().EyePosition() + EventPlayer().FacingDirection() * 60, AllLivingPlayers(Team.Team2), AllPlayers(Team.Team1), true);
 	WaitUntil(!pTalent2 || pAbilityEnd == pAbilityProjectile, 1);
 	DestroyEffect(pEffects[1]);
 	StopChasingVariable(pAbilityCountdown);
@@ -438,10 +438,10 @@ if (IsUsingAbility2(EventPlayer()))
 {
 	Heal(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 1);
 	Damage(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 25);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Red, PositionOf(EventPlayer()), 20);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Yellow, PositionOf(EventPlayer()), 18);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Green, PositionOf(EventPlayer()), 16);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Aqua, PositionOf(EventPlayer()), 14);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Red, EventPlayer().Position(), 20);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Yellow, EventPlayer().Position(), 18);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Green, EventPlayer().Position(), 16);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Aqua, EventPlayer().Position(), 14);
 	SetEnvironmentCreditPlayer(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer());
 }
 
@@ -516,7 +516,7 @@ if (IsAlive(EventPlayer()))
 	StartDamageModification(AllPlayers(Team.Team2), EventPlayer(), 66.667, DamageModificationRev.ReceiversDamagersAndDamagePercent);
 	pDamageMod[1] = LastDamageModificationID();
 	pDamageDealt += 50;
-	WaitUntil(!pTalent1 || IsDead(EventPlayer()), 99999);
+	WaitUntil(!pTalent1 || EventPlayer().IsDead(), 99999);
 	pDamageDealt -= 50;
 	StopDamageModification(pDamageMod[1]);
 	Wait(0.1, WaitBehavior.IgnoreCondition);
@@ -535,7 +535,7 @@ if (pTalent2)
 	pHpPool[6] = LastCreatedHealthPool();
 	CreateEffect(AllPlayers(), Effect.AnaNanoBoostedEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
 	pEffects[1] = LastCreatedEntity();
-	WaitUntil(!pTalent2 || IsDead(EventPlayer()), 10);
+	WaitUntil(!pTalent2 || EventPlayer().IsDead(), 10);
 	DestroyEffect(pEffects[1]);
 	RemoveHealthPoolFromPlayer(pHpPool[6]);
 	pDamageDealt -= 30;
@@ -552,8 +552,8 @@ if (IsUsingAbility2(EventPlayer()))
 {
 	for (gIterator = 0; 2; 1)
 	{
-		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EyePosition(EventPlayer()) + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 70, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 110, 5, 0, 1, 5);
-		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EyePosition(EventPlayer()) + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 70, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 110, 5, 0, 1, 5);
+		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EventPlayer().EyePosition() + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 70, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 110, 5, 0, 1, 5);
+		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EventPlayer().EyePosition() + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-2, 2)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 70, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 110, 5, 0, 1, 5);
 	}
 }
 
@@ -576,7 +576,7 @@ if (pAbilityCountdown > 0)
 {
 	CreateEffect(AllPlayers(), Effect.WinstonPrimalRageEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
 	pEffects[1] = LastCreatedEntity();
-	WaitUntil(IsDead(EventPlayer()) || !pAbilityCountdown || !pTalent2, 99999);
+	WaitUntil(EventPlayer().IsDead() || !pAbilityCountdown || !pTalent2, 99999);
 	pAbilityCountdown = false;
 	DestroyEffect(pEffects[1]);
 	StopChasingVariable(pAbilityCountdown);
@@ -599,8 +599,8 @@ Player.Echo
 if (pTalent1)
 if (IsUsingAbility1(EventPlayer()))
 {
-	CreateHomingProjectile(ProjectileType.EchoStickyBomb, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(-0.5, false, false), EventPlayer(), LocalVector.Rotation), Down(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 30, 1, 1.5, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0, 20, 5, 0, SortedArray(FilteredArray(AllPlayers(Team.Team2), IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock) && ArrayElement().pIsAlive), DistanceBetween(EventPlayer(), ArrayElement()))[0], 1);
-	CreateHomingProjectile(ProjectileType.EchoStickyBomb, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(0.5, false, false), EventPlayer(), LocalVector.Rotation), Down(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 30, 1, 1.5, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0, 20, 5, 0, SortedArray(FilteredArray(AllPlayers(Team.Team2), IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock) && ArrayElement().pIsAlive), DistanceBetween(EventPlayer(), ArrayElement()))[0], 1);
+	CreateHomingProjectile(ProjectileType.EchoStickyBomb, EventPlayer(), EventPlayer().EyePosition() + WorldVectorOf(Vector(-0.5, false, false), EventPlayer(), LocalVector.Rotation), Down(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 30, 1, 1.5, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0, 20, 5, 0, SortedArray(FilteredArray(AllPlayers(Team.Team2), IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock) && ArrayElement().pIsAlive), DistanceBetween(EventPlayer(), ArrayElement()))[0], 1);
+	CreateHomingProjectile(ProjectileType.EchoStickyBomb, EventPlayer(), EventPlayer().EyePosition() + WorldVectorOf(Vector(0.5, false, false), EventPlayer(), LocalVector.Rotation), Down(), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 30, 1, 1.5, PlayEffect.RingExplosion, PlayEffect.ExplosionSound, 0, 20, 5, 0, SortedArray(FilteredArray(AllPlayers(Team.Team2), IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock) && ArrayElement().pIsAlive), DistanceBetween(EventPlayer(), ArrayElement()))[0], 1);
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
 }
@@ -628,7 +628,7 @@ if (IsUsingAbility2(EventPlayer()))
 {
 	WaitUntil(!IsUsingAbility2(EventPlayer()), 4);
 	SetAbilityCooldown(EventPlayer(), Button.Ability2, 0);
-	AbortIf(IsDead(EventPlayer()));
+	AbortIf(EventPlayer().IsDead());
 	CancelPrimaryAction(EventPlayer());
 	PressButton(EventPlayer(), Button.Ability2);
 	Wait(4, WaitBehavior.IgnoreCondition);
@@ -644,8 +644,8 @@ if (IsFiringPrimary(EventPlayer()))
 {
 	for (gIterator = 0; 4; 1)
 	{
-		CreateProjectile(ProjectileType.LucioSonicAmplifier, EventPlayer(), EyePosition(EventPlayer()) + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1)), Relative.ToWorld, ModifyHealthType.Damage, OppositeTeamOf(TeamOf(EventPlayer())), 20, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 50, 5, 0, 0, 0);
-		CreateProjectile(ProjectileType.LucioSonicAmplifier, EventPlayer(), EyePosition(EventPlayer()) + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1)), Relative.ToWorld, ModifyHealthType.Damage, OppositeTeamOf(TeamOf(EventPlayer())), 20, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 50, 5, 0, 0, 0);
+		CreateProjectile(ProjectileType.LucioSonicAmplifier, EventPlayer(), EventPlayer().EyePosition() + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1)), Relative.ToWorld, ModifyHealthType.Damage, OppositeTeamOf(TeamOf(EventPlayer())), 20, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 50, 5, 0, 0, 0);
+		CreateProjectile(ProjectileType.LucioSonicAmplifier, EventPlayer(), EventPlayer().EyePosition() + Down() * 0.5, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-1, 1)), Relative.ToWorld, ModifyHealthType.Damage, OppositeTeamOf(TeamOf(EventPlayer())), 20, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 50, 5, 0, 0, 0);
 		if (!IsFiringPrimary(EventPlayer()))
 		{
 			break;
@@ -682,16 +682,16 @@ Player.Dva
 if (IsFiringSecondary(EventPlayer()))
 if (pTalent1)
 {
-	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 2, 0.15);
-	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 5, 0.15);
-	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Turquoise, EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 8, 0.15);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Turquoise, EventPlayer().EyePosition() + EventPlayer().FacingDirection() * 2, 0.15);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Turquoise, EventPlayer().EyePosition() + EventPlayer().FacingDirection() * 5, 0.15);
+	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Turquoise, EventPlayer().EyePosition() + EventPlayer().FacingDirection() * 8, 0.15);
 	Wait(0.3, WaitBehavior.IgnoreCondition);
-	Damage(PlayersWithinRadius(EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 2, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), 20);
-	Damage(PlayersWithinRadius(EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 5, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), 20);
-	Damage(PlayersWithinRadius(EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 8, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), 20);
-	SetStatus(PlayersWithinRadius(EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 2, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), Status.Rooted, 0.4);
-	SetStatus(PlayersWithinRadius(EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 5, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), Status.Rooted, 0.4);
-	SetStatus(PlayersWithinRadius(EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 8, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), Status.Rooted, 0.4);
+	Damage(PlayersWithinRadius(EventPlayer().EyePosition() + EventPlayer().FacingDirection() * 2, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), 20);
+	Damage(PlayersWithinRadius(EventPlayer().EyePosition() + EventPlayer().FacingDirection() * 5, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), 20);
+	Damage(PlayersWithinRadius(EventPlayer().EyePosition() + EventPlayer().FacingDirection() * 8, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), 20);
+	SetStatus(PlayersWithinRadius(EventPlayer().EyePosition() + EventPlayer().FacingDirection() * 2, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), Status.Rooted, 0.4);
+	SetStatus(PlayersWithinRadius(EventPlayer().EyePosition() + EventPlayer().FacingDirection() * 5, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), Status.Rooted, 0.4);
+	SetStatus(PlayersWithinRadius(EventPlayer().EyePosition() + EventPlayer().FacingDirection() * 8, 2.5, Team.Team2, RadiusLOS.Off), EventPlayer(), Status.Rooted, 0.4);
 	LoopIfConditionIsTrue();
 }
 
@@ -734,8 +734,8 @@ if (IsUsingAbility1(EventPlayer()))
 	Wait(0.1, WaitBehavior.AbortWhenFalse);
 	WaitUntil(!IsUsingAbility1(EventPlayer()), 2);
 	PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.Orange, EventPlayer(), 120);
-	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Orange, EyePosition(EventPlayer()), 6);
-	PlayEffect(AllPlayers(), PlayEffect.BadPickupEffect, Color.Yellow, EyePosition(EventPlayer()), 6);
+	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Orange, EventPlayer().EyePosition(), 6);
+	PlayEffect(AllPlayers(), PlayEffect.BadPickupEffect, Color.Yellow, EventPlayer().EyePosition(), 6);
 	Damage(PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 100);
 }
 
@@ -780,8 +780,8 @@ if (IsFiringPrimary(EventPlayer()))
 if (!Ammo(EventPlayer(), false) % 6)
 {
 	SetProjectileSpeed(EventPlayer(), 125);
-	pAbilityEnd = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + FacingDirectionOf(EventPlayer()) * 100, AllLivingPlayers(Team.All), EventPlayer(), true);
-	pAbilityProjectile = EyePosition(EventPlayer());
+	pAbilityEnd = RayCastHitPosition(EventPlayer().EyePosition(), EventPlayer().EyePosition() + EventPlayer().FacingDirection() * 100, AllLivingPlayers(Team.All), EventPlayer(), true);
+	pAbilityProjectile = EventPlayer().EyePosition();
 	CreateEffect(AllPlayers(), Effect.BadAura, Color.Orange, pAbilityProjectile, 1, EffectRev.VisibleToPositionAndRadius);
 	pEffects[7] = LastCreatedEntity();
 	ChaseVariableAtRate(pAbilityProjectile, pAbilityEnd, 35, RateChaseReevaluation.DestinationAndRate);
@@ -831,7 +831,7 @@ if (IsAlive(EventPlayer()))
 {
 	CreateEffect(AllPlayers(), Effect.Ring, Color.Violet, EventPlayer(), 8, EffectRev.VisibleToPositionAndRadius);
 	pEffects[1] = LastCreatedEntity();
-	WaitUntil(!pTalent1 || IsDead(EventPlayer()), 99999);
+	WaitUntil(!pTalent1 || EventPlayer().IsDead(), 99999);
 	DestroyEffect(pEffects[1]);
 	Wait(0.1, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
@@ -882,7 +882,7 @@ if (pTalent1)
 {
 	StartDamageOverTime(PlayersWithinRadius(EventPlayer(), 3, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 2, 25);
 	StartHealOverTime(PlayersWithinRadius(EventPlayer(), 3, Team.Team1, RadiusLOS.Surfaces), EventPlayer(), 2, 40);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Black, PositionOf(EventPlayer()), 6);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Black, EventPlayer().Position(), 6);
 	Wait(0.2, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
 }
@@ -916,8 +916,8 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 if (AbilityResource(EventPlayer(), Button.PrimaryFire) > 8)
 {
 	SetAbilityResource(EventPlayer(), Button.PrimaryFire, AbilityResource(EventPlayer(), Button.PrimaryFire) - 15);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Purple, EyePosition(EventPlayer()), 10);
-	Damage(PlayersWithinRadius(EyePosition(EventPlayer()), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 35);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Purple, EventPlayer().EyePosition(), 10);
+	Damage(PlayersWithinRadius(EventPlayer().EyePosition(), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 35);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
 }
@@ -931,10 +931,10 @@ if (IsUsingAbility1(EventPlayer()))
 {
 	Wait(0.5, WaitBehavior.AbortWhenFalse);
 	WaitUntil(!IsUsingAbility1(EventPlayer()), 99999);
-	Damage(PlayersWithinRadius(EyePosition(EventPlayer()), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 35);
-	SetStatus(PlayersWithinRadius(EyePosition(EventPlayer()), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Frozen, 2);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.SkyBlue, PositionOf(EventPlayer()), 20);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Aqua, PositionOf(EventPlayer()) + Vector(0, 1, false), 20);
+	Damage(PlayersWithinRadius(EventPlayer().EyePosition(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 35);
+	SetStatus(PlayersWithinRadius(EventPlayer().EyePosition(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Frozen, 2);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.SkyBlue, EventPlayer().Position(), 20);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Aqua, EventPlayer().Position() + Vector(0, 1, false), 20);
 }
 
 rule: "[Mei] Fractical Strike"
@@ -950,8 +950,8 @@ if (IsFiringSecondary(EventPlayer()))
 	AbortIfConditionIsFalse();
 	for (gIterator = 0; 5; 1)
 	{
-		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(false, -0.25, false), EventPlayer(), LocalVector.Rotation), DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 75, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 115, 5, 0, 0, 5);
-		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(false, -0.25, false), EventPlayer(), LocalVector.Rotation), DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 75, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 115, 5, 0, 0, 5);
+		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EventPlayer().EyePosition() + WorldVectorOf(Vector(false, -0.25, false), EventPlayer(), LocalVector.Rotation), DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 75, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 115, 5, 0, 0, 5);
+		CreateProjectile(ProjectileType.MeiIcicle, EventPlayer(), EventPlayer().EyePosition() + WorldVectorOf(Vector(false, -0.25, false), EventPlayer(), LocalVector.Rotation), DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8), VerticalFacingAngleOf(EventPlayer()) + RandomReal(-8, 8)), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 75, 2, 0, PlayEffect.BadExplosion, PlayEffect.ExplosionSound, 0, 115, 5, 0, 0, 5);
 	}
 }
 
@@ -975,10 +975,10 @@ if (IsUsingAbility1(EventPlayer()))
 {
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	WaitUntil(IsOnGround(EventPlayer()), 99999);
-	AbortIf(IsDead(EventPlayer()));
+	AbortIf(EventPlayer().IsDead());
 	Damage(PlayersWithinRadius(EventPlayer(), 7.5, Team.Team2, RadiusLOS.SurfacesAndAllBarriers), EventPlayer(), 30);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.White, PositionOf(EventPlayer()), 15);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Gray, PositionOf(EventPlayer()), 14);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.White, EventPlayer().Position(), 15);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Gray, EventPlayer().Position(), 14);
 	SetStatus(PlayersWithinRadius(EventPlayer(), 7.5, Team.Team2, RadiusLOS.SurfacesAndAllBarriers), EventPlayer(), Status.Stunned, 1);
 }
 
@@ -997,7 +997,7 @@ if (pTalent1)
 	pMoveSpeed += 50;
 	DisallowButton(EventPlayer(), Button.Ability1);
 	SetStatus(EventPlayer(), null, Status.PhasedOut, 3);
-	WaitUntil(IsDead(EventPlayer()) || !pTalent1, 3);
+	WaitUntil(EventPlayer().IsDead() || !pTalent1, 3);
 	AllowButton(EventPlayer(), Button.Ability1);
 	SetAbilityCooldown(EventPlayer(), Button.Ability1, 8);
 	pDamageDealt -= 30;
@@ -1026,7 +1026,7 @@ if (IsUsingAbility1(EventPlayer()))
 	pAbilityActive = 1 + TotalTimeElapsed();
 	WaitUntil(AbilityCooldown(EventPlayer(), Button.Ability1) > 1 || IsButtonHeld(EventPlayer(), Button.Jump), 1);
 	AbortIf(pAbilityActive < TotalTimeElapsed());
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Turquoise, PositionOf(EventPlayer()), 12);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Turquoise, EventPlayer().Position(), 12);
 	Damage(PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 75);
 }
 
@@ -1100,7 +1100,7 @@ if (pTalent1)
 {
 	for (gIterator = 0; 3; 1)
 	{
-		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Purple, PositionOf(EventPlayer()), 20);
+		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Purple, EventPlayer().Position(), 20);
 		Damage(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 25);
 		StartDamageOverTime(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 5, 30);
 		Wait(0.2, WaitBehavior.IgnoreCondition);
@@ -1139,7 +1139,7 @@ if (VerticalSpeedOf(EventPlayer()) < 0)
 {
 	SetGravity(EventPlayer(), 7.5);
 	Wait(0.333, WaitBehavior.IgnoreCondition);
-	PlayEffect(AllPlayers(TeamOf(EventPlayer())), PlayEffect.RingExplosion, Color.Orange, PositionOf(EventPlayer()), 2);
+	PlayEffect(AllPlayers(TeamOf(EventPlayer())), PlayEffect.RingExplosion, Color.Orange, EventPlayer().Position(), 2);
 	LoopIfConditionIsTrue();
 	SetGravity(EventPlayer(), 100);
 }
@@ -1155,7 +1155,7 @@ if (IsFiringPrimary(EventPlayer()))
 	Wait(0.5, WaitBehavior.AbortWhenFalse);
 	while (IsFiringPrimary(EventPlayer()) && IsInAlternateForm(EventPlayer()))
 	{
-		CreateProjectile(ProjectileType.PharahRocket, EventPlayer(), EyePosition(EventPlayer()) + WorldVectorOf(Vector(RandomReal(-0.4, 0.4), RandomReal(-0.4, -0.4), 0), EventPlayer(), LocalVector.Rotation), null, Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 25, 1, 1.5, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 35, 2, 0, 0, 0);
+		CreateProjectile(ProjectileType.PharahRocket, EventPlayer(), EventPlayer().EyePosition() + WorldVectorOf(Vector(RandomReal(-0.4, 0.4), RandomReal(-0.4, -0.4), 0), EventPlayer(), LocalVector.Rotation), null, Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 25, 1, 1.5, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 35, 2, 0, 0, 0);
 		Wait(0.25, WaitBehavior.IgnoreCondition);
 	}
 }
@@ -1188,7 +1188,7 @@ if (IsUsingAbility1(EventPlayer()))
 	pDamageDealt += 50;
 	pEffects[1] = LastCreatedEntity();
 	pAbilityActive = true;
-	WaitUntil(IsDead(EventPlayer()) || !pTalent1, 3);
+	WaitUntil(EventPlayer().IsDead() || !pTalent1, 3);
 	pDamageDealt -= 50;
 	DestroyEffect(pEffects[1]);
 	pAbilityActive = false;
@@ -1216,13 +1216,13 @@ if (IsUsingAbility2(EventPlayer()))
 {
 	WaitUntil(!IsUsingAbility2(EventPlayer()), 99999);
 	AbortIf(IsButtonHeld(EventPlayer(), Button.Interact));
-	AbortIf(IsDead(EventPlayer()));
+	AbortIf(EventPlayer().IsDead());
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	Damage(PlayersWithinRadius(EventPlayer(), 8, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 50);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosionSound, Color.White, EyePosition(EventPlayer()), 20000);
-	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Purple, EyePosition(EventPlayer()), 8);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Violet, EyePosition(EventPlayer()), 16);
-	SetStatus(PlayersWithinRadius(EyePosition(EventPlayer()), 8, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Hacked, 2);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosionSound, Color.White, EventPlayer().EyePosition(), 20000);
+	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Purple, EventPlayer().EyePosition(), 8);
+	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Violet, EventPlayer().EyePosition(), 16);
+	SetStatus(PlayersWithinRadius(EventPlayer().EyePosition(), 8, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Hacked, 2);
 }
 
 rule: "Doomfist: Punch Card"
@@ -1317,7 +1317,7 @@ if (AbilityCooldown(EventPlayer(), Button.Crouch) >= 0.1)
 {
 	pAbilityCountdown = AltitudeOf(EventPlayer()) * 10;
 	pDamageDealt += pAbilityCountdown;
-	WaitUntil(IsOnGround(EventPlayer()) || IsDead(EventPlayer()), 9999);
+	WaitUntil(IsOnGround(EventPlayer()) || EventPlayer().IsDead(), 9999);
 	Wait(1, WaitBehavior.IgnoreCondition);
 	pDamageDealt -= pAbilityCountdown;
 }
@@ -1341,7 +1341,7 @@ if (IsUsingAbility2(EventPlayer()))
 {
 	for (gIterator = false; 4; 1)
 	{
-		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Purple, PositionOf(EventPlayer()), 20);
+		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Purple, EventPlayer().Position(), 20);
 		Damage(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 25);
 		SetStatus(PlayersWithinRadius(EventPlayer(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Hacked, 2);
 		Wait(0.1, WaitBehavior.IgnoreCondition);
@@ -1463,9 +1463,9 @@ if (pTalent2)
 if (IsAlive(EventPlayer()))
 {
 	Wait(0.5, WaitBehavior.AbortWhenFalse);
-	StartDamageModification(FilteredArray(AllPlayers(Team.Team2), YOf(PositionOf(EventPlayer())) - YOf(PositionOf(ArrayElement())) >= 3 || DotProduct(FacingDirectionOf(ArrayElement()), VectorTowards(ArrayElement(), EventPlayer())) < 0), EventPlayer(), 150, DamageModificationRev.ReceiversDamagersAndDamagePercent);
+	StartDamageModification(FilteredArray(AllPlayers(Team.Team2), YOf(EventPlayer().Position()) - YOf(PositionOf(ArrayElement())) >= 3 || DotProduct(FacingDirectionOf(ArrayElement()), VectorTowards(ArrayElement(), EventPlayer())) < 0), EventPlayer(), 150, DamageModificationRev.ReceiversDamagersAndDamagePercent);
 	pDamageMod[1] = LastDamageModificationID();
-	WaitUntil(!pTalent2 || IsDead(EventPlayer()), 99999);
+	WaitUntil(!pTalent2 || EventPlayer().IsDead(), 99999);
 	StopDamageModification(pDamageMod[1]);
 	Wait(0.1, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
