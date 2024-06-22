@@ -1010,7 +1010,7 @@ if (HasSpawned(EventPlayer()))
 	CreateHudText(
 		AllPlayers(Team.Team1),
 		"{0}{1}".Format([
-			HeroIconString(HeroOf(EventPlayer())),
+			HeroIconString(EventPlayer().Hero()),
 			pDownedStartT && pReviveTimer
 				? gProgressBarStrings[RoundToInteger(pReviveTimer / 10, Rounding.Down)]
 				: ""
@@ -1446,7 +1446,7 @@ Event.OngoingPlayer
 Team.Team1
 if (pLastDamageTakenT + (pPerkDieHard ? 0.5 : 1) * (gMutDeepWounds ? 5 : 2.5) < TotalTimeElapsed())
 if (NormalizedHealth(EventPlayer()) != 1)
-if (Health(EventPlayer()))
+if (EventPlayer().Health())
 {
 	Heal(EventPlayer(), null, EventPlayer().MaxHealth() * 0.333);
 	PlayEffect(EventPlayer(), PlayEffect.BuffExplosionSound, Color.White, EventPlayer(), 50);

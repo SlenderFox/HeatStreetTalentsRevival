@@ -209,7 +209,7 @@ if (pIsUsingCombatPathfinding)
 				# Long Range, roam randomly, slow
 				if (pCombatPathfindingType == 0)
 				{
-					if (DistanceBetween(EventPlayer(), pMyTarget) <= (HeroOf(EventPlayer()) == Hero.Baptiste ? 20 : 15))
+					if (DistanceBetween(EventPlayer(), pMyTarget) <= (EventPlayer().Hero() == Hero.Baptiste ? 20 : 15))
 					{
 						pNavPos = EventPlayer().Position() + 2.5 * DirectionFromAngles(RandomInteger(-179, 180), 0);
 					}
@@ -437,7 +437,7 @@ if (!HasStatus(EventPlayer(), Status.Stunned))
 if (DistanceBetween(EventPlayer(), Vector(XOf(pNavPos), YOf(pIsUsingCombatPathfinding ? EventPlayer().Position() : pNavPos), ZOf(pNavPos))) >= 0.5)
 {
 	Wait(0.5, WaitBehavior.AbortWhenFalse);
-	LoopIf(HeroOf(EventPlayer()) == Hero.Reinhardt && IsUsingUltimate(EventPlayer()));
+	LoopIf(EventPlayer().Hero() == Hero.Reinhardt && IsUsingUltimate(EventPlayer()));
 	if (IsTrueForAny(gElevatorNodes, DistanceBetween(EventPlayer(), Vector(XOf(ArrayElement()), YOf(EventPlayer().Position()), ZOf(ArrayElement()))) < 1.5))
 	{
 		Wait(1.5, WaitBehavior.AbortWhenFalse);

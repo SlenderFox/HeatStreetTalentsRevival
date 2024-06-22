@@ -33,7 +33,7 @@ playervar Vector pFacingOverrideDirection;
 
 void start_facing() "Subroutine: Start Facing"
 {
-	if (HeroOf(EventPlayer()) == Hero.Soldier76)
+	if (EventPlayer().Hero() == Hero.Soldier76)
 	{
 		if (pRealTier == 4)
 		{
@@ -46,7 +46,7 @@ void start_facing() "Subroutine: Start Facing"
 	}
 	else
 	{
-		if (HeroOf(EventPlayer()) == Hero.Widowmaker || HeroOf(EventPlayer()) == Hero.Hanzo)
+		if (EventPlayer().Hero() == Hero.Widowmaker || EventPlayer().Hero() == Hero.Hanzo)
 		{
 			StartFacing(EventPlayer(), pFacingOverrideDirection ? pFacingOverrideDirection : (pIsTargetInLos ? Vector(false, false, false) : 1.5 * DirectionTowards(EventPlayer(), pNavPos)) + (pMyTarget.pIsCombatant ? DirectionTowards(EventPlayer().EyePosition(), EyePosition(pMyTarget) + pMyTarget.pEyeOffset) : Vector(false, false, false)), HasStatus(EventPlayer(), Status.Stunned) ? 0 : 300, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
 			pFacingOverrideDirection = false;
@@ -92,7 +92,7 @@ Event.OngoingPlayer
 Team.Team2
 if (pIsAlive)
 {
-	if (!(pFearEndT >= TotalTimeElapsed() || pIsWraith || HeroOf(EventPlayer()) == Hero.Sombra && pAbPlayer))
+	if (!(pFearEndT >= TotalTimeElapsed() || pIsWraith || EventPlayer().Hero() == Hero.Sombra && pAbPlayer))
 	{
 		if (pIsIgnoringOtherTargets)
 		{
@@ -178,7 +178,7 @@ Team.Team2
 		SetStatus(EventPlayer(), null, Status.PhasedOut, 9999);
 		Abort();
 	}
-	if (!EventWasEnvironment() && HeroOf(EventPlayer()) != Hero.Baptiste && !pIsLivingBoss && !pIsMutated && (gMutAdvancedMedkit || pRealTier < 4))
+	if (!EventWasEnvironment() && EventPlayer().Hero() != Hero.Baptiste && !pIsLivingBoss && !pIsMutated && (gMutAdvancedMedkit || pRealTier < 4))
 	{
 		gTemp1 = PlayersOnHero(Hero.Baptiste, Team.Team2).Filter(
 			p => IsAlive(p)
@@ -194,7 +194,7 @@ Team.Team2
 			PressButton(gTemp1, Button.Ability1);
 			Resurrect(EventPlayer());
 			PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Green, EventPlayer(), 1);
-			if (HeroOf(EventPlayer()) == Hero.Orisa)
+			if (EventPlayer().Hero() == Hero.Orisa)
 			{
 				# Disable Fortify so that Orisa can be knocked down
 				SetAbilityCooldown(EventPlayer(), Button.Ability1, 0.5);
@@ -290,7 +290,7 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 		RemoveHealthPoolFromPlayer(pHpPool[7]);
 	}
 	teleport_to_free_spawn();
-	if (HeroOf(EventPlayer()) == Hero.Soldier76)
+	if (EventPlayer().Hero() == Hero.Soldier76)
 	{
 		# Select Soldier Variant
 		if (gSpecialSpawnsCount > 0)
@@ -464,70 +464,70 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 			Resurrect(EventPlayer());
 			SetAmmo(EventPlayer(), false, MaxAmmo(EventPlayer(), false));
 			# D.Va is resurrected without mech, so remech
-			if (HeroOf(EventPlayer()) == Hero.Dva)
+			if (EventPlayer().Hero() == Hero.Dva)
 			{
 				SetUltimateCharge(EventPlayer(), 100);
 				PressButton(EventPlayer(), Button.Ultimate);
 			}
 		}
-		if (HeroOf(EventPlayer()) == Hero.Cassidy || HeroOf(EventPlayer()) == Hero.Baptiste)
+		if (EventPlayer().Hero() == Hero.Cassidy || EventPlayer().Hero() == Hero.Baptiste)
 		{
 			pCombatPathfindingType = 0;
 			pIsRanged = true;
 			pCanDodge = false;
 		}
-		else if (HeroOf(EventPlayer()) == Hero.Brigitte || HeroOf(EventPlayer()) == Hero.Reinhardt || HeroOf(EventPlayer()) == Hero.WreckingBall)
+		else if (EventPlayer().Hero() == Hero.Brigitte || EventPlayer().Hero() == Hero.Reinhardt || EventPlayer().Hero() == Hero.WreckingBall)
 		{
 			pCombatPathfindingType = 1;
 			pIsRanged = false;
 			pCanDodge = false;
 		}
-		else if (HeroOf(EventPlayer()) == Hero.Orisa)
+		else if (EventPlayer().Hero() == Hero.Orisa)
 		{
 			pCombatPathfindingType = 2;
 			pIsRanged = true;
 			pCanDodge = false;
 		}
-		else if (HeroOf(EventPlayer()) == Hero.Sombra || HeroOf(EventPlayer()) == Hero.Dva || HeroOf(EventPlayer()) == Hero.Kiriko)
+		else if (EventPlayer().Hero() == Hero.Sombra || EventPlayer().Hero() == Hero.Dva || EventPlayer().Hero() == Hero.Kiriko)
 		{
 			pCombatPathfindingType = 3;
 			pIsRanged = false;
 			pCanDodge = false;
-			if (HeroOf(EventPlayer()) == Hero.Sombra)
+			if (EventPlayer().Hero() == Hero.Sombra)
 			{
 				CreateBeamEffect(pAbPlayer ? AllPlayers() : [], BeamType.BadBeam, EventPlayer(), pAbPlayer, Color.Red, EffectRev.VisibleToPositionAndRadius);
 				ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
 			}
-			if (HeroOf(EventPlayer()) == Hero.Kiriko)
+			if (EventPlayer().Hero() == Hero.Kiriko)
 			{
 				pIsRanged = true;
 				CreateEffect(pAbVar1 ? AllPlayers() : [], Effect.Sphere, Color.Turquoise, EventPlayer(), pAbVar1, EffectRev.VisibleToPositionAndRadius);
 				ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
 			}
 		}
-		else if (HeroOf(EventPlayer()) == Hero.Widowmaker || HeroOf(EventPlayer()) == Hero.Ana || HeroOf(EventPlayer()) == Hero.Pharah)
+		else if (EventPlayer().Hero() == Hero.Widowmaker || EventPlayer().Hero() == Hero.Ana || EventPlayer().Hero() == Hero.Pharah)
 		{
 			pCombatPathfindingType = 4;
 			pIsRanged = true;
 			pCanDodge = true;
 		}
-		else if (HeroOf(EventPlayer()) == Hero.Roadhog || HeroOf(EventPlayer()) == Hero.Reaper || HeroOf(EventPlayer()) == Hero.Sigma || HeroOf(EventPlayer()) == Hero.Mei || HeroOf(EventPlayer()) == Hero.Zarya)
+		else if (EventPlayer().Hero() == Hero.Roadhog || EventPlayer().Hero() == Hero.Reaper || EventPlayer().Hero() == Hero.Sigma || EventPlayer().Hero() == Hero.Mei || EventPlayer().Hero() == Hero.Zarya)
 		{
 			pCombatPathfindingType = 5;
 			pIsRanged = false;
 			pCanDodge = true;
 		}
-		else if (HeroOf(EventPlayer()) == Hero.Tracer || HeroOf(EventPlayer()) == Hero.Genji || HeroOf(EventPlayer()) == Hero.Lucio)
+		else if (EventPlayer().Hero() == Hero.Tracer || EventPlayer().Hero() == Hero.Genji || EventPlayer().Hero() == Hero.Lucio)
 		{
 			pCombatPathfindingType = 6;
 			pIsRanged = false;
 			pCanDodge = false;
-			if (HeroOf(EventPlayer()) == Hero.Tracer)
+			if (EventPlayer().Hero() == Hero.Tracer)
 			{
 				pRecallBlockEndT = TotalTimeElapsed() + 4;
 			}
 		}
-		else if (HeroOf(EventPlayer()) == Hero.Echo || HeroOf(EventPlayer()) == Hero.Hanzo)
+		else if (EventPlayer().Hero() == Hero.Echo || EventPlayer().Hero() == Hero.Hanzo)
 		{
 			pCombatPathfindingType = 7;
 			pIsRanged = true;
@@ -537,11 +537,11 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 		{
 			pCanDodge = false;
 		}
-		if (HeroOf(EventPlayer()) == Hero.Brigitte || HeroOf(EventPlayer()) == Hero.Cassidy)
+		if (EventPlayer().Hero() == Hero.Brigitte || EventPlayer().Hero() == Hero.Cassidy)
 		{
 			pRealTier = 1;
 		}
-		else if (HeroOf(EventPlayer()) == Hero.Echo || HeroOf(EventPlayer()) == Hero.Baptiste || HeroOf(EventPlayer()) == Hero.Reaper || HeroOf(EventPlayer()) == Hero.Sombra || HeroOf(EventPlayer()) == Hero.Widowmaker || HeroOf(EventPlayer()) == Hero.Pharah || HeroOf(EventPlayer()) == Hero.Lucio || HeroOf(EventPlayer()) == Hero.Zarya)
+		else if (EventPlayer().Hero() == Hero.Echo || EventPlayer().Hero() == Hero.Baptiste || EventPlayer().Hero() == Hero.Reaper || EventPlayer().Hero() == Hero.Sombra || EventPlayer().Hero() == Hero.Widowmaker || EventPlayer().Hero() == Hero.Pharah || EventPlayer().Hero() == Hero.Lucio || EventPlayer().Hero() == Hero.Zarya)
 		{
 			pRealTier = 2;
 			if (gMutBulletProof)
@@ -550,7 +550,7 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 				pHpPool[5] = LastCreatedHealthPool();
 			}
 		}
-		else if (HeroOf(EventPlayer()) == Hero.Dva || HeroOf(EventPlayer()) == Hero.Orisa || HeroOf(EventPlayer()) == Hero.Roadhog || HeroOf(EventPlayer()) == Hero.Ana || HeroOf(EventPlayer()) == Hero.Tracer || HeroOf(EventPlayer()) == Hero.Mei || HeroOf(EventPlayer()) == Hero.WreckingBall || HeroOf(EventPlayer()) == Hero.Sigma)
+		else if (EventPlayer().Hero() == Hero.Dva || EventPlayer().Hero() == Hero.Orisa || EventPlayer().Hero() == Hero.Roadhog || EventPlayer().Hero() == Hero.Ana || EventPlayer().Hero() == Hero.Tracer || EventPlayer().Hero() == Hero.Mei || EventPlayer().Hero() == Hero.WreckingBall || EventPlayer().Hero() == Hero.Sigma)
 		{
 			pRealTier = 3;
 		}
@@ -559,8 +559,8 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 			pRealTier = 4;
 		}
 		pIsFortified = gGmutFortified || pIsLivingBoss;
-		pCanStagger = !pIsFortified && (HeroOf(EventPlayer()) == Hero.Cassidy || HeroOf(EventPlayer()) == Hero.Baptiste || HeroOf(EventPlayer()) == Hero.Pharah || HeroOf(EventPlayer()) == Hero.Widowmaker);
-		pCanQuickMelee = HeroOf(EventPlayer()) != Hero.Brigitte && HeroOf(EventPlayer()) != Hero.Roadhog && HeroOf(EventPlayer()) != Hero.WreckingBall && HeroOf(EventPlayer()) != Hero.Reinhardt && !pIvIsPortal;
+		pCanStagger = !pIsFortified && (EventPlayer().Hero() == Hero.Cassidy || EventPlayer().Hero() == Hero.Baptiste || EventPlayer().Hero() == Hero.Pharah || EventPlayer().Hero() == Hero.Widowmaker);
+		pCanQuickMelee = EventPlayer().Hero() != Hero.Brigitte && EventPlayer().Hero() != Hero.Roadhog && EventPlayer().Hero() != Hero.WreckingBall && EventPlayer().Hero() != Hero.Reinhardt && !pIvIsPortal;
 		if (pIsLivingBoss)
 		{
 			pHealthPercent = (gIsmutatorModeEnabled ? 1.2 : 1) * (!gIsGameLengthLong ? 1.25 : 1.5) * [4, 2.25, 2.25, 1][pRealTier - 1];
@@ -587,10 +587,10 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 		}
 		if (gMutHardWired)
 		{
-			if (HeroOf(EventPlayer()) == Hero.Echo || HeroOf(EventPlayer()) == Hero.Orisa || HeroOf(EventPlayer()) == Hero.Dva || HeroOf(EventPlayer()) == Hero.Genji || HeroOf(EventPlayer()) == Hero.WreckingBall)
+			if (EventPlayer().Hero() == Hero.Echo || EventPlayer().Hero() == Hero.Orisa || EventPlayer().Hero() == Hero.Dva || EventPlayer().Hero() == Hero.Genji || EventPlayer().Hero() == Hero.WreckingBall)
 			{
 				pIsHardWired = true;
-				if (HeroOf(EventPlayer()) == Hero.Dva)
+				if (EventPlayer().Hero() == Hero.Dva)
 				{
 					AddHealthPoolToPlayer(EventPlayer(), HealthType.Shields, IsInAlternateForm(EventPlayer()) ? 0 : 0.75 * pHealthPercent, true, true);
 				}
@@ -607,7 +607,7 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 		}
 		if (gMutYakuza)
 		{
-			if (HeroOf(EventPlayer()) == Hero.Kiriko || HeroOf(EventPlayer()) == Hero.Hanzo || HeroOf(EventPlayer()) == Hero.Genji)
+			if (EventPlayer().Hero() == Hero.Kiriko || EventPlayer().Hero() == Hero.Hanzo || EventPlayer().Hero() == Hero.Genji)
 			{
 				AddHealthPoolToPlayer(EventPlayer(), HealthType.Armor, 0.75 * pHealthPercent, true, true);
 				pHpPool[7] = LastCreatedHealthPool();
@@ -616,7 +616,7 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 		StopHoldingButton(EventPlayer(), Button.PrimaryFire);
 		StopHoldingButton(EventPlayer(), Button.SecondaryFire);
 		SetDamageReceived(EventPlayer(), pIsLivingBoss ? 50 : 100);
-		if (HeroOf(EventPlayer()) == Hero.Dva && pIsLivingBoss)
+		if (EventPlayer().Hero() == Hero.Dva && pIsLivingBoss)
 		{
 			SetDamageReceived(EventPlayer(), 100);
 		}
@@ -1565,9 +1565,9 @@ if (gWaveNumber >= 13 || pIsLivingBoss)
 	SetUltimateCharge(EventPlayer(), 100);
 	PressButton(EventPlayer(), Button.Ultimate);
 	pAbVar2 = false;
-	pAbVar3 = Health(EventPlayer());
-	WaitUntil(UltimateChargePercent(EventPlayer()) != 100 && (pAbVar2 || Health(EventPlayer()) < pAbVar3), 0.3);
-	if (UltimateChargePercent(EventPlayer()) != 100 && (pAbVar2 || Health(EventPlayer()) < pAbVar3))
+	pAbVar3 = EventPlayer().Health();
+	WaitUntil(UltimateChargePercent(EventPlayer()) != 100 && (pAbVar2 || EventPlayer().Health() < pAbVar3), 0.3);
+	if (UltimateChargePercent(EventPlayer()) != 100 && (pAbVar2 || EventPlayer().Health() < pAbVar3))
 	{
 		pGmutFortifiedBypassEndT = Max(TotalTimeElapsed() + 0.5, pGmutFortifiedBypassEndT);
 		SetStatus(EventPlayer(), null, Status.Stunned, 0.5);
@@ -1597,7 +1597,7 @@ if (pIsTargetInLos)
 	LoopIf(!IsInLineOfSight(EventPlayer().EyePosition(), EyePosition(pMyTarget), BarrierLOS.AllBarriersBlock));
 	pAbPlayer = pMyTarget;
 	pAbVar2 = false;
-	pAbVar3 = Health(EventPlayer());
+	pAbVar3 = EventPlayer().Health();
 	pAbPlayer.pTasedEndT = TotalTimeElapsed() + 6;
 	SetStatus(EventPlayer(), null, Status.Rooted, 6);
 	if (!pAbPlayer.pPerkShockProof)
@@ -1613,7 +1613,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Sombra
 if (pAbPlayer != null)
-if (pAbPlayer.pTasedEndT < TotalTimeElapsed() || pAbVar2 || Health(EventPlayer()) < pAbVar3 || pAbPlayer.pDownedStartT || !pAbPlayer.pIsCombatant || HasStatus(EventPlayer(), Status.Hacked) || HasStatus(EventPlayer(), Status.Stunned) || DistanceBetween(EventPlayer(), pAbPlayer) >= 11 || !IsInLineOfSight(EventPlayer().EyePosition(), EyePosition(pAbPlayer), BarrierLOS.AllBarriersBlock))
+if (pAbPlayer.pTasedEndT < TotalTimeElapsed() || pAbVar2 || EventPlayer().Health() < pAbVar3 || pAbPlayer.pDownedStartT || !pAbPlayer.pIsCombatant || HasStatus(EventPlayer(), Status.Hacked) || HasStatus(EventPlayer(), Status.Stunned) || DistanceBetween(EventPlayer(), pAbPlayer) >= 11 || !IsInLineOfSight(EventPlayer().EyePosition(), EyePosition(pAbPlayer), BarrierLOS.AllBarriersBlock))
 {
 	if (pAbPlayer.pPerkShockProof)
 	{
@@ -1650,16 +1650,16 @@ if (pTasedEndT >= TotalTimeElapsed())
 	SetStatus(EventPlayer(), null, Status.Hacked, 10);
 	SetStatus(EventPlayer(), null, Status.Rooted, 10);
 	StartFacing(EventPlayer(), DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + RandomInteger(-100, 20), VerticalFacingAngleOf(EventPlayer()) + RandomInteger(-100, 80)), 100, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
-	PressButton(EventPlayer(), HeroOf(EventPlayer()) == Hero.Moira ? Button.SecondaryFire : Button.PrimaryFire);
+	PressButton(EventPlayer(), EventPlayer().Hero() == Hero.Moira ? Button.SecondaryFire : Button.PrimaryFire);
 	Wait(0.3, WaitBehavior.IgnoreCondition);
 	StopFacing(EventPlayer());
 	while (pTasedEndT >= TotalTimeElapsed())
 	{
 		SetAimSpeed(EventPlayer(), 50);
-		PressButton(EventPlayer(), HeroOf(EventPlayer()) == Hero.Moira ? Button.SecondaryFire : Button.PrimaryFire);
+		PressButton(EventPlayer(), EventPlayer().Hero() == Hero.Moira ? Button.SecondaryFire : Button.PrimaryFire);
 		WaitUntil(pTasedEndT < TotalTimeElapsed(), RandomReal(0.1, 0.3));
 		SetAimSpeed(EventPlayer(), 200);
-		PressButton(EventPlayer(), HeroOf(EventPlayer()) == Hero.Moira ? Button.SecondaryFire : Button.PrimaryFire);
+		PressButton(EventPlayer(), EventPlayer().Hero() == Hero.Moira ? Button.SecondaryFire : Button.PrimaryFire);
 		WaitUntil(pTasedEndT < TotalTimeElapsed(), RandomReal(0.1, 0.3));
 	}
 	SetAimSpeed(EventPlayer(), 100);
@@ -2002,7 +2002,7 @@ if (!pAbVar1)
 if (gWaveNumber >= 15)
 if (!IsInAlternateForm(EventPlayer()))
 if (NormalizedHealth(EventPlayer()) <= 0.8)
-if (Health(EventPlayer()) > 1)
+if (EventPlayer().Health() > 1)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -2029,7 +2029,7 @@ Player.Dva
 if (pIsLivingBoss)
 if (!pAbVar1)
 if (!IsInAlternateForm(EventPlayer()))
-if (Health(EventPlayer()) < 1)
+if (EventPlayer().Health() < 1)
 {
 	SetUltimateCharge(EventPlayer(), 100);
 	PressButton(EventPlayer(), Button.Ultimate);

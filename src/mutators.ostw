@@ -117,7 +117,7 @@ if (IsAlive(EventPlayer()))
 if (!pIsLivingBoss)
 {
 	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
-	WaitUntil(Health(EventPlayer()) <= 1, 99999);
+	WaitUntil(EventPlayer().Health() <= 1, 99999);
 	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Purple, EventPlayer().Position(), 1);
 	SetStatus(EventPlayer(), null, Status.Stunned, 1.333);
 	SetStatus(EventPlayer(), null, Status.Invincible, 0.1);
@@ -143,7 +143,7 @@ if (IsAlive(EventPlayer()))
 if (pIsLivingBoss)
 {
 	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
-	WaitUntil(Health(EventPlayer()) <= 1, 99999);
+	WaitUntil(EventPlayer().Health() <= 1, 99999);
 	CreateEffect(AllPlayers(), Effect.EchoCloningEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
 	pEffects[1] = LastCreatedEntity();
 	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Violet, EventPlayer(), 1);
@@ -165,7 +165,7 @@ if (IsUsingUltimate(pMyTarget))
 	Wait(4, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
 	pIsAggressive = true;
-	if (RandomInteger(1, 100) > 75 && HeroOf(EventPlayer()) != Hero.Soldier76)
+	if (RandomInteger(1, 100) > 75 && EventPlayer().Hero() != Hero.Soldier76)
 	{
 		Wait(RandomReal(3, 7), WaitBehavior.IgnoreCondition);
 		SetUltimateCharge(EventPlayer(), 100);
