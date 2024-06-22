@@ -10,6 +10,7 @@ Look into ways to get it working with:
 - Abilities with charges
 - Ashe's coach gun
 - Bastion's turret form
+- Genji's swift strike
 - Soldier: 76's helix rockets.
 ### Bulletstorm
 If Blizz still haven't fixed new heroes in workshop, maybe shelve this.  
