@@ -24,6 +24,8 @@ No talents with quick melee to avoid any conflicts with active abilities.
 ### Ashe
 - White phosphourous: Dynamite burn lasts twice as long and killing burning enemies sets nearby enemies on fire.
 - Black powder: Coach gun stuns all enemies hit for 1.5 seconds.
+### Cassidy
+Magnetic grenade talent no longer valid.
 ### D.va
 Something with her micro-missiles.
 ### Illari
