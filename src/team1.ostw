@@ -22,9 +22,19 @@ playervar Any pActiveAbVar; // Both vector and player
 
 void open_buy_menu() "Subroutine: Open Buy Menu, Last Facing (3)"
 {
-	AbortIf(pDownedStartT || NormalizedHealth(EventPlayer()) < 0.5 || HasStatus(EventPlayer(), Status.Stunned) || pTasedEndT >= TotalTimeElapsed());
-	ApplyImpulse(EventPlayer(), -1 * DirectionFromAngles(HorizontalAngleFromDirection(VelocityOf(EventPlayer())), false), 0.001, Relative.ToWorld, ContraryMotion.CancelXYZ);
-	pAbVar3 = FacingDirectionOf(EventPlayer());
+	AbortIf(pDownedStartT
+		|| NormalizedHealth(EventPlayer()) < 0.5
+		|| HasStatus(EventPlayer(), Status.Stunned)
+		|| pTasedEndT >= TotalTimeElapsed()
+	);
+	ApplyImpulse(
+		EventPlayer(),
+		-1 * DirectionFromAngles(HorizontalAngleFromDirection(VelocityOf(EventPlayer())), false),
+		0.001,
+		Relative.ToWorld,
+		ContraryMotion.CancelXYZ
+	);
+	pAbVar3 = EventPlayer().FacingDirection();
 	pInBuyMenu = TotalTimeElapsed();
 	DisableHeroHud(EventPlayer());
 	SetFacing(EventPlayer(), Forward(), Relative.ToWorld);
@@ -81,53 +91,144 @@ void buy_active_ability() "Subroutine: Buy Active Ability"
 	pActiveAbNumber = gTemp1;
 	if (gTemp1 == 1)
 	{
-		CreateEffect(pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [], Effect.AnaNanoBoostedEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleTo);
-		ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
+		CreateEffect(
+			pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [],
+			Effect.AnaNanoBoostedEffect,
+			Color.Team1,
+			EventPlayer(),
+			1,
+			EffectRev.VisibleTo
+		);
+		pActiveAbEffectList.ModAppend(LastCreatedEntity());
 	}
 	else if (gTemp1 == 2)
 	{
-		CreateEffect(pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [], Effect.ReaperWraithFormEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleTo);
-		ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
+		CreateEffect(
+			pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [],
+			Effect.ReaperWraithFormEffect,
+			Color.Team1,
+			EventPlayer(),
+			1,
+			EffectRev.VisibleTo
+		);
+		pActiveAbEffectList.ModAppend(LastCreatedEntity());
 	}
 	else if (gTemp1 == 4)
 	{
-		CreateEffect(pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [], Effect.BaptisteImmortalityFieldProtectedEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleTo);
-		ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
+		CreateEffect(
+			pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [],
+			Effect.BaptisteImmortalityFieldProtectedEffect,
+			Color.Team1,
+			EventPlayer(),
+			1,
+			EffectRev.VisibleTo
+		);
+		pActiveAbEffectList.ModAppend(LastCreatedEntity());
 	}
 	else if (gTemp1 == 5)
 	{
 		pActiveAbVar = 1000 * Down();
-		CreateEffect(pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [], Effect.Cloud, Color.SkyBlue, pActiveAbVar + 2 * Up(), 10, EffectRev.VisibleToPositionAndRadius);
-		ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
-		CreateEffect(pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [], Effect.Cloud, Color.SkyBlue, pActiveAbVar + 2 * Down(), 10, EffectRev.VisibleToPositionAndRadius);
-		ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
-		CreateEffect(pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [], Effect.Ring, Color.SkyBlue, pActiveAbVar + Down(), 10, EffectRev.VisibleToPositionAndRadius);
-		ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
+		CreateEffect(
+			pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [],
+			Effect.Cloud,
+			Color.SkyBlue,
+			pActiveAbVar + 2 * Up(),
+			10,
+			EffectRev.VisibleToPositionAndRadius
+		);
+		pActiveAbEffectList.ModAppend(LastCreatedEntity());
+		CreateEffect(
+			pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [],
+			Effect.Cloud,
+			Color.SkyBlue,
+			pActiveAbVar + 2 * Down(),
+			10,
+			EffectRev.VisibleToPositionAndRadius
+		);
+		pActiveAbEffectList.ModAppend(LastCreatedEntity());
+		CreateEffect(
+			pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [],
+			Effect.Ring,
+			Color.SkyBlue,
+			pActiveAbVar + Down(),
+			10,
+			EffectRev.VisibleToPositionAndRadius
+		);
+		pActiveAbEffectList.ModAppend(LastCreatedEntity());
 	}
 	else if (gTemp1 == 6)
 	{
-		CreateEffect(pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [], Effect.HealTargetActiveEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleTo);
-		ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
+		CreateEffect(
+			pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [],
+			Effect.HealTargetActiveEffect,
+			Color.Team1,
+			EventPlayer(),
+			1,
+			EffectRev.VisibleTo
+		);
+		pActiveAbEffectList.ModAppend(LastCreatedEntity());
 	}
 	else if (gTemp1 == 7)
 	{
 		pActiveAbVar = 1000 * Down();
-		CreateEffect(pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [], Effect.Cloud, Color.Yellow, pActiveAbVar + Up(), 8, EffectRev.VisibleToPositionAndRadius);
-		ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
-		CreateEffect(pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [], Effect.Cloud, Color.Yellow, pActiveAbVar + Down(), 8, EffectRev.VisibleToPositionAndRadius);
-		ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
+		CreateEffect(
+			pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [],
+			Effect.Cloud,
+			Color.Yellow,
+			pActiveAbVar + Up(),
+			8,
+			EffectRev.VisibleToPositionAndRadius
+		);
+		pActiveAbEffectList.ModAppend(LastCreatedEntity());
+		CreateEffect(
+			pActiveAbCooldown < 0 ? AllPlayers(Team.All) : [],
+			Effect.Cloud,
+			Color.Yellow,
+			pActiveAbVar + Down(),
+			8,
+			EffectRev.VisibleToPositionAndRadius
+		);
+		pActiveAbEffectList.ModAppend(LastCreatedEntity());
 	}
 	else if (gTemp1 == 8)
 	{
 		pActiveAbVar = [];
-		CreateBeamEffect(CountOf(pActiveAbVar) ? AllPlayers(Team.All) : [], BeamType.BadBeam, EventPlayer(), pActiveAbVar[0], Color.Purple, EffectRev.VisibleToPositionAndRadius);
-		ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
-		CreateBeamEffect(CountOf(pActiveAbVar) > 1 ? AllPlayers(Team.All) : [], BeamType.BadBeam, pActiveAbVar[0], pActiveAbVar[1], Color.Purple, EffectRev.VisibleToPositionAndRadius);
-		ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
-		CreateBeamEffect(CountOf(pActiveAbVar) > 2 ? AllPlayers(Team.All) : [], BeamType.BadBeam, pActiveAbVar[1], pActiveAbVar[2], Color.Purple, EffectRev.VisibleToPositionAndRadius);
-		ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
-		CreateBeamEffect(CountOf(pActiveAbVar) > 3 ? AllPlayers(Team.All) : [], BeamType.BadBeam, pActiveAbVar[2], pActiveAbVar[3], Color.Purple, EffectRev.VisibleToPositionAndRadius);
-		ModifyVariable(pActiveAbEffectList, Operation.AppendToArray, LastCreatedEntity());
+		CreateBeamEffect(
+			CountOf(pActiveAbVar) ? AllPlayers(Team.All) : [],
+			BeamType.BadBeam,
+			EventPlayer(),
+			pActiveAbVar[0],
+			Color.Purple,
+			EffectRev.VisibleToPositionAndRadius
+		);
+		pActiveAbEffectList.ModAppend(LastCreatedEntity());
+		CreateBeamEffect(
+			CountOf(pActiveAbVar) > 1 ? AllPlayers(Team.All) : [],
+			BeamType.BadBeam,
+			pActiveAbVar[0],
+			pActiveAbVar[1],
+			Color.Purple,
+			EffectRev.VisibleToPositionAndRadius
+		);
+		pActiveAbEffectList.ModAppend(LastCreatedEntity());
+		CreateBeamEffect(
+			CountOf(pActiveAbVar) > 2 ? AllPlayers(Team.All) : [],
+			BeamType.BadBeam,
+			pActiveAbVar[1],
+			pActiveAbVar[2],
+			Color.Purple,
+			EffectRev.VisibleToPositionAndRadius
+		);
+		pActiveAbEffectList.ModAppend(LastCreatedEntity());
+		CreateBeamEffect(
+			CountOf(pActiveAbVar) > 3 ? AllPlayers(Team.All) : [],
+			BeamType.BadBeam,
+			pActiveAbVar[2],
+			pActiveAbVar[3],
+			Color.Purple,
+			EffectRev.VisibleToPositionAndRadius
+		);
+		pActiveAbEffectList.ModAppend(LastCreatedEntity());
 	}
 	play_purchase_confirmation_sound();
 }
@@ -283,7 +384,7 @@ if (pDownedStartT || NormalizedHealth(EventPlayer()) < 0.5 || HasStatus(EventPla
 {
 	leave_buy_menu();
 	AbortIf(NormalizedHealth(EventPlayer()) > 0.4);
-	SetPlayerHealth(EventPlayer(), 0.4 * MaxHealth(EventPlayer()));
+	EventPlayer().SetMaxHealth(0.4 * EventPlayer().MaxHealth());
 }
 
 rule: "Team 1: Toggle Show active Ability"
@@ -302,7 +403,11 @@ Team.Team1
 if (pInBuyMenu)
 if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 {
-	AbortIf(pInBuyMenu + 0.1 >= TotalTimeElapsed() || AbsoluteValue(HorizontalFacingAngleOf(EventPlayer())) >= 135 || AbsoluteValue(VerticalFacingAngleOf(EventPlayer()) + 11.25) >= 45 || pTasedEndT >= TotalTimeElapsed());
+	AbortIf(pInBuyMenu + 0.1 >= TotalTimeElapsed()
+		|| AbsoluteValue(HorizontalFacingAngleOf(EventPlayer())) >= 135
+		|| AbsoluteValue(VerticalFacingAngleOf(EventPlayer()) + 11.25) >= 45
+		|| pTasedEndT >= TotalTimeElapsed()
+	);
 	# Grid coordinates of selected panel
 	gTemp1 = [RoundToInteger((HorizontalFacingAngleOf(EventPlayer()) + 135) / 45, Rounding.Down), RoundToInteger((VerticalFacingAngleOf(EventPlayer()) + 56.25) / 22.5, Rounding.Down)];
 	if (gTemp1[1] == 0)
@@ -383,7 +488,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 					MinWait();
 					pPerkShockProof = false;
 				}
-				SmallMessage(EventPlayer(), "Money Refunded");
+				SmallMessage(EventPlayer(), " Money Refunded");
 				update_ab_string_and_play_sound();
 				Abort();
 			}
@@ -395,7 +500,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 		{
 			if (gTemp1[1] >= 2)
 			{
-				// Current perks contains the two perks, access using boolean value
+				// Current perks contains the two random perks, access using boolean value
 				gTemp2 = gCurrentPerks[gTemp1[1] >= 3];
 				if (gTemp2 == 0)
 				{
@@ -513,7 +618,14 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 						if (gTemp2)
 						{
 							pPerkNemesis = true;
-							CreateBeamEffect(pPerkNemesisKiller ? AllPlayers() : [], BeamType.BadBeam, PositionOf(EventPlayer()), pPerkNemesisKiller, Color.Black, EffectRev.VisibleToPositionAndRadius);
+							CreateBeamEffect(
+								pPerkNemesisKiller ? AllPlayers() : [],
+								BeamType.BadBeam,
+								EventPlayer().Position(),
+								pPerkNemesisKiller,
+								Color.Black,
+								EffectRev.VisibleToPositionAndRadius
+							);
 							pNemesisBeamEffect = LastCreatedEntity();
 							update_ab_string_and_play_sound();
 						}
@@ -527,8 +639,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 						check_if_enough_money();
 						if (gTemp2)
 						{
-							AddHealthPoolToPlayer(EventPlayer(), HealthType.Armor, 50, true, true);
-							pHpPool[2] = LastCreatedHealthPool();
+							pHpPool[2] = AddHealthPoolToPlayer(EventPlayer(), HealthType.Armor, 50, true, true);
 							pPerkSpecialOperator = true;
 							update_ab_string_and_play_sound();
 						}
@@ -543,8 +654,12 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 						if (gTemp2)
 						{
 							pPerkSharpShooter = true;
-							StartDamageModification(FilteredArray(AllPlayers(Team.Team2), DistanceBetween(EventPlayer(), ArrayElement()) > 20), EventPlayer(), 150, DamageModificationRev.ReceiversDamagersAndDamagePercent);
-							pDamageMod[10] = LastDamageModificationID();
+							pDamageMod[10] = StartDamageModification(
+								AllPlayers(Team.Team2).Filter(p => DistanceBetween(EventPlayer(), p) > 20),
+								EventPlayer(),
+								150,
+								DamageModificationRev.ReceiversDamagersAndDamagePercent
+							);
 							update_ab_string_and_play_sound();
 						}
 					}
@@ -793,10 +908,18 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 							StopHealingModification(pHealMod[1]);
 							StopHealOverTime(pHealMod[2]);
 							pAbAntigens = pAbAntigens ? 2 : 1;
-							StartHealingModification(EventPlayer(), AllPlayers(), 100 + 20 * pAbAntigens, HealingModificationRev.ReceiversDamagersAndDamagePercent);
-							pHealMod[1] = LastHealingModificationID();
-							StartHealOverTime(EventPlayer(), null, 9999, MaxHealth(EventPlayer()) * 0.01 * pAbAntigens);
-							pHealMod[2] = LastHealOverTime();
+							pHealMod[1] = StartHealingModification(
+								EventPlayer(),
+								AllPlayers(),
+								100 + 20 * pAbAntigens,
+								HealingModificationRev.ReceiversDamagersAndDamagePercent
+							);
+							pHealMod[2] = StartHealOverTime(
+								EventPlayer(),
+								null,
+								9999,
+								MaxHealth(EventPlayer()) * 0.01 * pAbAntigens
+							);
 							update_ab_string_and_play_sound();
 						}
 					}
@@ -835,7 +958,7 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 			}
 			else
 			{
-				SmallMessage(EventPlayer(), "Swapped Priority");
+				SmallMessage(EventPlayer(), " Swapped Priority");
 			}
 			pAbPriority = gTemp1[1];
 			update_ab_string_and_play_sound();
@@ -851,34 +974,193 @@ if (HasSpawned(EventPlayer()))
 {
 	# Fail-Safe if player somehow despawned (Like Echo duplicating D.Va)
 	AbortIf(pIsCombatant);
-	SmallMessage(EventPlayer(), "*******​ ​***********​ PvE: Talents​ | 3.4.6 ​***​ LemonAid");
+	//SmallMessage(EventPlayer(), "*******​ ​***********​ PvE: Talents​ | 3.4.6 ​***​ LemonAid");
 	# Triage: Players to Players Healing Increase
-	StartHealingModification(FilteredArray(gCombatants, NormalizedHealth(ArrayElement()) <= 0.5), EventPlayer(), 100 + 25 * pAbTriage, HealingModificationRev.ReceiversDamagersAndDamagePercent);
+	StartHealingModification(
+		gCombatants.Filter(p => NormalizedHealth(p) <= 0.5),
+		EventPlayer(),
+		100 + 25 * pAbTriage,
+		HealingModificationRev.ReceiversDamagersAndDamagePercent
+	);
 	pIsCombatant = true;
+	// ??
 	pSpectatedPlayer = EventPlayer();
 	pAbBoughtAbilitiesString = "";
 	pHealthPercent = 100;
 	pHealingDealtPercent = 100;
 	SetHealingReceived(EventPlayer(), 85 + 2.5 * gUpgradeCount);
 	update_combatants();
-	CreateEffect(pDownedStartT ? AllPlayers() : [], Effect.Ring, Color.Yellow, EventPlayer(), 3, EffectRev.VisibleTo);
-	CreateIcon(pDownedStartT ? RemoveFromArray(AllPlayers(), EventPlayer()) : [], EventPlayer(), Icon.Skull, IconRev.VisibleTo, Color.Yellow, true);
+	CreateEffect(
+		pDownedStartT ? AllPlayers() : [],
+		Effect.Ring,
+		Color.Yellow,
+		EventPlayer(),
+		3,
+		EffectRev.VisibleTo
+	);
+	CreateIcon(
+		pDownedStartT ? AllPlayers().Remove(EventPlayer()) : [],
+		EventPlayer(),
+		Icon.Skull,
+		IconRev.VisibleTo,
+		Color.Yellow,
+		true
+	);
 	# Workaround: Normalized Health sometimes doesn't reevaluate, so force with TTE
-	CreateHudText(AllPlayers(Team.Team1), <"<0><1>", HeroIconString(HeroOf(EventPlayer())), pDownedStartT && pReviveTimer ? gProgressBarStrings[RoundToInteger(pReviveTimer / 10, Rounding.Down)] : "">, <"<0><1><2>", EventPlayer(), pAbPriority ? ["(A)", "(B)", "(C)"][pAbPriority - 1] : "", pInBuyMenu ? "(In Shop)" : "">, <"<0><1>", pDownedStartT ? pReviveTimer ? "Being Revived" : "Downed" : pIsChangedHeroes ? "Changing Heroes" : <"<0> HP", RoundToInteger(Health(EventPlayer()), Rounding.Up)>, <", <0>$", RoundToInteger(gMoneyMult * gMoneyAmount - pMoneySpentAmount, Rounding.Down)>>, Location.Left, LocalPlayer() == EventPlayer() ? -1 : SlotOf(EventPlayer()), pDownedStartT ? Color.Red : pIsChangedHeroes || NormalizedHealth(EventPlayer()) >= 0.5 ? LocalPlayer() == EventPlayer() ? Color.Green : Color.SkyBlue : Color.Orange, pDownedStartT ? Color.Red : pIsChangedHeroes || NormalizedHealth(EventPlayer()) >= 0.5 ? LocalPlayer() == EventPlayer() ? Color.Green : Color.SkyBlue : Color.Orange, pDownedStartT ? Color.Red : pIsChangedHeroes || NormalizedHealth(EventPlayer()) >= 0.5 ? LocalPlayer() == EventPlayer() ? Color.Green : Color.SkyBlue : Color.Orange, HudTextRev.VisibleToSortOrderStringAndColor, Spectators.DefaultVisibility);
+	CreateHudText(
+		AllPlayers(Team.Team1),
+		"{0}{1}".Format([
+			HeroIconString(HeroOf(EventPlayer())),
+			pDownedStartT && pReviveTimer
+				? gProgressBarStrings[RoundToInteger(pReviveTimer / 10, Rounding.Down)]
+				: ""
+		]),
+		"{0}{1}{2}".Format([
+			EventPlayer(),
+			pAbPriority ? ["(A)", "(B)", "(C)"][pAbPriority - 1] : "",
+			pInBuyMenu ? "(In Shop)" : ""
+		]),
+		"{0}{1}".Format([
+			pDownedStartT
+				? pReviveTimer
+					? "Being Revived"
+					: "Downed"
+				: pIsChangedHeroes
+					? "Changing Heroes"
+					: "{0} HP".Format([RoundToInteger(EventPlayer().Health(), Rounding.Up)]),
+			", ${0}".Format([RoundToInteger(gMoneyMult * gMoneyAmount - pMoneySpentAmount, Rounding.Down)])
+		]),
+		Location.Left,
+		LocalPlayer() == EventPlayer() ? -1 : SlotOf(EventPlayer()),
+		pDownedStartT
+			? Color.Red
+			: pIsChangedHeroes || NormalizedHealth(EventPlayer()) >= 0.5
+				? LocalPlayer() == EventPlayer()
+					? Color.Green
+					: Color.SkyBlue
+				: Color.Orange,
+		pDownedStartT
+			? Color.Red
+			: pIsChangedHeroes || NormalizedHealth(EventPlayer()) >= 0.5
+			? LocalPlayer() == EventPlayer()
+				? Color.Green
+				: Color.SkyBlue
+			: Color.Orange,
+		pDownedStartT
+			? Color.Red
+			: pIsChangedHeroes || NormalizedHealth(EventPlayer()) >= 0.5
+				? LocalPlayer() == EventPlayer()
+					? Color.Green
+					: Color.SkyBlue
+				: Color.Orange,
+		HudTextRev.VisibleToSortOrderStringAndColor,
+		Spectators.DefaultVisibility
+	);
 	# Stats
 	pDamageReceived = 100;
 	pDamageDealt = 100;
 	pMoveSpeed = 100;
 	# Ability lists
-	CreateHudText(pIsCombatant ? EventPlayer() : [], null, pSpectatedPlayer.pAbBoughtAbilitiesString, null, Location.Left, 10, null, Color.Green, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
-	CreateHudText(pSpectatedPlayer.pTalent1 ? EventPlayer() : [], "", pSpectatedPlayer.pTalentText[2], <"<0>\n━━━━", pSpectatedPlayer.pTalentText[1]>, Location.Left, 11, Color.Blue, Color.White, Color.SkyBlue, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
-	CreateHudText(pSpectatedPlayer.pTalent2 ? EventPlayer() : [], "", pSpectatedPlayer.pTalentText[4], <"<0>\n━━━━", pSpectatedPlayer.pTalentText[3]>, Location.Left, 12, Color.Blue, Color.White, Color.SkyBlue, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
-	CreateHudText(pSpectatedPlayer.pActiveAbNumber ? EventPlayer() : [], AbilityIconString([Hero.Ana, Hero.Sombra, Hero.Soldier76, Hero.Reaper, Hero.Cassidy, Hero.Baptiste, Hero.Sigma, Hero.Sombra][pSpectatedPlayer.pActiveAbNumber - 1], [Button.Ultimate, Button.Ability1, Button.Ability1, Button.Ability1, Button.Ability2, Button.Ability1, Button.Ultimate, Button.SecondaryFire][pSpectatedPlayer.pActiveAbNumber - 1]), <"Hold or double tap <0>", InputBindingString(Button.Melee)>, <"<0>: <1>", ["Stim Infusion", "Cloak", "Feint", "Frenzy", "Smoke Bomb", "Resurgence", "Tear Gas", "Chain Hack"][pSpectatedPlayer.pActiveAbNumber - 1], pSpectatedPlayer.pActiveAbCooldown ? RoundToInteger(pSpectatedPlayer.pActiveAbCooldown, Rounding.Up) : "Ready">, Location.Left, 13, pSpectatedPlayer.pActiveAbCooldown < 0 ? Color.Green : HasStatus(pSpectatedPlayer, Status.Hacked) || HasStatus(pSpectatedPlayer, Status.Stunned) ? Color.Red : pSpectatedPlayer.pActiveAbCooldown ? Color.Gray : Color.Green, Color.Orange, pSpectatedPlayer.pActiveAbCooldown < 0 ? Color.Green : HasStatus(pSpectatedPlayer, Status.Hacked) || HasStatus(pSpectatedPlayer, Status.Stunned) ? Color.Red : pSpectatedPlayer.pActiveAbCooldown ? Color.Gray : Color.Green, HudTextRev.VisibleToStringAndColor, Spectators.DefaultVisibility);
-	CreateEffect(pSmokedScreen && !pPerkSpecialOperator ? EventPlayer() : [], Effect.Sphere, Color.White, EventPlayer(), 5, EffectRev.VisibleToPositionAndRadius);
-	CreateEffect(HasStatus(EventPlayer(), Status.Invincible) ? AllPlayers() : [], Effect.BaptisteImmortalityFieldProtectedEffect, Team.Team2, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
+	CreateHudText(
+		pIsCombatant ? EventPlayer() : [],
+		null,
+		pAbBoughtAbilitiesString,
+		"{0}{1}".Format([
+			pTalent1 ? "\n{0}{1}".Format([AbilityIconString(Hero.Pharah, Button.Jump), pTalentText[1]]) : "",
+			pTalent2 ? "\n{0}{1}".Format([AbilityIconString(Hero.Pharah, Button.Jump), pTalentText[3]]) : ""
+		]).Slice(1, 100),
+		Location.Left,
+		10,
+		null,
+		Color.Green,
+		Color.Blue,
+		HudTextRev.VisibleToAndString,
+		Spectators.DefaultVisibility
+	);
+	//# Talent 1
+	//CreateHudText(
+	//	pTalent1 ? EventPlayer() : [],
+	//	"",
+	//	pTalentText[2],
+	//	pTalentText[1],
+	//	Location.Left,
+	//	11,
+	//	Color.Blue,
+	//	Color.White,
+	//	Color.SkyBlue,
+	//	HudTextRev.VisibleToAndString,
+	//	Spectators.DefaultVisibility
+	//);
+	//# Talent 2
+	//CreateHudText(
+	//	pTalent2 ? EventPlayer() : [],
+	//	"",
+	//	pTalentText[4],
+	//	pTalentText[3],
+	//	Location.Left,
+	//	12,
+	//	Color.Blue,
+	//	Color.White,
+	//	Color.SkyBlue,
+	//	HudTextRev.VisibleToAndString,
+	//	Spectators.DefaultVisibility
+	//);
+	CreateHudText(
+		pActiveAbNumber ? EventPlayer() : [],
+		AbilityIconString(
+			[Hero.Ana, Hero.Sombra, Hero.Soldier76, Hero.Reaper, Hero.Cassidy, Hero.Baptiste, Hero.Sigma, Hero.Sombra][pActiveAbNumber - 1],
+			 [Button.Ultimate, Button.Ability1, Button.Ability1, Button.Ability1, Button.Ability2, Button.Ability1, Button.Ultimate, Button.SecondaryFire][pActiveAbNumber - 1]
+		),
+		"Hold or double tap {0}".Format([InputBindingString(Button.Melee)]),
+		"{0}: {1}".Format([
+			["Stim Infusion", "Cloak", "Feint", "Frenzy", "Smoke Bomb", "Resurgence", "Tear Gas", "Chain Hack"][pActiveAbNumber - 1],
+			pActiveAbCooldown ? RoundToInteger(pActiveAbCooldown, Rounding.Up) : "Ready"
+		]),
+		Location.Left,
+		13,
+		pActiveAbCooldown < 0
+			? Color.Green
+			: HasStatus(EventPlayer(), Status.Hacked) || HasStatus(EventPlayer(), Status.Stunned)
+				? Color.Red
+				: pActiveAbCooldown
+					? Color.Gray
+					: Color.Green,
+		Color.Orange,
+		pActiveAbCooldown < 0
+			? Color.Green
+			: HasStatus(EventPlayer(), Status.Hacked) || HasStatus(EventPlayer(), Status.Stunned)
+				? Color.Red
+				: pActiveAbCooldown
+					? Color.Gray
+					: Color.Green,
+		HudTextRev.VisibleToStringAndColor,
+		Spectators.DefaultVisibility
+	);
+	CreateEffect(
+		pSmokedScreen && !pPerkSpecialOperator ? EventPlayer() : [],
+		Effect.Sphere,
+		Color.White,
+		EventPlayer(),
+		5,
+		EffectRev.VisibleToPositionAndRadius
+	);
+	CreateEffect(
+		HasStatus(EventPlayer(), Status.Invincible) ? AllPlayers() : [],
+		Effect.BaptisteImmortalityFieldProtectedEffect,
+		Team.Team2,
+		EventPlayer(),
+		1,
+		EffectRev.VisibleToPositionAndRadius
+	);
 	if (gWaveNumber > 0)
 	{
-		StartForcingPlayerOutlines(FilteredArray(AllPlayers(Team.Team2), ArrayElement().pIsLivingBoss), EventPlayer(), true, Color.Yellow, OutlineType.Always);
+		StartForcingPlayerOutlines(
+			AllPlayers(Team.Team2).Filter(p => p.pIsLivingBoss),
+			EventPlayer(),
+			true,
+			Color.Yellow,
+			OutlineType.Always
+		);
 		pCanUseDropInBuyMenu = true;
 		WaitUntil(pInBuyMenu, 15);
 		pCanUseDropInBuyMenu = false;
@@ -917,13 +1199,13 @@ if (IsButtonHeld(EventPlayer(), Button.Reload))
 	AbortIf(gObjectivePhaseNumber > 0 || pDownedStartT || pInBuyMenu);
 	if (pPerkMysterySwap)
 	{
-		SmallMessage(EventPlayer(), "Mystery Swap prevents you from changing heroes");
+		SmallMessage(EventPlayer(), " Mystery Swap prevents you from changing heroes");
 		Abort();
 	}
 	pIsChangedHeroes = true;
-	pAbVar1 = PositionOf(EventPlayer());
-	pAbVar2 = EyePosition(EventPlayer());
-	pAbVar3 = FacingDirectionOf(EventPlayer());
+	pAbVar1 = EventPlayer().Position();
+	pAbVar2 = EventPlayer().EyePosition();
+	pAbVar3 = EventPlayer().FacingDirection();
 	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Yellow, pAbVar1, 1);
 	StartCamera(EventPlayer(), RayCastHitPosition(pAbVar2, pAbVar2 - 8.25 * DirectionFromAngles(HorizontalAngleFromDirection(pAbVar3), 20), null, null, false) + 0.25 * DirectionFromAngles(HorizontalAngleFromDirection(pAbVar3), 20), pAbVar2, 0);
 	ClearStatus(EventPlayer(), Status.Unkillable);
@@ -957,9 +1239,25 @@ if (!pIsChangedHeroes)
 	if (!pDownedStartT)
 	{
 		DisableMessages(EventPlayer());
-		SmallMessage(AllPlayers(), <"<0> was downed!", EventPlayer()>);
-		pDeathCamTarget = EyePosition(EventPlayer()) + 1000 * DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()), 0);
-		StartCamera(EventPlayer(), RayCastHitPosition(EyePosition(pSpectatedPlayer), EyePosition(pSpectatedPlayer) - (pDeathCamTarget ? 6.25 * DirectionTowards(EyePosition(pSpectatedPlayer), pDeathCamTarget) : 8.25 * DirectionFromAngles(HorizontalFacingAngleOf(pSpectatedPlayer), 20)), null, null, false) + 0.25 * (pDeathCamTarget ? DirectionTowards(EyePosition(pSpectatedPlayer), pDeathCamTarget) : DirectionFromAngles(HorizontalFacingAngleOf(pSpectatedPlayer), 20)), EyePosition(pSpectatedPlayer), pDeathCamTarget ? 10 : 20);
+		SmallMessage(AllPlayers(), "{0} was downed!".Format([EventPlayer()]));
+		pDeathCamTarget = EventPlayer().EyePosition() + 1000 * DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()), 0);
+		StartCamera(
+			EventPlayer(),
+			RayCastHitPosition(
+				EyePosition(pSpectatedPlayer),
+				EyePosition(pSpectatedPlayer) - (pDeathCamTarget
+					? 6.25 * DirectionTowards(EyePosition(pSpectatedPlayer), pDeathCamTarget)
+					: 8.25 * DirectionFromAngles(HorizontalFacingAngleOf(pSpectatedPlayer), 20)),
+				null,
+				null,
+				false
+			) + 0.25 * (pDeathCamTarget
+				? DirectionTowards(EyePosition(pSpectatedPlayer), pDeathCamTarget)
+				: DirectionFromAngles(HorizontalFacingAngleOf(pSpectatedPlayer), 20)
+			),
+			EyePosition(pSpectatedPlayer),
+			pDeathCamTarget ? 10 : 20
+		);
 		for (gIterator = 0; CountOf(gCombatants); 1)
 		{
 			PlayEffect(gCombatants[gIterator], PlayEffect.RingExplosionSound, Color.White, gCombatants[gIterator], 200);
@@ -967,7 +1265,12 @@ if (!pIsChangedHeroes)
 		}
 		pDownedStartT = TotalTimeElapsed();
 		pReviveTimer = false;
-		if (pPerkNemesis && Attacker().pIsAlive && TeamOf(Attacker()) == Team.Team2 && !Attacker().pIvIsPortal && SlotOf(Attacker()) != 1)
+		if (pPerkNemesis
+			&& Attacker().pIsAlive
+			&& TeamOf(Attacker()) == Team.Team2
+			&& !Attacker().pIvIsPortal
+			&& SlotOf(Attacker()) != 1
+		)
 		{
 			pPerkNemesisKiller = Attacker();
 		}
@@ -1042,7 +1345,8 @@ if (IsButtonHeld(EventPlayer(), Button.Jump))
 	}
 	else
 	{
-		pSpectatedPlayer = gCombatants[(IndexOfArrayValue(gCombatants, pSpectatedPlayer) + 1) % CountOf(gCombatants)];
+		# Go to next player
+		pSpectatedPlayer = gCombatants[(gCombatants.IndexOf(pSpectatedPlayer) + 1) % CountOf(gCombatants)];
 	}
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 }
@@ -1061,14 +1365,34 @@ Team.Team1
 if (pDownedStartT)
 if (pDownedStartT + 1 < TotalTimeElapsed())
 {
-	pRevivers = FilteredArray(gCombatants, !ArrayElement().pDownedStartT && !(ArrayElement().pIsInvisible % 3) && DistanceBetween(EventPlayer(), Vector(XOf(PositionOf(ArrayElement())), YOf(PositionOf(EventPlayer())), ZOf(PositionOf(ArrayElement())))) <= 3 && AbsoluteValue(YOf(PositionOf(EventPlayer())) - YOf(PositionOf(ArrayElement()))) <= 3 && (HeroOf(ArrayElement()) == Hero.Mei && IsUsingAbility1(ArrayElement()) || IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.NoBarriersBlock)));
+	# Ignores height when reviving
+	pRevivers = gCombatants.Filter(
+		p => !p.pDownedStartT
+		&& !(p.pIsInvisible % 3)
+		&& DistanceBetween(
+			EventPlayer(),
+			Vector(
+				p.Position().X,
+				EventPlayer().Position().Y,
+				p.Position().Z
+			)
+		) <= 3
+		&& AbsoluteValue(EventPlayer().Position().Y - p.Position().Y) <= 3
+		&& (
+			HeroOf(p) == Hero.Mei
+			&& IsUsingAbility1(p)
+			|| IsInLineOfSight(EventPlayer(), p, BarrierLOS.NoBarriersBlock)
+		)
+	);
 	if (CountOf(pRevivers))
 	{
-		pIsReviveSlow = IsTrueForAll(pRevivers, ArrayElement().pActiveAbIsCloaked || HasStatus(ArrayElement(), Status.Invincible) || HasStatus(ArrayElement(), Status.PhasedOut));
+		pIsReviveSlow = pRevivers.IsTrueForAll(
+			p => p.pActiveAbIsCloaked || HasStatus(p, Status.Invincible) || HasStatus(p, Status.PhasedOut)
+		);
 		pReviveTimer += (gIsHardModeEnabled || gIsApocalyptic ? 0.667 : 1) * (pPerkGoldenHour ? 2 : 1) * (pIsReviveSlow ? 2.5 : 5);
 		if (pReviveTimer >= 100)
 		{
-			SmallMessage(AllPlayers(), <"<0> has been revived!", EventPlayer()>);
+			SmallMessage(AllPlayers(), " {0} has been revived!".Format([EventPlayer()]));
 			pDownedStartT = false;
 		}
 	}
@@ -1087,7 +1411,10 @@ if (pDownedStartT)
 if (pDownedStartT + 5 < TotalTimeElapsed())
 if (pIsFlying)
 {
-	gTemp1 = NearestWalkablePosition(PositionOf(EventPlayer()) + 5 * DirectionFromAngles(RandomInteger(-179, 180), false));
+	gTemp1 = NearestWalkablePosition(EventPlayer().Position() + 5 * DirectionFromAngles(
+		RandomInteger(-179, 180),
+		false
+	));
 	nwp_teleport();
 }
 
@@ -1121,7 +1448,7 @@ if (pLastDamageTakenT + (pPerkDieHard ? 0.5 : 1) * (gMutDeepWounds ? 5 : 2.5) < 
 if (NormalizedHealth(EventPlayer()) != 1)
 if (Health(EventPlayer()))
 {
-	Heal(EventPlayer(), null, MaxHealth(EventPlayer()) * 0.333);
+	Heal(EventPlayer(), null, EventPlayer().MaxHealth() * 0.333);
 	PlayEffect(EventPlayer(), PlayEffect.BuffExplosionSound, Color.White, EventPlayer(), 50);
 	while (true)
 	{
@@ -1147,13 +1474,17 @@ Event.OngoingPlayer
 Team.Team1
 if (pIsCombatant)
 {
-	if (HeroOf(EventPlayer()) == Hero.Mei && IsUsingAbility1(EventPlayer()))
+	if (EventPlayer().Hero() == Hero.Mei && EventPlayer().IsUsingAbility1())
 	{
 		pEyeOffset = 1.2 * Up();
 	}
-	else if (HasStatus(EventPlayer(), Status.KnockedDown) || HasStatus(EventPlayer(), Status.Asleep) || IsCommunicatingAnyEmote(EventPlayer()))
+	else if (
+		HasStatus(EventPlayer(), Status.KnockedDown)
+		|| HasStatus(EventPlayer(), Status.Asleep)
+		|| IsCommunicatingAnyEmote(EventPlayer())
+	)
 	{
-		pEyeOffset = PositionOf(EventPlayer()) + 0.25 * Up() - EyePosition(EventPlayer());
+		pEyeOffset = EventPlayer().Position() + 0.25 * Up() - EventPlayer().EyePosition();
 	}
 	else
 	{
@@ -1171,15 +1502,22 @@ if (pIsCombatant)
 rule: "Team 1 Button: Hold or double tap Melee, Use active Ability"
 Event.OngoingPlayer
 Team.Team1
-if (IsButtonHeld(EventPlayer(), Button.Melee))
+if (EventPlayer().IsButtonHeld(Button.Melee))
 {
-	WaitUntil(!IsButtonHeld(EventPlayer(), Button.Melee), 0.4);
-	if (!IsButtonHeld(EventPlayer(), Button.Melee))
+	WaitUntil(!EventPlayer().IsButtonHeld(Button.Melee), 0.4);
+	if (!EventPlayer().IsButtonHeld(Button.Melee))
 	{
-		WaitUntil(IsButtonHeld(EventPlayer(), Button.Melee), 0.3);
-		AbortIf(!IsButtonHeld(EventPlayer(), Button.Melee));
+		WaitUntil(EventPlayer().IsButtonHeld(Button.Melee), 0.3);
+		AbortIf(!EventPlayer().IsButtonHeld(Button.Melee));
 	}
-	AbortIf(IsDead(EventPlayer()) || pDownedStartT || HasStatus(EventPlayer(), Status.Hacked) || HasStatus(EventPlayer(), Status.Stunned) || !pActiveAbNumber || pInBuyMenu);
+	AbortIf(
+		EventPlayer().IsDead()
+		|| pDownedStartT
+		|| HasStatus(EventPlayer(), Status.Hacked)
+		|| HasStatus(EventPlayer(), Status.Stunned)
+		|| !pActiveAbNumber
+		|| pInBuyMenu
+	);
 	PlayEffect(EventPlayer(), PlayEffect.DebuffImpactSound, Color.White, EventPlayer(), 200);
 	if (pActiveAbNumber == 1)
 	{
@@ -1205,27 +1543,27 @@ if (IsButtonHeld(EventPlayer(), Button.Melee))
 			Wait(1, WaitBehavior.IgnoreCondition);
 		}
 		pActiveAbIsCloaked = false;
-		Damage(PlayersWithinRadius(EyePosition(EventPlayer()), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 99);
-		SetStatus(PlayersWithinRadius(EyePosition(EventPlayer()), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Frozen, 4);
-		PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Aqua, EyePosition(EventPlayer()), 10);
+		Damage(PlayersWithinRadius(EventPlayer().EyePosition(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 99);
+		SetStatus(PlayersWithinRadius(EventPlayer().EyePosition(), 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Frozen, 4);
+		PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Aqua, EventPlayer().EyePosition(), 10);
 		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
 		pActiveAbCooldown = 20;
 	}
 	else if (pActiveAbNumber == 3)
 	{
 		pActiveAbCooldown = -1;
-		gTemp1 = PlayersWithinRadius(EyePosition(EventPlayer()), 6, Team.Team2, RadiusLOS.Surfaces);
+		gTemp1 = PlayersWithinRadius(EventPlayer().EyePosition(), 6, Team.Team2, RadiusLOS.Surfaces);
 		Damage(gTemp1, EventPlayer(), 100);
 		ApplyImpulse(EventPlayer(), ThrottleOf(EventPlayer()) != Vector(0, 0, 0) ? ThrottleOf(EventPlayer()) : Forward(), 25, Relative.ToPlayer, ContraryMotion.Cancel);
-		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Black, EyePosition(EventPlayer()), 6);
+		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Black, EventPlayer().EyePosition(), 6);
 		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
 		SetGravity(EventPlayer(), 0);
 		SetStatus(EventPlayer(), null, Status.PhasedOut, 0.7);
 		Wait(0.6, WaitBehavior.IgnoreCondition);
 		SetGravity(EventPlayer(), 100);
-		gTemp1 = PlayersWithinRadius(EyePosition(EventPlayer()), 6, Team.Team2, RadiusLOS.Surfaces);
+		gTemp1 = PlayersWithinRadius(EventPlayer().EyePosition(), 6, Team.Team2, RadiusLOS.Surfaces);
 		Damage(gTemp1, EventPlayer(), 100);
-		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Black, EyePosition(EventPlayer()), 6);
+		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Black, EventPlayer().EyePosition(), 6);
 		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
 		pActiveAbCooldown = 10;
 		Wait(1, WaitBehavior.IgnoreCondition);
@@ -1244,10 +1582,13 @@ if (IsButtonHeld(EventPlayer(), Button.Melee))
 	}
 	else if (pActiveAbNumber == 5)
 	{
-		pActiveAbVar = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + 2 * Down(), null, null, false) + 2 * Up();
+		pActiveAbVar = RayCastHitPosition(EventPlayer().EyePosition(), EventPlayer().EyePosition() + 2 * Down(), null, null, false) + 2 * Up();
 		for (pActiveAbCooldown = -10; 0; 0.5)
 		{
-			(<Player>FilteredArray(gCombatants, DistanceBetween(EyePosition(ArrayElement()), Vector(XOf(pActiveAbVar), YOf(EyePosition(ArrayElement())), ZOf(pActiveAbVar))) <= 10 && AbsoluteValue(YOf(EyePosition(ArrayElement())) - YOf(pActiveAbVar)) <= 5)).pActiveAbIsSmoked = true;
+			gCombatants.Filter(
+				p => DistanceBetween(p.EyePosition(), Vector(XOf(pActiveAbVar), p.EyePosition().Y, ZOf(pActiveAbVar))) <= 10
+				&& AbsoluteValue(p.EyePosition().Y - YOf(pActiveAbVar)) <= 5
+			).pActiveAbIsSmoked = true;
 			Wait(0.5, WaitBehavior.IgnoreCondition);
 		}
 		pActiveAbCooldown = 20;
@@ -1262,7 +1603,15 @@ if (IsButtonHeld(EventPlayer(), Button.Melee))
 			}
 			if (NormalizedHealth(EventPlayer()) == 1)
 			{
-				Heal(SortedArray(FilteredArray(PlayersWithinRadius(EventPlayer(), 15, Team.Team1, RadiusLOS.Off), ArrayElement().pIsCombatant && !ArrayElement().pDownedStartT && NormalizedHealth(ArrayElement()) != 1), NormalizedHealth(ArrayElement()))[0], null, 75);
+				Heal(
+					PlayersWithinRadius(EventPlayer(), 15, Team.Team1, RadiusLOS.Off).Filter(
+						p => p.pIsCombatant
+						&& !p.pDownedStartT
+						&& NormalizedHealth(p) != 1
+					).Sort(p => NormalizedHealth(p))[0],
+					null,
+					75
+				);
 			}
 			Wait(0.25, WaitBehavior.IgnoreCondition);
 		}
@@ -1270,16 +1619,29 @@ if (IsButtonHeld(EventPlayer(), Button.Melee))
 	}
 	else if (pActiveAbNumber == 7)
 	{
-		pActiveAbVar = RayCastHitPosition(EyePosition(EventPlayer()), EyePosition(EventPlayer()) + 100 * FacingDirectionOf(EventPlayer()), AllPlayers(Team.Team2), null, true);
+		pActiveAbVar = RayCastHitPosition(
+			EventPlayer().EyePosition(),
+			EventPlayer().EyePosition() + 100 * EventPlayer().FacingDirection(),
+			AllPlayers(Team.Team2),
+			null,
+			true
+		);
 		PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.White, pActiveAbVar, 8);
 		PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, pActiveAbVar, 200);
 		for (pActiveAbCooldown = -6; 0; 1)
 		{
-			gTemp1 = FilteredArray(AllLivingPlayers(Team.Team2), !HasStatus(ArrayElement(), Status.PhasedOut) && !HasStatus(ArrayElement(), Status.Stunned) && DistanceBetween(pActiveAbVar, EyePosition(ArrayElement())) <= 8);
+			gTemp1 = AllLivingPlayers(Team.Team2).Filter(
+				p => !HasStatus(p, Status.PhasedOut)
+				&& !HasStatus(p, Status.Stunned)
+				&& DistanceBetween(pActiveAbVar, EyePosition(p)) <= 8
+			);
 			StartDamageOverTime(gTemp1, EventPlayer(), 2, 40);
 			for (gIterator = 0; CountOf(gTemp1); 1)
 			{
-				gTemp1[gIterator].pGmutFortifiedBypassEndT = Max(TotalTimeElapsed(), gTemp1[gIterator].pGmutFortifiedBypassEndT);
+				gTemp1[gIterator].pGmutFortifiedBypassEndT = Max(
+					TotalTimeElapsed(),
+					gTemp1[gIterator].pGmutFortifiedBypassEndT
+				);
 				SetStatus(gTemp1[gIterator], EventPlayer(), Status.Stunned, gTemp1[gTemp2].pIsFortified ? 0.5 : 1);
 			}
 			Wait(2, WaitBehavior.IgnoreCondition);
@@ -1288,14 +1650,23 @@ if (IsButtonHeld(EventPlayer(), Button.Melee))
 	}
 	else if (pActiveAbNumber == 8)
 	{
-		gTemp1 = LastOf(SortedArray(FilteredArray(AllLivingPlayers(Team.Team2), !HasStatus(ArrayElement(), Status.PhasedOut) && !ArrayElement().pIvIsPortal && IsInViewAngle(EventPlayer(), ArrayElement(), 45) && IsInLineOfSight(EyePosition(EventPlayer()), EyePosition(ArrayElement()), BarrierLOS.NoBarriersBlock)), DotProduct(FacingDirectionOf(EventPlayer()), DirectionTowards(EyePosition(EventPlayer()), ArrayElement()))));
+		gTemp1 = AllLivingPlayers(Team.Team2).Filter(
+			p => !HasStatus(p, Status.PhasedOut)
+			&& !p.pIvIsPortal
+			&& IsInViewAngle(EventPlayer(), p, 45)
+			&& IsInLineOfSight(EventPlayer().EyePosition(), EyePosition(p), BarrierLOS.NoBarriersBlock)
+		).Sort(p => DotProduct(EventPlayer().FacingDirection(), DirectionTowards(EventPlayer().EyePosition(), p))).Last;
 		if (gTemp1)
 		{
 			SetStatus(gTemp1, EventPlayer(), Status.Hacked, 5);
 			ModifyVariable(pActiveAbVar, Operation.AppendToArray, gTemp1);
 			for (gIterator = 4; 1; -1)
 			{
-				gTemp1 = SortedArray(FilteredArray(RemoveFromArray(AllLivingPlayers(Team.Team2), pActiveAbVar), !HasStatus(ArrayElement(), Status.PhasedOut) && !ArrayElement().pIvIsPortal && IsInLineOfSight(gTemp1, ArrayElement(), BarrierLOS.NoBarriersBlock)), DistanceBetween(gTemp1, ArrayElement()))[0];
+				gTemp1 = AllLivingPlayers(Team.Team2).Remove(pActiveAbVar).Filter(
+					p => !HasStatus(p, Status.PhasedOut)
+					&& !p.pIvIsPortal
+					&& IsInLineOfSight(gTemp1, p, BarrierLOS.NoBarriersBlock)
+				).Sort(p => DistanceBetween(gTemp1, p))[0];
 				if (gTemp1)
 				{
 					SetStatus(gTemp1, EventPlayer(), Status.Hacked, gIterator);
@@ -1345,6 +1716,7 @@ if (UltimateChargePercent(EventPlayer()) != 100)
 	SetUltimateCharge(EventPlayer(), 100);
 }
 
+//> Outdated
 rule: "Team 1 Echo: Stealth (Invisibility 1, detectable)"
 Event.OngoingPlayer
 Team.Team1
@@ -1372,10 +1744,10 @@ rule: "Team 1 Echo: Cancel Charge on Boss Enemies"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Echo
+if (HeroBeingDuplicated(EventPlayer()) == Hero.Reinhardt)
+if (EventAbility() == null)
+if (Victim().pIsLivingBoss)
 {
-	AbortIf(HeroBeingDuplicated(EventPlayer()) != Hero.Reinhardt);
-	AbortIf(EventAbility() != null);
-	AbortIf(!Victim().pIsLivingBoss);
 	Damage(Victim(), EventPlayer(), 150);
 	CancelPrimaryAction(EventPlayer());
 	Victim().pGmutFortifiedBypassEndT = Max(TotalTimeElapsed() + 1.2, Victim().pGmutFortifiedBypassEndT);
@@ -1386,11 +1758,11 @@ rule: "Team 1 Echo: Cancel Chain Hook on Boss Enemies"
 Event.OnDamageDealt
 Team.Team1
 Player.Echo
+if (HeroBeingDuplicated(EventPlayer()) == Hero.Roadhog)
+if (EventAbility() == Button.Ability1)
+if (Victim().pIsLivingBoss)
+if (IsUsingAbility1(EventPlayer()))
 {
-	AbortIf(HeroBeingDuplicated(EventPlayer()) != Hero.Roadhog);
-	AbortIf(EventAbility() != Button.Ability1);
-	AbortIf(!Victim().pIsLivingBoss);
-	AbortIf(!IsUsingAbility1(EventPlayer()));
 	CancelPrimaryAction(EventPlayer());
 	MinWait();
 	Victim().pGmutFortifiedBypassEndT = Max(TotalTimeElapsed() + 1, Victim().pGmutFortifiedBypassEndT);
@@ -1407,10 +1779,15 @@ if (!pDownedStartT)
 if (!HasStatus(EventPlayer(), Status.Hacked))
 if (!HasStatus(EventPlayer(), Status.Stunned))
 {
-	pAbPlayer = LastOf(SortedArray(FilteredArray(PlayersWithinRadius(EventPlayer(), 10, Team.Team1, RadiusLOS.Off), ArrayElement().pIsCombatant && ArrayElement().pDownedStartT && ArrayElement().pDownedStartT + 0.1 < TotalTimeElapsed() && IsInViewAngle(EventPlayer(), ArrayElement(), 45)), DotProduct(FacingDirectionOf(EventPlayer()), DirectionTowards(EyePosition(EventPlayer()), ArrayElement()))));
+	pAbPlayer = PlayersWithinRadius(EventPlayer(), 10, Team.Team1, RadiusLOS.Off).Filter(
+		p => p.pIsCombatant
+		&& p.pDownedStartT
+		&& p.pDownedStartT + 0.1 < TotalTimeElapsed()
+		&& IsInViewAngle(EventPlayer(), p, 45)
+	).Sort(p => DotProduct(EventPlayer().FacingDirection(), DirectionTowards(EventPlayer().EyePosition(), p))).Last;
 	if (pAbPlayer)
 	{
-		SmallMessage(AllPlayers(), <"<0> has been resurrected by <1>!", pAbPlayer, EventPlayer()>);
+		SmallMessage(AllPlayers(), " {0} has been resurrected by {1}!".Format([pAbPlayer, EventPlayer()]));
 		pAbPlayer.pDownedStartT = false;
 		PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.SkyBlue, pAbPlayer, 1);
 		gTemp1 = (gIsHardModeEnabled || gIsApocalyptic ? 1.5 : 1) * [30, 33.333, 40][pAbHaste];
@@ -1449,9 +1826,9 @@ rule: "Team 1 Reinhardt: Cancel Charge on Boss Enemies"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Reinhardt
+if (EventAbility() == null)
+if (Victim().pIsLivingBoss)
 {
-	AbortIf(EventAbility() != null);
-	AbortIf(!Victim().pIsLivingBoss);
 	Damage(Victim(), EventPlayer(), 250);
 	CancelPrimaryAction(EventPlayer());
 	Victim().pGmutFortifiedBypassEndT = Max(TotalTimeElapsed() + 1.2, Victim().pGmutFortifiedBypassEndT);
@@ -1462,10 +1839,10 @@ rule: "Team 1 Roadhog: Cancel Chain Hook on Boss Enemies"
 Event.OnDamageDealt
 Team.Team1
 Player.Roadhog
+if (EventAbility() == Button.Ability1)
+if (Victim().pIsLivingBoss)
+if (IsUsingAbility1(EventPlayer()))
 {
-	AbortIf(EventAbility() != Button.Ability1);
-	AbortIf(!Victim().pIsLivingBoss);
-	AbortIf(!IsUsingAbility1(EventPlayer()));
 	CancelPrimaryAction(EventPlayer());
 	MinWait();
 	Victim().pGmutFortifiedBypassEndT = Max(TotalTimeElapsed() + 1, Victim().pGmutFortifiedBypassEndT);
@@ -1498,24 +1875,51 @@ Team.Team1
 if (pSmokedScreen)
 if (pDownedStartT == 0)
 {
-	StartForcingPlayerOutlines(AllPlayers(), EventPlayer(), false, Color.White, OutlineType.Default);
-	WaitUntil(IsDead(EventPlayer()), 4);
+	StartForcingPlayerOutlines(
+		AllPlayers(),
+		EventPlayer(),
+		false,
+		Color.White,
+		OutlineType.Default
+	);
+	WaitUntil(EventPlayer().IsDead(), 4);
 	StopForcingPlayerOutlines(AllPlayers(), EventPlayer());
 	pSmokedScreen = false;
-	StartForcingPlayerOutlines(FilteredArray(AllPlayers(Team.Team2), ArrayElement().pIsLivingBoss), EventPlayer(), true, Color.Yellow, OutlineType.Always);
+	StartForcingPlayerOutlines(
+		AllPlayers(Team.Team2).Filter(p => p.pIsLivingBoss),
+		EventPlayer(),
+		true,
+		Color.Yellow,
+		OutlineType.Always
+	);
 }
 
 rule: "Team 1: Is Shattered, Start Accelerating"
 Event.OnDamageTaken
 Team.Team1
+if (HasStatus(EventPlayer(), Status.Stunned))
+if (HeroOf(Attacker()) == Hero.Reinhardt)
+if (EventAbility() == Button.Ultimate)
 {
-	AbortIf(!HasStatus(EventPlayer(), Status.Stunned));
-	AbortIf(HeroOf(Attacker()) != Hero.Reinhardt);
-	AbortIf(EventAbility() != Button.Ultimate);
 	SetStatus(EventPlayer(), Attacker(), Status.Stunned, 5);
 	pLastHitByShatterT = TotalTimeElapsed();
-	ApplyImpulse(EventPlayer(), DirectionFromAngles(HorizontalAngleFromDirection(EventDirection()), 30), 15, Relative.ToWorld, ContraryMotion.CancelXYZ);
-	StartAccelerating(EventPlayer(), DirectionFromAngles(HorizontalAngleFromDirection(EventDirection()), 30), IsInAir(EventPlayer()) ? 100 : (1 - (TotalTimeElapsed() - pLastHitByShatterT)) * 500, 15, Relative.ToWorld, AccelerateRev.DirectionRateAndMaxSpeed);
+	ApplyImpulse(
+		EventPlayer(),
+		DirectionFromAngles(HorizontalAngleFromDirection(EventDirection()), 30),
+		15,
+		Relative.ToWorld,
+		ContraryMotion.CancelXYZ
+	);
+	StartAccelerating(
+		EventPlayer(),
+		DirectionFromAngles(HorizontalAngleFromDirection(EventDirection()), 30),
+		IsInAir(EventPlayer())
+			? 100
+			: (1 - (TotalTimeElapsed() - pLastHitByShatterT)) * 500,
+		15,
+		Relative.ToWorld,
+		AccelerateRev.DirectionRateAndMaxSpeed
+	);
 	Wait(1, WaitBehavior.IgnoreCondition);
 	ClearStatus(EventPlayer(), Status.Stunned);
 	StopAccelerating(EventPlayer());

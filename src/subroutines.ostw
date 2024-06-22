@@ -123,10 +123,11 @@ void set_random_perks() "Subroutine: Set Random Perks"
 	}
 }
 
+// Doesn't play a sound lmao
 # perks(1) team1(27)
 void update_ab_string_and_play_sound() "Subroutine: Update Ability String and Play Sound"
 {
-	//> Could do with some more work
+	# Slice to remove the preceeding newline
 	pAbBoughtAbilitiesString = "{0}{1}{2}".Format([
 		"{0}{1}{2}".Format([
 			"{0}{1}{2}".Format([
@@ -170,21 +171,7 @@ void update_ab_string_and_play_sound() "Subroutine: Update Ability String and Pl
 			]),
 			"{0}{1}{2}".Format([
 				pPerkShockProof ? "\nShockproof" : "",
-				"{0}{1}{2}".Format([
-					pTalent1
-						? "\n{0} {1}".Format([
-							AbilityIconString(Hero.Pharah, Button.Jump),
-							pTalentText[1]
-						])
-						: "",
-					pTalent2
-						? "\n{0} {1}".Format([
-							AbilityIconString(Hero.Pharah, Button.Jump),
-							pTalentText[3]
-						])
-						: "",
-					pAbHealthBonus ? "\n+{0}% Health".Format([pAbHealthBonus]) : ""
-				]),
+				pAbHealthBonus ? "\n+{0}% Health".Format([pAbHealthBonus]) : "",
 				pAbDamageBonus ? "\n+{0}% Damage".Format([pAbDamageBonus]) : ""
 			]),
 			pAbHealingBonus ? "\n+{0}% Healing".Format([pAbHealingBonus]) : ""
