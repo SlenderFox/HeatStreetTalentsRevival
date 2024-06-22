@@ -770,6 +770,7 @@ if (Victim() != EventPlayer())
 	SetStatus(Victim(), null, Status.Hacked, 1);
 }
 
+//> Broken
 rule: "[Pharah] Weaponized Storm"
 Event.OngoingPlayer
 Team.Team1

@@ -21,7 +21,7 @@ void play_incoming_sound_twice() "Subroutine: Play Incoming Sound Twice"
 	ModifyTeamScore(Team.Team1, 1);
 }
 
-void create_perk_text(in String text, in Number perk)
+void create_perk_text(in String text, in Boolean perk)
 {
 	CreateInWorldText(
 		gCombatants.Filter(p => p.pInBuyMenu),
@@ -50,7 +50,7 @@ void set_random_perks() "Subroutine: Set Random Perks"
 		gCurrentPerksHudsList.ModAppend(CreateInWorldText(
 			gCombatants.Filter(p => p.pInBuyMenu),
 			"Hero Talent 1\n      $1600",
-			gBuyMenuBasePos - (25 * gBuyMenuLeftUpForward[1]) - (112.5 * gBuyMenuLeftUpForward[0]),
+			gBuyMenuBasePos - (2.5 * gBuyMenuLeftUpForward[1]) - (112.5 * gBuyMenuLeftUpForward[0]),
 			2.5,
 			Clipping.DoNotClip,
 			InworldTextRev.VisibleToStringAndColor,
@@ -62,7 +62,7 @@ void set_random_perks() "Subroutine: Set Random Perks"
 		gCurrentPerksHudsList.ModAppend(CreateInWorldText(
 			gCombatants.Filter(p => p.pInBuyMenu),
 			"Hero Talent 2\n      $1600",
-			gBuyMenuBasePos - (2.5 * gBuyMenuLeftUpForward[1]) - (112.5 * gBuyMenuLeftUpForward[0]),
+			gBuyMenuBasePos - (25 * gBuyMenuLeftUpForward[1]) - (112.5 * gBuyMenuLeftUpForward[0]),
 			2.5,
 			Clipping.DoNotClip,
 			InworldTextRev.VisibleToStringAndColor,
@@ -77,186 +77,46 @@ void set_random_perks() "Subroutine: Set Random Perks"
 		gCurrentPerks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].Remove(gCurrentPerks).Randomize().Slice(0, 2);
 		for (gIterator = 0; 2; 1)
 		{
+			//> Arithmetic
 			gTemp2 = gBuyMenuBasePos - (gIterator ? 25 : 2.5) * gBuyMenuLeftUpForward[1] - 112.5 * gBuyMenuLeftUpForward[0];
-			if (gCurrentPerks[gIterator] == 0)
+			switch (gCurrentPerks[gIterator])
 			{
-				CreateInWorldText(
-					gCombatants.Filter(p => p.pInBuyMenu),
-					"Mystery Swap\n     500$",
-					gTemp2,
-					2.5,
-					Clipping.DoNotClip,
-					InworldTextRev.VisibleToAndColor,
-					LocalPlayer().pPerkMysterySwap
-						? Color.Gray
-						: Color.LimeGreen,
-					Spectators.DefaultVisibility
-				);
-			}
-			else if (gCurrentPerks[gIterator] == 1)
-			{
-				CreateInWorldText(
-					gCombatants.Filter(p => p.pInBuyMenu),
-					"Bulletstorm\n   1000$",
-					gTemp2,
-					2.5,
-					Clipping.DoNotClip,
-					InworldTextRev.VisibleToAndColor,
-					LocalPlayer().pPerkBulletStorm
-						? Color.Gray
-						: Color.LimeGreen,
-					Spectators.DefaultVisibility
-				);
-			}
-			else if (gCurrentPerks[gIterator] == 2)
-			{
-				CreateInWorldText(
-					gCombatants.Filter(p => p.pInBuyMenu),
-					"Die Hard\n 700$",
-					gTemp2,
-					2.5,
-					Clipping.DoNotClip,
-					InworldTextRev.VisibleToAndColor,
-					LocalPlayer().pPerkDieHard
-						? Color.Gray
-						: Color.LimeGreen,
-					Spectators.DefaultVisibility
-				);
-			}
-			else if (gCurrentPerks[gIterator] == 3)
-			{
-				CreateInWorldText(
-					gCombatants.Filter(p => p.pInBuyMenu),
-					"Brass Knuckles\n     700$",
-					gTemp2,
-					2.5,
-					Clipping.DoNotClip,
-					InworldTextRev.VisibleToAndColor,
-					LocalPlayer().pPerkBrassKnuckles
-						? Color.Gray
-						: Color.LimeGreen,
-					Spectators.DefaultVisibility
-				);
-			}
-			else if (gCurrentPerks[gIterator] == 4)
-			{
-				CreateInWorldText(
-					gCombatants.Filter(p => p.pInBuyMenu),
-					"Vampiric\n   1000$",
-					gTemp2,
-					2.5,
-					Clipping.DoNotClip,
-					InworldTextRev.VisibleToAndColor,
-					LocalPlayer().pPerkVampiric
-						? Color.Gray
-						: Color.LimeGreen,
-					Spectators.DefaultVisibility
-				);
-			}
-			else if (gCurrentPerks[gIterator] == 5)
-			{
-				CreateInWorldText(
-					gCombatants.Filter(p => p.pInBuyMenu),
-					"Crash N' Dash\n      700$",
-					gTemp2,
-					2.5,
-					Clipping.DoNotClip,
-					InworldTextRev.VisibleToAndColor,
-					LocalPlayer().pPerkCrashNDash
-						? Color.Gray
-						: Color.LimeGreen,
-					Spectators.DefaultVisibility
-				);
-			}
-			else if (gCurrentPerks[gIterator] == 6)
-			{
-				CreateInWorldText(
-					gCombatants.Filter(p => p.pInBuyMenu),
-					"Golden Hour\n    1000$",
-					gTemp2,
-					2.5,
-					Clipping.DoNotClip,
-					InworldTextRev.VisibleToAndColor,
-					LocalPlayer().pPerkGoldenHour
-						? Color.Gray
-						: Color.LimeGreen,
-					Spectators.DefaultVisibility
-				);
-			}
-			else if (gCurrentPerks[gIterator] == 7)
-			{
-				CreateInWorldText(
-					gCombatants.Filter(p => p.pInBuyMenu),
-					"Supercharge\n        700$",
-					gTemp2,
-					2.5,
-					Clipping.DoNotClip,
-					InworldTextRev.VisibleToAndColor,
-					LocalPlayer().pPerkSuperCharge
-						? Color.Gray
-						: Color.LimeGreen,
-					Spectators.DefaultVisibility
-				);
-			}
-			else if (gCurrentPerks[gIterator] == 8)
-			{
-				CreateInWorldText(
-					gCombatants.Filter(p => p.pInBuyMenu),
-					"Nemesis\n   800$",
-					gTemp2,
-					2.5,
-					Clipping.DoNotClip,
-					InworldTextRev.VisibleToAndColor,
-					LocalPlayer().pPerkNemesis
-						? Color.Gray
-						: Color.LimeGreen,
-					Spectators.DefaultVisibility
-				);
-			}
-			else if (gCurrentPerks[gIterator] == 9)
-			{
-				CreateInWorldText(
-					gCombatants.Filter(p => p.pInBuyMenu),
-					"Spec Ops\n 600$",
-					gTemp2,
-					2.5,
-					Clipping.DoNotClip,
-					InworldTextRev.VisibleToAndColor,
-					LocalPlayer().pPerkSpecialOperator
-						? Color.Gray
-						: Color.LimeGreen,
-					Spectators.DefaultVisibility
-				);
-			}
-			else if (gCurrentPerks[gIterator] == 10)
-			{
-				CreateInWorldText(
-					gCombatants.Filter(p => p.pInBuyMenu),
-					"Sharpshooter\n   900$",
-					gTemp2,
-					2.5,
-					Clipping.DoNotClip,
-					InworldTextRev.VisibleToAndColor,
-					LocalPlayer().pPerkSharpShooter
-						? Color.Gray
-						: Color.LimeGreen,
-					Spectators.DefaultVisibility
-				);
-			}
-			else if (gCurrentPerks[gIterator] == 11)
-			{
-				CreateInWorldText(
-					gCombatants.Filter(p => p.pInBuyMenu),
-					"Shockproof\n        700$",
-					gTemp2,
-					2.5,
-					Clipping.DoNotClip,
-					InworldTextRev.VisibleToAndColor,
-					LocalPlayer().pPerkShockProof
-						? Color.Gray
-						: Color.LimeGreen,
-					Spectators.DefaultVisibility
-				);
+			case 0:
+				create_perk_text("Mystery Swap\n     $500", LocalPlayer().pPerkMysterySwap);
+				break;
+			case 1:
+				create_perk_text("Bulletstorm\n   $1000", LocalPlayer().pPerkBulletStorm);
+				break;
+			case 2:
+				create_perk_text("Die Hard\n $700", LocalPlayer().pPerkDieHard);
+				break;
+			case 3:
+				create_perk_text("Brass Knuckles\n     $700", LocalPlayer().pPerkBrassKnuckles);
+				break;
+			case 4:
+				create_perk_text("Vampiric\n   $1000", LocalPlayer().pPerkVampiric);
+				break;
+			case 5:
+				create_perk_text("Crash N' Dash\n      $700", LocalPlayer().pPerkCrashNDash);
+				break;
+			case 6:
+				create_perk_text("Golden Hour\n    $1000", LocalPlayer().pPerkGoldenHour);
+				break;
+			case 7:
+				create_perk_text("Supercharge\n        $700", LocalPlayer().pPerkSuperCharge);
+				break;
+			case 8:
+				create_perk_text("Nemesis\n   $800", LocalPlayer().pPerkNemesis);
+				break;
+			case 9:
+				create_perk_text("Spec Ops\n $600", LocalPlayer().pPerkSpecialOperator);
+				break;
+			case 10:
+				create_perk_text("Sharpshooter\n   $900", LocalPlayer().pPerkSharpShooter);
+				break;
+			case 11:
+				create_perk_text("Shockproof\n        $700", LocalPlayer().pPerkShockProof);
+				break;
 			}
 			gCurrentPerksHudsList.ModAppend(LastTextID());
 		}
@@ -266,7 +126,70 @@ void set_random_perks() "Subroutine: Set Random Perks"
 # perks(1) team1(27)
 void update_ab_string_and_play_sound() "Subroutine: Update Ability String and Play Sound"
 {
-	pAbBoughtAbilitiesString = StringSlice(<"<0><1><2>", <"<0><1><2>", <"<0><1><2>", ["", "\nPriority A", "\nPriority B", "\nPriority C"][pAbPriority], ["", "\nHeadhunter I", "\nHeadhunter II"][pAbHeadhunter], ["", "\nAntigens I", "\nAntigens II"][pAbAntigens]>, <"<0><1><2>", ["", "\nQuick Fix I", "\nQuick Fix II"][pAbQuickFix], ["", "\nCharged I", "\nCharged II"][pAbCharged], ["", "\nHaste I", "\nHaste II"][pAbHaste]>, <"<0><1><2>", ["", "\nHeavy Impact I", "\nHeavy Impact II"][pAbHeavyImpact], ["", "\nSecond Wind I", "\nSecond Wind II"][pAbSecondWind], ["", "\nTriage I", "\nTriage II"][pAbTriage]>>, <"<0><1><2>", <"<0><1><2>", ["", "\nResilience I", "\nResilience II"][pAbResilience], pPerkMysterySwap ? "\nMystery Swap" : "", pPerkBulletStorm ? "\nBulletstorm" : "">, <"<0><1><2>", pPerkDieHard ? "\nDie Hard" : "", pPerkBrassKnuckles ? "\nBrass Knuckles" : "", pPerkVampiric ? "\nVampiric" : "">, <"<0><1><2>", pPerkCrashNDash ? "\nCrash N' Dash" : "", pPerkGoldenHour ? "\nGolden Hour" : "", pPerkSuperCharge ? "\nSupercharge" : "">>, <"<0><1><2>", <"<0><1><2>", pPerkNemesis ? "\nNemesis" : "", pPerkSpecialOperator ? "\nSpec Ops" : "", pPerkSharpShooter ? "\nSharpshooter" : "">, <"<0><1><2>", pPerkShockProof ? "\nShockproof" : "", <"<0><1><2>", pTalent1 ? <"\n<0> <1>", AbilityIconString(Hero.Pharah, Button.Jump), pTalentText[1]> : "", pTalent2 ? <"\n<0> <1>", AbilityIconString(Hero.Pharah, Button.Jump), pTalentText[3]> : "", pAbHealthBonus ? <"\n+<0>% Health", pAbHealthBonus> : "">, pAbDamageBonus ? <"\n+<0>% Damage", pAbDamageBonus> : "">, pAbHealingBonus ? <"\n+<0>% Healing", pAbHealingBonus> : "">>, 1, 511);
+	//> Could do with some more work
+	pAbBoughtAbilitiesString = "{0}{1}{2}".Format([
+		"{0}{1}{2}".Format([
+			"{0}{1}{2}".Format([
+				["", "\nPriority A", "\nPriority B", "\nPriority C"][pAbPriority],
+				["", "\nHeadhunter I", "\nHeadhunter II"][pAbHeadhunter],
+				["", "\nAntigens I", "\nAntigens II"][pAbAntigens]
+			]),
+			"{0}{1}{2}".Format([
+				["", "\nQuick Fix I", "\nQuick Fix II"][pAbQuickFix],
+				["", "\nCharged I", "\nCharged II"][pAbCharged],
+				["", "\nHaste I", "\nHaste II"][pAbHaste]
+			]),
+			"{0}{1}{2}".Format([
+				["", "\nHeavy Impact I", "\nHeavy Impact II"][pAbHeavyImpact],
+				["", "\nSecond Wind I", "\nSecond Wind II"][pAbSecondWind],
+				["", "\nTriage I", "\nTriage II"][pAbTriage]
+			])
+		]),
+		"{0}{1}{2}".Format([
+			"{0}{1}{2}".Format([
+				["", "\nResilience I", "\nResilience II"][pAbResilience],
+				pPerkMysterySwap ? "\nMystery Swap" : "",
+				pPerkBulletStorm ? "\nBulletstorm" : ""
+			]),
+			"{0}{1}{2}".Format([
+				pPerkDieHard ? "\nDie Hard" : "",
+				pPerkBrassKnuckles ? "\nBrass Knuckles" : "",
+				pPerkVampiric ? "\nVampiric" : ""
+			]),
+			"{0}{1}{2}".Format([
+				pPerkCrashNDash ? "\nCrash N' Dash" : "",
+				pPerkGoldenHour ? "\nGolden Hour" : "",
+				pPerkSuperCharge ? "\nSupercharge" : ""
+			])
+		]),
+		"{0}{1}{2}".Format([
+			"{0}{1}{2}".Format([
+				pPerkNemesis ? "\nNemesis" : "",
+				pPerkSpecialOperator ? "\nSpec Ops" : "",
+				pPerkSharpShooter ? "\nSharpshooter" : ""
+			]),
+			"{0}{1}{2}".Format([
+				pPerkShockProof ? "\nShockproof" : "",
+				"{0}{1}{2}".Format([
+					pTalent1
+						? "\n{0} {1}".Format([
+							AbilityIconString(Hero.Pharah, Button.Jump),
+							pTalentText[1]
+						])
+						: "",
+					pTalent2
+						? "\n{0} {1}".Format([
+							AbilityIconString(Hero.Pharah, Button.Jump),
+							pTalentText[3]
+						])
+						: "",
+					pAbHealthBonus ? "\n+{0}% Health".Format([pAbHealthBonus]) : ""
+				]),
+				pAbDamageBonus ? "\n+{0}% Damage".Format([pAbDamageBonus]) : ""
+			]),
+			pAbHealingBonus ? "\n+{0}% Healing".Format([pAbHealingBonus]) : ""
+		])
+	]).Slice(1, 511);
 }
 
 # bots(1) team1(2)
@@ -314,24 +237,33 @@ void teleport_to_free_spawn() "Subroutine: Teleport to free Spawn"
 		pDomNavGuardIdx = pNavIdx;
 		pNavPos = gNodes[pNavIdx];
 		pIsNavReachableNode = true;
-		Teleport(EventPlayer(), pNavPos + 0.1 * DirectionFromAngles(HorizontalAngleFromDirection(DirectionTowards(gIvDomObjectivePos[SlotOf(EventPlayer()) == 2 ? 0 : 1], pNavPos)), false));
+		Teleport(
+			EventPlayer(),
+			pNavPos + 0.1 * DirectionFromAngles(
+				HorizontalAngleFromDirection(
+					DirectionTowards(gIvDomObjectivePos[SlotOf(EventPlayer()) == 2 ? 0 : 1],
+					pNavPos)
+				),
+				false
+			)
+		);
 	}
 	else
 	{
 		gTemp2 = MappedArray(gSpawnPosList, false);
 		for (gIterator = 0; CountOf(gSpawnPosList); 1)
 		{
-			if (IsTrueForAny(gCombatants, IsInLineOfSight(gSpawnPosList[gIterator] + Up(), EyePosition(ArrayElement()), BarrierLOS.NoBarriersBlock)))
+			if (gCombatants.IsTrueForAny(p => IsInLineOfSight(gSpawnPosList[gIterator] + Up(), EyePosition(p), BarrierLOS.NoBarriersBlock)))
 			{
 				gTemp2[gIterator] = 2;
 			}
-			else if (IsTrueForAny(gCombatants, DistanceBetween(gSpawnPosList[gIterator], ArrayElement()) <= 10))
+			else if (gCombatants.IsTrueForAny(p => DistanceBetween(gSpawnPosList[gIterator], p) <= 10))
 			{
 				gTemp2[gIterator] = 1;
 			}
 		}
-		gTemp1 = SortedArray(gSpawnPosList, gTemp2[CurrentArrayIndex()] + RandomReal(0, 0.5))[0];
-		pNavIdx = gSpawnNearestNodeIdxList[IndexOfArrayValue(gSpawnPosList, gTemp1)];
+		gTemp1 = gSpawnPosList.Sort(v => gTemp2[CurrentArrayIndex()] + RandomReal(0, 0.5))[0];
+		pNavIdx = gSpawnNearestNodeIdxList[gSpawnPosList.IndexOf(gTemp1)];
 		pNavPos = gNodes[pNavIdx];
 		pIsNavReachableNode = true;
 		Teleport(EventPlayer(), gTemp1);
@@ -399,6 +331,7 @@ void upgrade_health_and_healing() "Subroutine: Upgrade Health and Healing"
 	SetHealingReceived(AllPlayers(Team.Team1), 85 + 2.5 * gUpgradeCount);
 	StartHealOverTime(AllPlayers(Team.Team1), null, 1, 100000);
 }
+
 # domnination(2) highvaluetarget(1) invasion(1)
 void start_kill_remaining_phase() "Subroutine: Start Kill remaining Phase"
 {
