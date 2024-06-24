@@ -9,14 +9,28 @@ if (IsCommunicating(EventPlayer(), Communication.Attacking))
 	pTalent2 = true;
 }
 
-// TODO v
-//rule: "Automatically give all abilities"
-//Event.OngoingPlayer
-//if (EventPlayer() == HostPlayer())
-//if (IsCommunicating(EventPlayer(), Communication.Defending))
-//{
-
-//}
+rule: "Automatically give all abilities"
+Event.OngoingPlayer
+if (EventPlayer() == HostPlayer())
+if (IsCommunicating(EventPlayer(), Communication.Defending))
+{
+	pPerkBulletStorm = true;
+	pPerkDieHard = true;
+	pPerkBrassKnuckles = true;
+	pPerkVampiric = true;
+	pPerkCrashNDash = true;
+	pHpPool[2] = AddHealthPoolToPlayer(EventPlayer(), HealthType.Armor, 50, true, true);
+	pPerkSpecialOperator = true;
+	pPerkSharpShooter = true;
+	pDamageMod[10] = StartDamageModification(
+		AllPlayers(Team.Team2).Filter(p => DistanceBetween(EventPlayer(), p) > 20),
+		EventPlayer(),
+		150,
+		DamageModificationRev.ReceiversDamagersAndDamagePercent
+	);
+	pPerkShockProof = true;
+	update_ab_string_and_play_sound();
+}
 
 rule: "Manually reroll shop"
 Event.OngoingPlayer
