@@ -265,8 +265,16 @@
     }
   },
   "Extensions": {
-    "Buff Status Effects": true,
-    "Projectiles": true,
-    "Spawn More Dummy Bots": true
+    "Beam Effects": false,
+		"Beam Sounds": false,
+		"Buff Status Effects": true,
+		"Debuff Status Effects": false,
+		"Buff and Debuff Sounds": false,
+		"Energy Explosion Effects": true,
+		"Kinetic Explosion Effects": true,
+		"Explosion Sounds": true,
+		"Play More Effects": true,
+		"Spawn More Dummy Bots": true,
+		"Projectiles": true
   }
 }
