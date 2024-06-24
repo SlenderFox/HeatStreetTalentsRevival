@@ -1066,8 +1066,8 @@ if (HasSpawned(EventPlayer()))
 		null,
 		pAbBoughtAbilitiesString,
 		"{0}{1}".Format([
-			pTalent1 ? "\n{0}{1}".Format([AbilityIconString(Hero.Pharah, Button.Jump), pTalentText[1]]) : "",
-			pTalent2 ? "\n{0}{1}".Format([AbilityIconString(Hero.Pharah, Button.Jump), pTalentText[3]]) : ""
+			pTalent1 ? "\n{0}{1}".Format([AbilityIconString(Hero.Pharah, Button.Jump), pTalentText[0]]) : "",
+			pTalent2 ? "\n{0}{1}".Format([AbilityIconString(Hero.Pharah, Button.Jump), pTalentText[2]]) : ""
 		]).Slice(1, 100),
 		Location.Left,
 		10,
@@ -1081,8 +1081,8 @@ if (HasSpawned(EventPlayer()))
 	//CreateHudText(
 	//	pTalent1 ? EventPlayer() : [],
 	//	"",
-	//	pTalentText[2],
 	//	pTalentText[1],
+	//	pTalentText[0],
 	//	Location.Left,
 	//	11,
 	//	Color.Blue,
@@ -1095,8 +1095,8 @@ if (HasSpawned(EventPlayer()))
 	//CreateHudText(
 	//	pTalent2 ? EventPlayer() : [],
 	//	"",
-	//	pTalentText[4],
 	//	pTalentText[3],
+	//	pTalentText[2],
 	//	Location.Left,
 	//	12,
 	//	Color.Blue,

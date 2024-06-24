@@ -1083,8 +1083,8 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 						"Spec Ops: Gain 50 armour and immunity to grenadier smokes\n",
 						"Sharpshooter: Deal 50% more damage to enemies that are further than 20 meters away\n",
 						"Shockproof: Gain +15% speed and pass through enemies.\nBecome immune and deflect Taser electrocution attempts",
-						"{0}: {1}".Format([LocalPlayer().pTalentText[1], LocalPlayer().pTalentText[2]]),
-						"{0}: {1}".Format([LocalPlayer().pTalentText[3], LocalPlayer().pTalentText[4]])
+						"{0}: {1}".Format([LocalPlayer().pTalentText[0], LocalPlayer().pTalentText[1]]),
+						"{0}: {1}".Format([LocalPlayer().pTalentText[2], LocalPlayer().pTalentText[3]])
 					][gCurrentPerks[VerticalFacingAngleOf(LocalPlayer()) >= 11.25]],
 				(LocalPlayer().pIsShowingActiveAbilities
 					? [
