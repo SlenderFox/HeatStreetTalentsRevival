@@ -672,8 +672,8 @@ if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
 						check_if_enough_money();
 						if (gTemp2)
 						{
-							DisableMovementCollisionWithPlayers(EventPlayer());
-							pMoveSpeed += 15;
+							//DisableMovementCollisionWithPlayers(EventPlayer());
+							//pMoveSpeed += 15;
 							pPerkShockProof = true;
 							update_ab_string_and_play_sound();
 						}
