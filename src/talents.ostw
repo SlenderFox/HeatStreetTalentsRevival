@@ -11,7 +11,13 @@ playervar Any pAbilityEnd;
 
 void Cancel_Momentum() "Subroutine: Cancel player momentum"
 {
-	ApplyImpulse(EventPlayer(), -1 * DirectionFromAngles(HorizontalAngleFromDirection(VelocityOf(EventPlayer())), 0), 0.001, Relative.ToWorld, ContraryMotion.CancelXYZ);
+	ApplyImpulse(
+		EventPlayer(),
+		-1 * DirectionFromAngles(HorizontalAngleFromDirection(VelocityOf(EventPlayer())), 0),
+		0.001,
+		Relative.ToWorld,
+		ContraryMotion.CancelXYZ
+	);
 }
 
 rule: "Ana: Multinade"
@@ -70,13 +76,26 @@ Player.Zenyatta
 if (pTalent2)
 if (IsUsingUltimate(EventPlayer()))
 {
-	StartDamageOverTime(PlayersWithinRadius(EventPlayer(), 12, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 1, 100);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, EventPlayer(), 24);
-	Wait(1, WaitBehavior.IgnoreCondition);
-	LoopIfConditionIsTrue();
+	while (IsUsingUltimate(EventPlayer()))
+	{
+		StartDamageOverTime(
+			PlayersWithinRadius(EventPlayer(), 12, Team.Team2, RadiusLOS.Surfaces),
+			EventPlayer(),
+			1,
+			100
+		);
+		PlayEffect(
+			AllPlayers(),
+			PlayEffect.RingExplosion,
+			Color.Orange,
+			EventPlayer(),
+			24
+		);
+		Wait(1, WaitBehavior.IgnoreCondition);
+	}
 }
 
-rule: "Orisa- Spinning Shreddies"
+rule: "Orisa: Shrapnel"
 Event.OngoingPlayer
 Team.Team1
 Player.Orisa
@@ -85,13 +104,63 @@ if (IsUsingAbility2(EventPlayer()))
 {
 	while (IsUsingAbility2(EventPlayer()))
 	{
-		CreateProjectile(ProjectileType.OrisaFusionDriver, EventPlayer(), EventPlayer().EyePosition() + WorldVectorOf(Vector(RandomReal(-0.8, 0.8), RandomReal(-0.8, -0.8), 0), EventPlayer(), LocalVector.Rotation), null, Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 25, 2, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 60, 2, 10, 1, 0);
-		Wait(0.02, WaitBehavior.IgnoreCondition);
+		CreateProjectile(
+			ProjectileType.OrisaFusionDriver,
+			EventPlayer(),
+			EventPlayer().EyePosition()
+				+ Normalize(CrossProduct(
+					EventPlayer().FacingDirection(),
+					Up()
+				)) * RandomReal(-1.1, 1.1)
+				+ Normalize(CrossProduct(
+					CrossProduct(
+						EventPlayer().FacingDirection(),
+						Up()
+					),
+					EventPlayer().FacingDirection()
+				)) * RandomReal(-1.1, 1.1),
+			Direction: EventPlayer().FacingDirection()
+				+ Normalize(CrossProduct(
+					EventPlayer().FacingDirection(),
+					Up()
+				)) * RandomReal(-0.1, 0.1)
+				+ Normalize(CrossProduct(
+					CrossProduct(
+						EventPlayer().FacingDirection(),
+						Up()
+					),
+					EventPlayer().FacingDirection()
+				)) * RandomReal(-0.1, 0.1),
+			Relative.ToWorld,
+			ModifyHealthType.Damage,
+			Team.Team2,
+			5,
+			false,
+			false,
+			PlayEffect.GoodExplosion,
+			PlayEffect.ExplosionSound,
+			0,
+			60,
+			0.5,
+			4,
+			false,
+			false
+		);
+		Wait(0.01, WaitBehavior.IgnoreCondition);
 	}
-	CreateProjectile(ProjectileType.OrisaFusionDriver, EventPlayer(), null, null, Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 80, 2, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0.15, 60, 2, 20, 1, 0);
 }
 
-rule: "Orisa: metalhead"
+rule: "Orisa: knockback fix"
+Event.PlayerDealtKnockback
+Team.Team1
+Player.Orisa
+if (EventAbility() != Button.Ability1)
+if (EventAbility() != Button.Melee)
+{
+	SetStatus(Victim(), EventPlayer(), Status.Rooted, 0.1);
+}
+
+rule: "Orisa: tailwind"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Orisa
@@ -99,8 +168,20 @@ if (pTalent2)
 if (EventAbility() == Button.SecondaryFire)
 {
 	Damage(PlayersWithinRadius(Victim(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 50);
-	ApplyImpulse(RemoveFromArray(PlayersWithinRadius(Victim(), 6, Team.Team2, RadiusLOS.Surfaces), Victim()), DirectionTowards(Victim(), EventPlayer()), -15, Relative.ToWorld, ContraryMotion.Cancel);
-	ApplyImpulse(RemoveFromArray(PlayersWithinRadius(Victim(), 6, Team.Team2, RadiusLOS.Surfaces), Victim()), Up(), 2, Relative.ToWorld, ContraryMotion.Cancel);
+	ApplyImpulse(
+		PlayersWithinRadius(Victim(), 6, Team.Team2, RadiusLOS.Surfaces).Remove(Victim()),
+		DirectionTowards(Victim(), EventPlayer()),
+		-15,
+		Relative.ToWorld,
+		ContraryMotion.Cancel
+	);
+	ApplyImpulse(
+		PlayersWithinRadius(Victim(), 6, Team.Team2, RadiusLOS.Surfaces).Remove(Victim()),
+		Up(),
+		2,
+		Relative.ToWorld,
+		ContraryMotion.Cancel
+	);
 	SetStatus(PlayersWithinRadius(Victim(), 6, Team.Team2, RadiusLOS.Surfaces), null, Status.Stunned, 1.2);
 }
 
@@ -137,25 +218,36 @@ Player.Sigma
 if (pTalent2)
 if (IsUsingAbility1(EventPlayer()))
 {
-	Wait(1.8, WaitBehavior.AbortWhenFalse);
-	pAbilityProjectile = EventPlayer().EyePosition();
-	pAbilityEnd = RayCastHitPosition(EventPlayer().EyePosition(), EventPlayer().EyePosition() + EventPlayer().FacingDirection() * 50, AllPlayers(Team.Team2), EventPlayer(), true);
-	ChaseVariableAtRate(pAbilityProjectile, pAbilityEnd, 40, RateChaseReevaluation.DestinationAndRate);
-	CreateEffect(AllPlayers(), Effect.Sphere, Color.Violet, pAbilityProjectile, 0.6, EffectRev.VisibleToPositionAndRadius);
-	pEffects[1] = LastCreatedEntity();
-	CreateEffect(AllPlayers(), Effect.GoodAura, Color.Violet, pAbilityProjectile, 0.6, EffectRev.VisibleToPositionAndRadius);
-	pEffects[2] = LastCreatedEntity();
-	Wait(0.25, WaitBehavior.IgnoreCondition);
-	pAbilityCountdown = HealthOfType(EventPlayer(), HealthType.Shields);
-	WaitUntil(!pTalent2 || pAbilityProjectile == pAbilityEnd, 5);
-	StopChasingVariable(pAbilityProjectile);
-	DestroyEffect(pEffects[1]);
-	DestroyEffect(pEffects[2]);
-	Damage(PlayersWithinRadius(pAbilityProjectile, Min(10, 1.5 + pAbilityCountdown * 0.017), Team.Team2, RadiusLOS.Off), EventPlayer(), Min(200, 100 + pAbilityCountdown / 5));
-	PlayEffect(AllPlayers(), PlayEffect.DebuffImpactSound, Color.Violet, pAbilityProjectile, 150);
-	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Violet, pAbilityProjectile, Min(10, 1.5 + pAbilityCountdown * 0.017));
-	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Purple, pAbilityProjectile, Min(10, 1.5 + pAbilityCountdown * 0.017));
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Violet, pAbilityProjectile, Min(20, 3 + pAbilityCountdown * 0.017));
+	pAbilityCountdown = EventPlayer().Health()
+		- HealthOfType(EventPlayer(), HealthType.Health)
+		- HealthOfType(EventPlayer(), HealthType.Armor)
+		- HealthOfType(EventPlayer(), HealthType.Shields);
+	Wait(1.8, WaitBehavior.IgnoreCondition);
+	pAbilityEnd = (10 + EventPlayer().Health()
+		- HealthOfType(EventPlayer(), HealthType.Health)
+		- HealthOfType(EventPlayer(), HealthType.Armor)
+		- HealthOfType(EventPlayer(), HealthType.Shields)
+		- pAbilityCountdown) * 3;
+	CreateProjectile(
+		ProjectileType.SigmaHypersphere,
+		EventPlayer(),
+		EventPlayer().EyePosition(),
+		EventPlayer().FacingDirection(),
+		Relative.ToWorld,
+		ModifyHealthType.Damage,
+		Team.Team2,
+		pAbilityEnd,
+		pAbilityEnd * 0.5,
+		10,
+		PlayEffect.SigmaHypersphereImplosionEffect,
+		PlayEffect.AsheDynamiteExplosionSound,
+		0,
+		50,
+		10,
+		pAbilityEnd * 0.25,
+		false,
+		false
+	);
 }
 
 rule: "Ashe: Black Gunpowder"
@@ -167,7 +259,7 @@ if (EventAbility() == Button.Ability1)
 if (Victim() != EventPlayer())
 {
 	StartDamageOverTime(Victim(), EventPlayer(), 3, EventDamage() * 2.5);
-	SetStatus(Victim(), null, Status.Burning, 3);
+	SetStatus(Victim(), EventPlayer(), Status.Burning, 3);
 }
 
 rule: "Ashe: Dancing Flames"
@@ -230,8 +322,18 @@ if (IsUsingAbility2(EventPlayer()) || IsUsingUltimate(EventPlayer()))
 {
 	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, EventPlayer().Position(), 11);
 	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, EventPlayer().Position(), 12);
-	StartDamageOverTime(RemoveFromArray(PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer()), EventPlayer(), 3, 20);
-	SetStatus(RemoveFromArray(PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer()), EventPlayer(), Status.Burning, 3);
+	StartDamageOverTime(
+		PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces),
+		EventPlayer(),
+		3,
+		20
+	);
+	SetStatus(
+		PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces),
+		EventPlayer(),
+		Status.Burning,
+		3
+	);
 	Damage(PlayersWithinRadius(EventPlayer(), 6, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 15);
 	Wait(0.75, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
@@ -270,8 +372,18 @@ if (pTalent1)
 if (EventAbility() == Button.Ability2)
 {
 	PlayEffect(AllPlayers(), PlayEffect.GoodExplosion, Color.Orange, Victim(), 5);
-	StartDamageOverTime(PlayersWithinRadius(Victim(), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 5, 20);
-	SetStatus(PlayersWithinRadius(Victim(), 5, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.Burning, 5);
+	StartDamageOverTime(
+		PlayersWithinRadius(Victim(), 5, Team.Team2, RadiusLOS.Surfaces),
+		EventPlayer(),
+		5,
+		20
+	);
+	SetStatus(
+		PlayersWithinRadius(Victim(), 5, Team.Team2, RadiusLOS.Surfaces),
+		EventPlayer(),
+		Status.Burning,
+		5
+	);
 }
 
 rule: "Reinhardt: Epicenter"
@@ -282,12 +394,27 @@ if (pTalent2)
 if (IsUsingUltimate(EventPlayer()))
 if (IsOnGround(EventPlayer()))
 {
-	SetStatus(PlayersWithinRadius(EventPlayer(), 20, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.KnockedDown, 2.5);
+	SetStatus(
+		PlayersWithinRadius(EventPlayer(), 20, Team.Team2, RadiusLOS.Surfaces),
+		EventPlayer(),
+		Status.KnockedDown,
+		2.5
+	);
 	for (gIterator = 0; 3; 1)
 	{
 		Wait(0.032, WaitBehavior.IgnoreCondition);
-		Damage(PlayersWithinRadius(EventPlayer(), gIterator * 10, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), 50);
-		PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, EventPlayer().Position(), gIterator * 20);
+		Damage(
+			PlayersWithinRadius(EventPlayer(), gIterator * 10, Team.Team2, RadiusLOS.Surfaces),
+			EventPlayer(),
+			50
+		);
+		PlayEffect(
+			AllPlayers(),
+			PlayEffect.RingExplosion,
+			Color.Orange,
+			EventPlayer().Position(),
+			gIterator * 20
+		);
 	}
 	Wait(5, WaitBehavior.IgnoreCondition);
 }
@@ -299,14 +426,31 @@ Player.Brigitte
 if (pTalent1)
 if (pAbilityAvailable)
 {
-	CreateEffect(AllPlayers(), Effect.EchoCloningEffect, Team.Team1, EventPlayer(), 0.4, EffectRev.VisibleToPositionAndRadius);
-	pEffects[1] = LastCreatedEntity();
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Orange, EventPlayer().EyePosition(), 15);
+	pEffects[1] = CreateEffect(
+		AllPlayers(),
+		Effect.EchoCloningEffect,
+		Team.Team1,
+		EventPlayer(),
+		0.4,
+		EffectRev.VisibleToPositionAndRadius
+	);
+	PlayEffect(
+		AllPlayers(),
+		PlayEffect.RingExplosion,
+		Color.Orange,
+		EventPlayer().EyePosition(),
+		15
+	);
 	Heal(PlayersWithinRadius(EventPlayer(), 15, Team.Team1, RadiusLOS.Off), EventPlayer(), 200);
 	pDamageDealt += 150;
 	pMoveSpeed += 75;
-	AddHealthPoolToPlayer(EventPlayer(), HealthType.Armor, MaxHealth(EventPlayer()) / 3, false, true);
-	pHpPool[1] = LastCreatedHealthPool();
+	pHpPool[1] = AddHealthPoolToPlayer(
+		EventPlayer(),
+		HealthType.Armor,
+		MaxHealth(EventPlayer()) / 3,
+		false,
+		true
+	);
 	Wait(1, WaitBehavior.IgnoreCondition);
 	WaitUntil(!pTalent1 || EventPlayer().IsDead() || pAbilityAvailable, 6);
 	pDamageDealt -= 150;
@@ -357,6 +501,30 @@ if (EventAbility() == Button.Ability1)
 	Wait(2, WaitBehavior.IgnoreCondition);
 }
 
+void create_shuriken(in Vector angle)
+{
+	CreateProjectile(
+		ProjectileType.GenjiShuriken,
+		EventPlayer(),
+		null,
+		angle,
+		Relative.ToWorld,
+		ModifyHealthType.Damage,
+		Team.Team2,
+		27,
+		2,
+		false,
+		PlayEffect.GoodExplosion,
+		PlayEffect.ExplosionSound,
+		false,
+		60,
+		4,
+		false,
+		false,
+		false
+	);
+}
+
 rule: "Genji: Sharpened Storm - Primary"
 Event.OngoingPlayer
 Team.Team1
@@ -366,11 +534,11 @@ if (IsFiringPrimary(EventPlayer()))
 if (!IsUsingUltimate(EventPlayer()))
 {
 	Wait(0.25, WaitBehavior.IgnoreCondition);
-	CreateProjectile(ProjectileType.GenjiShuriken, EventPlayer(), null, null, Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 27, 2, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 60, 4, 0, 0, 0);
+	create_shuriken(null);
 	Wait(0.1, WaitBehavior.IgnoreCondition);
-	CreateProjectile(ProjectileType.GenjiShuriken, EventPlayer(), null, null, Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 27, 2, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 60, 4, 0, 0, 0);
+	create_shuriken(null);
 	Wait(0.1, WaitBehavior.IgnoreCondition);
-	CreateProjectile(ProjectileType.GenjiShuriken, EventPlayer(), null, null, Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 27, 2, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 60, 4, 0, 0, 0);
+	create_shuriken(null);
 }
 
 rule: "Genji: Sharpened Storm - Secondary"
@@ -381,9 +549,15 @@ if (pTalent2)
 if (IsFiringSecondary(EventPlayer()))
 {
 	MinWait();
-	CreateProjectile(ProjectileType.GenjiShuriken, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + 4.5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 27, 2, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 60, 4, 0, 0, 0);
-	CreateProjectile(ProjectileType.GenjiShuriken, EventPlayer(), null, DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) - 4.5, VerticalFacingAngleOf(EventPlayer())), Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 27, 2, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 60, 4, 0, 0, 0);
-	CreateProjectile(ProjectileType.GenjiShuriken, EventPlayer(), null, null, Relative.ToWorld, ModifyHealthType.Damage, Team.Team2, 27, 2, 0, PlayEffect.GoodExplosion, PlayEffect.ExplosionSound, 0, 60, 4, 0, 0, 0);
+	create_shuriken(DirectionFromAngles(
+		HorizontalFacingAngleOf(EventPlayer()) + 4.5,
+		VerticalFacingAngleOf(EventPlayer())
+	));
+	create_shuriken(DirectionFromAngles(
+		HorizontalFacingAngleOf(EventPlayer()) - 4.5,
+		VerticalFacingAngleOf(EventPlayer())
+	));
+	create_shuriken(null);
 }
 
 rule: "Mercy: Wings of Grand"
@@ -396,9 +570,28 @@ if (IsUsingAbility1(EventPlayer()))
 {
 	if (SpeedOf(EventPlayer()) > 10)
 	{
-		Damage(FilteredArray(PlayersWithinRadius(EventPlayer(), 4, Team.Team2, RadiusLOS.Surfaces), !HasStatus(ArrayElement(), Status.KnockedDown)), EventPlayer(), 35);
-		SetStatus(PlayersWithinRadius(EventPlayer(), 4, Team.Team2, RadiusLOS.Surfaces), EventPlayer(), Status.KnockedDown, 0.8);
-		ApplyImpulse(PlayersWithinRadius(EventPlayer(), 4, Team.Team2, RadiusLOS.Surfaces), Normalize(VelocityOf(EventPlayer())) + DirectionTowards(EventPlayer(), ThrottleOf(EventPlayer())) + Up() * 1.1, 7.5, Relative.ToWorld, ContraryMotion.Cancel);
+		Damage(
+			PlayersWithinRadius(
+				EventPlayer(), 4, Team.Team2, RadiusLOS.Surfaces).Filter(p => !HasStatus(p, Status.KnockedDown)
+			),
+			EventPlayer(),
+			35
+		);
+		SetStatus(
+			PlayersWithinRadius(EventPlayer(), 4, Team.Team2, RadiusLOS.Surfaces),
+			EventPlayer(),
+			Status.KnockedDown,
+			0.8
+		);
+		ApplyImpulse(
+			PlayersWithinRadius(EventPlayer(), 4, Team.Team2, RadiusLOS.Surfaces),
+			Normalize(VelocityOf(EventPlayer()))
+				+ DirectionTowards(EventPlayer(), ThrottleOf(EventPlayer()))
+				+ Up() * 1.1,
+			7.5,
+			Relative.ToWorld,
+			ContraryMotion.Cancel
+		);
 		PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Yellow, EventPlayer().Position(), 0.15);
 	}
 	Wait(0.25, WaitBehavior.IgnoreCondition);
