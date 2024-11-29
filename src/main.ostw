@@ -1304,7 +1304,7 @@ if (gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2)
 if (!gEnableNormalSpawns)
 if (NumberOfLivingPlayers(Team.Team2) < NumberOfPlayers(Team.Team2))
 {
-	//> TODO arithmetic stuff here
+	// TODO arithmetic stuff here
 	if (
 		(2 * CountOf(
 			AllLivingPlayers(Team.Team2).Filter(p => !p.pIsLivingBoss).Filter(p => p.pRealTier <= 2)
