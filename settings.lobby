@@ -1,271 +1,271 @@
 {
-  "Mode Name": "Heat Street Talents Revival",
-  "Description": "PvE wave survival with purchasable upgrades\\nand abilities. Version 4.0.0 XNF83 \\nCredits to: LemonAid, Shingen, LtVictory,\\nSgtMoody, and Developful.\\nRebuilt in OSTW <https://github.com/SlenderFox/HeatStreetTalents>.",
-  "Lobby": {
-    "Map Rotation": "After A Game",
-    "Max Team 1 Players": 5,
-    "Max Team 2 Players": 0,
-    "Return To Lobby": "Never",
-    "Use Experimental Update If Available": true
-  },
-  "Modes": {
-    "All": {
-      "Game Mode Start": "Immediately",
-      "Hero Limit": "Off",
-      "Kill Cam": false,
-      "Kill Feed": false,
-      "Score To Win": 1.0,
-      "Spawn Health Packs": "Enabled"
-    },
-    "Team Deathmatch": {
-      "Enabled Maps": [
-        "Château Guillard"
-      ]
-    }
-  },
-  "Heroes": {
-    "Team 1": {
-      "General": {
-        "Ultimate Generation": 50.0,
-        "Ultimate Generation - Combat": 90.0
-      },
-      "Baptiste": {
-        "Ultimate Duration": 125.0
-      },
-      "Brigitte": {
-        "Damage Dealt": 115.0
-      },
-      "Hanzo": {
-        "Damage Dealt": 75.0
-      },
-      "Junker Queen": {
-        "Ultimate Generation Rampage": 60.0
-      },
-      "Kiriko": {
-        "Damage Dealt": 115.0
-      },
-      "Mercy": {
-        "Damage Dealt": 115.0,
-        "Ultimate Generation Valkyrie": 40.0
-      },
-      "Moira": {
-        "Damage Dealt": 115.0,
-        "Ultimate Generation Coalescence": 40.0
-      },
-      "Widowmaker": {
-        "Ultimate Duration": 120.0
-      },
-      "Wrecking Ball": {
-        "Ultimate Generation Minefield": 50.0
-      },
-      "Zarya": {
-        "Ultimate Generation Graviton Surge": 40.0
-      },
-      "Zenyatta": {
-        "Damage Dealt": 120.0,
-        "Healing Dealt": 150.0,
-        "Ultimate Generation Transcendence": 60.0
-      }
-    },
-    "Team 2": {
-      "General": {
-        "Ammunition Clip Size Scalar": 200.0
-      },
-      "Ana": {
-        "Biotic Grenade Cooldown Time": 10.0,
-        "Damage Dealt": 60.0,
-        "Healing Dealt": 150.0,
-        "Health": 150.0,
-        "Sleep Dart Cooldown Time": 10.0
-      },
-      "Baptiste": {
-        "Damage Dealt": 46.0,
-        "Healing Dealt": 10.0,
-        "Immortality Field Cooldown Time": 10.0,
-        "Projectile Speed": 0.0,
-        "Regenerative Burst Cooldown Time": 10.0
-      },
-      "Bastion": {
-        "Damage Dealt": 62.0,
-        "Damage Received": 70.0,
-        "Health": 500.0,
-        "Infinite Ultimate Duration": true
-      },
-      "Brigitte": {
-        "Barrier Shield Recharge Rate": 200.0,
-        "Damage Dealt": 31.0,
-        "Health": 125.0,
-        "Shield Bash": false,
-        "Whip Shot Cooldown Time": 10.0
-      },
-      "Cassidy": {
-        "Combat Roll Cooldown Time": 10.0,
-        "Damage Dealt": 23.0,
-        "Health": 89.0,
-        "Flashbang Cooldown Time": 10.0
-      },
-      "D.Va": {
-        "Boosters Cooldown Time": 10.0,
-        "Damage Dealt": 35.0,
-        "Defense Matrix Recharge Rate": 200.0,
-        "Health": 60.0
-      },
-      "Echo": {
-        "Damage Dealt": 29.0,
-        "Flight Cooldown Time": 0.0,
-        "Focusing Beam Cooldown Time": 10.0,
-        "Sticky Bombs Cooldown Time": 10.0,
-        "Ultimate Ability Duplicate": false
-      },
-      "Genji": {
-        "Damage Dealt": 91.0,
-        "Deflect Cooldown Time": 10.0,
-        "Health": 333.0,
-        "Infinite Ultimate Duration": true,
-        "Swift Strike Cooldown Time": 10.0
-      },
-      "Hanzo": {
-        "Damage Dealt": 75.0,
-        "Health": 333.0,
-        "Lunge Cooldown Time": 10.0,
-        "Storm Arrows Cooldown Time": 10.0,
-        "Storm Arrows Quantity": 12
-      },
-      "Kiriko": {
-        "Damage Dealt": 134.0,
-        "Healing Dealt": 150.0,
-        "Healing Received": 10.0,
-        "Health": 400.0,
-        "Protection Suzu Cooldown Time": 10.0,
-        "Swift Step Cooldown Time": 10.0,
-        "Swift Step Distance Scalar": 300.0
-      },
-      "Lúcio": {
-        "Amp It Up Cooldown Time": 125.0,
-        "Damage Dealt": 35.0,
-        "Healing Dealt": 167.0,
-        "Healing Received": 25.0,
-        "Health": 126.0,
-        "Movement Speed": 110.0,
-        "Soundwave Cooldown Time": 125.0,
-        "Soundwave Knockback Scalar": 85.0
-      },
-      "Mei": {
-        "Cryo-Freeze Cooldown Time": 250.0,
-        "Damage Dealt": 35.0,
-        "Healing Received": 200.0,
-        "Health": 222.0,
-        "No Ammunition Requirement": true,
-        "Quick Melee": false,
-        "Spawn With Ultimate Ready": true,
-        "Weapon Freeze Duration Scalar": 120.0
-      },
-      "Orisa": {
-        "Damage Dealt": 30.0,
-        "Energy Javelin Cooldown Time": 10.0,
-        "Fortify Cooldown Time": 0.0,
-        "Javelin Spin Cooldown Time": 10.0
-      },
-      "Pharah": {
-        "Concussive Blast Cooldown Time": 40.0,
-        "Concussive Blast Knockback Scalar": 75.0,
-        "Damage Dealt": 25.0,
-        "Health": 111.0,
-        "Hover Jets Recharge Rate": 300.0,
-        "Hover Jets Vertical Speed Scalar": 81.0,
-        "Jump Jet Acceleration Scalar": 60.0,
-        "Jump Jet Cooldown Time": 100.0
-      },
-      "Reaper": {
-        "Damage Dealt": 23.0,
-        "Wraith Form Cooldown Time": 10.0
-      },
-      "Reinhardt": {
-        "Charge Cooldown Time": 10.0,
-        "Damage Dealt": 136.0,
-        "Damage Received": 75.0,
-        "Fire Strike Cooldown Time": 10.0,
-        "Healing Received": 50.0,
-        "Health": 333.0,
-        "Projectile Speed": 150.0
-      },
-      "Roadhog": {
-        "Chain Hook Cooldown Time": 10.0,
-        "Damage Dealt": 75.0,
-        "Damage Received": 90.0,
-        "Whole Hog Knockback Scalar": 150.0
-      },
-      "Sigma": {
-        "Accretion Cooldown Time": 10.0,
-        "Accretion Knockback Scalar": 125.0,
-        "Damage Dealt": 47.0,
-        "Health": 111.0,
-        "Kinetic Grasp Cooldown Time": 10.0
-      },
-      "Soldier: 76": {
-        "Biotic Field Cooldown Time": 10.0,
-        "Damage Dealt": 84.0,
-        "Healing Dealt": 125.0,
-        "Health": 300.0,
-        "Helix Rockets Cooldown Time": 0.0,
-        "Helix Rockets Knockback Scalar": 80.0,
-        "Projectile Speed": 150.0,
-        "Ultimate Duration": 125.0
-      },
-      "Sombra": {
-        "Damage Dealt": 42.0,
-        "Projectile Gravity": 0.0,
-        "Translocator Cooldown Time": 10.0,
-        "Virus Cooldown Time": 10.0
-      },
-      "Torbjörn": {
-        "Damage Dealt": 60.0,
-        "Damage Received": 50.0,
-        "Deploy Turret Cooldown Time": 0.0,
-        "Health": 500.0,
-        "Infinite Ultimate Duration": true,
-        "No Ammunition Requirement": true,
-        "Overload Cooldown Time": 10.0,
-        "Overload Duration Scalar": 500.0,
-        "Projectile Gravity": 500.0,
-        "Projectile Speed": 250.0,
-        "Spawn With Ultimate Ready": true
-      },
-      "Tracer": {
-        "Blink Cooldown Time": 150.0,
-        "Damage Dealt": 51.0,
-        "Health": 150.0,
-        "Projectile Gravity": 500.0,
-        "Projectile Speed": 0.0
-      },
-      "Widowmaker": {
-        "Damage Dealt": 63.0,
-        "Grappling Hook Cooldown Time": 10.0,
-        "Health": 125.0,
-        "Ultimate Ability Infra-sight": false,
-        "Ultimate Duration": 120.0,
-        "Venom Mine Cooldown Time": 10.0
-      },
-      "Wrecking Ball": {
-        "Damage Dealt": 89.0,
-        "Health": 250.0,
-        "Infinite Ultimate Duration": true,
-        "Movement Speed": 50.0,
-        "Projectile Speed": 150.0,
-        "Roll Always Active": true
-      },
-      "Zarya": {
-        "Damage Dealt": 18.0,
-        "Health": 93.0,
-        "Particle Barrier Cooldown Time": 10.0,
-        "Projected Barrier Cooldown Time": 10.0,
-        "Projectile Gravity": 40.0,
-        "Ultimate Generation Graviton Surge": 40.0
-      }
-    }
-  },
-  "Extensions": {
-    "Beam Effects": false,
+	"Mode Name": "Heat Street Talents Revival",
+	"Description": "PvE wave survival with purchasable upgrades\\nand abilities. Version 4.0.0 XNF83\\nRebuilt in OSTW <https://github.com/SlenderFox/HeatStreetTalents>.\\nCredits to: LemonAid, Shingen, LtVictory,\\nSgtMoody, and Developful.",
+	"Lobby": {
+		"Map Rotation": "After A Game",
+		"Max Team 1 Players": 5,
+		"Max Team 2 Players": 0,
+		"Return To Lobby": "Never",
+		"Use Experimental Update If Available": true
+	},
+	"Modes": {
+		"All": {
+			"Game Mode Start": "Immediately",
+			"Hero Limit": "Off",
+			"Kill Cam": false,
+			"Kill Feed": false,
+			"Score To Win": 1,
+			"Spawn Health Packs": "Enabled"
+		},
+		"Team Deathmatch": {
+			"Enabled Maps": [
+				"Château Guillard"
+			]
+		}
+	},
+	"Heroes": {
+		"Team 1": {
+			"General": {
+				"Ultimate Generation": 50.0,
+				"Ultimate Generation - Combat": 90.0
+			},
+			"Baptiste": {
+				"Ultimate Duration": 125.0
+			},
+			"Brigitte": {
+				"Damage Dealt": 115.0
+			},
+			"Hanzo": {
+				"Damage Dealt": 75.0
+			},
+			"Junker Queen": {
+				"Ultimate Generation Rampage": 60.0
+			},
+			"Kiriko": {
+				"Damage Dealt": 115.0
+			},
+			"Mercy": {
+				"Damage Dealt": 115.0,
+				"Ultimate Generation Valkyrie": 40.0
+			},
+			"Moira": {
+				"Damage Dealt": 115.0,
+				"Ultimate Generation Coalescence": 40.0
+			},
+			"Widowmaker": {
+				"Ultimate Duration": 120.0
+			},
+			"Wrecking Ball": {
+				"Ultimate Generation Minefield": 50.0
+			},
+			"Zarya": {
+				"Ultimate Generation Graviton Surge": 40.0
+			},
+			"Zenyatta": {
+				"Damage Dealt": 120.0,
+				"Healing Dealt": 150.0,
+				"Ultimate Generation Transcendence": 60.0
+			}
+		},
+		"Team 2": {
+			"General": {
+				"Ammunition Clip Size Scalar": 200.0
+			},
+			"Ana": {
+				"Biotic Grenade Cooldown Time": 10.0,
+				"Damage Dealt": 60.0,
+				"Healing Dealt": 150.0,
+				"Health": 150.0,
+				"Sleep Dart Cooldown Time": 10.0
+			},
+			"Baptiste": {
+				"Damage Dealt": 46.0,
+				"Healing Dealt": 10.0,
+				"Immortality Field Cooldown Time": 10.0,
+				"Projectile Speed": 0.0,
+				"Regenerative Burst Cooldown Time": 10.0
+			},
+			"Bastion": {
+				"Damage Dealt": 62.0,
+				"Damage Received": 70.0,
+				"Health": 500.0,
+				"Infinite Ultimate Duration": true
+			},
+			"Brigitte": {
+				"Barrier Shield Recharge Rate": 200.0,
+				"Damage Dealt": 31.0,
+				"Health": 125.0,
+				"Shield Bash": false,
+				"Whip Shot Cooldown Time": 10.0
+			},
+			"Cassidy": {
+				"Combat Roll Cooldown Time": 10.0,
+				"Damage Dealt": 23.0,
+				"Health": 89.0,
+				"Flashbang Cooldown Time": 10.0
+			},
+			"D.Va": {
+				"Boosters Cooldown Time": 10.0,
+				"Damage Dealt": 35.0,
+				"Defense Matrix Recharge Rate": 200.0,
+				"Health": 60.0
+			},
+			"Echo": {
+				"Damage Dealt": 29.0,
+				"Flight Cooldown Time": 0.0,
+				"Focusing Beam Cooldown Time": 10.0,
+				"Sticky Bombs Cooldown Time": 10.0,
+				"Ultimate Ability Duplicate": false
+			},
+			"Genji": {
+				"Damage Dealt": 91.0,
+				"Deflect Cooldown Time": 10.0,
+				"Health": 333.0,
+				"Infinite Ultimate Duration": true,
+				"Swift Strike Cooldown Time": 10.0
+			},
+			"Hanzo": {
+				"Damage Dealt": 75.0,
+				"Health": 333.0,
+				"Lunge Cooldown Time": 10.0,
+				"Storm Arrows Cooldown Time": 10.0,
+				"Storm Arrows Quantity": 12
+			},
+			"Kiriko": {
+				"Damage Dealt": 134.0,
+				"Healing Dealt": 150.0,
+				"Healing Received": 10.0,
+				"Health": 400.0,
+				"Protection Suzu Cooldown Time": 10.0,
+				"Swift Step Cooldown Time": 10.0,
+				"Swift Step Distance Scalar": 300.0
+			},
+			"Lúcio": {
+				"Amp It Up Cooldown Time": 125.0,
+				"Damage Dealt": 35.0,
+				"Healing Dealt": 167.0,
+				"Healing Received": 25.0,
+				"Health": 126.0,
+				"Movement Speed": 110.0,
+				"Soundwave Cooldown Time": 125.0,
+				"Soundwave Knockback Scalar": 85.0
+			},
+			"Mei": {
+				"Cryo-Freeze Cooldown Time": 250.0,
+				"Damage Dealt": 35.0,
+				"Healing Received": 200.0,
+				"Health": 222.0,
+				"No Ammunition Requirement": true,
+				"Quick Melee": false,
+				"Spawn With Ultimate Ready": true,
+				"Weapon Freeze Duration Scalar": 120.0
+			},
+			"Orisa": {
+				"Damage Dealt": 30.0,
+				"Energy Javelin Cooldown Time": 10.0,
+				"Fortify Cooldown Time": 0.0,
+				"Javelin Spin Cooldown Time": 10.0
+			},
+			"Pharah": {
+				"Concussive Blast Cooldown Time": 40.0,
+				"Concussive Blast Knockback Scalar": 75.0,
+				"Damage Dealt": 25.0,
+				"Health": 111.0,
+				"Hover Jets Recharge Rate": 300.0,
+				"Hover Jets Vertical Speed Scalar": 81.0,
+				"Jump Jet Acceleration Scalar": 60.0,
+				"Jump Jet Cooldown Time": 100.0
+			},
+			"Reaper": {
+				"Damage Dealt": 23.0,
+				"Wraith Form Cooldown Time": 10.0
+			},
+			"Reinhardt": {
+				"Charge Cooldown Time": 10.0,
+				"Damage Dealt": 136.0,
+				"Damage Received": 75.0,
+				"Fire Strike Cooldown Time": 10.0,
+				"Healing Received": 50.0,
+				"Health": 333.0,
+				"Projectile Speed": 150.0
+			},
+			"Roadhog": {
+				"Chain Hook Cooldown Time": 10.0,
+				"Damage Dealt": 75.0,
+				"Damage Received": 90.0,
+				"Whole Hog Knockback Scalar": 150.0
+			},
+			"Sigma": {
+				"Accretion Cooldown Time": 10.0,
+				"Accretion Knockback Scalar": 125.0,
+				"Damage Dealt": 47.0,
+				"Health": 111.0,
+				"Kinetic Grasp Cooldown Time": 10.0
+			},
+			"Soldier: 76": {
+				"Biotic Field Cooldown Time": 10.0,
+				"Damage Dealt": 84.0,
+				"Healing Dealt": 125.0,
+				"Health": 300.0,
+				"Helix Rockets Cooldown Time": 0.0,
+				"Helix Rockets Knockback Scalar": 80.0,
+				"Projectile Speed": 150.0,
+				"Ultimate Duration": 125.0
+			},
+			"Sombra": {
+				"Damage Dealt": 42.0,
+				"Projectile Gravity": 0.0,
+				"Translocator Cooldown Time": 10.0,
+				"Virus Cooldown Time": 10.0
+			},
+			"Torbjörn": {
+				"Damage Dealt": 60.0,
+				"Damage Received": 50.0,
+				"Deploy Turret Cooldown Time": 0.0,
+				"Health": 500.0,
+				"Infinite Ultimate Duration": true,
+				"No Ammunition Requirement": true,
+				"Overload Cooldown Time": 10.0,
+				"Overload Duration Scalar": 500.0,
+				"Projectile Gravity": 500.0,
+				"Projectile Speed": 250.0,
+				"Spawn With Ultimate Ready": true
+			},
+			"Tracer": {
+				"Blink Cooldown Time": 150.0,
+				"Damage Dealt": 51.0,
+				"Health": 150.0,
+				"Projectile Gravity": 500.0,
+				"Projectile Speed": 0.0
+			},
+			"Widowmaker": {
+				"Damage Dealt": 63.0,
+				"Grappling Hook Cooldown Time": 10.0,
+				"Health": 125.0,
+				"Ultimate Ability Infra-sight": false,
+				"Ultimate Duration": 120.0,
+				"Venom Mine Cooldown Time": 10.0
+			},
+			"Wrecking Ball": {
+				"Damage Dealt": 89.0,
+				"Health": 250.0,
+				"Infinite Ultimate Duration": true,
+				"Movement Speed": 50.0,
+				"Projectile Speed": 150.0,
+				"Roll Always Active": true
+			},
+			"Zarya": {
+				"Damage Dealt": 18.0,
+				"Health": 93.0,
+				"Particle Barrier Cooldown Time": 10.0,
+				"Projected Barrier Cooldown Time": 10.0,
+				"Projectile Gravity": 40.0,
+				"Ultimate Generation Graviton Surge": 40.0
+			}
+		}
+	},
+	"Extensions": {
+		"Beam Effects": false,
 		"Beam Sounds": false,
 		"Buff Status Effects": true,
 		"Debuff Status Effects": false,
@@ -276,5 +276,5 @@
 		"Play More Effects": true,
 		"Spawn More Dummy Bots": true,
 		"Projectiles": true
-  }
+	}
 }
