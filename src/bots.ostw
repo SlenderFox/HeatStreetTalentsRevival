@@ -130,7 +130,7 @@ if (pIsAlive)
 				}
 				pIsTargetInLos -= 1;
 			}
-			if (!pIsTargetInLos && Ammo(EventPlayer(), 0) < 0.5 * MaxAmmo(EventPlayer(), 0))
+			if (!pIsTargetInLos && Ammo(EventPlayer(), false) < 0.5 * MaxAmmo(EventPlayer(), 0))
 			{
 				PressButton(EventPlayer(), Button.Reload);
 			}
@@ -819,10 +819,10 @@ rule: "Team 2 Brigitte: Increase / Normalize Move Speed while holding Shield"
 Event.OngoingPlayer
 Team.Team2
 Player.Brigitte
-if (IsFiringSecondary(EventPlayer()))
+if (EventPlayer().IsFiringSecondary())
 {
 	SetMoveSpeed(EventPlayer(), gMutAmpted ? 164.286 : 142.857);
-	WaitUntil(!IsFiringSecondary(EventPlayer()), 99999);
+	WaitUntil(!EventPlayer().IsFiringSecondary(), 99999);
 	SetMoveSpeed(EventPlayer(), gMutAmpted ? 115 : 100);
 }
 
@@ -893,7 +893,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Zarya
 if (pIsTargetInLos >= 5)
-if (!IsUsingAbility1(EventPlayer()))
+if (!EventPlayer().IsUsingAbility1())
 if (gWaveNumber >= 12 || pIsLivingBoss)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
@@ -941,7 +941,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Lucio
 if (pIsTargetInLos >= 4)
-if (!IsUsingAbility1(EventPlayer()))
+if (!EventPlayer().IsUsingAbility1())
 if (gWaveNumber >= 12 || pIsLivingBoss)
 {
 	AbortIfConditionIsFalse();
@@ -1036,7 +1036,7 @@ if (DistanceBetween(EventPlayer(), pMyTarget) <= 2.4)
 	SetUltimateCharge(EventPlayer(), 100);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	StartDamageOverTime(EventPlayer(), null, 9999, MaxHealth(EventPlayer()) * 0.05);
-	while (IsAlive(EventPlayer()))
+	while (EventPlayer().IsAlive())
 	{
 		SetUltimateCharge(EventPlayer(), 100);
 		MinWait();
@@ -1111,7 +1111,7 @@ if (pIsTargetInLos >= 4)
 		}
 		else
 		{
-			if (IsFiringSecondary(EventPlayer()))
+			if (EventPlayer().IsFiringSecondary())
 			{
 				Wait(0.5, WaitBehavior.IgnoreCondition);
 				PressButton(EventPlayer(), Button.SecondaryFire);
@@ -1121,7 +1121,7 @@ if (pIsTargetInLos >= 4)
 			{
 				Wait(0.5, WaitBehavior.IgnoreCondition);
 				PressButton(EventPlayer(), Button.SecondaryFire);
-				if (IsFiringSecondary(EventPlayer()))
+				if (EventPlayer().IsFiringSecondary())
 				{
 					SetAmmo(EventPlayer(), 0, false);
 				}
@@ -1238,7 +1238,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Soldier76
 if (pAbVar1 == 2)
-if (!IsUsingAbility1(EventPlayer()))
+if (!EventPlayer().IsUsingAbility1())
 if (MagnitudeOf(ThrottleOf(EventPlayer())) > 0)
 if (AbsoluteValue(HorizontalAngleFromDirection(ThrottleOf(EventPlayer()))) <= 60)
 {
@@ -1365,17 +1365,17 @@ if (DistanceBetween(EventPlayer(), pMyTarget) <= 40)
 	pIsNavReachableNode = false;
 	PressButton(EventPlayer(), Button.Jump);
 	PressButton(EventPlayer(), Button.Ability1);
-	if (IsUsingAbility1(EventPlayer()))
+	if (EventPlayer().IsUsingAbility1())
 	{
 		pIsFlying = true;
-		WaitUntil(!IsUsingAbility1(EventPlayer()), 99999);
+		WaitUntil(!EventPlayer().IsUsingAbility1(), 99999);
 		if (pIsLivingBoss)
 		{
 			# Without a wait the second flight is silent
 			MinWait();
 			PressButton(EventPlayer(), Button.Jump);
 			PressButton(EventPlayer(), Button.Ability1);
-			WaitUntil(!IsUsingAbility1(EventPlayer()), 99999);
+			WaitUntil(!EventPlayer().IsUsingAbility1(), 99999);
 		}
 		pNavPos = gNodes.Filter(
 			v => IsInLineOfSight(EventPlayer(), v, BarrierLOS.NoBarriersBlock)
@@ -1439,7 +1439,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Mei
 if (pIsTargetInLos >= 4)
-if (!IsUsingAbility1(EventPlayer()))
+if (!EventPlayer().IsUsingAbility1())
 {
 	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -1464,16 +1464,16 @@ Event.OngoingPlayer
 Team.Team2
 Player.Mei
 if (NormalizedHealth(EventPlayer()) <= 0.499)
-if (!IsUsingAbility1(EventPlayer()))
+if (!EventPlayer().IsUsingAbility1())
 {
 	PressButton(EventPlayer(), RandomInteger(1, 4) <= 3 ? Button.Ability2 : Button.Ability1);
-	if (IsUsingAbility2(EventPlayer()))
+	if (EventPlayer().IsUsingAbility2())
 	{
 		Wait(0.05, WaitBehavior.IgnoreCondition);
 		PressButton(EventPlayer(), Button.PrimaryFire);
 	}
 	Wait(0.5, WaitBehavior.IgnoreCondition);
-	if (IsUsingAbility1(EventPlayer()))
+	if (EventPlayer().IsUsingAbility1())
 	{
 		Heal(EventPlayer(), null, MaxHealth(EventPlayer()) * 0.25);
 	}
@@ -1487,7 +1487,7 @@ Team.Team2
 Player.Mei
 if (pIsTargetInLos >= 5)
 if (DistanceBetween(EventPlayer(), pMyTarget) <= 25)
-if (!IsUsingAbility1(EventPlayer()))
+if (!EventPlayer().IsUsingAbility1())
 if (gWaveNumber >= 12 || pIsLivingBoss)
 {
 	AbortIfConditionIsFalse();
@@ -1529,14 +1529,14 @@ if (DistanceBetween(EventPlayer(), pMyTarget) <= 25)
 if (YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) >= 3)
 if (IsInViewAngle(EventPlayer(), pMyTarget, 5))
 {
-	if (IsUsingAbility2(EventPlayer()))
+	if (EventPlayer().IsUsingAbility2())
 	{
 		PressButton(EventPlayer(), Button.Interact);
 		Wait(0.05, WaitBehavior.IgnoreCondition);
 	}
 	PressButton(EventPlayer(), Button.Ability2);
 	Wait(0.2 + DistanceBetween(EventPlayer(), pMyTarget) / 25, WaitBehavior.IgnoreCondition);
-	AbortIf(!IsUsingAbility2(EventPlayer()));
+	AbortIf(!EventPlayer().IsUsingAbility2());
 	PressButton(EventPlayer(), Button.Ability2);
 	Wait(0.1, WaitBehavior.IgnoreCondition);
 	AbortIf(!HasStatus(EventPlayer(), Status.PhasedOut));
@@ -1690,9 +1690,9 @@ if (pIsTargetInLos >= 4)
 	{
 		StartHoldingButton(EventPlayer(), Button.SecondaryFire);
 		pIsIgnoringOtherTargets = true;
-		WaitUntil(!(IsFiringSecondary(EventPlayer()) && pIsTargetInLos), 1.3);
+		WaitUntil(!(EventPlayer().IsFiringSecondary() && pIsTargetInLos), 1.3);
 		pIsIgnoringOtherTargets = false;
-		if (IsFiringSecondary(EventPlayer()) && pIsTargetInLos >= 4)
+		if (EventPlayer().IsFiringSecondary() && pIsTargetInLos >= 4)
 		{
 			PressButton(EventPlayer(), Button.PrimaryFire);
 			MinWait();
@@ -1712,15 +1712,15 @@ if (pIsUsingCombatPathfinding)
 	Wait(2, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
 	LoopIf(RandomInteger(1, 100) > (pRealSpeed <= 1 ? 100 : 25));
-	LoopIf(IsFiringSecondary(EventPlayer()));
+	LoopIf(EventPlayer().IsFiringSecondary());
 	LoopIf(DistanceBetween(EventPlayer(), pMyTarget) >= 8);
 	PressButton(EventPlayer(), Button.Ability1);
-	if (IsUsingAbility1(EventPlayer()))
+	if (EventPlayer().IsUsingAbility1())
 	{
 		pFacingOverrideDirection = DirectionFromAngles(HorizontalFacingAngleOf(EventPlayer()) + (RandomInteger(0, 1) ? -45 : 45), -5);
 		Wait(0.16, WaitBehavior.IgnoreCondition);
 		pFacingOverrideDirection = false;
-		WaitUntil(!IsUsingAbility1(EventPlayer()), 99999);
+		WaitUntil(!EventPlayer().IsUsingAbility1(), 99999);
 		pNavPos = EventPlayer().Position();
 		Wait(8, WaitBehavior.IgnoreCondition);
 	}
@@ -1800,7 +1800,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Reaper
 if (pIsTargetInLos >= 4)
-if (!IsUsingAbility1(EventPlayer()))
+if (!EventPlayer().IsUsingAbility1())
 {
 	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -1823,7 +1823,7 @@ if (DistanceBetween(EventPlayer(), pMyTarget) >= 10)
 if (DistanceBetween(EventPlayer(), pMyTarget) <= 40)
 {
 	PressButton(EventPlayer(), Button.Ability1);
-	if (IsUsingAbility1(EventPlayer()))
+	if (EventPlayer().IsUsingAbility1())
 	{
 		pAbWraithPos = EventPlayer().Position();
 		ChaseVariableAtRate(pAbWraithPos, PositionOf(pMyTarget) + 0.5 * Up(), 15, RateChaseReevaluation.DestinationAndRate);
@@ -1846,7 +1846,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Reaper
 if (pIsWraith)
-if (IsUsingAbility1(EventPlayer()))
+if (EventPlayer().IsUsingAbility1())
 if (DistanceBetween(EventPlayer(), pMyTarget) <= 3)
 if (IsInLineOfSight(pMyTarget, EventPlayer().Position(), BarrierLOS.NoBarriersBlock))
 {
@@ -1870,7 +1870,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Reaper
 if (pIsWraith)
-if (!IsUsingAbility1(EventPlayer()) || !pMyTarget.pIsCombatant || pMyTarget.pActiveAbIsCloaked)
+if (!EventPlayer().IsUsingAbility1() || !pMyTarget.pIsCombatant || pMyTarget.pActiveAbIsCloaked)
 {
 	StopChasingVariable(pAbWraithPos);
 	StopForcingPlayerPosition(EventPlayer());
@@ -1885,7 +1885,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Reaper
 if (pIsTargetInLos >= 5)
-if (!IsUsingAbility1(EventPlayer()))
+if (!EventPlayer().IsUsingAbility1())
 if (gWaveNumber >= 12 || pIsLivingBoss)
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
@@ -1912,7 +1912,7 @@ if (pIsTargetInLos >= 4)
 	}
 	else
 	{
-		if (!IsFiringSecondary(EventPlayer()))
+		if (!EventPlayer().IsFiringSecondary())
 		{
 			StartHoldingButton(EventPlayer(), Button.SecondaryFire);
 			Wait(0.5, WaitBehavior.IgnoreCondition);
@@ -1961,10 +1961,10 @@ Event.OngoingPlayer
 Team.Team2
 Player.Dva
 if (pIsTargetInLos >= 3)
-if (DistanceBetween(EventPlayer(), pMyTarget) <= 10 || IsUsingAbility1(EventPlayer()) || IsStanding(EventPlayer()) || IsInAlternateForm(EventPlayer()))
+if (DistanceBetween(EventPlayer(), pMyTarget) <= 10 || EventPlayer().IsUsingAbility1() || IsStanding(EventPlayer()) || IsInAlternateForm(EventPlayer()))
 {
 	StartHoldingButton(EventPlayer(), Button.PrimaryFire);
-	WaitUntil(!(pIsTargetInLos >= 3 && (DistanceBetween(EventPlayer(), pMyTarget) <= 15 || IsUsingAbility1(EventPlayer()) || IsStanding(EventPlayer()) || IsInAlternateForm(EventPlayer()))), RandomInteger(4, 8));
+	WaitUntil(!(pIsTargetInLos >= 3 && (DistanceBetween(EventPlayer(), pMyTarget) <= 15 || EventPlayer().IsUsingAbility1() || IsStanding(EventPlayer()) || IsInAlternateForm(EventPlayer()))), RandomInteger(4, 8));
 	StopHoldingButton(EventPlayer(), Button.PrimaryFire);
 	StartHoldingButton(EventPlayer(), Button.SecondaryFire);
 	WaitUntil(AbilityResource(EventPlayer(), Button.SecondaryFire) <= 30, 2);
@@ -1985,7 +1985,7 @@ if (IsInViewAngle(EventPlayer(), pMyTarget, 5))
 {
 	PressButton(EventPlayer(), Button.Ability1);
 	pIsPathfindingDisabled = true;
-	WaitUntil(!IsUsingAbility1(EventPlayer()) || DistanceBetween(EventPlayer(), pMyTarget) < 1, 3);
+	WaitUntil(!EventPlayer().IsUsingAbility1() || DistanceBetween(EventPlayer(), pMyTarget) < 1, 3);
 	PressButton(EventPlayer(), Button.Ability1);
 	pIsPathfindingDisabled = false;
 	pIsNavReachableNode = false;
@@ -2100,11 +2100,11 @@ rule: "Team 2 Orisa: Decrease / Normalize Move Speed while shooting on ground"
 Event.OngoingPlayer
 Team.Team2
 Player.Orisa
-if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
+if (EventPlayer().IsButtonHeld(Button.PrimaryFire))
 if (IsOnGround(EventPlayer()))
 {
 	SetMoveSpeed(EventPlayer(), gMutAmpted ? 57.5 : 50);
-	WaitUntil(!(IsButtonHeld(EventPlayer(), Button.PrimaryFire) && IsOnGround(EventPlayer())), 99999);
+	WaitUntil(!(EventPlayer().IsButtonHeld(Button.PrimaryFire) && IsOnGround(EventPlayer())), 99999);
 	SetMoveSpeed(EventPlayer(), gMutAmpted ? 115 : 100);
 }
 
@@ -2126,7 +2126,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Orisa
 if (SlotOf(EventPlayer()) != 1 || gObjectivePhaseNumber == 1)
-if (!IsUsingAbility1(EventPlayer()))
+if (!EventPlayer().IsUsingAbility1())
 if (NormalizedHealth(EventPlayer()) <= (gGmutFortified ? 0.6 : 0.4))
 {
 	PressButton(EventPlayer(), Button.Ability1);
@@ -2171,7 +2171,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Roadhog
 if (pIsTargetInLos >= 4)
-if (!IsUsingAbility1(EventPlayer()))
+if (!EventPlayer().IsUsingAbility1())
 {
 	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
 	AbortIfConditionIsFalse();
@@ -2183,7 +2183,7 @@ if (!IsUsingAbility1(EventPlayer()))
 	{
 		PressButton(EventPlayer(), Button.PrimaryFire);
 	}
-	WaitUntil(IsUsingAbility1(EventPlayer()), RandomReal(2, 2.4));
+	WaitUntil(EventPlayer().IsUsingAbility1(), RandomReal(2, 2.4));
 	LoopIfConditionIsTrue();
 }
 
@@ -2286,7 +2286,7 @@ if (YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) >= 3)
 	SetAbilityCooldown(EventPlayer(), Button.Ability2, false);
 	PressButton(EventPlayer(), Button.Ability2);
 	Wait(0.8, WaitBehavior.IgnoreCondition);
-	if (IsUsingAbility2(EventPlayer()) && pIsTargetInLos)
+	if (EventPlayer().IsUsingAbility2() && pIsTargetInLos)
 	{
 		Teleport(EventPlayer(), RayCastHitPosition(EyePosition(pMyTarget), PositionOf(pMyTarget) - 2.5 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget), false), null, null, false) + 0.5 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget), false));
 		pIsNavReachableNode = false;
@@ -2329,7 +2329,7 @@ if (!HasStatus(EventPlayer(), Status.Stunned))
 	SetAbilityCooldown(EventPlayer(), Button.Ability2, false);
 	PressButton(EventPlayer(), Button.Ability2);
 	Wait(0.8, WaitBehavior.IgnoreCondition);
-	AbortIf(!(IsUsingAbility2(EventPlayer()) && pIsTargetInLos));
+	AbortIf(!(EventPlayer().IsUsingAbility2() && pIsTargetInLos));
 	Teleport(EventPlayer(), RayCastHitPosition(EyePosition(pMyTarget), PositionOf(pMyTarget) - 2.5 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget), false), null, null, false) + 0.5 * DirectionFromAngles(HorizontalFacingAngleOf(pMyTarget), false));
 	pIsNavReachableNode = false;
 	Wait(2.8, WaitBehavior.IgnoreCondition);
@@ -2377,7 +2377,7 @@ if (pIsTargetInLos >= 4)
 if (pIsAggressive)
 if (DistanceBetween(EventPlayer(), pMyTarget) <= 15)
 if (AbsoluteValue(HorizontalAngleTowards(EventPlayer(), pMyTarget)) <= 5)
-if (!IsUsingAbility2(EventPlayer()))
+if (!EventPlayer().IsUsingAbility2())
 {
 	if (!gIsLoadLimitReached)
 	{
@@ -2458,7 +2458,7 @@ Team.Team2
 Player.Hanzo
 if (pIsTargetInLos)
 if (NormalizedHealth(EventPlayer()) <= 0.5)
-if (!IsUsingAbility2(EventPlayer()))
+if (!EventPlayer().IsUsingAbility2())
 {
 	PressButton(EventPlayer(), Button.Ability2);
 	Wait(0.5, WaitBehavior.IgnoreCondition);
@@ -2502,11 +2502,11 @@ Player.Reinhardt
 if (pIsTargetInLos)
 if (DistanceBetween(EventPlayer(), pMyTarget) >= 5)
 # Reinhardt won't automatically raise his shield again after charging or being hacked
-if (!IsUsingAbility1(EventPlayer()))
+if (!EventPlayer().IsUsingAbility1())
 if (!HasStatus(EventPlayer(), Status.Hacked))
 {
 	StartHoldingButton(EventPlayer(), Button.SecondaryFire);
-	WaitUntil(!(pIsTargetInLos && DistanceBetween(EventPlayer(), pMyTarget) >= 5 && !IsUsingAbility1(EventPlayer()) && !HasStatus(EventPlayer(), Status.Hacked)), 99999);
+	WaitUntil(!(pIsTargetInLos && DistanceBetween(EventPlayer(), pMyTarget) >= 5 && !EventPlayer().IsUsingAbility1() && !HasStatus(EventPlayer(), Status.Hacked)), 99999);
 	StopHoldingButton(EventPlayer(), Button.SecondaryFire);
 }
 
@@ -2572,7 +2572,7 @@ Team.Team2
 Player.Reinhardt
 if (pIsTargetInLos >= 5)
 if (!pMyTarget.pIsFlying)
-if (!IsFiringSecondary(EventPlayer()))
+if (!EventPlayer().IsFiringSecondary())
 {
 	Wait(1, WaitBehavior.AbortWhenFalse);
 	LoopIf(RandomInteger(1, 100) <= 100 * NormalizedHealth(EventPlayer()));
@@ -2611,7 +2611,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.Sigma
 if (pIsTargetInLos >= 4)
-if (!IsFiringSecondary(EventPlayer()))
+if (!EventPlayer().IsFiringSecondary())
 if (!IsUsingUltimate(EventPlayer()))
 {
 	Wait(AngleBetweenVectors(EventPlayer().FacingDirection(), VectorTowards(EventPlayer(), pMyTarget)) / 300, WaitBehavior.IgnoreCondition);
@@ -2626,8 +2626,8 @@ Event.OngoingPlayer
 Team.Team2
 Player.Sigma
 if (pIsTargetInLos >= 4)
-if (!IsUsingAbility1(EventPlayer()))
-if (!IsUsingAbility2(EventPlayer()))
+if (!EventPlayer().IsUsingAbility1())
+if (!EventPlayer().IsUsingAbility2())
 if (!IsUsingUltimate(EventPlayer()))
 {
 	if (DistanceBetween(pMyTarget, EventPlayer()) <= 30)
@@ -2645,8 +2645,8 @@ Event.OngoingPlayer
 Team.Team2
 Player.Sigma
 if (pIsTargetInLos >= 4)
-if (!IsFiringSecondary(EventPlayer()))
-if (!IsUsingAbility2(EventPlayer()))
+if (!EventPlayer().IsFiringSecondary())
+if (!EventPlayer().IsUsingAbility2())
 {
 	Wait(10, WaitBehavior.IgnoreCondition);
 	PressButton(EventPlayer(), Button.Ability1);
@@ -2659,8 +2659,8 @@ Team.Team2
 Player.Sigma
 if (gMutLockNLoad)
 if (pIsTargetInLos >= 4)
-if (!IsFiringSecondary(EventPlayer()))
-if (!IsUsingAbility1(EventPlayer()))
+if (!EventPlayer().IsFiringSecondary())
+if (!EventPlayer().IsUsingAbility1())
 {
 	PressButton(EventPlayer(), Button.Ability2);
 	Wait(10, WaitBehavior.IgnoreCondition);
@@ -2760,7 +2760,7 @@ Team.Team2
 Player.Pharah
 if (gMutFullyLoaded)
 if (pIsTargetInLos)
-if (!IsUsingAbility1(EventPlayer()))
+if (!EventPlayer().IsUsingAbility1())
 {
 	Wait(1, WaitBehavior.AbortWhenFalse);
 	PressButton(EventPlayer(), Button.Ability2);

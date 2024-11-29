@@ -278,9 +278,9 @@ void enable_player() "Subroutine: Enable Player"
 rule: "[Tutorial] Close HUD"
 Event.OngoingPlayer
 if (pTutActive)
-if (IsButtonHeld(EventPlayer(), Button.Reload))
-if (IsButtonHeld(EventPlayer(), Button.Crouch))
-if (IsAlive(EventPlayer()))
+if (EventPlayer().IsButtonHeld(Button.Reload))
+if (EventPlayer().IsButtonHeld(Button.Crouch))
+if (EventPlayer().IsAlive())
 {
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	pTutActive = false;
@@ -290,9 +290,9 @@ if (IsAlive(EventPlayer()))
 rule: "[Tutorial] Open HUD"
 Event.OngoingPlayer
 if (!pTutActive)
-if (IsButtonHeld(EventPlayer(), Button.Reload))
-if (IsButtonHeld(EventPlayer(), Button.Crouch))
-if (IsAlive(EventPlayer()))
+if (EventPlayer().IsButtonHeld(Button.Reload))
+if (EventPlayer().IsButtonHeld(Button.Crouch))
+if (EventPlayer().IsAlive())
 {
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	pTutActive = true;
@@ -358,7 +358,7 @@ if (NormalizedHealth(EventPlayer()) >= 0.5)
 rule: "Team 1 Button: Interact, Open / Leave Buy Menu"
 Event.OngoingPlayer
 Team.Team1
-if (IsButtonHeld(EventPlayer(), Button.Interact))
+if (EventPlayer().IsButtonHeld(Button.Interact))
 {
 	if (pInBuyMenu)
 	{
@@ -391,7 +391,7 @@ rule: "Team 1: Toggle Show active Ability"
 Event.OngoingPlayer
 Team.Team1
 if (pInBuyMenu)
-if (IsButtonHeld(EventPlayer(), Button.Melee))
+if (EventPlayer().IsButtonHeld(Button.Melee))
 {
 	AbortIf(pInBuyMenu + 0.1 >= TotalTimeElapsed());
 	pIsShowingActiveAbilities = !pIsShowingActiveAbilities;
@@ -401,7 +401,7 @@ rule: "Team 1: Buy Ability"
 Event.OngoingPlayer
 Team.Team1
 if (pInBuyMenu)
-if (IsButtonHeld(EventPlayer(), Button.PrimaryFire))
+if (EventPlayer().IsButtonHeld(Button.PrimaryFire))
 {
 	AbortIf(pInBuyMenu + 0.1 >= TotalTimeElapsed()
 		|| AbsoluteValue(HorizontalFacingAngleOf(EventPlayer())) >= 135
@@ -1193,7 +1193,7 @@ if (gUpgradeCount > 0)
 rule: "Team 1 Button: Hold Reload, Change Hero, Set Last Position (1), Last Eye Position (2), Last Facing (3)"
 Event.OngoingPlayer
 Team.Team1
-if (IsButtonHeld(EventPlayer(), Button.Reload))
+if (EventPlayer().IsButtonHeld(Button.Reload))
 {
 	Wait(0.4, WaitBehavior.AbortWhenFalse);
 	AbortIf(gObjectivePhaseNumber > 0 || pDownedStartT || pInBuyMenu);
@@ -1214,7 +1214,7 @@ if (IsButtonHeld(EventPlayer(), Button.Reload))
 	Teleport(EventPlayer(), 100 * Down());
 	Wait(0.1, WaitBehavior.IgnoreCondition);
 	pIsInvisible = 2;
-	WaitUntil(IsAlive(EventPlayer()), 99999);
+	WaitUntil(EventPlayer().IsAlive(), 99999);
 	StopCamera(EventPlayer());
 	Teleport(EventPlayer(), pAbVar1);
 	SetFacing(EventPlayer(), pAbVar3, Relative.ToWorld);
@@ -1328,7 +1328,7 @@ rule: "Team 1: Select Next Spectated Player"
 Event.OngoingPlayer
 Team.Team1
 if (pDownedStartT)
-if (IsButtonHeld(EventPlayer(), Button.Jump))
+if (EventPlayer().IsButtonHeld(Button.Jump))
 {
 	AbortIf(pDownedStartT + 0.5 >= TotalTimeElapsed());
 	pDeathCamTarget = null;
@@ -1722,11 +1722,11 @@ Event.OngoingPlayer
 Team.Team1
 Player.Echo
 if (HeroBeingDuplicated(EventPlayer()) == Hero.Sombra)
-if (IsUsingAbility1(EventPlayer()))
+if (EventPlayer().IsUsingAbility1())
 {
 	Wait(0.8, WaitBehavior.AbortWhenFalse);
 	pIsInvisible = 1;
-	WaitUntil(!IsUsingAbility1(EventPlayer()), 99999);
+	WaitUntil(!EventPlayer().IsUsingAbility1(), 99999);
 	pIsInvisible = false;
 }
 
@@ -1761,7 +1761,7 @@ Player.Echo
 if (HeroBeingDuplicated(EventPlayer()) == Hero.Roadhog)
 if (EventAbility() == Button.Ability1)
 if (Victim().pIsLivingBoss)
-if (IsUsingAbility1(EventPlayer()))
+if (EventPlayer().IsUsingAbility1())
 {
 	CancelPrimaryAction(EventPlayer());
 	MinWait();
@@ -1773,7 +1773,7 @@ rule: "Team 1 Mercy: Revive Ability (Player)"
 Event.OngoingPlayer
 Team.Team1
 Player.Mercy
-if (IsButtonHeld(EventPlayer(), Button.Ability2))
+if (EventPlayer().IsButtonHeld(Button.Ability2))
 if (!AbilityCooldown(EventPlayer(), Button.Ability2))
 if (!pDownedStartT)
 if (!HasStatus(EventPlayer(), Status.Hacked))
@@ -1803,19 +1803,19 @@ rule: "Team 1 Sombra: Stealth (Invisibility 1, detectable), end after 20 seconds
 Event.OngoingPlayer
 Team.Team1
 Player.Sombra
-if (IsUsingAbility1(EventPlayer()))
+if (EventPlayer().IsUsingAbility1())
 {
 	Wait(0.8, WaitBehavior.AbortWhenFalse);
 	pIsInvisible = 1;
 	for (pSombraStealthTimer = 100; 0; -0.48)
 	{
-		WaitUntil(!IsUsingAbility1(EventPlayer()), 0.096);
-		if (!IsUsingAbility1(EventPlayer()))
+		WaitUntil(!EventPlayer().IsUsingAbility1(), 0.096);
+		if (!EventPlayer().IsUsingAbility1())
 		{
 			break;
 		}
 	}
-	if (IsUsingAbility1(EventPlayer()))
+	if (EventPlayer().IsUsingAbility1())
 	{
 		PressButton(EventPlayer(), Button.Ability1);
 	}
@@ -1841,7 +1841,7 @@ Team.Team1
 Player.Roadhog
 if (EventAbility() == Button.Ability1)
 if (Victim().pIsLivingBoss)
-if (IsUsingAbility1(EventPlayer()))
+if (EventPlayer().IsUsingAbility1())
 {
 	CancelPrimaryAction(EventPlayer());
 	MinWait();
@@ -1853,7 +1853,7 @@ rule: "Team 1 Tracer: Start Health Regeneration after Recall"
 Event.OngoingPlayer
 Team.Team1
 Player.Tracer
-if (IsUsingAbility2(EventPlayer()))
+if (EventPlayer().IsUsingAbility2())
 {
 	Wait(0.85, WaitBehavior.IgnoreCondition);
 	pLastDamageTakenT = false;

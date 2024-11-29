@@ -33,7 +33,7 @@ rule: "MUT Team 2 (Gamechanging Mutator): Adaptive Shield"
 Event.OngoingPlayer
 Team.Team2
 if (gGmutAdaptiveShield)
-if (IsAlive(EventPlayer()))
+if (EventPlayer().IsAlive())
 if (!pGmutVar)
 if (NormalizedHealth(EventPlayer()) <= 0.5)
 {
@@ -113,7 +113,7 @@ rule: "MUT Team 2 (Gamechanging Mutator): Salvation"
 Event.OngoingPlayer
 Team.Team2
 if (gGmutSalvation)
-if (IsAlive(EventPlayer()))
+if (EventPlayer().IsAlive())
 if (!pIsLivingBoss)
 {
 	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
@@ -130,7 +130,7 @@ Event.OngoingPlayer
 Team.Team2
 if (gGmutArtfulDodger)
 if (!pCanDodge)
-if (IsAlive(EventPlayer()))
+if (EventPlayer().IsAlive())
 {
 	pCanDodge = true;
 }
@@ -139,7 +139,7 @@ rule: "MUT Team 2 (Mutator): Swan Song"
 Event.OngoingPlayer
 Team.Team2
 if (gMutSwanSong)
-if (IsAlive(EventPlayer()))
+if (EventPlayer().IsAlive())
 if (pIsLivingBoss)
 {
 	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);

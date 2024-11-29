@@ -146,7 +146,7 @@ Team.Team1
 Player.Moira
 if (gGamemode == 0)
 if (gObjectivePhaseNumber == 1)
-if (IsFiringSecondary(EventPlayer()))
+if (EventPlayer().IsFiringSecondary())
 {
 	if (DistanceBetween(EventPlayer().EyePosition(), gIvDomObjectivePos + 1.11 * Up()) <= 20 && IsInLineOfSight(EventPlayer().EyePosition(), gIvDomObjectivePos + 1.11 * Up(), BarrierLOS.NoBarriersBlock))
 	{
