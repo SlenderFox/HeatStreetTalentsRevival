@@ -16,15 +16,35 @@ if (gIsGmutEnabled)
 	Wait(0.5, WaitBehavior.IgnoreCondition);
 	if (gGmutStormRaging)
 	{
-		CreateEffect(pGmutVar ? AllPlayers() : [], Effect.AnaNanoBoostedEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
+		CreateEffect(
+			pGmutVar ? AllPlayers() : [],
+			Effect.AnaNanoBoostedEffect,
+			Color.Team2,
+			EventPlayer(),
+			1,
+			EffectRev.VisibleTo
+		);
 	}
 	if (gGmutAdaptiveShield)
 	{
-		CreateEffect(pGmutVar == 1 ? AllPlayers() : [], Effect.WreckingBallAdaptiveShieldTargetEffect, Color.Team2, EventPlayer(), 1, EffectRev.VisibleTo);
+		CreateEffect(
+			pGmutVar == 1 ? AllPlayers() : [],
+			Effect.WreckingBallAdaptiveShieldTargetEffect,
+			Color.Team2,
+			EventPlayer(),
+			1,
+			EffectRev.VisibleTo
+		);
 	}
 	if (gGmutFortified)
 	{
-		AddHealthPoolToPlayer(EventPlayer(), HealthType.Armor, 0.4 * pHealthPercent, true, true);
+		AddHealthPoolToPlayer(
+			EventPlayer(),
+			HealthType.Armor,
+			0.4 * pHealthPercent,
+			true,
+			true
+		);
 	}
 	gIsGmutEnabled = false;
 }
@@ -44,11 +64,28 @@ if (NormalizedHealth(EventPlayer()) <= 0.5)
 		Wait(0.016, WaitBehavior.AbortWhenFalse);
 		AbortIfConditionIsFalse();
 	}
-	gTemp1 = CountOf(FilteredArray(gCombatants, DistanceBetween(EventPlayer(), ArrayElement()) <= 8 && IsInLineOfSight(EventPlayer(), ArrayElement(), BarrierLOS.EnemyBarriersBlock)));
+	gTemp1 = CountOf(
+		gCombatants.Filter(
+			p => DistanceBetween(EventPlayer(), p) <= 8
+				&& IsInLineOfSight(EventPlayer(), p, BarrierLOS.EnemyBarriersBlock)
+		)
+	);
 	if (gTemp1)
 	{
-		PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Blue, EventPlayer(), 1);
-		AddHealthPoolToPlayer(EventPlayer(), HealthType.Shields, 0.75 * gTemp1 / CountOf(gCombatants) * MaxHealth(EventPlayer()), false, false);
+		PlayEffect(
+			AllPlayers(),
+			PlayEffect.GoodPickupEffect,
+			Color.Blue,
+			EventPlayer(),
+			1
+		);
+		AddHealthPoolToPlayer(
+			EventPlayer(),
+			HealthType.Shields,
+			0.75 * gTemp1 / CountOf(gCombatants) * MaxHealth(EventPlayer()),
+			false,
+			false
+		);
 		pHpPool[3] = LastCreatedHealthPool();
 		pGmutVar = 1;
 		WaitUntil(!HealthOfType(EventPlayer(), HealthType.Shields), 7);
@@ -67,11 +104,38 @@ Team.Team2
 if (gGmutSympathyGains)
 if (!pIvIsPortal)
 {
-	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Black, EventPlayer(), 1);
+	PlayEffect(
+		AllPlayers(),
+		PlayEffect.GoodPickupEffect,
+		Color.Black,
+		EventPlayer(),
+		1
+	);
 	Wait(0.15, WaitBehavior.AbortWhenFalse);
-	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.White, EventPlayer().Position(), 1);
-	PlayEffect(AllPlayers(), PlayEffect.RingExplosion, Color.Yellow, EventPlayer().Position(), pRealTier * 8 + 6);
-	Heal(PlayersWithinRadius(EventPlayer(), pRealTier * 4 + 3, Team.Team2, RadiusLOS.Off), null, Min(MaxHealth(EventPlayer()) * 0.3, 500));
+	PlayEffect(
+		AllPlayers(),
+		PlayEffect.GoodPickupEffect,
+		Color.White,
+		EventPlayer().Position(),
+		1
+	);
+	PlayEffect(
+		AllPlayers(),
+		PlayEffect.RingExplosion,
+		Color.Yellow,
+		EventPlayer().Position(),
+		pRealTier * 8 + 6
+	);
+	Heal(
+		PlayersWithinRadius(
+			EventPlayer(),
+			pRealTier * 4 + 3,
+			Team.Team2,
+			RadiusLOS.Off
+		),
+		null,
+		Min(MaxHealth(EventPlayer()) * 0.3, 500)
+	);
 }
 
 rule: "MUT Team 2 (Gamechanging Mutator): Fortified"
@@ -118,7 +182,13 @@ if (!pIsLivingBoss)
 {
 	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
 	WaitUntil(EventPlayer().Health() <= 1, 99999);
-	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Purple, EventPlayer().Position(), 1);
+	PlayEffect(
+		AllPlayers(),
+		PlayEffect.GoodPickupEffect,
+		Color.Purple,
+		EventPlayer().Position(),
+		1
+	);
 	SetStatus(EventPlayer(), null, Status.Stunned, 1.333);
 	SetStatus(EventPlayer(), null, Status.Invincible, 0.1);
 	Heal(EventPlayer(), null, MaxHealth(EventPlayer()) * 0.05);
@@ -144,9 +214,22 @@ if (pIsLivingBoss)
 {
 	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
 	WaitUntil(EventPlayer().Health() <= 1, 99999);
-	CreateEffect(AllPlayers(), Effect.EchoCloningEffect, Color.Team1, EventPlayer(), 1, EffectRev.VisibleToPositionAndRadius);
+	CreateEffect(
+		AllPlayers(),
+		Effect.EchoCloningEffect,
+		Color.Team1,
+		EventPlayer(),
+		1,
+		EffectRev.VisibleToPositionAndRadius
+	);
 	pEffects[1] = LastCreatedEntity();
-	PlayEffect(AllPlayers(), PlayEffect.GoodPickupEffect, Color.Violet, EventPlayer(), 1);
+	PlayEffect(
+		AllPlayers(),
+		PlayEffect.GoodPickupEffect,
+		Color.Violet,
+		EventPlayer(),
+		1
+	);
 	SetStatus(EventPlayer(), null, Status.Stunned, 1);
 	WaitUntil(EventPlayer().IsDead(), 5);
 	ClearStatus(EventPlayer(), Status.Unkillable);
@@ -181,5 +264,9 @@ Event.PlayerDealtKnockback
 Team.Team2
 {
 	AbortIf(!gMutLowBlow);
-	Damage(Victim(), EventPlayer(), 0.5 * EventDamage());
+	Damage(
+		Victim(),
+		EventPlayer(),
+		0.5 * EventDamage()
+	);
 }
