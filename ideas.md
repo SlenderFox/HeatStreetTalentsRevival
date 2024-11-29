@@ -21,13 +21,19 @@ Remove speed bonus and passthrough.
 ## Talents
 No talents with quick melee to avoid any conflicts with active abilities.
 What if I made 3 talents per hero, two abilities and one ult.
+Hack should disable talents.
 ### Ashe
 - White phosphourous: Dynamite burn lasts twice as long and killing burning enemies sets nearby enemies on fire.
 - Black powder: Coach gun stuns all enemies hit for 1.5 seconds.
+### Baptiste
+Corrode is good, great for AOE damage.
 ### Cassidy
 Magnetic grenade talent no longer valid.
 ### D.va
 Something with her micro-missiles.
+### Echo
+Rename Bomber Jacket to Sticky Bomb Salvo.
+Focusing optics is strong but quite boring and unengaging.
 ### Hazard
 ### Illari
 Enemies will never shoot pylon.  
@@ -41,6 +47,8 @@ Something with tree.
 ### Mauga
 Naturally strong in pve.  
 Cage fight is ineffective against tough enemies.
+### Pharah
+Using any ability fires a small group of homing rockets.
 ### Sojourn
 Remove explosive headshots. Maybe make all railgun shots deal explosive damage? Scaled by the charge of the shot.
 ### Sombra
