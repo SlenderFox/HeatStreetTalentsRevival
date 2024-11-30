@@ -217,7 +217,7 @@ void declare_victory() "Subroutine: Declare Victory"
 	DeclareTeamVictory(Team.Team1);
 }
 
-rule: "Mod by LemonAid#11644, Original mode by Shingen#21859"
+rule: "Source code: https://github.com/SlenderFox/HeatStreetTalents"
 {
 	DisableInspectorRecording();
 }
@@ -1195,7 +1195,7 @@ rule: "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Cre
 // After the other settings
 rule: "Special thanks"
 {
-	Any Special_Thanks = WorkshopSettingCombo("Credits", "Thank you to", 0, ["LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
+	Any Special_Thanks = WorkshopSettingCombo(" Remade by SlenderFox", "Credits", 0, ["LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
 }
 
 rule: "Global (First Wave): Create Mutator Start HUD, Scale Values, Set Level"
