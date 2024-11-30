@@ -1,5 +1,5 @@
-import "globalvars.ostw";
-import "subroutines.ostw";
+import "../globalvars.ostw";
+import "../subroutines.ostw";
 
 globalvar Vector[] gIvDomObjectiveAllPosList;
 
