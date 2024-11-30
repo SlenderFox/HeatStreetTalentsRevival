@@ -47,7 +47,7 @@ Something with tree.
 Naturally strong in pve.  
 Cage fight is ineffective against tough enemies.
 ### Pharah
-Using any ability fires a small group of homing rockets.
+- Rocket Queen: Using Jump Jet or Jet Dash fires a small group of homing rockets.
 ### Sojourn
 Remove explosive headshots. Maybe make all railgun shots deal explosive damage? Scaled by the charge of the shot.
 ### Sombra
