@@ -245,7 +245,7 @@ if (pIsAlive)
 			}
 			else if (pIsTargetInLos)
 			{
-				if (!pIsFlying && YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) > 2)
+				if (!pIsFlying && PositionOf(pMyTarget).Y - EventPlayer().Position().Y > 2)
 				{
 					pIsUsingCombatPathfinding = 0;
 				}
@@ -978,9 +978,9 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 				DistanceBetween(
 					EventPlayer(),
 					Vector(
-						XOf(pNavPos),
-						YOf(EventPlayer().Position()),
-						ZOf(pNavPos)
+						pNavPos.X,
+						EventPlayer().Position().Y,
+						pNavPos.Z
 					)
 				) >= 0.5
 					? pIsAggressive
@@ -1003,9 +1003,9 @@ if (pBaseTier == -1 ? gEnableObjectiveEnemySpawns : gSpecialSpawnsCount > 0 || g
 				DistanceBetween(
 					EventPlayer(),
 					Vector(
-						XOf(pNavPos),
-						YOf(EventPlayer().Position()),
-						ZOf(pNavPos)
+						pNavPos.X,
+						EventPlayer().Position().Y,
+						pNavPos.Z
 					)
 				) >= 0.5
 			),
@@ -1970,13 +1970,13 @@ Event.OngoingPlayer
 Team.Team2
 Player.Echo
 if (pIsFlying)
-if (AbsoluteValue(YOf(EventPlayer().Position()) - YOf(pNavPos)) >= 1)
+if (AbsoluteValue(EventPlayer().Position().Y - pNavPos.Y) >= 1)
 {
-	if (YOf(EventPlayer().Position()) < YOf(pNavPos))
+	if (EventPlayer().Position().Y < pNavPos.Y)
 	{
 		StartHoldingButton(EventPlayer(), Button.Jump);
 		WaitUntil(
-			!(pIsFlying && YOf(pNavPos) - YOf(EventPlayer().Position()) >= 1),
+			!(pIsFlying && pNavPos.Y - EventPlayer().Position().Y >= 1),
 			99999
 		);
 		StopHoldingButton(EventPlayer(), Button.Jump);
@@ -1985,7 +1985,7 @@ if (AbsoluteValue(YOf(EventPlayer().Position()) - YOf(pNavPos)) >= 1)
 	{
 		StartHoldingButton(EventPlayer(), Button.Crouch);
 		WaitUntil(
-			!(pIsFlying && YOf(EventPlayer().Position()) - YOf(pNavPos) >= 1),
+			!(pIsFlying && EventPlayer().Position().Y - pNavPos.Y >= 1),
 			99999
 		);
 		StopHoldingButton(EventPlayer(), Button.Crouch);
@@ -2105,7 +2105,7 @@ if (pIsAggressive)
 if (!pMyTarget.pIsFlying)
 if (DistanceBetween(EventPlayer(), pMyTarget) >= 7.5)
 if (DistanceBetween(EventPlayer(), pMyTarget) <= 25)
-if (YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) >= 3)
+if (PositionOf(pMyTarget).Y - EventPlayer().Position().Y >= 3)
 if (IsInViewAngle(EventPlayer(), pMyTarget, 5))
 {
 	if (EventPlayer().IsUsingAbility2())
@@ -3069,7 +3069,7 @@ if (pIsAggressive)
 if (pRecallBlockEndT < TotalTimeElapsed())
 if (!pMyTarget.pIsFlying)
 if (DistanceBetween(EventPlayer(), pMyTarget) <= 20)
-if (YOf(PositionOf(pMyTarget)) - YOf(EventPlayer().Position()) >= 3)
+if (PositionOf(pMyTarget).Y - EventPlayer().Position().Y >= 3)
 {
 	SetAbilityCooldown(EventPlayer(), Button.Ability2, false);
 	PressButton(EventPlayer(), Button.Ability2);

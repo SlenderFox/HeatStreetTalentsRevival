@@ -47,8 +47,8 @@ if (gObjectivePhaseNumber == 2)
 	pRevivers = gCombatants.Filter(
 		p => !p.pDownedStartT
 		&& !(p.pIsInvisible % 3)
-		&& DistanceBetween(EventPlayer(), Vector(XOf(PositionOf(p)), YOf(EventPlayer().Position()), ZOf(PositionOf(p)))) <= 10
-		&& AbsoluteValue(YOf(EventPlayer().Position()) - YOf(PositionOf(p))) <= 5
+		&& DistanceBetween(EventPlayer(), Vector(PositionOf(p).X, EventPlayer().Position().Y, PositionOf(p).Z)) <= 10
+		&& AbsoluteValue(EventPlayer().Position().Y - PositionOf(p).Y) <= 5
 		&& IsInLineOfSight(EventPlayer(), p, BarrierLOS.NoBarriersBlock)
 	);
 	if (CountOf(pRevivers))

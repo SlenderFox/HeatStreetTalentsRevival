@@ -2754,7 +2754,7 @@ if (EventPlayer().IsAlive())
 	Wait(0.5, WaitBehavior.AbortWhenFalse);
 	StartDamageModification(
 		AllPlayers(Team.Team2).Filter(
-			p => YOf(EventPlayer().Position()) - YOf(PositionOf(p)) >= 3
+			p => EventPlayer().Position().Y - PositionOf(p).Y >= 3
 				|| DotProduct(FacingDirectionOf(p), VectorTowards(p, EventPlayer())) < 0
 		),
 		EventPlayer(),

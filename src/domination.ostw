@@ -28,8 +28,8 @@ if (gObjectiveProgress[0] < 100)
 	gDomPointAContesters = gCombatants.Filter(
 		p => !p.pDownedStartT
 		&& !(p.pIsInvisible % 3)
-		&& DistanceBetween(gIvDomObjectivePos[0], Vector(XOf(PositionOf(p)), YOf(gIvDomObjectivePos[0]), ZOf(PositionOf(p)))) <= 3
-		&& AbsoluteValue(YOf(PositionOf(gIvDomObjectivePos[0])) - YOf(PositionOf(p))) <= 3
+		&& DistanceBetween(gIvDomObjectivePos[0], Vector(PositionOf(p).X, YOf(gIvDomObjectivePos[0]), PositionOf(p).Z)) <= 3
+		&& AbsoluteValue(YOf(PositionOf(gIvDomObjectivePos[0])) - PositionOf(p).Y) <= 3
 		&& IsInLineOfSight(gIvDomObjectivePos[0] + Up(), p, BarrierLOS.NoBarriersBlock)
 	);
 	if (!PlayersInSlot(2, Team.Team2).pIsLivingBoss && CountOf(gDomPointAContesters))
@@ -72,8 +72,11 @@ if (gObjectiveProgress[1] < 100)
 	gDomPointBContesters = gCombatants.Filter(
 		p => !p.pDownedStartT
 		&& !(p.pIsInvisible % 3)
-		&& DistanceBetween(gIvDomObjectivePos[1], Vector(XOf(PositionOf(p)), YOf(gIvDomObjectivePos[1]), ZOf(PositionOf(p)))) <= 3
-		&& AbsoluteValue(YOf(PositionOf(gIvDomObjectivePos[1])) - YOf(PositionOf(p))) <= 3
+		&& DistanceBetween(gIvDomObjectivePos[1], Vector(
+			PositionOf(p).X,
+			PositionOf(gIvDomObjectivePos[1]).Y,
+			PositionOf(p).Z)) <= 3
+		&& AbsoluteValue(PositionOf(gIvDomObjectivePos[1]).Y - PositionOf(p).Y) <= 3
 		&& IsInLineOfSight(gIvDomObjectivePos[1] + Up(), p, BarrierLOS.NoBarriersBlock)
 	);
 	if (!PlayersInSlot(3, Team.Team2).pIsLivingBoss && CountOf(gDomPointBContesters))

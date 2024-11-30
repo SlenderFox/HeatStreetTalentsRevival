@@ -1586,7 +1586,13 @@ if (EventPlayer().IsButtonHeld(Button.Melee))
 		for (pActiveAbCooldown = -10; 0; 0.5)
 		{
 			gCombatants.Filter(
-				p => DistanceBetween(p.EyePosition(), Vector(XOf(pActiveAbVar), p.EyePosition().Y, ZOf(pActiveAbVar))) <= 10
+				p => DistanceBetween(
+					p.EyePosition(), Vector(
+						XOf(pActiveAbVar),
+						p.EyePosition().Y,
+						ZOf(pActiveAbVar)
+					)
+				) <= 10
 				&& AbsoluteValue(p.EyePosition().Y - YOf(pActiveAbVar)) <= 5
 			).pActiveAbIsSmoked = true;
 			Wait(0.5, WaitBehavior.IgnoreCondition);
