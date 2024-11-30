@@ -1,8 +1,4 @@
 # Ideas
-## Enemies
-Enemy spawn quota: The game expects an amount of each type of enemy to spawn and will select a random enemy type to fill that quota.  
-Quota scales with difficulty.  
-Enemy respawn times scale with difficulty.
 ## Abilities
 Reduce the strength of each tier but add more tiers.
 ### Haste
@@ -62,3 +58,11 @@ Ult is very strong.
 One ability should improve her effectiveness against boss enemies while the other should improve her effectiveness against crowds.
 Would be cool if I could do something with venom mine. Maybe make it spread?
 Explosive headshots are an easy talent idea, good fallback if I cannot think of anything else.
+## Enemies
+Enemy spawn quota: The game expects an amount of each type of enemy to spawn and will select a random enemy type to fill that quota.  
+Quota scales with difficulty.  
+Enemy respawn times scale with difficulty.  
+Every enemy has an aggressiveness number calculated based on their current situtation. They also have a confidence number. The ai uses this to determine if it should perform certain actions.
+### Brigitte - Guard
+Will try and protect teammates.  
+Has a preference for certain types.
