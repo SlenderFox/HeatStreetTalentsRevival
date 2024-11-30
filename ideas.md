@@ -1,4 +1,7 @@
 # Ideas
+A starting room that players are not allowed to leave until the mode starts.  
+A ready-up system to avoid one player accidentally starting the mode without everyone.  
+A countdown before the mode starts so it's less sudden.
 ## Abilities
 Reduce the strength of each tier but add more tiers.
 ### Haste
