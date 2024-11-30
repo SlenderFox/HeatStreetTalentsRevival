@@ -1,4 +1,4 @@
-import "../settings.lobby";
+import "settings.lobby";
 import "debug.ostw";
 import "subroutines.ostw";
 
