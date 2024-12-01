@@ -1,0 +1,106 @@
+actions
+{
+	Global.__loadPersist = True;
+	Global._objectVariable_0 = Array(0, 0, 0, 0);
+	Global._objectVariable_1 = Array(0, 0, 228, 0);
+	Global._objectVariable_2 = Array(0, 0, 230, 0);
+	Global._objectVariable_3 = Array(0, 0, 229, 0);
+	Global._objectVariable_4 = Array(0, 0, Array(7, 0), 0);
+	Global.lambdaParameter_0 = Array(0);
+	Global.version = 5;
+	Global.map = Map(Kanezaka);
+	Global._extendedGlobalCollection = Array(20, 213, 214, 0, 0, 0, Null, Null, 0, Null, 72, Hero(Tracer), False, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 28, 29, 230, 5, 2.500, True, False, True, Array(Custom String("exit menu"), 2.350, 1.100, 0.350), 207, 208, 209, 211, 40,
+		-1, Custom String(" \n◈1◈"), Array(), 10, 11, 2, 25, 26, 27, 1, 2, -0.550, 3, True, 1, True, Array(0, 0, 0, 0, True), True, 0,
+		Array(), Array(1), 0, Array(), Array(), 0);
+	Global.Nodes_Node_UniqueID = Array(58, 59, 68, 69, 76, 77, 78, 79, 80, 82, 83, 84, 85, 86);
+	Global.Nodes_Node_Position = Array(Vector(-53.460, 8, 34.671), Vector(-53.362, 8, 6.184), Vector(-19.257, 10.500, 18.799), Vector(
+		-21.452, 10.002, 20.342), Vector(-32.343, 10.002, 22.894), Vector(-28.569, 10.002, 20.473), Vector(-27.718, 10.002, 23.119),
+		Vector(-26.966, 10.002, 18.444), Vector(-23.017, 10.002, 22.835), Vector(-34.018, 10.002, 20.481), Vector(-60.331, 13.199,
+		-25.281), Vector(-22.875, 11.200, -24.610), Vector(-20.677, 10, 4.022), Vector(-25.151, 10.002, 20.776));
+	Global.Nodes_Selected = Array(False, False, False, False, False, False, False, False, False, False, False, False, False, False);
+	Global.Segments_ID = Array(28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 42, 45, 46, 47, 48, 49, 51, 52, 53, 54, 55, 56);
+	Global.Segments_Node1 = Array(59, 68, 69, 79, 77, 78, 80, 77, 78, 76, 76, 69, 82, 77, 82, 69, 80, 86, 86, 86, 86, 86, 76);
+	Global.Segments_Node2 = Array(58, 69, 79, 77, 78, 80, 69, 80, 79, 77, 78, 78, 76, 82, 78, 77, 82, 79, 80, 69, 77, 78, 86);
+	Global.Attributes_Value = Array(1, 1);
+	Global.Attributes_ID = Array(2, 3);
+	Global.Attributes_Node1 = Array(59, 58);
+	Global.Attributes_Node2 = Array(58, 59);
+	Global.NodeUniqueID = 86;
+	Global.SegmentUniqueID = 56;
+	Global.AttributeUniqueID = 4;
+	Global.SelectedNodeIndex = -1;
+	Global.SelectedNodeID = -1;
+	Global.SelectedSegment = -1;
+	Global.AttributeTexts = Array();
+	Global.savedPlayerLocation = Vector(-25.874, 13.877, 25.315);
+	Global.savedPlayerDirection = Vector(-0.062, -0.721, -0.690);
+	Global.controlTexts = Array(0, 3, 4, 5, 6, 7, 8, 9, 10);
+	Global.controlTextOrder = 9;
+	Global.connectingFromNode = -1;
+	Global.waitlessI = 1;
+	Global.IsNoclipping = True;
+	Global.dijkstraProgressReport = 9;
+	Global.Rules_Actions_Data = Array(Array(Array(9, Custom String("")), Array(12, Custom String("")), Array(0, 0.196), Array(10,
+		Custom String("")), Array(4, Custom String("")), Array(0, 0.136), Array(4, Custom String("")), Array(0, 0.136), Array(4,
+		Custom String(""))));
+	Global.Rules_ExecutesOnAttribute = Array(1);
+	Global.Rules_EnabledHeroes = Array(Array(False, Hero(Tracer)));
+	Global.pagerButtons = Array();
+	Global.pathfinderAttributes = Array(1);
+	Global.pathfinderAttributeSelector = 2;
+	Global.outputLanguage = 1;
+	Global.buildToggles = Array(True, True, True);
+	Global.x = Array(78, 80, 86, 77, 76, 69, 79, 82, 68, 85);
+	Global.previouslySelectedNodeID = -1;
+	Global.attributeIndices = Array();
+	Global.p1 = Vector(-21.397, 11.302, 20.090);
+	Global.p2 = Vector(-19.275, 11.800, 18.847);
+	Global.isSource = True;
+	Global.group = Array();
+	Global.input = Array(Custom String("←"), Array(9, 2), Array(10, 2), -1.128, -0.200, 0.200, 0.200, Color(White), Color(Blue), True,
+		True);
+	Global.returnValue___createButtonSubrou = 230;
+	Global.newState = 1;
+	Global.buttonID = 212;
+	Global.removeButtonIndex = 10;
+	Global._classIndexes = Array(-1, 1, 1, 0);
+	Global.DisposeStack = 2;
+	Global.destroy = Array(1663, 1664, 1665, 1666, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
+	Global.i = 41;
+	Global.label = Custom String("main / export");
+	Global.UpdateStack = 3;
+	Global.i_0 = 9;
+	Global._arrayConstructor = Array(Custom String("<Icon> no"), Custom String("<Icon> yes"), Custom String("<Icon> no"),
+		Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String(
+		"<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"),
+		Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String(
+		"<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"),
+		Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String(
+		"<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"),
+		Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String(
+		"<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"), Custom String("<Icon> no"),
+		Custom String("<Icon> no"), Custom String("<Icon> no"));
+	Global.func_group = Array();
+	Global.destroy_0 = Array(Null);
+	Global.result = Custom String("1");
+	Global.stringBuilder = Custom String("┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃\n");
+	Global.lines_Type = Array(1, 0, 1, 0, 1, 0, 1, 0);
+	Global.lines_Content = Array(Array(Custom String("<Icon> Rule Editor <Icon>"), Color(Rose)), Array(Custom String(
+		"Create workshop rules that will execute upon reaching a path tagged with an attribute."), Color(White)), Array(Custom String(
+		"<Icon> Export <Icon>"), Color(Lime Green)), Array(Custom String(
+		"Generates the pathfinding code that you can add to your workshop gamemode."), Color(White)), Array(Custom String(
+		"<Icon> Add Dummy Bot <Icon>"), Color(Violet)), Array(Custom String("Spawn dummy bots that you can use to test your map."),
+		Color(White)), Array(Custom String("<Icon> Pathfinder Settings <Icon>"), Color(Yellow)), Array(Custom String(
+		"Set which attributes the dummy bots will use when testing your map."), Color(White)));
+	Global.i_1 = 8;
+	Global.index = 4;
+	Global.index_0 = 11;
+	Global.index_1 = 2;
+	Global.message = Custom String("Exporting, please wait...");
+	Global.isUndo = False;
+	Global.direction = -1;
+	Global.i_2 = 5;
+	Global.action_Data = Array(10, Custom String(""));
+}
