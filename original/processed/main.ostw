@@ -2,7 +2,7 @@ import "settings.lobby";
 import "debug.ostw";
 import "subroutines.ostw";
 
-globalvar Boolean gIsVcitoryDeclared;
+globalvar Boolean gIsVictoryDeclared;
 globalvar Boolean gIsMutatorActivationDisabled; // Useless
 globalvar Boolean gMutReinforcements;
 globalvar Boolean pGmutExpendable;
@@ -212,8 +212,8 @@ void mut_add_mutator() "MUT Subroutine: Add Mutator"
 void declare_victory() "Subroutine: Declare Victory"
 {
 	Wait(2, WaitBehavior.IgnoreCondition);
-	AbortIf(gIsVcitoryDeclared);
-	gIsVcitoryDeclared = true;
+	AbortIf(gIsVictoryDeclared);
+	gIsVictoryDeclared = true;
 	DeclareTeamVictory(Team.Team1);
 }
 
@@ -1356,8 +1356,8 @@ if (gWaveNumber > 0)
 if (IsTrueForAll(gCombatants, ArrayElement().pDownedStartT))
 {
 	Wait(2, WaitBehavior.AbortWhenFalse);
-	AbortIf(gIsVcitoryDeclared);
-	gIsVcitoryDeclared = true;
+	AbortIf(gIsVictoryDeclared);
+	gIsVictoryDeclared = true;
 	DeclareTeamVictory(Team.Team2);
 }
 
