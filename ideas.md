@@ -5,10 +5,20 @@
 # Shop
 ## Target Priorities
 - Interesting, but can be ignored. Quite costly to buy but free to swap.
-### Upgrades
+## Upgrades
 - Reduce the strength of each tier but add more tiers.
 - Can buy normal health, shield health, and armour health.
 - Can buy increased damage and increased healing.
+### Health
+- Base health, cheapest.
+### Shield
+- Shield health, slightly more expensive.
+### Armour
+- Armour health, very expensive.
+### Damage
+- Increases damage dealth as a percentage.
+### Healing
+- Increases healing dealt as a percentage.
 ### Haste
 Look into ways to get it working with:
 - Abilities with charges
