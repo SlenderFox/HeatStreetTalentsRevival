@@ -105,6 +105,10 @@ Look into ways to get it working with:
 - The ai uses this to determine if it should perform certain actions: ```if (aggressiveness - (1-confidence) > action_weight)```
 
 - Don't bother trying to come up with custom names for the enemies until the end.
+## Pathing
+- Used within the ai but should be considered distinct.
+- [Made with Deltin's pathmap editor](https://github.com/ItsDeltin/Pathmap-editor)
+- May need to fork to reduce the element count. [fork](https://github.com/SlenderFox/Pathmap-editor-gutted).
 ## Tier 1
 ### Soldier: 76 - Trooper
 - Can shoot and sprint.
