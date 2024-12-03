@@ -2,7 +2,7 @@ import "settings.lobby";
 
 rule: "Special thanks"
 {
-	Any Special_Thanks = WorkshopSettingCombo(" Remade by SlenderFox", "Credits", 0, ["Amazing people:", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
+	Any Special_Thanks = WorkshopSettingCombo(" Remade by SlenderFox", "Credits", 0, ["<Click here>", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
 }
 
 import "Pathfinding/Pathfinding.ostw";
