@@ -6,3 +6,4 @@ rule: "Special thanks"
 }
 
 import "Pathfinding/Pathfinding.ostw";
+import "debug.ostw";

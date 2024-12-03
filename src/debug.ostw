@@ -1,0 +1,30 @@
+import "Pathfinding/Pathfinding.ostw";
+
+Player host: HostPlayer();
+Boolean isHost: EventPlayer() == host;
+Vector hostPos: host.Position();
+Vector hostEye: host.EyePosition();
+Vector hostFacing: host.FacingDirection();
+
+rule: "[DEBUG] Display server information on top left"
+{
+	Number loadScaler: 0.3921;
+	CreateHudText(
+		host,
+		Text: <
+			"load: c:<0>% a:<1>% p:<2>%\nposition: <3>",
+			ServerLoad() * loadScaler,
+			ServerLoadAverage() * loadScaler,
+			ServerLoadPeak() * loadScaler,
+			hostPos
+		>
+	);
+}
+
+rule: "[DEBUG] Test pathfinding on self"
+Event.OngoingPlayer
+if (isHost)
+if (EventPlayer().IsButtonHeld(Button.Melee))
+{
+	pfDestination = RayCastHitPosition( hostEye, hostEye + hostFacing * 100, null, null, false);
+}
