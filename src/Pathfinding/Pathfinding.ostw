@@ -1,0 +1,404 @@
+// Made by Deltin
+
+struct PfMap {
+    # The points in the map.
+    public Vector[] nodes;
+    # `[node][i][0]` = neighbor index,
+    # `[node][i][1][j]` = attributes
+    public Any[][][] neighbours;
+}
+
+struct PfNode {
+    public Number gScore;
+    public Number fScore;
+    public Number parent;
+    public Number nodeIndex;
+}
+
+# The currently loaded map
+globalvar PfMap pfLoadedMap;
+globalvar Number pfIterationsThisTick;
+# Current pathfinder execution owner.
+globalvar Player pfExecOwner;
+
+# The timestamp where a player requests a pathfind.
+playervar Number pfWait;
+# The final pathfinding target.
+playervar Vector pfDestination;
+# The attributes assigned to the player.
+playervar Number[] pfPlayerAttributes;
+# The attributes of a player's current pathfinding edge.
+playervar Number[] pfAttributes;
+
+# The saved target. If the distance between this and pfDestination becomes
+# too large, the pathfinding path will be updated.
+playervar Vector pfSavedTarget;
+# Determines if the player is pathfinding.
+playervar Boolean pfIsPathfinding;
+# The current node that the player is walking to.
+# If this is -1 but `pfIsPathfinding` is true, then the player
+# is walking to `pfDestination`.
+playervar Number pfCurrentNodeIndex;
+# The position that the player is actively walking towards.
+playervar Vector pfWalkingToPosition;
+# The path that the player will walk along. These are indexes in
+# `pfLoadedMap.nodes`. A value of `-1` will point to `pfDestination`.
+playervar Number[] pfPath;
+# The timestamp when the player reaches a node.
+playervar Number pfStartTime;
+# The position the player was at when they started walking to `pfWalkingToPosition`.
+playervar Vector pfWalkingFromPosition;
+# The node closest to the player.
+playervar Number pfActiveNode;
+# This variable is set when a player fails to reaches a node.
+playervar Number pfStuckOnNode;
+# Player received path from another pathfinder.
+playervar Boolean pfWasBroadcasted;
+# Is the player failing to walk?
+playervar Boolean pfIsStuck;
+
+rule: '【PF Core】Prepare loaded map' {
+    WaitUntil(<Boolean>pfLoadedMap.nodes, 9999);
+    for (Number i = 0; pfLoadedMap.nodes.Length; 1) {
+        pfLoadedMap.nodes[i] = Vector(
+            pfLoadedMap.nodes[i].X,
+            pfLoadedMap.nodes[i].Y.Floor() + (i / 1000) * (pfLoadedMap.nodes[i].Y < 0 ? -1 : 1),
+            pfLoadedMap.nodes[i].Z
+        );
+    }
+}
+
+void pfEvent(in String text) {
+    // dbgEvents += {
+    //     name: text,
+    //     timeStamp: TotalTimeElapsed()
+    // };
+    // while (dbgEvents.Length > 10) {
+    //     dbgEvents.ModRemoveByIndex(0);
+    // }
+}
+
+void pfTick() '【PF Core Subroutine】☞ Tick'
+{
+    pfIterationsThisTick--;
+    if (pfIterationsThisTick <= 0) {
+        MinWait();
+        WaitUntil(Max(ServerLoadAverage(), ServerLoad()) < 255, 0.25);
+        # This determines the pathfinding budget for the current tick.
+        pfIterationsThisTick = (Max(ServerLoadAverage(), ServerLoad()) < 230) + (Max(ServerLoadAverage(), ServerLoad()) < 180) * 2 + 1;
+    }
+}
+
+rule: '【PF Core】Select next pathfinder'
+if (!EntityExists(pfExecOwner) || pfExecOwner == null)
+if (AllPlayers().IsTrueForAny(p => p.pfWait))
+{
+    pfExecOwner = AllPlayers().FilteredArray(p => p.pfWait).SortedArray(p => p.pfWait).First;
+    MinWait();
+    LoopIfConditionIsTrue();
+}
+
+rule: '【PF Core】Update & Execute'
+Event.OngoingPlayer
+if (pfDestination)
+if (EventPlayer().DistanceTo(pfDestination) > 4)
+if (!pfSavedTarget || pfDestination.DistanceTo(pfSavedTarget) > 5)
+{
+    # Ensure that a map is loaded.
+    if (!pfLoadedMap.nodes)
+    {
+        LogToInspector(<'Error: Attempted to pathfind player <0> without a loaded map.', EventPlayer()>);
+        return;
+    }
+
+    pfWait = TotalTimeElapsed();
+    pfWasBroadcasted = false;
+    WaitUntil(pfExecOwner == EventPlayer() || pfWasBroadcasted, 9999);
+    pfEvent('PF Execute');
+
+    # Update saved destination
+    pfSavedTarget = pfDestination;
+    if (!pfWasBroadcasted) {
+        aStar();
+        pfExecOwner = null;
+    }
+    if (pfPath.Length) {
+        pfIsPathfinding = true;
+        pfCurrentNodeIndex = pfPath.First;
+        pfWalkingToPosition = pfLoadedMap.nodes[pfCurrentNodeIndex];
+        pfUpdateNodeMeta();
+        pfWalkToDestination();
+    }
+    pfWait = null;
+    Wait(2);
+    LoopIfConditionIsTrue();
+}
+
+rule: '【PF Core】Node reached'
+Event.OngoingPlayer
+if (pfIsPathfinding)
+if (pfWalkingToPosition)
+# Horizontal distance to current position is less than 0.4.
+if ((PositionOf() * Vector(1, 0, 1)).DistanceTo(pfWalkingToPosition * Vector(1, 0, 1)) <= 0.4)
+# Vertical distance to current position is less than 1.5.
+if (PositionOf().Y - pfWalkingToPosition.Y~Abs() <= 1.5)
+if (pfPath.Length > 0)
+if (pfCurrentNodeIndex != -1)
+{
+    pfProgressEventPlayer();
+    Wait(0.2);
+    LoopIfConditionIsTrue();
+}
+
+rule: '【PF Core】Stop throttle when pfDestination is reset'
+Event.OngoingPlayer
+if (pfIsPathfinding)
+if (pfDestination == null)
+{
+    StopThrottleInDirection();
+    pfIsPathfinding = false;
+    pfSavedTarget = null;
+}
+
+rule: '【PF Core】Insurance'
+Event.OngoingPlayer
+if (pfIsPathfinding)
+if (pfWalkingToPosition)
+{
+    # Recalibrate
+    if (((pfWalkingFromPosition + pfWalkingToPosition) / 2).DistanceTo(EventPlayer()) > (pfWalkingFromPosition.DistanceTo(pfWalkingToPosition) + 2) * 1.2)
+    {
+        pfEvent('Not on path; recalibrating.');
+        pfRecalibrate();
+    }
+    # Smooth step
+    else if (pfPath.Length == 2 &&
+        EventPlayer().DistanceTo(pfSavedTarget) < pfWalkingToPosition.DistanceTo(pfSavedTarget) &&
+        IsInLineOfSight(PositionOf() + Up() * 0.25, pfSavedTarget + Up() * 0.25))
+    {
+        pfEvent('Smooth step');
+        pfProgressEventPlayer();
+    }
+    # Recovery
+    else if (EventPlayer().DistanceTo(pfWalkingToPosition) > .25 &&
+        pfIsStuck || pfWalkingFromPosition.DistanceTo(pfWalkingToPosition) - 5.5 * 0.9 * (TotalTimeElapsed() - pfStartTime) < 0 &&
+        !HasStatus(EventPlayer(), Status.Rooted) &&
+        !HasStatus(EventPlayer(), Status.Frozen) &&
+        !HasStatus(EventPlayer(), Status.Asleep) &&
+        !HasStatus(EventPlayer(), Status.KnockedDown) &&
+        !HasStatus(EventPlayer(), Status.Stunned))
+    {
+        if (pfCurrentNodeIndex == -1)
+        {
+            pfWalkingToPosition = null;
+        }
+        else if (pfStuckOnNode - 2 == pfCurrentNodeIndex)
+        {
+            pfEvent('Stuck, teleporting');
+            LogToInspector(<'Pathfinder <0> struggled to reach node <1> at <2>. Try adjusting your map in the editor.', EventPlayer(), pfCurrentNodeIndex, pfLoadedMap.nodes[pfCurrentNodeIndex]>);
+            Teleport(EventPlayer(), pfWalkingToPosition);
+        }
+        else
+        {
+            pfEvent('Stuck, recalibrating');
+            pfStuckOnNode = pfCurrentNodeIndex + 2;
+            pfRecalibrate();
+        }
+    }
+    # Shift destination
+    else if (
+        pfWalkingToPosition != pfDestination &&
+        pfCurrentNodeIndex == -1 &&
+        pfSavedTarget.DistanceTo(pfDestination) < 5 &&
+        IsInLineOfSight(pfSavedTarget + Up(), pfDestination + Up()))
+    {
+        pfWalkingToPosition = pfDestination;
+    }
+
+    Wait(2);
+    LoopIfConditionIsTrue();
+}
+
+rule: '【PF Core】Check throttle'
+Event.OngoingPlayer
+if (pfIsPathfinding)
+if (VelocityOf().Magnitude < 3)
+{
+    Wait(2.1, WaitBehavior.AbortWhenFalse);
+    pfIsStuck = true;
+    WaitUntil(!pfWalkingToPosition || !pfIsPathfinding || VelocityOf().Magnitude >= 3, 9999);
+    pfIsStuck = false;
+}
+
+void pfProgressEventPlayer() playervar '【PF Core Subroutine】☞ Progress event player' {
+    // Remove after debugging
+    if (pfPath.Length == 0) {
+        pfEvent('Logic error: progress without any more path');
+        return;
+    }
+
+    # Pop the current path.
+    pfPath.ModRemoveByIndex(0);
+    # Update the current pathfind attributes.
+    if (pfPath.Length && pfPath.First != -1) {
+        # Any rules watching these with the matching condition will activate.
+        pfAttributes = pfLoadedMap.neighbours[pfPath.First].FilteredArray(segment => segment[0] == pfCurrentNodeIndex).First.Last;
+    } else {
+        pfAttributes = [];
+    }
+    # Go to the next node in the path.
+    pfCurrentNodeIndex = pfPath.First;
+    # Set the position that the player is currently walking towards.
+    pfWalkingToPosition = pfCurrentNodeIndex == -1 ? pfDestination.DistanceTo(pfSavedTarget) <= 4 ? pfDestination : PositionOf() : pfLoadedMap.nodes[pfCurrentNodeIndex];
+    pfUpdateNodeMeta();
+}
+
+void pfUpdateNodeMeta() playervar '【PF Core Subroutine】☞ Update node meta' {
+    if (pfCurrentNodeIndex != -1) {
+        pfActiveNode = pfCurrentNodeIndex;
+    }
+    if (pfStuckOnNode == 1) {
+        pfStuckOnNode = 0;
+    }
+    # Update the pathfinding start time.
+    pfStartTime = TotalTimeElapsed();
+    pfWalkingFromPosition = PositionOf();
+}
+
+void pfRecalibrate() playervar '【PF Core Subroutine】☞ Recalibrate' {
+    StopThrottleInDirection();
+    pfCurrentNodeIndex = -1;
+    pfSavedTarget = null;
+    pfIsPathfinding = false;
+    pfWalkingToPosition = PositionOf();
+}
+
+void pfWalkToDestination() playervar '☆【PF Core Subroutine】☞ Walk to destination' {
+    StartThrottleInDirection(
+        EventPlayer(),
+        PositionOf().DirectionTowards(pfWalkingToPosition),
+        pfWalkingToPosition && (pfCurrentNodeIndex != -1 || PositionOf().DistanceTo(pfWalkingToPosition) > .4),
+        Relative.ToWorld,
+        ThrottleBehavior.ReplaceExistingThrottle,
+        ThrottleRev.DirectionAndMagnitude);
+}
+
+void pfLookAtDestination() playervar '☆【PF Core Subroutine】☞ Look at destination' {
+    Vector distanceModifier: (PositionOf().DistanceTo(pfWalkingToPosition) < 3 ? Vector(1,0,1) : Vector(1,1,1));
+    # Calling this subroutine will make the player look to the point they are walking towards.
+    StartFacing(EventPlayer(), DirectionTowards(EyePosition() * distanceModifier, (pfWalkingToPosition + Up() * 1.5) * distanceModifier), 500, Relative.ToWorld, FacingRev.DirectionAndTurnRate);
+}
+
+# Selects a node index from a position.
+Number chooseNodeFromPosition(in Vector vector) {
+    return (pfLoadedMap.nodes
+        .SortedArray(n => n.DistanceTo(vector))
+        .Slice(0, 5)
+        .SortedArray(n => !(IsInLineOfSight(n + Up() * 2, vector + Up() * 2, BarrierLOS.NoBarriersBlock)))
+        .First.Y.Abs() * 1000 % 1000).Floor();
+}
+
+# Gets the shortest path from start to goal.
+void aStar() {
+    Number goal = chooseNodeFromPosition(pfSavedTarget);
+    pfTick();
+    if (pfIsPathfinding && pfCurrentNodeIndex != -1) {
+        pfActiveNode = pfCurrentNodeIndex;
+    } else {
+        pfActiveNode = chooseNodeFromPosition(PositionOf());
+        pfTick();
+    }
+
+    Number heuristicWeight: 20;
+    const Number => Number h: n => pfLoadedMap.nodes[n].DistanceTo(pfLoadedMap.nodes[pfActiveNode]) * heuristicWeight;
+
+    PfNode[] scores = [{ parent: -1, gScore: 0, fScore: 0, nodeIndex: goal }];
+    Number[] open = [0];
+    Number checkedNode = pfActiveNode;
+
+    Number iter = 0;
+    while (open.Length || iter > 30) {
+        # The index of the current node in `scores`.
+        Number current = open.SortedArray((o, i) => scores[o].fScore).First;
+        # The index of the current node in `pfLoadedMap.nodes`.
+        Number currentNodeIndex: scores[current].nodeIndex;
+
+        if (checkedNode != pfActiveNode) {
+            checkedNode = scores.Map(s => s.nodeIndex).IndexOf(pfActiveNode);
+            if (checkedNode != -1) {
+                current = checkedNode;
+                checkedNode = -2;
+            }
+            else {
+                checkedNode = pfActiveNode;
+            }
+        }
+
+        Number currentInExistingPath = pfPath.IndexOf(currentNodeIndex);
+
+        # If the goal was found, reconstruct the path.
+        if (currentNodeIndex == pfActiveNode || checkedNode == -2 || currentInExistingPath != -1) {
+            reconstructPath(scores, current, currentInExistingPath, iter);
+            return;
+        }
+
+        open.ModRemoveByValue(current);
+
+        # Check each neighbor to the current node.
+        foreach (Any[] neighbor in pfLoadedMap.neighbours[currentNodeIndex]) {
+            # The neighbor index to be used like `pfLoadedMap.nodes[neighborI]`.
+            Number neighborI = neighbor[0];
+            Number scoreIndex = scores.Map(s => s.nodeIndex).IndexOf(neighborI);
+            Number[] neighborAttributes: <Number[]>neighbor[1];
+            # Ensure that the path to the neighbor is enabled.
+            if (neighborAttributes.Length == 0 || neighborAttributes.IsTrueForAny(a => pfPlayerAttributes.Contains(a))) {
+                Number score = scores[current].gScore + pfLoadedMap.nodes[currentNodeIndex].DistanceTo(pfLoadedMap.nodes[neighborI]);
+
+                # Get neighbor index in scores.
+                # If -1, the neighbor was not added to the score list yet.
+                if (scoreIndex == -1) {
+                    open += scores.Length;
+                    scores += { parent: current, gScore: score, fScore: score + h(neighborI), nodeIndex: neighborI };
+                } else if (score < scores[scoreIndex].gScore) {
+                    scores[scoreIndex] = { parent: current, gScore: score, fScore: score + h(neighborI), nodeIndex: neighborI };
+                    if (!open.Contains(scoreIndex))
+                        open += scoreIndex;
+                }
+            }
+            pfTick();
+        }
+        iter++;
+    }
+}
+
+void reconstructPath(in PfNode[] scores, ref Number current, in Number currentInExistingPath, in Number iter) {
+    if (currentInExistingPath == -1) {
+        pfPath = [];
+        pfEvent(<'Pathfind completed in <0> iterations', iter>);
+    } else {
+        pfPath = pfPath.Slice(0, currentInExistingPath);
+        pfEvent(<'Intercepted existing path in <0> iterations', iter>);
+    }
+    while (current != -1) {
+        pfPath += scores[current].nodeIndex;
+        current = scores[current].parent;
+    }
+    pfPath += [-1];
+
+    Player[] broadcastTo = PlayersWithinRadius(PositionOf() + Up(), 4, Team.All, RadiusLOS.Off)
+        .FilteredArray(p =>
+            p != EventPlayer() &&
+            p.pfWait &&
+            p.pfDestination.DistanceTo(pfDestination) < 4 &&
+            p.pfPlayerAttributes == pfPlayerAttributes);
+
+    broadcastTo.pfPath = pfPath;
+    broadcastTo.pfWasBroadcasted = true;
+}
+
+rule: "【Map】Kanezaka (nodes&neighbours)"
+if (CurrentMap() == Map.Kanezaka)
+{
+	pfLoadedMap.nodes = import("Kanezaka.jsonc").nodes;
+	pfLoadedMap.neighbours = import("Kanezaka.jsonc").neighbors;
+}
