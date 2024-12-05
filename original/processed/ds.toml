@@ -1,0 +1,4 @@
+entry_point = "main.ostw"
+out_file = "../../out.ow"
+c_style_workshop_output = true
+use_tabs_in_workshop_output = true
