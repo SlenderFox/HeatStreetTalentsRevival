@@ -1,10 +1,15 @@
 import "Pathfinding/Pathfinding.ostw";
 
+globalvar Player testDummyBot;
+
 Player host: HostPlayer();
 Boolean isHost: EventPlayer() == host;
 Vector hostPos: host.Position();
 Vector hostEye: host.EyePosition();
 Vector hostFacing: host.FacingDirection();
+Vector hostTarget: RayCastHitPosition(hostEye, hostEye + hostFacing * 100, null, null, false);
+
+Boolean button(Button _button): host.IsButtonHeld(_button);
 
 rule: "[DEBUG] Display server information on top left"
 {
@@ -24,7 +29,28 @@ rule: "[DEBUG] Display server information on top left"
 rule: "[DEBUG] Test pathfinding on self"
 Event.OngoingPlayer
 if (isHost)
-if (EventPlayer().IsButtonHeld(Button.Melee))
+if (button(Button.PrimaryFire))
 {
-	pfDestination = RayCastHitPosition( hostEye, hostEye + hostFacing * 100, null, null, false);
+	testDummyBot.pfDestination = hostTarget;
+}
+
+rule: "[DEBUG] Create or teleport dummy bot"
+Event.OngoingPlayer
+if (isHost)
+if (button(Button.Melee))
+{
+	if (testDummyBot == null)
+	{
+		testDummyBot = CreateDummyBot(
+			Hero.Tracer,
+			Team.Team2,
+			-1,
+			hostTarget,
+			null
+		);
+	}
+	else
+	{
+		Teleport(testDummyBot, hostTarget);
+	}
 }
