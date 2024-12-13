@@ -28,8 +28,19 @@ Look into ways to get it working with:
 - Bastion's turret form
 - Genji's swift strike
 - Soldier: 76's helix rockets.
+### Ult Generation
+- Percentage increase.
+### Movement Speed
+- Would have to be very minor and very expensive.
+- Percentage increase or fixed amount?
+### Knockback received reduction
+- Very nice QOL upgrade.
+### Knockback dealt increase
+- Useless on most heroes.
+- Potential to be busted if used on a map with insta-kill hazards.
 ## Abilities
-- The per round random is an interesting idea and makes each playthrough unqiue however it can lead to minor frustration when you never get the abilities you want. Also it leads to a kind of boring meta where you should never spend any money on normal upgrades and sometimes talents and instead spend it all on abilities until you have what you need.
+- The per round random is an interesting idea and makes each playthrough unqiue however it can lead to minor frustration when you never get the abilities you want.
+- It leads to a kind of boring meta where you should never spend any money on normal upgrades and sometimes talents and instead spend it all on abilities until you have what you need.
 ### Bulletstorm
 - If Blizz still haven't fixed new heroes in workshop, maybe shelve this.
 - Also causes issues with peacekeeper alt fire.
@@ -37,12 +48,14 @@ Look into ways to get it working with:
 ### Shockproof
 - Remove speed bonus, passthrough, and armour.
 ## Active Abilities
-- Have a cooldown. Activated with melee. Expensive to purchase into but free to swap. Often ignored.
+- Have a cooldown.
+- Activated with melee.
+- Expensive to purchase into but free to swap.
+- Often ignored.
 ## Talents
 - No talents with quick melee to avoid any conflicts with active abilities.
-- What if I made 3 talents per hero, two abilities and one ult.
+- Current scope is 2 talents per hero.
 - Hack should disable talents.
-- Should I sort heroes in this list by name or release date?
 ### Ana
 ### Ashe
 #### White phosphourous
