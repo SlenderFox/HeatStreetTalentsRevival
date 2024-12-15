@@ -322,17 +322,17 @@ void pfWalkToDestination() playervar '☆【PF Core Subroutine】☞ Walk to des
 	);
 }
 
+# Calling this subroutine will make the player look to the point they are walking towards until StopFacing is called.
 void pfLookAtDestination() playervar '☆【PF Core Subroutine】☞ Look at destination'
 {
 	Vector distanceModifier: (PositionOf().DistanceTo(pfWalkingToPosition) < 3 ? Vector(1,0,1) : Vector(1,1,1));
-	# Calling this subroutine will make the player look to the point they are walking towards.
 	StartFacing(
 		EventPlayer(),
 		DirectionTowards(
 			EyePosition() * distanceModifier,
 			(pfWalkingToPosition + Up() * 1.5) * distanceModifier
 		),
-		500,
+		1000,
 		Relative.ToWorld,
 		FacingRev.DirectionAndTurnRate
 	);
@@ -490,6 +490,9 @@ rule: "【Generated】Custom pathfinding rule #2"
 Event.OngoingPlayer
 if (pfAttributes.Contains(1))
 {
+	pfLookAtDestination();
+	Wait(0.3);
+	StopFacing(EventPlayer());
 	PressButton(EventPlayer(), Button.Melee);
 }
 
@@ -515,6 +518,6 @@ Player.Pharah
 if (pfAttributes.Contains(20))
 {
 	StartHoldingButton(EventPlayer(), Button.Jump);
-	Wait(1.00);
+	Wait(0.8);
 	StopHoldingButton(EventPlayer(), Button.Jump);
 }
