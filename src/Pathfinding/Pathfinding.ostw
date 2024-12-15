@@ -483,14 +483,14 @@ rule: "【Generated】Custom pathfinding rule #1"
 Event.OngoingPlayer
 if (pfAttributes.Contains(0))
 {
-	PressButton(EventPlayer(), Button.Melee);
+	PressButton(EventPlayer(), Button.Jump);
 }
 
 rule: "【Generated】Custom pathfinding rule #2"
 Event.OngoingPlayer
 if (pfAttributes.Contains(1))
 {
-	PressButton(EventPlayer(), Button.Jump);
+	PressButton(EventPlayer(), Button.Melee);
 }
 
 rule: "【Generated】Custom pathfinding rule #3"

@@ -223,8 +223,8 @@ Edges between nodes have a list of attributes for each direction.
 -1 is always impassable.
 
 ##### All heroes
-0. Melee fence, look into making this a one time thing.
-1. Jump.
+0. Jump.
+1. Melee fence, look into making this a one time thing.
 ##### Vertical abilities
 2. Baptiste boots.
 0. Tall wall climb.

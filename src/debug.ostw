@@ -42,12 +42,13 @@ if (button(Button.Melee))
 	if (testDummyBot == null)
 	{
 		testDummyBot = CreateDummyBot(
-			Hero.Tracer,
+			Hero.Pharah,
 			Team.Team2,
 			-1,
 			hostTarget,
 			null
 		);
+		testDummyBot.pfPlayerAttributes = [0, 1, 6, 10, 20];
 	}
 	else
 	{
