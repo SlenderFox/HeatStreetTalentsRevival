@@ -469,3 +469,52 @@ if (CurrentMap() == Map.Kanezaka)
 	pfLoadedMap.nodes = import("Kanezaka.jsonc").nodes;
 	pfLoadedMap.neighbours = import("Kanezaka.jsonc").neighbors;
 }
+
+rule: "【Map】Workshop Island (nodes & neighbours)"
+if (CurrentMap() == Map.Workshop_Island)
+{
+	pfLoadedMap.nodes = import("Workshop Island.jsonc").nodes;
+	pfLoadedMap.neighbours = import("Workshop Island.jsonc").neighbors;
+}
+
+// ----------------------------------
+
+rule: "【Generated】Custom pathfinding rule #1"
+Event.OngoingPlayer
+if (pfAttributes.Contains(0))
+{
+	PressButton(EventPlayer(), Button.Melee);
+}
+
+rule: "【Generated】Custom pathfinding rule #2"
+Event.OngoingPlayer
+if (pfAttributes.Contains(1))
+{
+	PressButton(EventPlayer(), Button.Jump);
+}
+
+rule: "【Generated】Custom pathfinding rule #3"
+Event.OngoingPlayer
+Player.Pharah
+if (pfAttributes.Contains(6))
+{
+	PressButton(EventPlayer(), Button.Ability1);
+}
+
+rule: "【Generated】Custom pathfinding rule #4"
+Event.OngoingPlayer
+Player.Pharah
+if (pfAttributes.Contains(10))
+{
+	PressButton(EventPlayer(), Button.SecondaryFire);
+}
+
+rule: "【Generated】Custom pathfinding rule #5"
+Event.OngoingPlayer
+Player.Pharah
+if (pfAttributes.Contains(20))
+{
+	StartHoldingButton(EventPlayer(), Button.Jump);
+	Wait(1.00);
+	StopHoldingButton(EventPlayer(), Button.Jump);
+}
