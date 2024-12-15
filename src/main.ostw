@@ -1,8 +1,45 @@
 import "settings.lobby";
 
-rule: "Special thanks"
+void SetupHUD()
 {
+	// -1
+	// ObjectiveDescription
+	// 0
+	// TDM score HUD
+	// 1
+	SetObjectiveDescription(AllPlayers(), "Test");
+	# Hide the TDM score HUD
+	CreateHudText(
+		AllPlayers(),
+		Text: "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+		Location: Location.Top,
+	);
+
+	if (NumberOfSlots(Team.Team1) > 5)
+	{
+		CreateHudText(
+			AllPlayers(),
+			"\n\n\n\n\n\n\n\n\n\n\n\n\n\n     Too many player slots! Set Max Team 1 Players to 5 or lower and restart.     \n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+			Location: Location.Top,
+			SortOrder: -1000,
+			HeaderColor: Color.Yellow,
+		);
+	}
+	// TODO Place warning messages about team 2 and maybe spectators
+}
+
+rule: "Setup"
+{
+	EnableInspectorRecording();
 	Any Special_Thanks = WorkshopSettingCombo(" Remade by SlenderFox", "Credits", 0, ["<Click here>", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
+	DisableCompletion();
+	DisableScoring();
+	DisableAnnouncer();
+	# Skip Assembling Heroes
+	SetMatchTime(3);
+	WaitUntil(IsGameInProgress(), 3.5);
+	SetMatchTime(0);
+	SetupHUD();
 }
 
 import "Pathfinding/Pathfinding.ostw";
