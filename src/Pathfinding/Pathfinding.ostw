@@ -61,7 +61,7 @@ playervar Boolean pfIsStuck;
 
 Boolean isDummy: IsDummyBot(EventPlayer());
 
-rule: '【PF Core】Prepare loaded map'
+rule: "【PF Core】Prepare loaded map"
 {
 	WaitUntil(<Boolean>pfLoadedMap.nodes, 9999);
 	for (Number i = 0; pfLoadedMap.nodes.Length; 1)
@@ -74,7 +74,7 @@ rule: '【PF Core】Prepare loaded map'
 	}
 }
 
-void pfTick() '【PF Core Subroutine】☞ Tick'
+void pfTick() "【PF Core Subroutine】☞ Tick"
 {
 	pfIterationsThisTick--;
 	if (pfIterationsThisTick <= 0)
@@ -90,7 +90,7 @@ void pfTick() '【PF Core Subroutine】☞ Tick'
 	}
 }
 
-rule: '【PF Core】Select next pathfinder'
+rule: "【PF Core】Select next pathfinder"
 if (!EntityExists(pfExecOwner) || pfExecOwner == null)
 if (
 	AllPlayers()
@@ -105,7 +105,7 @@ if (
 	LoopIfConditionIsTrue();
 }
 
-rule: '【PF Core】Update & Execute'
+rule: "【PF Core】Update & Execute"
 Event.OngoingPlayer
 if (pfDestination)
 if (isDummy)
@@ -115,7 +115,7 @@ if (!pfSavedTarget || pfDestination.DistanceTo(pfSavedTarget) > 5)
 	# Ensure that a map is loaded.
 	if (!pfLoadedMap.nodes)
 	{
-		LogToInspector(<'Error: Attempted to pathfind player <0> without a loaded map.', EventPlayer()>);
+		LogToInspector(<"Error: Attempted to pathfind player <0> without a loaded map.", EventPlayer()>);
 		return;
 	}
 
@@ -145,7 +145,7 @@ if (!pfSavedTarget || pfDestination.DistanceTo(pfSavedTarget) > 5)
 	LoopIfConditionIsTrue();
 }
 
-rule: '【PF Core】Node reached'
+rule: "【PF Core】Node reached"
 Event.OngoingPlayer
 if (isDummy)
 if (pfIsPathfinding)
@@ -162,7 +162,7 @@ if (pfCurrentNodeIndex != -1)
 	LoopIfConditionIsTrue();
 }
 
-rule: '【PF Core】Stop throttle when pfDestination is reset'
+rule: "【PF Core】Stop throttle when pfDestination is reset"
 Event.OngoingPlayer
 if (isDummy)
 if (pfIsPathfinding)
@@ -173,7 +173,7 @@ if (pfDestination == null)
 	pfSavedTarget = null;
 }
 
-rule: '【PF Core】Insurance'
+rule: "【PF Core】Insurance"
 Event.OngoingPlayer
 if (isDummy)
 if (pfIsPathfinding)
@@ -213,7 +213,7 @@ if (pfWalkingToPosition)
 		}
 		else if (pfStuckOnNode - 2 == pfCurrentNodeIndex)
 		{
-			LogToInspector(<'Pathfinder <0> struggled to reach node <1> at <2>. Try adjusting your map in the editor.', EventPlayer(), pfCurrentNodeIndex, pfLoadedMap.nodes[pfCurrentNodeIndex]>);
+			LogToInspector(<"Pathfinder <0> struggled to reach node <1> at <2>. Try adjusting your map in the editor.", EventPlayer(), pfCurrentNodeIndex, pfLoadedMap.nodes[pfCurrentNodeIndex]>);
 			Teleport(EventPlayer(), pfWalkingToPosition);
 		}
 		else
@@ -237,7 +237,7 @@ if (pfWalkingToPosition)
 	LoopIfConditionIsTrue();
 }
 
-rule: '【PF Core】Check throttle'
+rule: "【PF Core】Check throttle"
 Event.OngoingPlayer
 if (isDummy)
 if (pfIsPathfinding)
@@ -253,7 +253,7 @@ if (VelocityOf().Magnitude < 3)
 	pfIsStuck = false;
 }
 
-void pfProgressEventPlayer() playervar '【PF Core Subroutine】☞ Progress event player'
+void pfProgressEventPlayer() playervar "【PF Core Subroutine】☞ Progress event player"
 {
 	// Remove after debugging
 	if (pfPath.Length == 0)
@@ -283,7 +283,7 @@ void pfProgressEventPlayer() playervar '【PF Core Subroutine】☞ Progress eve
 	pfUpdateNodeMeta();
 }
 
-void pfUpdateNodeMeta() playervar '【PF Core Subroutine】☞ Update node meta'
+void pfUpdateNodeMeta() playervar "【PF Core Subroutine】☞ Update node meta"
 {
 	if (pfCurrentNodeIndex != -1)
 	{ pfActiveNode = pfCurrentNodeIndex; }
@@ -296,7 +296,7 @@ void pfUpdateNodeMeta() playervar '【PF Core Subroutine】☞ Update node meta'
 	pfWalkingFromPosition = PositionOf();
 }
 
-void pfRecalibrate() playervar '【PF Core Subroutine】☞ Recalibrate'
+void pfRecalibrate() playervar "【PF Core Subroutine】☞ Recalibrate"
 {
 	StopThrottleInDirection();
 	pfCurrentNodeIndex = -1;
@@ -305,7 +305,7 @@ void pfRecalibrate() playervar '【PF Core Subroutine】☞ Recalibrate'
 	pfWalkingToPosition = PositionOf();
 }
 
-void pfWalkToDestination() playervar '☆【PF Core Subroutine】☞ Walk to destination'
+void pfWalkToDestination() playervar "☆【PF Core Subroutine】☞ Walk to destination"
 {
 	StartThrottleInDirection(
 		EventPlayer(),
@@ -318,7 +318,7 @@ void pfWalkToDestination() playervar '☆【PF Core Subroutine】☞ Walk to des
 }
 
 # Calling this subroutine will make the player look to the point they are walking towards until StopFacing is called.
-void pfLookAtDestination() playervar '☆【PF Core Subroutine】☞ Look at destination'
+void pfLookAtDestination() playervar "☆【PF Core Subroutine】☞ Look at destination"
 {
 	Vector distanceModifier: (PositionOf().DistanceTo(pfWalkingToPosition) < 3 ? Vector(1,0,1) : Vector(1,1,1));
 	StartFacing(
