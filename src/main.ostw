@@ -3,12 +3,15 @@ import "settings.lobby";
 void SetupHUD()
 {
 	// -1
-	// ObjectiveDescription
+	// ObjectiveDescription Timer
 	// 0
 	// TDM score HUD
 	// 1
-	SetObjectiveDescription(AllPlayers(), "Test");
-	# Hide the TDM score HUD
+	SetObjectiveDescription(
+		AllPlayers(),
+		<"Heat Street Talents Revival [WSCODE 4.0.0] | <0>", CurrentMap()>
+	);
+	# Hide the TDM score HUD.
 	CreateHudText(
 		AllPlayers(),
 		Text: "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
@@ -25,21 +28,27 @@ void SetupHUD()
 			HeaderColor: Color.Yellow,
 		);
 	}
-	// TODO Place warning messages about team 2 and maybe spectators
+	// TODO Place warning messages about team 2 and maybe spectators.
+}
+
+void SkipAssembleHeroes()
+{
+	SetMatchTime(3);
+	WaitUntil(IsGameInProgress(), 3.5);
+	SetMatchTime(0);
 }
 
 rule: "Setup"
 {
 	EnableInspectorRecording();
-	Any Special_Thanks = WorkshopSettingCombo(" Remade by SlenderFox", "Credits", 0, ["<Click here>", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
+	Any credits = WorkshopSettingCombo(" Remade by SlenderFox", "Credits", 0, ["<Click here>", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
+	# Allows the timer to be used for custom gamemode.
 	DisableCompletion();
 	DisableScoring();
+	# Announcer while still says 'fight' at the start of the match
 	DisableAnnouncer();
-	# Skip Assembling Heroes
-	SetMatchTime(3);
-	WaitUntil(IsGameInProgress(), 3.5);
-	SetMatchTime(0);
 	SetupHUD();
+	SkipAssembleHeroes();
 }
 
 import "Pathfinding/Pathfinding.ostw";
