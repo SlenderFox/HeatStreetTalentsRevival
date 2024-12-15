@@ -3,23 +3,30 @@ actions
 	Global.__loadPersist = True;
 	Global.version = 5;
 	Global.map = Map(Workshop Island);
-	Global.Nodes_Node_UniqueID = Array(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
+	Global.Nodes_Node_UniqueID = Array(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28,
+		29, 30, 31, 33, 34);
 	Global.Nodes_Node_Position = Array(Vector(-12.036, 0, -16.075), Vector(-16.019, 0, -15.966), Vector(-11.992, 0, -8.050), Vector(
 		-16.001, 0, -7.966), Vector(-7.989, 0, -11.991), Vector(15.978, 0, -16.024), Vector(8.012, 0, -16.041), Vector(7.986, 0,
 		-8.068), Vector(15.925, 0, -8.021), Vector(8.007, 0, -0.110), Vector(15.662, 0, -0.039), Vector(4.022, 0, -4.018), Vector(
-		3.965, 0, -12.055));
-	Global.Segments_ID = Array(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-	Global.Segments_Node1 = Array(3, 5, 2, 6, 8, 10, 11, 11, 13, 14, 9, 9, 14, 13);
-	Global.Segments_Node2 = Array(2, 4, 6, 4, 7, 9, 12, 13, 14, 8, 13, 14, 6, 6);
+		3.965, 0, -12.055), Vector(-6.665, 0, 3.290), Vector(-9.514, 0, 5.980), Vector(-6.857, 0, 8.657), Vector(-4.140, 0, 6.044),
+		Vector(-10.118, 0, 2.530), Vector(-3.362, 0, 2.799), Vector(-3.595, 0, 9.370), Vector(-10.049, 0, 9.238), Vector(-12.303, 0,
+		4.511), Vector(-12.135, 0, 7.304), Vector(-8.128, 0, 11.099), Vector(-5.535, 0, 11.047), Vector(-1.377, 0, 7.427), Vector(
+		-1.443, 0, 4.942), Vector(-5.331, 0, 0.682), Vector(-7.899, 0, 0.634), Vector(-4.311, 0, -3.504), Vector(1.513, 0, 0.597));
+	Global.Segments_ID = Array(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+		30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59);
+	Global.Segments_Node1 = Array(3, 5, 2, 6, 8, 10, 11, 11, 13, 14, 9, 9, 14, 13, 16, 15, 18, 17, 16, 19, 15, 20, 18, 21, 17, 22, 19,
+		24, 25, 22, 26, 27, 21, 28, 29, 20, 30, 31, 25, 16, 31, 15, 29, 18, 27, 17, 33, 33, 33, 14, 13, 34, 20, 34, 33, 30, 13, 30);
+	Global.Segments_Node2 = Array(2, 4, 6, 4, 7, 9, 12, 13, 14, 8, 13, 14, 6, 6, 15, 18, 17, 16, 19, 15, 20, 18, 21, 17, 22, 16, 24,
+		25, 22, 26, 27, 21, 28, 29, 20, 30, 31, 19, 16, 24, 15, 30, 18, 28, 17, 26, 6, 13, 30, 33, 34, 29, 34, 33, 20, 34, 20, 13);
 	Global.Attributes_Value = Array(0, 0, 1, 1, 6, 6, 10, 10, 20, 20, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
 	Global.Attributes_ID = Array(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21);
 	Global.Attributes_Node1 = Array(2, 3, 4, 5, 8, 7, 9, 10, 11, 12, 8, 7, 9, 10, 11, 12, 3, 2, 5, 4);
 	Global.Attributes_Node2 = Array(3, 2, 5, 4, 7, 8, 10, 9, 12, 11, 7, 8, 10, 9, 12, 11, 2, 3, 4, 5);
-	Global.NodeUniqueID = 14;
-	Global.SegmentUniqueID = 15;
+	Global.NodeUniqueID = 34;
+	Global.SegmentUniqueID = 59;
 	Global.AttributeUniqueID = 21;
-	Global.savedPlayerLocation = Vector(-1.948, 11.991, 5.940);
-	Global.savedPlayerDirection = Vector(0.024, -0.626, -0.779);
+	Global.savedPlayerLocation = Vector(-0.429, 18.380, 6.732);
+	Global.savedPlayerDirection = Vector(0.005, -0.999, -0.035);
 	Global.IsNoclipping = True;
 	Global.Rules_Actions_Data = Array(Array(Array(6, Custom String(""))), Array(Array(1, Custom String(""))), Array(Array(4,
 		Custom String(""))), Array(Array(8, Custom String(""))), Array(Array(2, Custom String("")), Array(0, 0.996), Array(3,
