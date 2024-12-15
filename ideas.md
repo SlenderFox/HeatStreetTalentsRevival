@@ -7,6 +7,7 @@
 ## Shop
 ### Target Priorities
 - Interesting, but can be ignored. Quite costly to buy but free to swap.
+- Often a no-brainer to pick.
 ### Upgrades
 - Reduce the strength of each tier but add more tiers.
 - Can buy normal health, shield health, and armour health.
@@ -38,6 +39,10 @@ Look into ways to get it working with:
 #### Knockback dealt increase
 - Useless on most heroes.
 - Potential to be busted if used on a map with insta-kill hazards.
+#### Ammo
+- If bulletstorm isn't used.
+- Wouldn't work for heroes with no ammo.
+- Still have to worry about ammo setting being broken on new heroes.
 ### Abilities
 - The per round random is an interesting idea and makes each playthrough unqiue however it can lead to minor frustration when you never get the abilities you want.
 - It leads to a kind of boring meta where you should never spend any money on normal upgrades and sometimes talents and instead spend it all on abilities until you have what you need.
@@ -64,20 +69,42 @@ Look into ways to get it working with:
 - Coach gun stuns all enemies hit for 1.5 seconds.
 #### Baptiste
 - Corrode is good, great for AOE damage.
+- Glide is stupid.
 #### Bastion
+- Rockets while shooting in turret is cool and helps with AOE damage.
+- Current grenade talent is fun but ineffective against high hp enemies. Leans towards useless when enemy health is scaled with extra players.
 #### Brigitte
+- Explosive whipshot could be cool.
 #### Cassidy
 - Magnetic grenade talent no longer valid.
+- Deadeye locking enemies in place is cool but buggy.
 #### D.va
 - Something with her micro-missiles.
+- D.va is the kind of hero that would be really bad for low skill players and busted for high skill players. Need a talent that attempts to flatten the difference.
 #### Doomfist
+- Has the potential to be a really fun brawling hero.
+- If enemies have stuns he could be stunted and would need a talent to offset it.
+- Empowering rocket punch is a simple talent idea.
 #### Echo
 - Bomber jacket is a cool talent but could potentially overlap with an idea I had for Pharah, either way the name kinda blows.
 - Focusing optics is strong but quite boring and unengaging.
+- Ability cooldown reduction may lead to Echo being permanently in the skybox leading to boring spectator gameplay.
 #### Genji
+- Will likely be very fun to play.
+- Would struggle against high hp enemies.
+- If active abilities are removed, a melee talent that deals percentage based backstab damage would be interesting.
 #### Hanzo
+- Desperately needs AOE damage.
+- Hanzo might be able to cheese some bosses by abusing wallclimb.
+- Could potentially just steal from Marvel Rivals the idea about increased damage when staring at an enemy while drawn.
+- Is it possible to increase damage received on enemies inside Sonic Arrow AOE?
+##### Wrath of the Dragon
+- Holding primary fire passed max draw time continues to increase damage dealt, displayed with a meter.
+- Might need to reset on wallclimb.
 #### Hazard
-- To be determnined...
+- Enemies would likely not be able see and react to wall.
+- Block would be insanely strong. Doesn't need a talent.
+- Lunge reset on kill?
 #### Illari
 - Enemies will never shoot pylon.
 - Her ult is really strong.
@@ -85,19 +112,33 @@ Look into ways to get it working with:
 ##### Solar flare
 - Outburst deals more damage and sets enemies on fire.
 #### Junker Queen
+- Passive healing is likely to be fucking busted.
 #### Junkrat
+- Very strong in pve.
+- Burn on damage is really good for not needing to follow up on low health enemies.
+- Extra mines, while fun, make him too mobile and lead to annoyance with teammates with the constant knockbacks.
+- Could use the talent where he drops bombs while mine jumping.
 #### Juno
+- Very strong in PvE.
 #### Kiriko
+- Need something to encourage healing.
 #### Lifeweaver
 - Current talents are very boring.
-- Something with tree.
 #### Lucio
+- Reverse song effect on crossfade is a simple talent idea.
+- Extra projectiles while amping is very fun.
 #### Mauga
 - Naturally strong in pve.
-- Cage fight is ineffective against tough enemies.
 #### Mei
+- Enemies would likely not be able see and react to wall.
+- Could do instant freeze on exiting cryo.
 #### Mercy
+- Would be quite boring to play, yet still gravitate players.
+- Res is less useful when everyone can do it. Would need to be instant.
+- Could do mass rez? Might be too strong.
 #### Moira
+- Needs talents that encourage a hybrid playstyle.
+- Gameplay would likely devolve to farming ult.
 #### Orisa
 ##### Shrapnel
 - Javelin Spin fires many pellets that deal damage and knockback.
@@ -107,18 +148,33 @@ Look into ways to get it working with:
 ##### Rocket Queen
 - Using Jump Jet or Jet Dash fires a small group of homing rockets.
 #### Ramattra
+- Vortex giving ult charge is nice but a bit unengaging.
 #### Reaper
+- Lifesteal makes reaper incredibly strong.
 #### Reinhardt
+- Don't want rein to be a shield bot. But also don't want to run the risk of him being unkillable.
+- Lava firestrike is cool.
 #### Roadhog
+- Feels incredibly good to be a one man apocalyse.
+- Hook reset on kill makes hog a squishy destroying monster.
+- Ult deletes bosses.
 #### Sigma
+- Ult is very good.
+- Vortex is also very good.
 #### Sojourn
 - Remove explosive headshots. Maybe make all railgun shots deal explosive damage? Scaled by the charge of the shot.
 #### Soldier: 76
+- With very little shields soldier is going to output a lot of damage, ult will also be strong.
+- Something with heal station would be cool, maybe make it res teammates.
 #### Sombra
 - Using translocator to deal a burst of damage and hack enemies is interesting and fun but doesn't mesh well with the new rework.
-- Doing something with virus would be really cool.
+- Doing something with virus would be really cool. Possible to make it spread?
 #### Symmetra
+- Is it possible for enemies to target her teleporter? If not, high level teams could abuse it.
 #### Torbjorn
+- Is it possible for enemies to target his turret?
+- Overload is quite strong.
+- A talent to make the hammer strong would be fun but I don't want it to be so strong that it overshadows his gun.
 #### Tracer
 - Chain sticky bomb damage is cool.
 #### Venture
@@ -131,9 +187,18 @@ Look into ways to get it working with:
 - Would be cool if I could do something with venom mine. Maybe make it spread?
 - Explosive headshots are an easy talent idea, good fallback if I cannot think of anything else.
 #### Winston
+- Is very strong at dealing with crowds of squishies.
+- Useless against bosses.
+- Could do something interesting with his ranged attack.
 #### Wrecking Ball
+- Will be extremely strong if enemies have no stuns or hinders.
+- Incendiary rounds would not increases his strength much but be fun to use. Risks overlapping with Mauga.
 #### Zarya
+- Effectiveness depends on whether the ai is smart enough to not shoot bubble.
+- Very likely to end up a boring dps hero.
 #### Zenyatta
+- Discord makes Zen very strong against bosses.
+- Would need to make his moment to moment gameplay very satisfying to encourage players to pick him.
 ## Enemies
 ### Spawning
 - Enemy spawn quota: The game expects an amount of each type of enemy to spawn and will select a random enemy type to fill that quota.
@@ -145,7 +210,8 @@ Look into ways to get it working with:
 - Every enemy has an aggressiveness number calculated based on their current situtation such as current health (factoring in armour), abilities (including ultimate).
 - They also have a confidence number.
 - The ai uses this to determine if it should perform certain actions: ```if (aggressiveness - (1-confidence) > action_weight)```
-
+- Certain ai types should try to cut enemies off.
+- Some ai types will try to remain close to strong enemies (on their own team).
 - Don't bother trying to come up with custom names for the enemies until the end.
 ### Pathing
 - Used within the ai but should be considered distinct.
@@ -160,19 +226,20 @@ Edges between nodes have a list of attributes for each direction.
 0. Melee fence, look into making this a one time thing.
 1. Jump.
 ##### Vertical abilities
-0. Baptiste boots.
-0. Wall climb.
+2. Baptiste boots.
+0. Tall wall climb.
+0. Short wall climb
 0. Mei wall.
 0. Pharah jump jet.
 ##### Horizontal abilities
-0. Cass roll.
+7. Cass roll.
 0. Brig bash.
 0. Hazard leap.
 0. Pharah jet dash.
 0. Soldier rocket jump.
 0. Tracer blink.
 ##### Dynamic abilities
-0. Coach gun.
+13. Coach gun.
 0. D.va boosters.
 0. Echo flight.
 0. Genji double jump
@@ -330,6 +397,6 @@ Edges between nodes have a list of attributes for each direction.
 - Could be a great enemy type.
 - Long range, medium tier.
 ## Maps
-- For now I would only like to do Kanezaka; I am tired of Chateau Guillard.
+- For now I would like to do Kanezaka; I am tired of Chateau Guillard.
 - It is unlikely I would be able to fit many maps into one gamemode and might be limited to only one.
 - Eventually I would like to do all dedicated deathmatch maps, converted deathmatch maps, and maybe the elimination maps and Ayutthaya.
