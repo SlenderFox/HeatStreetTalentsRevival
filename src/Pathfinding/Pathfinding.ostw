@@ -93,7 +93,7 @@ void pfTick() '【PF Core Subroutine】☞ Tick'
 rule: '【PF Core】Select next pathfinder'
 if (!EntityExists(pfExecOwner) || pfExecOwner == null)
 if (
-	AllPlayers(Team.Team2)
+	AllPlayers()
 	.Filter(p => IsDummyBot(p))
 	.IsTrueForAny(p => p.pfWait)
 )
@@ -107,7 +107,6 @@ if (
 
 rule: '【PF Core】Update & Execute'
 Event.OngoingPlayer
-Team.Team2
 if (pfDestination)
 if (isDummy)
 if (EventPlayer().DistanceTo(pfDestination) > 4)
@@ -148,7 +147,6 @@ if (!pfSavedTarget || pfDestination.DistanceTo(pfSavedTarget) > 5)
 
 rule: '【PF Core】Node reached'
 Event.OngoingPlayer
-Team.Team2
 if (isDummy)
 if (pfIsPathfinding)
 if (pfWalkingToPosition)
@@ -166,7 +164,6 @@ if (pfCurrentNodeIndex != -1)
 
 rule: '【PF Core】Stop throttle when pfDestination is reset'
 Event.OngoingPlayer
-Team.Team2
 if (isDummy)
 if (pfIsPathfinding)
 if (pfDestination == null)
@@ -178,7 +175,6 @@ if (pfDestination == null)
 
 rule: '【PF Core】Insurance'
 Event.OngoingPlayer
-Team.Team2
 if (isDummy)
 if (pfIsPathfinding)
 if (pfWalkingToPosition)
@@ -243,7 +239,6 @@ if (pfWalkingToPosition)
 
 rule: '【PF Core】Check throttle'
 Event.OngoingPlayer
-Team.Team2
 if (isDummy)
 if (pfIsPathfinding)
 if (VelocityOf().Magnitude < 3)

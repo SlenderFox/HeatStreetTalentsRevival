@@ -1,6 +1,9 @@
 import "Pathfinding/Pathfinding.ostw";
+import "noclip.ostw";
 
-globalvar Player testDummyBot;
+globalvar Player enemyDummyBot;
+globalvar Player friendlyDummyBot;
+globalvar Boolean inControlMode;
 
 Player host: HostPlayer();
 Boolean isHost: EventPlayer() == host;
@@ -8,50 +11,117 @@ Vector hostPos: host.Position();
 Vector hostEye: host.EyePosition();
 Vector hostFacing: host.FacingDirection();
 Vector hostTarget: RayCastHitPosition(hostEye, hostEye + hostFacing * 100, null, null, false);
+Boolean hostIsCrouching: host.IsButtonHeld(Button.Crouch);
 
 Boolean button(Button _button): host.IsButtonHeld(_button);
 
-rule: "[DEBUG] Display server information on top left"
+rule: "[DEBUG] Display debug information on top left"
 {
 	Number loadScaler: 0.3921;
 	CreateHudText(
 		host,
 		Text: <
-			"load: c:<0>% a:<1>% p:<2>%\nposition: <3>",
+			"load: c:<0>% a:<1>% p:<2>%\nposition: <3>\n<4>",
 			ServerLoad() * loadScaler,
 			ServerLoadAverage() * loadScaler,
 			ServerLoadPeak() * loadScaler,
-			hostPos
+			hostPos,
+			inControlMode ? "Control mode" : ""
 		>
 	);
 }
 
-rule: "[DEBUG] Test pathfinding on self"
+rule: "[DEBUG] Host init"
 Event.OngoingPlayer
 if (isHost)
-if (button(Button.PrimaryFire))
 {
-	testDummyBot.pfDestination = hostTarget;
+	DisallowButton(host, Button.PrimaryFire);
+	DisallowButton(host, Button.SecondaryFire);
+	DisallowButton(host, Button.Ultimate);
+	DisallowButton(host, Button.Ability1);
+	DisallowButton(host, Button.Ability2);
+	DisallowButton(host, Button.Melee);
 }
 
-rule: "[DEBUG] Create or teleport dummy bot"
+rule: "[DEBUG] Toggle noclip"
 Event.OngoingPlayer
 if (isHost)
-if (button(Button.Melee))
+if (button(Button.Interact))
 {
-	if (testDummyBot == null)
+	IsNoclipping = !IsNoclipping;
+}
+
+
+rule: "[DEBUG] Toggle control mode"
+Event.OngoingPlayer
+if (isHost)
+if (hostIsCrouching)
+{
+	inControlMode = true;
+	WaitUntil(!hostIsCrouching, 9999);
+	inControlMode = false;
+}
+
+rule: "[DEBUG] Create or teleport enemy dummy bot"
+Event.OngoingPlayer
+if (isHost)
+if (!inControlMode)
+if (button(Button.PrimaryFire))
+{
+	if (enemyDummyBot == null)
 	{
-		testDummyBot = CreateDummyBot(
+		enemyDummyBot = CreateDummyBot(
 			Hero.Pharah,
 			Team.Team2,
 			-1,
 			hostTarget,
 			null
 		);
-		testDummyBot.pfPlayerAttributes = [0, 1, 6, 10, 20];
+		enemyDummyBot.pfPlayerAttributes = [0, 1, 6, 10, 20];
 	}
 	else
 	{
-		Teleport(testDummyBot, hostTarget);
+		Teleport(enemyDummyBot, hostTarget);
 	}
+}
+
+rule: "[DEBUG] Create or teleport friendly dummy bot"
+Event.OngoingPlayer
+if (isHost)
+if (!inControlMode)
+if (button(Button.SecondaryFire))
+{
+	if (friendlyDummyBot == null)
+	{
+		friendlyDummyBot = CreateDummyBot(
+			Hero.Pharah,
+			Team.Team1,
+			-1,
+			hostTarget,
+			null
+		);
+		friendlyDummyBot.pfPlayerAttributes = [0, 1, 6, 10, 20];
+	}
+	else
+	{
+		Teleport(friendlyDummyBot, hostTarget);
+	}
+}
+
+rule: "[DEBUG] Enemy pathfinding"
+Event.OngoingPlayer
+if (isHost)
+if (inControlMode)
+if (button(Button.PrimaryFire))
+{
+	enemyDummyBot.pfDestination = hostTarget;
+}
+
+rule: "[DEBUG] Friendly pathfinding"
+Event.OngoingPlayer
+if (isHost)
+if (inControlMode)
+if (button(Button.SecondaryFire))
+{
+	friendlyDummyBot.pfDestination = hostTarget;
 }
