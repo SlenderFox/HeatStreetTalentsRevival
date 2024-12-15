@@ -65,7 +65,7 @@ if (hostIsCrouching)
 rule: "[DEBUG] Create or teleport enemy dummy bot"
 Event.OngoingPlayer
 if (isHost)
-if (!inControlMode)
+if (inControlMode == false)
 if (button(Button.PrimaryFire))
 {
 	if (enemyDummyBot == null)
@@ -88,7 +88,7 @@ if (button(Button.PrimaryFire))
 rule: "[DEBUG] Create or teleport friendly dummy bot"
 Event.OngoingPlayer
 if (isHost)
-if (!inControlMode)
+if (inControlMode == false)
 if (button(Button.SecondaryFire))
 {
 	if (friendlyDummyBot == null)
