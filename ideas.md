@@ -4,174 +4,174 @@
 - A countdown before the mode starts so it's less sudden.
 - Do I have a function that breaks all of the fences before the game starts?
 - For development, maybe have a very basic pathmap on the workshop island.
-# Shop
-## Target Priorities
+## Shop
+### Target Priorities
 - Interesting, but can be ignored. Quite costly to buy but free to swap.
-## Upgrades
+### Upgrades
 - Reduce the strength of each tier but add more tiers.
 - Can buy normal health, shield health, and armour health.
 - Can buy increased damage and increased healing.
-### Health
+#### Health
 - Base health, cheapest.
-### Shield
+#### Shield
 - Shield health, slightly more expensive.
-### Armour
+#### Armour
 - Armour health, very expensive.
-### Damage
+#### Damage
 - Increases damage dealth as a percentage.
-### Healing
+#### Healing
 - Increases healing dealt as a percentage.
-### Haste
+#### Haste
 Look into ways to get it working with:
 - Abilities with charges
 - Ashe's coach gun
 - Bastion's turret form
 - Genji's swift strike
 - Soldier: 76's helix rockets.
-### Ult Generation
+#### Ult Generation
 - Percentage increase.
-### Movement Speed
+#### Movement Speed
 - Would have to be very minor and very expensive.
 - Percentage increase or fixed amount?
-### Knockback received reduction
+#### Knockback received reduction
 - Very nice QOL upgrade.
-### Knockback dealt increase
+#### Knockback dealt increase
 - Useless on most heroes.
 - Potential to be busted if used on a map with insta-kill hazards.
-## Abilities
+### Abilities
 - The per round random is an interesting idea and makes each playthrough unqiue however it can lead to minor frustration when you never get the abilities you want.
 - It leads to a kind of boring meta where you should never spend any money on normal upgrades and sometimes talents and instead spend it all on abilities until you have what you need.
-### Bulletstorm
+#### Bulletstorm
 - If Blizz still haven't fixed new heroes in workshop, maybe shelve this.
 - Also causes issues with peacekeeper alt fire.
 - I wonder if there is a way to increase reload speed.
-### Shockproof
+#### Shockproof
 - Remove speed bonus, passthrough, and armour.
-## Active Abilities
+### Active Abilities
 - Have a cooldown.
 - Activated with melee.
 - Expensive to purchase into but free to swap.
 - Often ignored.
-## Talents
+### Talents
 - No talents with quick melee to avoid any conflicts with active abilities.
 - Current scope is 2 talents per hero.
 - Hack should disable talents.
-### Ana
-### Ashe
-#### White phosphourous
+#### Ana
+#### Ashe
+##### White phosphourous
 - Dynamite burn lasts twice as long and killing burning enemies sets nearby enemies on fire.
-#### Black powder
+##### Black powder
 - Coach gun stuns all enemies hit for 1.5 seconds.
-### Baptiste
+#### Baptiste
 - Corrode is good, great for AOE damage.
-### Bastion
-### Brigitte
-### Cassidy
+#### Bastion
+#### Brigitte
+#### Cassidy
 - Magnetic grenade talent no longer valid.
-### D.va
+#### D.va
 - Something with her micro-missiles.
-### Doomfist
-### Echo
+#### Doomfist
+#### Echo
 - Bomber jacket is a cool talent but could potentially overlap with an idea I had for Pharah, either way the name kinda blows.
 - Focusing optics is strong but quite boring and unengaging.
-### Genji
-### Hanzo
-### Hazard
+#### Genji
+#### Hanzo
+#### Hazard
 - To be determnined...
-### Illari
+#### Illari
 - Enemies will never shoot pylon.
 - Her ult is really strong.
 - Enemies near pylon take increased damage.
-#### Solar flare
+##### Solar flare
 - Outburst deals more damage and sets enemies on fire.
-### Junker Queen
-### Junkrat
-### Juno
-### Kiriko
-### Lifeweaver
+#### Junker Queen
+#### Junkrat
+#### Juno
+#### Kiriko
+#### Lifeweaver
 - Current talents are very boring.
 - Something with tree.
-### Lucio
-### Mauga
+#### Lucio
+#### Mauga
 - Naturally strong in pve.
 - Cage fight is ineffective against tough enemies.
-### Mei
-### Mercy
-### Moira
-### Orisa
-#### Shrapnel
+#### Mei
+#### Mercy
+#### Moira
+#### Orisa
+##### Shrapnel
 - Javelin Spin fires many pellets that deal damage and knockback.
-#### Tailwind
+##### Tailwind
 - Increases Javelin Throw projectile speed and deals knockback and damage around impact point.
-### Pharah
-#### Rocket Queen
+#### Pharah
+##### Rocket Queen
 - Using Jump Jet or Jet Dash fires a small group of homing rockets.
-### Ramattra
-### Reaper
-### Reinhardt
-### Roadhog
-### Sigma
-### Sojourn
+#### Ramattra
+#### Reaper
+#### Reinhardt
+#### Roadhog
+#### Sigma
+#### Sojourn
 - Remove explosive headshots. Maybe make all railgun shots deal explosive damage? Scaled by the charge of the shot.
-### Soldier: 76
-### Sombra
+#### Soldier: 76
+#### Sombra
 - Using translocator to deal a burst of damage and hack enemies is interesting and fun but doesn't mesh well with the new rework.
 - Doing something with virus would be really cool.
-### Symmetra
-### Torbjorn
-### Tracer
+#### Symmetra
+#### Torbjorn
+#### Tracer
 - Chain sticky bomb damage is cool.
-### Venture
+#### Venture
 - Burrow is strong.
 - Ult is very strong.
-#### Plow
+##### Plow
 - Drill dash hits in a larger area and knocks enemies down.
-### Widowmaker
+#### Widowmaker
 - One ability should improve her effectiveness against boss enemies while the other should improve her effectiveness against crowds.
 - Would be cool if I could do something with venom mine. Maybe make it spread?
 - Explosive headshots are an easy talent idea, good fallback if I cannot think of anything else.
-### Winston
-### Wrecking Ball
-### Zarya
-### Zenyatta
-# Enemies
-## Spawning
+#### Winston
+#### Wrecking Ball
+#### Zarya
+#### Zenyatta
+## Enemies
+### Spawning
 - Enemy spawn quota: The game expects an amount of each type of enemy to spawn and will select a random enemy type to fill that quota.
 - Quota scales with difficulty.
 - Enemy respawn times scale with difficulty.
 - Chances of spawning each enemy type is based on the enemy "challenge" rating, the current round, and the number of players.
 - Should I also include a minor skill rating?
-## Ai
+### Ai
 - Every enemy has an aggressiveness number calculated based on their current situtation such as current health (factoring in armour), abilities (including ultimate).
 - They also have a confidence number.
 - The ai uses this to determine if it should perform certain actions: ```if (aggressiveness - (1-confidence) > action_weight)```
 
 - Don't bother trying to come up with custom names for the enemies until the end.
-## Pathing
+### Pathing
 - Used within the ai but should be considered distinct.
 - [Made with Deltin's pathmap editor](https://github.com/ItsDeltin/Pathmap-editor)
 - May need to fork to reduce the element count. [fork](https://github.com/SlenderFox/Pathmap-editor-gutted).
-### Attributes
+#### Attributes
 Edges between nodes have a list of attributes for each direction.
 
 -1 is always impassable.
 
-#### All heroes
+##### All heroes
 0. Melee fence, look into making this a one time thing.
 1. Jump.
-#### Vertical abilities
+##### Vertical abilities
 0. Baptiste boots.
 0. Wall climb.
 0. Mei wall.
 0. Pharah jump jet.
-#### Horizontal abilities
+##### Horizontal abilities
 0. Cass roll.
 0. Brig bash.
 0. Hazard leap.
 0. Pharah jet dash.
 0. Soldier rocket jump.
 0. Tracer blink.
-#### Dynamic abilities
+##### Dynamic abilities
 0. Coach gun.
 0. D.va boosters.
 0. Echo flight.
@@ -186,150 +186,150 @@ Edges between nodes have a list of attributes for each direction.
 0. Venture drill dash.
 0. Widowmaker grapple.
 0. Winston leap.
-## Heroes
-### Need to be sorted into a tier
-#### Ana
+### Heroes
+#### Need to be sorted into a tier
+##### Ana
 - Has potential to be an interesting enemy.
 - Long/medium range.
 - High potency, would need to be higher tier.
-#### Ashe
+##### Ashe
 - Good medium range threat.
-#### Baptiste
+##### Baptiste
 - Would only be interesting if I can get the ai to try and save their teammates.
 - Have the fallback of making him a revive bot.
-#### Bastion
+##### Bastion
 - High presence, high priority threat.
 - Great for higher tier.
-#### Brigitte - Guard
+##### Brigitte - Guard
 - Difficult to implement, could be an interesting enemy.
 - Will try and protect teammates.
 - Has a preference for guarding certain types of teammates.
 - Medium/high tier.
-#### Cassidy
+##### Cassidy
 - Good low tier enemy.
-#### D.va
+##### D.va
 - Focusing on the second life mechanic is kind boring.
 - Could be a threat with defense matrix but would be hard to implement intelligently.
-#### Doomfist
+##### Doomfist
 - Would either be a lot of work to implement or be very boring to fight.
-#### Echo
+##### Echo
 - Could work, but I don't know how aerial movement would function.
-#### Genji
+##### Genji
 - Interesting enemy that gets more engaging the better implemented he is.
-#### Hanzo
+##### Hanzo
 - Medium range spam threat.
 - Would need to remove headshot insta-kill to be fun to fight.
-#### Hazard
+##### Hazard
 - Could be a cool enemy.
 - Highly aggresive.
 - Similar issue with mei, could just simply fire right behind enemy.
 - Block will be hard to implement.
-#### Illari
+##### Illari
 - Would be pretty boring
 - Pylon would be difficult to implement intelligently but would be an easy source of healing for the enemy.
 - Ult would be a geniune threat.
-#### Junker Queen
+##### Junker Queen
 - Could be an aggressive, in your face enemy.
 - Abilities would be simple to implement.
 - Runs the risk of being boring to fight or impossible to kill.
-#### Junkrat
+##### Junkrat
 - Ult would be a great spike threat.
 - Could be a medium range spam threat.
-#### Juno
+##### Juno
 - Very difficult to implement.
-#### Kiriko
+##### Kiriko
 - Everything in her kit is difficult to implement.
 - Ult has potential to be interesting.
-#### Lifeweaver
+##### Lifeweaver
 - No.
-#### Lucio
+##### Lucio
 - Yes.
 - Wallride is likely impossible to implement.
-#### Mauga
+##### Mauga
 - Left click at range, both when close.
 - Very aggressive, tries to get in close.
 - Great boss type enemy.
-#### Mei
+##### Mei
 - All abilities except wall would be very simple.
 - Could have premade points where mei wants to wall.
 - Would be more likely to hurt her own team more than help it.
-#### Mercy
+##### Mercy
 - Would only be a revive bot.
 - Unengaging to fight.
 - Guardian angel would be difficult to implement well.
 - Ult would be in the same boat as Pharah and Echo.
-#### Moira
+##### Moira
 - Unlikely to work.
 - Could be challenging to implement.
 - Orbs are impossible to do intelligently.
 - Resource meter is possibly unseen to the workshop.
-#### Orisa
+##### Orisa
 - Would be very unfun to fight.
 - Only used as a boss enemy.
-#### Pharah
+##### Pharah
 - Full flight movement could be hard, easier to be a ground unit.
 - Movement would likely be controlled with pathing attributes.
-#### Ramattra
+##### Ramattra
 - Thematic and potentially engaging enemy.
 - Shield might be hard to implement.
-#### Reaper
+##### Reaper
 - Spook is an interesting concept.
 - Wasn't too engaging to fight however.
-#### Reinhardt
+##### Reinhardt
 - Holds shield at range, occasionally firestriking when confident.
 - Boss type enemy.
-#### Roadhog
+##### Roadhog
 - Potential to be unengaging damage sponge.
 - Similar vein to Junker Queen.
-#### Sigma
+##### Sigma
 - Very hard to implement well.
 - Ult is a great interaction.
-#### Sojourn
+##### Sojourn
 - Unlikely to have workshop functionality to gauge charge level.
 - Would be a boring low tier enemy.
-#### Soldier: 76
+##### Soldier: 76
 - Good blank slate enemy.
 - Works as a low tier enemy or high tier threat.
-#### Sombra
+##### Sombra
 - Base abilities would be hard to implement well.
 - Could be a great enemy type.
 - Could use taser concept.
-#### Symmetra
+##### Symmetra
 - Would be very difficult to implement her abilities.
 - Likely to be a boring enemy.
-#### Torbjorn
+##### Torbjorn
 - Turret and ult could be hard to implement.
 - Would be funny as a hammer only enemy, maybe shrink him.
-#### Tracer
+##### Tracer
 - Interesting enemy.
 - Hard to catch.
 - Mid-high tier.
-#### Venture
+##### Venture
 - Hard to say.
 - Would need all abilities to be functional.
 - Unknown if burrow causes issues with pathing.
 - Could be an in your face threat.
-#### Widowmaker
+##### Widowmaker
 - Sniper.
-#### Winston
+##### Winston
 - Winston
 - Good blank slate hero.
 - Can be a tiny winston minor threat.
 - Can be a big winston boss threat.
 - Can be a big angry disrupter threat in ult.
-#### Wrecking ball
+##### Wrecking ball
 - Swinging is basically impossible to implement.
 - Ground slam follows in suit.
 - Probably can be reserved entirely for the portal.
-#### Zarya
+##### Zarya
 - Is projected barrier possible?
 - Could support a boss enemy or be a boss enemy herself.
 - Bubble could be interesting or annoying, maybe a long cooldown?
-#### Zenyatta
+##### Zenyatta
 - Are his abilities possible to implement?
 - Could be a great enemy type.
 - Long range, medium tier.
-# Maps
+## Maps
 - For now I would only like to do Kanezaka; I am tired of Chateau Guillard.
 - It is unlikely I would be able to fit many maps into one gamemode and might be limited to only one.
 - Eventually I would like to do all dedicated deathmatch maps, converted deathmatch maps, and maybe the elimination maps and Ayutthaya.
