@@ -38,7 +38,7 @@ void SkipAssembleHeroes()
 	SetMatchTime(0);
 }
 
-rule: "Setup"
+rule: "[MAIN] Setup"
 {
 	EnableInspectorRecording();
 	Any credits = WorkshopSettingCombo(" Remade by SlenderFox", "Credits", 0, ["<Click here>", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
