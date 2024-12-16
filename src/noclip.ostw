@@ -16,6 +16,7 @@ if (IsNoclipping)
 	SetMoveSpeed(EventPlayer(), 0);
 	DisallowButton(EventPlayer(), Button.Jump);
 	DisallowButton(EventPlayer(), Button.Crouch);
+	DisallowButton(EventPlayer(), Button.Ability1);
 }
 
 rule: "[NOCLIP] Stop noclipping"
@@ -29,6 +30,7 @@ if (IsNoclipping == false)
 	SetMoveSpeed(EventPlayer(), 100);
 	AllowButton(EventPlayer(), Button.Jump);
 	AllowButton(EventPlayer(), Button.Crouch);
+	AllowButton(EventPlayer(), Button.Ability1);
 }
 
 Boolean moving: ThrottleOf(EventPlayer()) != Vector(0, 0, 0)
