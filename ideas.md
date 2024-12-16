@@ -7,6 +7,7 @@
 ### Target Priorities
 - Interesting, but can be ignored. Quite costly to buy but free to swap.
 - Often a no-brainer to pick.
+- Low priority implementation, possible I might drop this feature; ai should be responsive/reactive enough to not need it.
 ### Upgrades
 - Reduce the strength of each tier but add more tiers.
 - Can buy normal health, shield health, and armour health.
@@ -56,6 +57,7 @@ Look into ways to get it working with:
 - Activated with melee.
 - Expensive to purchase into but free to swap.
 - Often ignored.
+- Unless I can think of something interesting I'm going to drop this to save elements.
 ### Talents
 - No talents with quick melee to avoid any conflicts with active abilities.
 - Current scope is 2 talents per hero.
@@ -206,12 +208,13 @@ Look into ways to get it working with:
 - Chances of spawning each enemy type is based on the enemy "challenge" rating, the current round, and the number of players.
 - Should I also include a minor skill rating?
 ### Ai
+**Don't bother trying to come up with custom names for the enemies until the end.**
 - Every enemy has an aggressiveness number calculated based on their current situtation such as current health (factoring in armour), abilities (including ultimate).
 - They also have a confidence number.
 - The ai uses this to determine if it should perform certain actions: ```if (aggressiveness - (1-confidence) > action_weight)```
-- Certain ai types should try to cut enemies off.
-- Some ai types will try to remain close to strong enemies (on their own team).
-- Don't bother trying to come up with custom names for the enemies until the end.
+- Certain ai types should try to cut enemies off (flankers).
+- Lower tier enemies will try to hang near higher tier enemies to support them.
+- Looking at an enemy who is targeting you has a chance to make them start strafing, decreasing with range.
 ### Pathing
 - Used within the ai but should be considered distinct.
 - [Made with Deltin's pathmap editor](https://github.com/ItsDeltin/Pathmap-editor)
@@ -395,6 +398,11 @@ Edges between nodes have a list of attributes for each direction.
 - Are his abilities possible to implement?
 - Could be a great enemy type.
 - Long range, medium tier.
+### Mutators
+- I think this is an interesing idea.
+- Increases complexity over time and can be used to scale complexity on higher difficulties (if I implement that).
+- Has a potentially large element cost, should try to keep this a low as I can.
+- Lower priority to implement.
 ## Maps
 - For now I would like to do Kanezaka; I am tired of Chateau Guillard.
 - It is unlikely I would be able to fit many maps into one gamemode and might be limited to only one.
