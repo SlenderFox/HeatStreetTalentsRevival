@@ -3,6 +3,9 @@
 - A ready-up system to avoid one player accidentally starting the mode without everyone.
 - A countdown before the mode starts so it's less sudden.
 - Do I have a function that breaks all of the fences before the game starts?
+- Original: CR67F
+- Victory Edition: RMSXGY
+- Talents: KFVAY
 ## Shop
 ### Target Priorities
 - Interesting, but can be ignored. Quite costly to buy but free to swap.
