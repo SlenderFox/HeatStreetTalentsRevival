@@ -109,8 +109,8 @@ rule: "【PF Core】Update & Execute"
 Event.OngoingPlayer
 if (pfDestination)
 if (isDummy)
-if (EventPlayer().DistanceTo(pfDestination) > 4)
-if (!pfSavedTarget || pfDestination.DistanceTo(pfSavedTarget) > 5)
+if (EventPlayer().DistanceTo(pfDestination) > 1.2)
+if (!pfSavedTarget || pfDestination.DistanceTo(pfSavedTarget) > 2.2)
 {
 	# Ensure that a map is loaded.
 	if (!pfLoadedMap.nodes)
