@@ -41,7 +41,7 @@ void SkipAssembleHeroes()
 rule: "[MAIN] Setup"
 {
 	EnableInspectorRecording();
-	Any credits = WorkshopSettingCombo(" Remade by SlenderFox", "Credits", 0, ["<Click here>", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
+	Any credits = WorkshopSettingCombo(" By SlenderFox", "Credits", 0, ["<Click here>", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
 	# Allows the timer to be used for custom gamemode.
 	DisableCompletion();
 	DisableScoring();
