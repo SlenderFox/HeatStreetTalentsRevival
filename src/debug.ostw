@@ -94,13 +94,13 @@ if (button(Button.SecondaryFire))
 	if (friendlyDummyBot == null)
 	{
 		friendlyDummyBot = CreateDummyBot(
-			Hero.Pharah,
+			Hero.Orisa,
 			Team.Team1,
 			-1,
 			hostTarget,
 			null
 		);
-		friendlyDummyBot.pfPlayerAttributes = [0, 1, 6, 10, 20];
+		friendlyDummyBot.pfPlayerAttributes = [0, 1];
 	}
 	else
 	{
