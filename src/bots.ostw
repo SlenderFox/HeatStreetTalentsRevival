@@ -1,0 +1,5 @@
+import "pathfinding/pathfinding.ostw";
+
+// Preload bots
+// Request spawn of bot
+// For Debug: Force spawn of bot (replace existing bot)
