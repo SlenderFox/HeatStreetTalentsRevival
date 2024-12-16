@@ -45,7 +45,7 @@ rule: "[MAIN] Setup"
 	# Allows the timer to be used for custom gamemode.
 	DisableCompletion();
 	DisableScoring();
-	# Announcer while still says 'fight' at the start of the match
+	# Announcer will still say 'fight' at the start of the match
 	DisableAnnouncer();
 	SetupHUD();
 	SkipAssembleHeroes();

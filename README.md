@@ -1,5 +1,5 @@
 # Heat Street Talents Revival
-Heat Street Talents Revival plans to be a complete remake of the workshop gamemode form the ground up.
+Heat Street Talents Revival plans to be a complete remake of the workshop gamemode from the ground up.
 
 It follows from [Heat Street Talents [KFVAY]](https://workshop.codes/KFVAY) by LemonAid.
 
