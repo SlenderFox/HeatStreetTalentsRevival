@@ -1,5 +1,38 @@
 import "pathfinding/pathfinding.ostw";
 
-// Preload bots
-// Request spawn of bot
-// For Debug: Force spawn of bot (replace existing bot)
+// Spawning bots is done from the perspective of the bot, it see how many bots are expected and spawns itself.
+// Spawning of bots should be primarily handled by the gamemode.
+// Could use the slot of the bot for addressing.
+
+// I have 14 max unique skins.
+// I can have 18 dummy bots in total, with 9 unique skins.
+
+// Should the friendly bot be defined and managed here?
+globalvar Player friendlyBot;
+globalvar Number botQuota;
+
+rule: "[BOTS] Create all the dummy bots" -10
+{
+	# Create friendly bot
+	friendlyBot = CreateDummyBot(
+		Hero.Mauga,
+		Team.Team1,
+		6,
+		Vector(0, -1000, 0),
+		null
+	);
+	friendlyBot.pfPlayerAttributes = [null, 1];
+	StartForcingDummyBotName(friendlyBot, "Puipui");
+
+	# Create enemy bots
+	for (Number i!; i < 17; i ++)
+	{
+		CreateDummyBot(
+			Hero.Pharah,
+			Team.Team2,
+			-1,
+			Vector(0, -1000, 0),
+			null
+		).pfPlayerAttributes = [null, 1, 6, 10, 20];
+	}
+}
