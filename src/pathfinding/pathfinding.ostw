@@ -461,15 +461,15 @@ rule: "【Map】Kanezaka (nodes & neighbours)"
 if (CurrentMap() == Map.Kanezaka)
 {
 	// Will need to be split into separate rules when another pass at the map is done.
-	pfLoadedMap.nodes = import("Kanezaka.jsonc").nodes;
-	pfLoadedMap.neighbours = import("Kanezaka.jsonc").neighbors;
+	pfLoadedMap.nodes = import("kanezaka.jsonc").nodes;
+	pfLoadedMap.neighbours = import("kanezaka.jsonc").neighbors;
 }
 
 rule: "【Map】Workshop Island (nodes & neighbours)"
 if (CurrentMap() == Map.Workshop_Island)
 {
-	pfLoadedMap.nodes = import("Workshop Island.jsonc").nodes;
-	pfLoadedMap.neighbours = import("Workshop Island.jsonc").neighbors;
+	pfLoadedMap.nodes = import("workshop_island.jsonc").nodes;
+	pfLoadedMap.neighbours = import("workshop_island.jsonc").neighbors;
 }
 
 // ----------------------------------

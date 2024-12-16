@@ -1,4 +1,4 @@
-import "Pathfinding/Pathfinding.ostw";
+import "pathfinding/pathfinding.ostw";
 import "noclip.ostw";
 
 globalvar Player enemyDummyBot;
