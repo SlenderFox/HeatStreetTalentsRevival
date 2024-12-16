@@ -140,15 +140,16 @@ if (button(Button.SecondaryFire))
 {
 	SelectTestBot();
 
-	if (enemyTestBot.isTargeting)
+	if (enemyTestBot.target != null)
 	{
 		StopFacing(enemyTestBot);
 		SetFacing(enemyTestBot, Left(), Relative.ToWorld);
-		enemyTestBot.isTargeting = false;
+		enemyTestBot.target = null;
 	}
 	else
 	{
-		StartTargeting(enemyTestBot, host);
+		enemyTestBot.target = host;
+		StartTargeting(enemyTestBot);
 	}
 }
 
