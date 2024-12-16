@@ -10,6 +10,20 @@ import "pathfinding/pathfinding.ostw";
 // Should the friendly bot be defined and managed here?
 globalvar Player friendlyBot;
 globalvar Number botQuota;
+playervar Boolean isTargeting;
+
+# If pDummy is null it will use EventPlayer().
+void StartTargeting(Player pDummy = EventPlayer(), Player | Vector pTarget) "[BOTS SUBROUTINE] Start targeting"
+{
+	StartFacing(
+		pDummy,
+		DirectionTowards(pDummy.EyePosition(), pTarget),
+		1000,
+		Relative.ToWorld,
+		FacingRev.DirectionAndTurnRate
+	);
+	pDummy.isTargeting = true;
+}
 
 rule: "[BOTS] Create all the dummy bots" -10
 {

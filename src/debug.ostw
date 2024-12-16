@@ -15,8 +15,19 @@ Boolean hostIsCrouching: host.IsButtonHeld(Button.Crouch);
 
 Boolean button(Button _button): host.IsButtonHeld(_button);
 
-Boolean holdingButtonFriendly: host.IsButtonHeld(Button.Ultimate);
-Boolean holdingButtonEnemy: host.IsButtonHeld(Button.Ability2);
+Boolean holdingButtonFriendly: button(Button.Ultimate);
+Boolean holdingButtonEnemy: button(Button.Ability2);
+
+void SelectTestBot() "[DEBUG SUBROUTINE] Select test bot"
+{
+	if (enemyTestBot == null)
+	{
+		enemyTestBot = AllPlayers(Team.Team2)
+			.Filter(p => p.IsDummy())
+			.Sort(p => SlotOf(p)).First;
+		StartForcingDummyBotName(enemyTestBot, "<<TEST BOT>>");
+	}
+}
 
 rule: "[DEBUG] Display debug information on top left"
 {
@@ -63,8 +74,14 @@ if (isHost)
 if (hostIsCrouching)
 {
 	inControlMode = true;
+	DisallowButton(host, Button.Melee);
+	DisallowButton(host, Button.PrimaryFire);
+	DisallowButton(host, Button.SecondaryFire);
 	WaitUntil(!hostIsCrouching, 9999);
 	inControlMode = false;
+	AllowButton(host, Button.Melee);
+	AllowButton(host, Button.PrimaryFire);
+	AllowButton(host, Button.SecondaryFire);
 }
 
 rule: "[DEBUG] Teleport enemy dummy bot"
@@ -73,11 +90,7 @@ if (isHost)
 if (inControlMode == false)
 if (holdingButtonEnemy)
 {
-	if (enemyTestBot == null)
-	{
-		enemyTestBot = PlayersInSlot(0, Team.Team2);
-		StartForcingDummyBotName(enemyTestBot, "<<TEST BOT>>");
-	}
+	SelectTestBot();
 
 	if (!enemyTestBot.IsAlive())
 	{
@@ -117,4 +130,33 @@ if (inControlMode)
 if (holdingButtonFriendly)
 {
 	friendlyBot.pfDestination = hostTarget;
+}
+
+rule: "[DEBUG] Toggle enemy facing"
+Event.OngoingPlayer
+if (isHost)
+if (inControlMode)
+if (button(Button.SecondaryFire))
+{
+	SelectTestBot();
+
+	if (enemyTestBot.isTargeting)
+	{
+		StopFacing(enemyTestBot);
+		SetFacing(enemyTestBot, Left(), Relative.ToWorld);
+		enemyTestBot.isTargeting = false;
+	}
+	else
+	{
+		StartTargeting(enemyTestBot, host);
+	}
+}
+
+rule: "[DEBUG] Make enemy fire"
+Event.OngoingPlayer
+if (isHost)
+if (inControlMode)
+if (button(Button.PrimaryFire))
+{
+	PressButton(enemyTestBot, Button.PrimaryFire);
 }
