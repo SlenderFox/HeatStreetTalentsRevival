@@ -48,7 +48,7 @@ rule: "[BOTS] Create all the dummy bots" -10
 	StartForcingDummyBotName(friendlyBot, "Puipui");
 
 	# Create enemy bots
-	for (i = null; i < 17; i++)
+	for (i = 0; i < 17; i++)
 	{
 		CreateDummyBot(
 			Hero.Pharah,
