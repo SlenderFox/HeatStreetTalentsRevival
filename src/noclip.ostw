@@ -1,7 +1,9 @@
-// Original code by Josbird
-// https://workshop.codes/50RQ1
-// Decompiled by ostw
-// Modified by SlenderFox
+/** A small noclip script.
+ * Original code by Josbird
+ * https://workshop.codes/50RQ1
+ * Decompiled by ostw
+ * Modified by SlenderFox
+*/
 
 globalvar Boolean IsNoclipping = false;
 

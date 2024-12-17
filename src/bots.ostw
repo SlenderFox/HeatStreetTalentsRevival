@@ -1,3 +1,5 @@
+/** Enemy bot management and ai. (Could split)
+*/
 import "pathfinding/pathfinding.ostw";
 
 // Spawning bots is done from the perspective of the bot, it see how many bots are expected and spawns itself.

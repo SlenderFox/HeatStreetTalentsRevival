@@ -1,4 +1,7 @@
-// Made by Deltin, modified by SlenderFox
+/** Node-based pathfinding system. Moves dummy bots to a target point.
+ * Attributes allow custom navigation.
+ * Made by Deltin, modified by SlenderFox.
+*/
 
 struct PfMap
 {

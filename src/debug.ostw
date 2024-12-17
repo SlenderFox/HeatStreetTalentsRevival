@@ -1,3 +1,6 @@
+/** Contains many rules to help development of the gamemode.
+ * Should not be included in a release build of the mode.
+*/
 import "pathfinding/pathfinding.ostw";
 import "bots.ostw";
 import "noclip.ostw";

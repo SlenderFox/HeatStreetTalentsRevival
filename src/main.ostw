@@ -1,3 +1,6 @@
+/** Compilation entry point.
+ * Handles the lobby and server.
+*/
 import "settings.lobby";
 
 import "pathfinding/pathfinding.ostw";
