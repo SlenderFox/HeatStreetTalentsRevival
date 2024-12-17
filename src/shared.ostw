@@ -1,0 +1,4 @@
+/** Contains definitions used by various other scripts.
+*/
+
+globalvar Number i = 0;

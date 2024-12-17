@@ -3,6 +3,7 @@
 */
 import "settings.lobby";
 
+import "shared.ostw";
 import "pathfinding/pathfinding.ostw";
 import "bots.ostw";
 import "debug.ostw";
