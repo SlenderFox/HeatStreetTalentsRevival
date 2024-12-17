@@ -1,0 +1,3 @@
+/** Invasion gamemode has a portal spawning enemy units that needs to be destroyed.
+ * On destruction a boss enemy spawns.
+*/

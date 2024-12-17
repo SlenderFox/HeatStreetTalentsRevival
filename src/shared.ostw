@@ -1,4 +1,12 @@
 /** Contains definitions used by various other scripts.
 */
 
+enum HS_Gamemode
+{
+	Invasion, // Portal
+	HighValueTarget, // Roaming boss
+	Domination // Capture zones
+}
+
 globalvar Number i = 0;
+globalvar HS_Gamemode | HS_Gamemode[] gamemode;

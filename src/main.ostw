@@ -6,7 +6,40 @@ import "settings.lobby";
 import "shared.ostw";
 import "pathfinding/pathfinding.ostw";
 import "bots.ostw";
+import "gamemodes/invasion.ostw";
 import "debug.ostw";
+
+void LoadSettings()
+{
+	Any credits = WorkshopSettingCombo(" Heat Street Talents Revival", "Credits", 0, ["<Click here>", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful", "Josbird"], 0);
+}
+
+void SelectGamemode()
+{
+	if (WorkshopSettingToggle("Enabled gamemodes", "Invasion", true, 0))
+	{
+		gamemode.ModAppend(HS_Gamemode.Invasion);
+	}
+	if (WorkshopSettingToggle("Enabled gamemodes", "High Value Target", true, 1))
+	{
+		gamemode.ModAppend(HS_Gamemode.HighValueTarget);
+	}
+	if (WorkshopSettingToggle("Enabled gamemodes", "Domination", true, 2))
+	{
+		gamemode.ModAppend(HS_Gamemode.Domination);
+	}
+
+	# If the player disabled all modes, treat it as all modes enabled.
+	if (CountOf(gamemode) == 0)
+	{
+		//gamemode = [HS_Gamemode.Invasion, HS_Gamemode.HighValueTarget, HS_Gamemode.Domination].Random();
+		gamemode = <HS_Gamemode>RandomInteger(0, 2);
+	}
+	else
+	{
+		gamemode = gamemode.Random();
+	}
+}
 
 void SetupHUD()
 {
@@ -49,7 +82,8 @@ void SkipAssembleHeroes()
 rule: "[MAIN] Setup" -100
 {
 	EnableInspectorRecording();
-	Any credits = WorkshopSettingCombo(" By SlenderFox", "Credits", 0, ["<Click here>", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful"], 0);
+	LoadSettings();
+	SelectGamemode();
 	# Allows the timer to be used for custom gamemode.
 	DisableCompletion();
 	DisableScoring();
