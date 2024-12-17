@@ -8,5 +8,7 @@ enum HS_Gamemode
 	Domination // Capture zones
 }
 
-globalvar Number i = 0;
+Number zero: null;
+
+globalvar Number i;
 globalvar HS_Gamemode | HS_Gamemode[] gamemode;

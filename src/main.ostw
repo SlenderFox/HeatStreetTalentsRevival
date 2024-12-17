@@ -30,7 +30,7 @@ void SelectGamemode()
 	}
 
 	# If the player disabled all modes, treat it as all modes enabled.
-	if (CountOf(gamemode) == 0)
+	if (CountOf(gamemode) == zero)
 	{
 		//gamemode = [HS_Gamemode.Invasion, HS_Gamemode.HighValueTarget, HS_Gamemode.Domination].Random();
 		gamemode = <HS_Gamemode>RandomInteger(0, 2);
