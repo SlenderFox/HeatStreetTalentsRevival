@@ -53,10 +53,10 @@ rule: "[MAIN] Setup" -100
 	# Allows the timer to be used for custom gamemode.
 	DisableCompletion();
 	DisableScoring();
-	# Announcer will still say 'fight' at the start of the match
+	# Announcer will still say 'fight' at the start of the match.
 	DisableAnnouncer();
 	SetupHUD();
 	SkipAssembleHeroes();
-	# Respawning should be managed by the workshop
+	# Respawning should be managed by the workshop.
 	SetRespawnMaxTime(AllPlayers(), 9999);
 }
