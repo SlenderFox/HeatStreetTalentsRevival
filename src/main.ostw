@@ -1,5 +1,5 @@
 /** Compilation entry point.
- * Handles the lobby and server.
+ * Handles operation of the game.
 */
 import "settings.lobby";
 
