@@ -69,7 +69,7 @@ Boolean isDummy: IsDummyBot(EventPlayer());
 rule: "【PF Core】Prepare loaded map"
 {
 	WaitUntil(<Boolean>pfLoadedMap.nodes, 9999);
-	for (i = null; pfLoadedMap.nodes.Length; 1)
+	for (i = 0; pfLoadedMap.nodes.Length; 1)
 	{
 		pfLoadedMap.nodes[i] = Vector(
 			pfLoadedMap.nodes[i].X,
