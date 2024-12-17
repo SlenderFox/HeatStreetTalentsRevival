@@ -89,6 +89,7 @@ rule: "[MAIN] Setup" -100
 	DisableScoring();
 	# Announcer will still say 'fight' at the start of the match.
 	DisableAnnouncer();
+	//DisableRespawning(AllPlayers());
 	SetupHUD();
 	SkipAssembleHeroes();
 	# Respawning should be managed by the workshop.
