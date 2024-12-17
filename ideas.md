@@ -3,6 +3,8 @@
 - A ready-up system to avoid one player accidentally starting the mode without everyone.
 - A countdown before the mode starts so it's less sudden.
 - Do I have a function that breaks all of the fences before the game starts?
+- Reducing the number of players on team 1 should increase the number of dummy bots.
+## References
 - Original: CR67F
 - Victory Edition: RMSXGY
 - Talents: KFVAY
@@ -57,12 +59,12 @@ Look into ways to get it working with:
 - Remove speed bonus, passthrough, and armour.
 ### Active Abilities
 - Have a cooldown.
-- Activated with melee.
+- Activated by holding melee. Could be moved to interact.
 - Expensive to purchase into but free to swap.
 - Often ignored.
 - Unless I can think of something interesting I'm going to drop this to save elements.
 ### Talents
-- No talents with quick melee to avoid any conflicts with active abilities.
+- No talents with quick melee to avoid any conflicts with active abilities. Unless it is moved to interact.
 - Current scope is 2 talents per hero.
 - Hack should disable talents.
 #### Ana
@@ -82,6 +84,7 @@ Look into ways to get it working with:
 #### Cassidy
 - Magnetic grenade talent no longer valid.
 - Deadeye locking enemies in place is cool but buggy.
+- Maybe some talent that rewards accuracy. Headshots return the round to the chamber?
 #### D.va
 - Something with her micro-missiles.
 - D.va is the kind of hero that would be really bad for low skill players and busted for high skill players. Need a talent that attempts to flatten the difference.
@@ -97,6 +100,8 @@ Look into ways to get it working with:
 - Will likely be very fun to play.
 - Would struggle against high hp enemies.
 - If active abilities are removed, a melee talent that deals percentage based backstab damage would be interesting.
+- Temporary damage boost on elimation to encourage chain kills.
+- Reduces swift strike cooldown for every enemy hit by it.
 #### Hanzo
 - Desperately needs AOE damage.
 - Hanzo might be able to cheese some bosses by abusing wallclimb.
