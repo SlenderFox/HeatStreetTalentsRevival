@@ -26,17 +26,17 @@ void SetupHUD()
 		Location: Location.Top,
 	);
 
-	if (NumberOfSlots(Team.Team1) > 5)
-	{
-		CreateHudText(
-			AllPlayers(),
-			"\n\n\n\n\n\n\n\n\n\n\n\n\n\n     Too many player slots! Set Max Team 1 Players to 5 or lower and restart.     \n\n\n\n\n\n\n\n\n\n\n\n\n\n",
-			Location: Location.Top,
-			SortOrder: -1000,
-			HeaderColor: Color.Yellow,
-		);
-	}
-	// TODO Place warning messages about team 2 and maybe spectators.
+	//// TODO Place warning messages about team 2 and maybe spectators.
+	//if (NumberOfSlots(Team.Team1) > 5)
+	//{
+	//	CreateHudText(
+	//		AllPlayers(),
+	//		"\n\n\n\n\n\n\n\n\n\n\n\n\n\n     Too many player slots! Set Max Team 1 Players to 5 or lower and restart.     \n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+	//		Location: Location.Top,
+	//		SortOrder: -1000,
+	//		HeaderColor: Color.Yellow,
+	//	);
+	//}
 }
 
 void SkipAssembleHeroes()
