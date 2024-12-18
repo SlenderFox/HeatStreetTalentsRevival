@@ -223,6 +223,7 @@ Look into ways to get it working with:
 - Certain ai types should try to cut enemies off (flankers).
 - Lower tier enemies will try to hang near higher tier enemies to support them.
 - Looking at an enemy who is targeting you has a chance to make them start strafing, decreasing with range.
+- Abilities can be marked as offensive, defensive, evasive, supportive to be applicable to a generic weighted system.
 ### Pathing
 - Used within the ai but should be considered distinct.
 - [Made with Deltin's pathmap editor](https://github.com/ItsDeltin/Pathmap-editor)
@@ -264,6 +265,8 @@ Edges between nodes have a list of attributes for each direction.
 0. Widowmaker grapple.
 0. Winston leap.
 ### Heroes
+- Tiers can either be more challenging variants of the same hero, or a way to group heroes by difficulty.
+- Could potentially do both?
 #### Need to be sorted into a tier
 ##### Ana
 - Has potential to be an interesting enemy.
