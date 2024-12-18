@@ -128,7 +128,7 @@ if (holdingButtonEnemy)
 
 	if (!enemyTestBot.IsAlive())
 	{
-		Resurrect(enemyTestBot);
+		RespawnBot(enemyTestBot);
 	}
 
 	Teleport(enemyTestBot, hostTarget);
@@ -142,7 +142,7 @@ if (holdingButtonFriendly)
 {
 	if (!friendlyBot.IsAlive())
 	{
-		Resurrect(friendlyBot);
+		RespawnBot(friendlyBot);
 	}
 
 	Teleport(friendlyBot, hostTarget);

@@ -15,6 +15,15 @@ globalvar Number botQuota;
 playervar Player target;
 playervar Player following;
 
+void RespawnBot(in Player pDummy)
+{
+	# Cannot use resurrect as it breaks custom game health settings
+	Respawn(pDummy);
+	# Minimum time before teleport can function after calling respawn
+	Wait(0.033);
+	Teleport(pDummy);
+}
+
 rule: "[BOTS] Create all the dummy bots" -10
 {
 	# Create friendly bot
@@ -41,7 +50,6 @@ rule: "[BOTS] Create all the dummy bots" -10
 	}
 }
 
-// Could be changed to a generic movement rule
 rule: "[BOTS] Following"
 Event.OngoingPlayer
 if (isDummy)
