@@ -13,26 +13,7 @@ import "pathfinding/pathfinding.ostw";
 globalvar Player friendlyBot;
 globalvar Number botQuota;
 playervar Player target;
-
-# If pDummy is null it will use EventPlayer().
-void StartTargeting(Player pDummy = EventPlayer()) "[BOTS SUBROUTINE] Start targeting"
-{
-	StartFacing(
-		pDummy,
-		DirectionTowards(pDummy.EyePosition(), pDummy.target.EyePosition()),
-		500,
-		Relative.ToWorld,
-		FacingRev.DirectionAndTurnRate
-	);
-	WaitUntil(
-		!IsInLineOfSight(
-			pDummy.EyePosition(),
-			pDummy.target.EyePosition(),
-			BarrierLOS.NoBarriersBlock
-		),
-		9999
-	);
-}
+playervar Player following;
 
 rule: "[BOTS] Create all the dummy bots" -10
 {
@@ -58,4 +39,49 @@ rule: "[BOTS] Create all the dummy bots" -10
 			null
 		).pfPlayerAttributes = [zero, 1, 6, 10, 20];
 	}
+}
+
+// Could be changed to a generic movement rule
+rule: "[BOTS] Following"
+Event.OngoingPlayer
+if (isDummy)
+if (following != null)
+if (DistanceBetween(EventPlayer(), following) > 10)
+{
+	# Pause updates if server is being overloaded
+	WaitUntil(ServerLoadAverage() < 230, 999);
+	pfDestination = following.Position();
+	# Avoid spamming destination updates
+	Wait(1);
+	LoopIfConditionIsTrue();
+}
+
+rule: "[BOTS] Facing"
+Event.OngoingPlayer
+if (isDummy)
+if (target != null)
+{
+	StartFacing(
+		EventPlayer(),
+		DirectionTowards(EyePosition(), target.EyePosition()),
+		500,
+		Relative.ToWorld,
+		FacingRev.DirectionAndTurnRate
+	);
+}
+
+rule: "[BOTS] Target LOS check"
+Event.OngoingPlayer
+if (isDummy)
+if (target != null)
+if (
+	IsInLineOfSight(
+		EyePosition(),
+		target.EyePosition(),
+		BarrierLOS.NoBarriersBlock
+	) == false
+)
+{
+	StopFacing();
+	target = null;
 }

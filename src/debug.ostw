@@ -64,12 +64,11 @@ if (isHost)
 rule: "[DEBUG] Toggle noclip"
 Event.OngoingPlayer
 if (isHost)
-if (hostIsCrouching == false)
+if (inControlMode == false)
 if (button(Button.Interact))
 {
 	IsNoclipping = !IsNoclipping;
 }
-
 
 rule: "[DEBUG] Toggle control mode"
 Event.OngoingPlayer
@@ -85,6 +84,38 @@ if (hostIsCrouching)
 	AllowButton(host, Button.Melee);
 	AllowButton(host, Button.PrimaryFire);
 	AllowButton(host, Button.SecondaryFire);
+}
+
+rule: "[DEBUG] Init bot information display"
+Event.OngoingPlayer
+if (isDummy)
+if (
+	EventPlayer() == friendlyBot
+	|| EventPlayer() == enemyTestBot
+)
+{
+	CreateInWorldText(
+		host,
+		<
+			"Targeting: <0>\nFollowing: <1>\nDestination: <2>",
+			EventPlayer().target,
+			EventPlayer().following,
+			EventPlayer().pfDestination
+		>,
+		EventPlayer().EyePosition() + Vector(0, 1, 0),
+		1,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToPositionAndString
+	);
+
+	CreateBeamEffect(
+		EventPlayer().pfIsPathfinding ? host : [],
+		BeamType.OrisaHaltTendrilBeam,
+		EventPlayer().EyePosition(),
+		EventPlayer().pfDestination,
+		Team.Team1,
+		EffectRev.VisibleToPositionAndRadius
+	);
 }
 
 rule: "[DEBUG] Teleport enemy dummy bot"
@@ -117,7 +148,7 @@ if (holdingButtonFriendly)
 	Teleport(friendlyBot, hostTarget);
 }
 
-rule: "[DEBUG] Enemy pathfinding"
+rule: "[DEBUG] Enemy dummy pathfinding"
 Event.OngoingPlayer
 if (isHost)
 if (inControlMode)
@@ -126,7 +157,7 @@ if (holdingButtonEnemy)
 	enemyTestBot.pfDestination = hostTarget;
 }
 
-rule: "[DEBUG] Friendly pathfinding"
+rule: "[DEBUG] Friendly dummy pathfinding"
 Event.OngoingPlayer
 if (isHost)
 if (inControlMode)
@@ -135,7 +166,7 @@ if (holdingButtonFriendly)
 	friendlyBot.pfDestination = hostTarget;
 }
 
-rule: "[DEBUG] Toggle enemy facing"
+rule: "[DEBUG] Toggle enemy dummy facing"
 Event.OngoingPlayer
 if (isHost)
 if (inControlMode)
@@ -145,22 +176,38 @@ if (button(Button.SecondaryFire))
 
 	if (enemyTestBot.target != null)
 	{
-		StopFacing(enemyTestBot);
-		SetFacing(enemyTestBot, Left(), Relative.ToWorld);
 		enemyTestBot.target = null;
+		StopFacing(enemyTestBot);
+		# Reset facing direction to +X
+		SetFacing(enemyTestBot, Left(), Relative.ToWorld);
 	}
 	else
 	{
 		enemyTestBot.target = host;
-		StartTargeting(enemyTestBot);
 	}
 }
 
-rule: "[DEBUG] Make enemy fire"
+rule: "[DEBUG] Make enemy dummy shoot"
 Event.OngoingPlayer
 if (isHost)
 if (inControlMode)
 if (button(Button.PrimaryFire))
 {
 	PressButton(enemyTestBot, Button.PrimaryFire);
+}
+
+rule: "[DEBUG] Toggle friendly dummy follow"
+Event.OngoingPlayer
+if (isHost)
+if (inControlMode)
+if (button(Button.Interact))
+{
+	if (friendlyBot.following != null)
+	{
+		friendlyBot.following = null;
+	}
+	else
+	{
+		friendlyBot.following = host;
+	}
 }

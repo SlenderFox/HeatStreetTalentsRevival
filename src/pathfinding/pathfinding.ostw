@@ -64,8 +64,6 @@ playervar Boolean pfWasBroadcasted;
 # Is the player failing to walk?
 playervar Boolean pfIsStuck;
 
-Boolean isDummy: IsDummyBot(EventPlayer());
-
 rule: "【PF Core】Prepare loaded map"
 {
 	WaitUntil(<Boolean>pfLoadedMap.nodes, 9999);
@@ -99,8 +97,8 @@ rule: "【PF Core】Select next pathfinder"
 if (!EntityExists(pfExecOwner) || pfExecOwner == null)
 if (
 	AllPlayers()
-	.Filter(p => IsDummyBot(p))
-	.IsTrueForAny(p => p.pfWait)
+		.Filter(p => IsDummyBot(p))
+		.IsTrueForAny(p => p.pfWait)
 )
 {
 	pfExecOwner = AllPlayers()

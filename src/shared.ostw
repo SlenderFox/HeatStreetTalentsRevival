@@ -8,6 +8,7 @@ enum HS_Gamemode
 	Domination // Capture zones
 }
 
+Boolean isDummy: IsDummyBot(EventPlayer());
 Number zero: null;
 
 globalvar Number i;
