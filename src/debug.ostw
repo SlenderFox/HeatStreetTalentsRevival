@@ -183,7 +183,7 @@ if (button(Button.SecondaryFire))
 	}
 	else
 	{
-		enemyTestBot.target = host;
+		enemyTestBot.target = friendlyBot;
 	}
 }
 
@@ -193,7 +193,9 @@ if (isHost)
 if (inControlMode)
 if (button(Button.PrimaryFire))
 {
-	PressButton(enemyTestBot, Button.PrimaryFire);
+	StartHoldingButton(enemyTestBot, Button.PrimaryFire);
+	WaitUntil(!(button(Button.PrimaryFire) && inControlMode), 120);
+	StopHoldingButton(enemyTestBot, Button.PrimaryFire);
 }
 
 rule: "[DEBUG] Toggle friendly dummy follow"

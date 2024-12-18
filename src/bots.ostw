@@ -32,7 +32,7 @@ rule: "[BOTS] Create all the dummy bots" -10
 	for (i = 0; i < 17; i++)
 	{
 		CreateDummyBot(
-			Hero.Pharah,
+			Hero.Soldier76,
 			Team.Team2,
 			-1,
 			Vector(0, -1000, 0),
