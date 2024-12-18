@@ -64,8 +64,6 @@ playervar Boolean pfWasBroadcasted;
 # Is the player failing to walk?
 playervar Boolean pfIsStuck;
 
-Boolean isDummy: IsDummyBot(EventPlayer());
-
 rule: "【PF Core】Prepare loaded map"
 {
 	WaitUntil(<Boolean>pfLoadedMap.nodes, 9999);
