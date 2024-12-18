@@ -111,8 +111,8 @@ if (
 	CreateBeamEffect(
 		EventPlayer().pfIsPathfinding ? host : [],
 		BeamType.OrisaHaltTendrilBeam,
-		EventPlayer().EyePosition(),
 		EventPlayer().pfDestination,
+		EventPlayer().EyePosition(),
 		Team.Team1,
 		EffectRev.VisibleToPositionAndRadius
 	);
