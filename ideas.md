@@ -4,6 +4,7 @@
 - A countdown before the mode starts so it's less sudden.
 - Do I have a function that breaks all of the fences before the game starts?
 - Reducing the number of players on team 1 should increase the number of dummy bots.
+- Players who join in progress spawn phased out and invisible. They spawn in the store with a message informing them about their situation, once they exit the store they are returned to normal.
 ## References
 - Original: CR67F
 - Victory Edition: RMSXGY
