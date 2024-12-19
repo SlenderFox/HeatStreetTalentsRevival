@@ -9,7 +9,12 @@ enum HS_Gamemode
 }
 
 Boolean isDummy: IsDummyBot(EventPlayer());
+
+// For element optimisation
+// Doesn't work in workshop settings
+// Provides no benefit in vectors
 Number zero: false;
+Number one: true;
 
 globalvar Number i;
 globalvar HS_Gamemode | HS_Gamemode[] gamemode;

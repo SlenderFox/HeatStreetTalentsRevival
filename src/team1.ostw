@@ -7,7 +7,7 @@ import "shared.ostw";
 
 void disable_player() "[TEAM 1 SUBROUTINE] Disable Player"
 {
-	ForceThrottle(EventPlayer(), false, 0.1, false, 0.1, false, 0.1);
+	ForceThrottle(EventPlayer(), zero, 0.1, zero, 0.1, zero, 0.1);
 	SetPrimaryFireEnabled(EventPlayer(), false);
 	SetSecondaryFireEnabled(EventPlayer(), false);
 	SetAbility1Enabled(EventPlayer(), false);
@@ -48,6 +48,6 @@ Team.Team1
 	SetStatus(EventPlayer(), null, Status.Invincible, 9999);
 	// 0.05
 	Wait(0.033, WaitBehavior.RestartWhenTrue);
-	SetPlayerHealth(EventPlayer(), 1);
+	SetPlayerHealth(EventPlayer(), one);
 	SetStatus(EventPlayer(), null, Status.PhasedOut, 9999);
 }

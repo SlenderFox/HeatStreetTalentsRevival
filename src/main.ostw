@@ -12,19 +12,23 @@ import "debug.ostw";
 
 void LoadSettings()
 {
+	// Cannot use number optimisation
 	Any credits = WorkshopSettingCombo(" Heat Street Talents Revival", "Credits", 0, ["<Click here>", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful", "Josbird"], 0);
 }
 
 void SelectGamemode()
 {
+	// Cannot use number optimisation
 	if (WorkshopSettingToggle("Enabled gamemodes", "Invasion", true, 0))
 	{
 		gamemode.ModAppend(HS_Gamemode.Invasion);
 	}
+	// Cannot use number optimisation
 	if (WorkshopSettingToggle("Enabled gamemodes", "High Value Target", true, 1))
 	{
 		gamemode.ModAppend(HS_Gamemode.HighValueTarget);
 	}
+	// Cannot use number optimisation
 	if (WorkshopSettingToggle("Enabled gamemodes", "Domination", true, 2))
 	{
 		gamemode.ModAppend(HS_Gamemode.Domination);
@@ -34,7 +38,7 @@ void SelectGamemode()
 	if (CountOf(gamemode) == zero)
 	{
 		//gamemode = [HS_Gamemode.Invasion, HS_Gamemode.HighValueTarget, HS_Gamemode.Domination].Random();
-		gamemode = <HS_Gamemode>RandomInteger(0, 2);
+		gamemode = <HS_Gamemode>RandomInteger(zero, 2);
 	}
 	else
 	{
@@ -77,7 +81,7 @@ void SkipAssembleHeroes()
 {
 	SetMatchTime(3);
 	WaitUntil(IsGameInProgress(), 3.5);
-	SetMatchTime(0);
+	SetMatchTime(zero);
 }
 
 rule: "[MAIN] Setup" -100

@@ -104,7 +104,7 @@ if (
 			EventPlayer().downedStartTime ? "\nDowned" : ""
 		>,
 		EventPlayer().EyePosition() + Vector(0, 1, 0),
-		1,
+		one,
 		Clipping.DoNotClip,
 		InworldTextRev.VisibleToPositionAndString
 	);

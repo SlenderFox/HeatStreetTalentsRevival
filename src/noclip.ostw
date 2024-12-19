@@ -12,10 +12,10 @@ Event.OngoingPlayer
 if (isHost)
 if (IsNoclipping)
 {
-	SetGravity(EventPlayer(), 0);
+	SetGravity(EventPlayer(), zero);
 	DisableMovementCollisionWithEnvironment(EventPlayer(), true);
 	DisableMovementCollisionWithPlayers(EventPlayer());
-	SetMoveSpeed(EventPlayer(), 0);
+	SetMoveSpeed(EventPlayer(), zero);
 	DisallowButton(EventPlayer(), Button.Jump);
 	DisallowButton(EventPlayer(), Button.Crouch);
 	DisallowButton(EventPlayer(), Button.Ability1);

@@ -34,11 +34,11 @@ rule: "[BOTS] Create all the dummy bots" -10
 		Vector(0, 0, 0),
 		null
 	);
-	friendlyBot.pfPlayerAttributes = [zero, 1];
+	friendlyBot.pfPlayerAttributes = [zero, one];
 	StartForcingDummyBotName(friendlyBot, "Puipui");
 
 	# Create enemy bots
-	for (i = 0; i < 17; i++)
+	for (i = zero; i < 17; i++)
 	{
 		CreateDummyBot(
 			Hero.Soldier76,
@@ -46,7 +46,7 @@ rule: "[BOTS] Create all the dummy bots" -10
 			-1,
 			Vector(0, -1000, 0),
 			null
-		).pfPlayerAttributes = [zero, 1, 6, 10, 20];
+		).pfPlayerAttributes = [zero, one, 6, 10, 20];
 	}
 }
 
