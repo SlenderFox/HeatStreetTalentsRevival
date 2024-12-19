@@ -54,11 +54,22 @@ rule: "[BOTS] Following"
 Event.OngoingPlayer
 if (isDummy)
 if (following != null)
-if (DistanceBetween(EventPlayer(), following) > 10)
+# Horizontal distance to following position is more than 10
+if (
+	(PositionOf() * Vector(1, 0, 1))
+		.DistanceTo(following.Position() * Vector(1, 0, 1)) > 10
+)
 {
 	# Pause updates if server is being overloaded
 	WaitUntil(ServerLoadAverage() < 230, 999);
-	pfDestination = following.Position();
+	# Set the destination as the ground under the player.
+	pfDestination = RayCastHitPosition(
+		following.EyePosition(),
+		following.Position() + Vector(0, -1000, 0),
+		null,
+		null,
+		false
+	);
 	# Avoid spamming destination updates
 	Wait(1);
 	LoopIfConditionIsTrue();

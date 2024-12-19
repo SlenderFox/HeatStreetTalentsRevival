@@ -97,10 +97,16 @@ if (
 	CreateInWorldText(
 		host,
 		<
-			"Targeting: <0>\nFollowing: <1>\nDestination: <2><3>",
+			"Targeting: <0>\nFollowing: <1>\nDestination: <2><3><4>",
 			EventPlayer().target,
 			EventPlayer().following,
 			EventPlayer().pfDestination,
+			EventPlayer().pfIsPathfinding
+				? <
+					"\nPathing\nWalkingTo: <0>",
+					EventPlayer().pfWalkingToPosition
+				>
+				: "",
 			EventPlayer().downedStartTime ? "\nDowned" : ""
 		>,
 		EventPlayer().EyePosition() + Vector(0, 1, 0),
