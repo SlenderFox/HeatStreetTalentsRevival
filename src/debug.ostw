@@ -44,7 +44,8 @@ rule: "[DEBUG] Display debug information on top left"
 			ServerLoadPeak() * loadScaler,
 			hostPos,
 			inControlMode ? "Control mode" : ""
-		>
+		>,
+		Location: Location.Right
 	);
 }
 
@@ -136,6 +137,9 @@ if (holdingButtonEnemy)
 	if (!enemyTestBot.IsAlive())
 	{
 		RespawnBot(enemyTestBot);
+		Wait(0.033);
+		# Reset facing direction to +X
+		SetFacing(enemyTestBot, Left(), Relative.ToWorld);
 	}
 
 	Teleport(enemyTestBot, hostTarget);
@@ -150,6 +154,9 @@ if (holdingButtonFriendly)
 	if (!friendlyBot.IsAlive())
 	{
 		RespawnBot(friendlyBot);
+		Wait(0.033);
+		# Reset facing direction to +X
+		SetFacing(friendlyBot, Left(), Relative.ToWorld);
 	}
 
 	Teleport(friendlyBot, hostTarget);
@@ -221,9 +228,10 @@ if (button(Button.Interact))
 	}
 }
 
-rule: "[DEBUG] Automatically revive people on team 1"
+rule: "[DEBUG] Automatically revive host"
 Event.OngoingPlayer
 Team.Team1
+if (isHost)
 if (EventPlayer().downedStartTime)
 {
 	# Syncs with auto heal
