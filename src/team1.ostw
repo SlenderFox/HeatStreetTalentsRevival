@@ -2,10 +2,12 @@
 */
 
 playervar Number downedStartTime;
+playervar Number reviveProgress;
+playervar Player[] reviverList;
 
 import "shared.ostw";
 
-void disable_player() "[TEAM 1 SUBROUTINE] Disable Player"
+void disable_player() playervar "[TEAM 1 SUBROUTINE] Disable Player"
 {
 	ForceThrottle(EventPlayer(), zero, 0.1, zero, 0.1, zero, 0.1);
 	SetPrimaryFireEnabled(EventPlayer(), false);
@@ -18,7 +20,7 @@ void disable_player() "[TEAM 1 SUBROUTINE] Disable Player"
 	DisallowButton(EventPlayer(), Button.Ultimate);
 }
 
-void enable_player() "[TEAM 1 SUBROUTINE] Enable Player"
+void enable_player() playervar "[TEAM 1 SUBROUTINE] Enable Player"
 {
 	StopForcingThrottle(EventPlayer());
 	SetPrimaryFireEnabled(EventPlayer(), true);
@@ -39,6 +41,8 @@ Team.Team1
 	{
 		downedStartTime = TotalTimeElapsed();
 		disable_player();
+		DisableMessages(EventPlayer());
+		reviveProgress = zero;
 	}
 	if (EventWasEnvironment())
 	{ RecoveryTeleport(); }
@@ -50,4 +54,59 @@ Team.Team1
 	Wait(0.033, WaitBehavior.RestartWhenTrue);
 	SetPlayerHealth(EventPlayer(), one);
 	SetStatus(EventPlayer(), null, Status.PhasedOut, 9999);
+}
+
+rule: "[TEAM 1] Revive downed player"
+Event.OngoingPlayer
+Team.Team1
+if (downedStartTime)
+if (downedStartTime + one < TotalTimeElapsed())
+{
+	# Revive area is a cylinder
+	reviverList = AllPlayers(Team.Team1).Filter(
+		p => !p.downedStartTime
+		// Check horizontal distance
+		&& DistanceBetween(
+			EventPlayer(),
+			Vector(
+				p.Position().X,
+				EventPlayer().Position().Y,
+				p.Position().Z
+			)
+		) <= 3
+		// Check vertical distance
+		&& AbsoluteValue(EventPlayer().Position().Y - p.Position().Y) <= 3
+		// Ignore line of sight check for mei
+		&& (
+			HeroOf(p) == Hero.Mei
+			&& IsUsingAbility1(p)
+			|| IsInLineOfSight(EventPlayer(), p, BarrierLOS.NoBarriersBlock)
+		)
+	);
+
+	# At least one person is reviving
+	if (CountOf(reviverList))
+	{
+		reviveProgress += reviverList.IsTrueForAll(
+			p => HasStatus(p, Status.Invincible)
+			|| HasStatus(p, Status.PhasedOut)
+		) ? 2.5 : 5;
+
+		if (reviveProgress >= 100)
+		{
+			SmallMessage(AllPlayers(), <" <0> has been revived!", EventPlayer()>);
+			downedStartTime = zero;
+			enable_player();
+			EnableMessages(EventPlayer());
+			ClearStatus(EventPlayer(), Status.PhasedOut);
+			ClearStatus(EventPlayer(), Status.Invincible);
+		}
+	}
+	else
+	{
+		reviveProgress = zero;
+	}
+
+	Wait(0.2, WaitBehavior.IgnoreCondition);
+	LoopIfConditionIsTrue();
 }
