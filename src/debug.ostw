@@ -86,7 +86,7 @@ if (hostIsCrouching)
 	AllowButton(host, Button.SecondaryFire);
 }
 
-rule: "[DEBUG] Init bot information display"
+rule: "[DEBUG] Bot information display"
 Event.OngoingPlayer
 if (isDummy)
 if (
