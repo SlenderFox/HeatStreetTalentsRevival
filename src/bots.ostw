@@ -31,7 +31,7 @@ rule: "[BOTS] Create all the dummy bots" -10
 		Hero.Mauga,
 		Team.Team1,
 		6,
-		Vector(0, -1000, 0),
+		Vector(0, 0, 0),
 		null
 	);
 	friendlyBot.pfPlayerAttributes = [zero, 1];

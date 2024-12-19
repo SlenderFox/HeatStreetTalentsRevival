@@ -184,11 +184,10 @@ if (pfWalkingToPosition)
 {
 	# Recalibrate
 	if (
-		(
-			(pfWalkingFromPosition + pfWalkingToPosition) / 2
-		).DistanceTo(EventPlayer()) > (
-			pfWalkingFromPosition.DistanceTo(pfWalkingToPosition) + 2
-		) * 1.2
+		((pfWalkingFromPosition + pfWalkingToPosition) / 2)
+			.DistanceTo(EventPlayer()) > (
+				pfWalkingFromPosition.DistanceTo(pfWalkingToPosition) + 2
+			) * 1.2
 	)
 	{ pfRecalibrate(); }
 	# Smooth step

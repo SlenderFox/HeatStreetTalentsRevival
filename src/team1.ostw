@@ -1,0 +1,53 @@
+/** All of team 1's (player team's) functionalities.
+*/
+
+playervar Number downedStartTime;
+
+import "shared.ostw";
+
+void disable_player() "[TEAM 1 SUBROUTINE] Disable Player"
+{
+	ForceThrottle(EventPlayer(), false, 0.1, false, 0.1, false, 0.1);
+	SetPrimaryFireEnabled(EventPlayer(), false);
+	SetSecondaryFireEnabled(EventPlayer(), false);
+	SetAbility1Enabled(EventPlayer(), false);
+	SetAbility2Enabled(EventPlayer(), false);
+	SetMeleeEnabled(EventPlayer(), false);
+	SetJumpEnabled(EventPlayer(), false);
+	SetCrouchEnabled(EventPlayer(), false);
+	DisallowButton(EventPlayer(), Button.Ultimate);
+}
+
+void enable_player() "[TEAM 1 SUBROUTINE] Enable Player"
+{
+	StopForcingThrottle(EventPlayer());
+	SetPrimaryFireEnabled(EventPlayer(), true);
+	SetSecondaryFireEnabled(EventPlayer(), true);
+	SetAbility1Enabled(EventPlayer(), true);
+	SetAbility2Enabled(EventPlayer(), true);
+	SetMeleeEnabled(EventPlayer(), true);
+	SetJumpEnabled(EventPlayer(), true);
+	SetCrouchEnabled(EventPlayer(), true);
+	AllowButton(EventPlayer(), Button.Ultimate);
+}
+
+rule: "[TEAM 1] Player downing"
+Event.OnDeath
+Team.Team1
+{
+	if (!downedStartTime)
+	{
+		downedStartTime = TotalTimeElapsed();
+		disable_player();
+	}
+	if (EventWasEnvironment())
+	{ RecoveryTeleport(); }
+	Resurrect(EventPlayer());
+	# Clear any temporary phased out status
+	ClearStatus(EventPlayer(), Status.PhasedOut);
+	SetStatus(EventPlayer(), null, Status.Invincible, 9999);
+	// 0.05
+	Wait(0.033, WaitBehavior.RestartWhenTrue);
+	SetPlayerHealth(EventPlayer(), 1);
+	SetStatus(EventPlayer(), null, Status.PhasedOut, 9999);
+}

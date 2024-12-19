@@ -97,10 +97,11 @@ if (
 	CreateInWorldText(
 		host,
 		<
-			"Targeting: <0>\nFollowing: <1>\nDestination: <2>",
+			"Targeting: <0>\nFollowing: <1>\nDestination: <2><3>",
 			EventPlayer().target,
 			EventPlayer().following,
-			EventPlayer().pfDestination
+			EventPlayer().pfDestination,
+			EventPlayer().downedStartTime ? "\nDowned" : ""
 		>,
 		EventPlayer().EyePosition() + Vector(0, 1, 0),
 		1,
@@ -212,4 +213,17 @@ if (button(Button.Interact))
 	{
 		friendlyBot.following = host;
 	}
+}
+
+rule: "[DEBUG] Automatically revive people on team 1"
+Event.OngoingPlayer
+Team.Team1
+if (EventPlayer().downedStartTime)
+{
+	# Syncs with auto heal
+	Wait(5);
+	enable_player();
+	ClearStatus(EventPlayer(), Status.PhasedOut);
+	ClearStatus(EventPlayer(), Status.Invincible);
+	downedStartTime = zero;
 }

@@ -9,7 +9,19 @@ enum HS_Gamemode
 }
 
 Boolean isDummy: IsDummyBot(EventPlayer());
-Number zero: null;
+Number zero: false;
 
 globalvar Number i;
 globalvar HS_Gamemode | HS_Gamemode[] gamemode;
+
+void RecoveryTeleport(Player pPlayer = EventPlayer(), Vector pPosition = null) "[SHARED COROUTINE] Recovery Teleport"
+{
+	if (pPosition == null)
+	{
+		Teleport(pPlayer, NearestWalkablePosition(EventPlayer()));
+	}
+	else
+	{
+		Teleport(pPlayer, pPosition);
+	}
+}

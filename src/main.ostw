@@ -7,6 +7,7 @@ import "shared.ostw";
 import "pathfinding/pathfinding.ostw";
 import "bots.ostw";
 import "gamemodes/invasion.ostw";
+import "team1.ostw";
 import "debug.ostw";
 
 void LoadSettings()
