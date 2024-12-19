@@ -118,7 +118,12 @@ if (!pfSavedTarget || pfDestination.DistanceTo(pfSavedTarget) > 2.2)
 	# Ensure that a map is loaded.
 	if (!pfLoadedMap.nodes)
 	{
-		LogToInspector(<"Error: Attempted to pathfind player <0> without a loaded map.", EventPlayer()>);
+		LogToInspector(
+			<
+				"Error: Attempted to pathfind player <0> without a loaded map.",
+				EventPlayer()
+			>
+		);
 		return;
 	}
 
@@ -154,15 +159,24 @@ if (isDummy)
 if (pfIsPathfinding)
 if (pfWalkingToPosition)
 # Horizontal distance to current position is less than 0.4.
-if ((PositionOf() * Vector(1, 0, 1)).DistanceTo(pfWalkingToPosition * Vector(1, 0, 1)) <= 0.4)
+if (
+	(PositionOf() * Vector(1, 0, 1))
+		.DistanceTo(pfWalkingToPosition * Vector(1, 0, 1)) <= 0.4
+)
 # Vertical distance to current position is less than 1.5.
 if (PositionOf().Y - pfWalkingToPosition.Y~Abs() <= 1.5)
-if (pfPath.Length > zero)
-if (pfCurrentNodeIndex != -1)
 {
-	pfProgressEventPlayer();
-	Wait(0.2);
-	LoopIfConditionIsTrue();
+	if (pfPath.Length > zero && pfCurrentNodeIndex != -1)
+	{
+		pfProgressEventPlayer();
+		Wait(0.2);
+		LoopIfConditionIsTrue();
+	}
+	# Reached destination
+	else
+	{
+		pfDestination = null;
+	}
 }
 
 rule: "【PF Core】Stop throttle when pfDestination is reset"
@@ -215,7 +229,14 @@ if (pfWalkingToPosition)
 		}
 		else if (pfStuckOnNode - 2 == pfCurrentNodeIndex)
 		{
-			LogToInspector(<"Pathfinder <0> struggled to reach node <1> at <2>. Try adjusting your map in the editor.", EventPlayer(), pfCurrentNodeIndex, pfLoadedMap.nodes[pfCurrentNodeIndex]>);
+			LogToInspector(
+				<
+					"Pathfinder <0> struggled to reach node <1> at <2>. Try adjusting your map in the editor.",
+					EventPlayer(),
+					pfCurrentNodeIndex,
+					pfLoadedMap.nodes[pfCurrentNodeIndex]
+				>
+			);
 			Teleport(EventPlayer(), pfWalkingToPosition);
 		}
 		else
@@ -231,9 +252,7 @@ if (pfWalkingToPosition)
 		&& pfSavedTarget.DistanceTo(pfDestination) < 5
 		&& IsInLineOfSight(pfSavedTarget + Up(), pfDestination + Up())
 	)
-	{
-		pfWalkingToPosition = pfDestination;
-	}
+	{ pfWalkingToPosition = pfDestination; }
 
 	Wait(2);
 	LoopIfConditionIsTrue();
@@ -347,7 +366,13 @@ Number chooseNodeFromPosition(in Vector vector)
 		pfLoadedMap.nodes
 			.SortedArray(n => n.DistanceTo(vector))
 			.Slice(zero, 5)
-			.SortedArray(n => !(IsInLineOfSight(n + Up() * 2, vector + Up() * 2, BarrierLOS.NoBarriersBlock)))
+			.SortedArray(n => !(
+				IsInLineOfSight(
+					n + Up() * 2,
+					vector + Up() * 2,
+					BarrierLOS.NoBarriersBlock
+				)
+			))
 			.First.Y.Abs() * 1000 % 1000
 	).Floor();
 }
@@ -372,9 +397,8 @@ void aStar()
 	Number[] open = [zero];
 	Number checkedNode = pfActiveNode;
 
-	// TODO use global
-	Number iter = zero;
-	while (open.Length || iter > 30)
+	i = zero;
+	while (open.Length || i > 30)
 	{
 		# The index of the current node in `scores`.
 		Number current = open.SortedArray((o, i) => scores[o].fScore).First;
@@ -398,7 +422,7 @@ void aStar()
 		# If the goal was found, reconstruct the path.
 		if (currentNodeIndex == pfActiveNode || checkedNode == -2 || currentInExistingPath != -1)
 		{
-			reconstructPath(scores, current, currentInExistingPath, iter);
+			reconstructPath(scores, current, currentInExistingPath);
 			return;
 		}
 
@@ -425,22 +449,32 @@ void aStar()
 				if (scoreIndex == -1)
 				{
 					open += scores.Length;
-					scores += { parent: current, gScore: score, fScore: score + h(neighborI), nodeIndex: neighborI };
+					scores += {
+						parent: current,
+						gScore: score,
+						fScore: score + h(neighborI),
+						nodeIndex: neighborI
+					};
 				}
 				else if (score < scores[scoreIndex].gScore)
 				{
-					scores[scoreIndex] = { parent: current, gScore: score, fScore: score + h(neighborI), nodeIndex: neighborI };
+					scores[scoreIndex] = {
+						parent: current,
+						gScore: score,
+						fScore: score + h(neighborI),
+						nodeIndex: neighborI
+					};
 					if (!open.Contains(scoreIndex))
 					{ open += scoreIndex; }
 				}
 			}
 			pfTick();
 		}
-		iter++;
+		i++;
 	}
 }
 
-void reconstructPath(in PfNode[] scores, ref Number current, in Number currentInExistingPath, in Number iter)
+void reconstructPath(in PfNode[] scores, ref Number current, in Number currentInExistingPath)
 {
 	if (currentInExistingPath == -1)
 	{ pfPath = []; }
