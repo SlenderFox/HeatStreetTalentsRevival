@@ -224,14 +224,17 @@ Look into ways to get it working with:
 - Lower tier enemies will try to hang near higher tier enemies to support them.
 - Looking at an enemy who is targeting you has a chance to make them start strafing, decreasing with range.
 - Abilities can be marked as offensive, defensive, evasive, supportive to be applicable to a generic weighted system.
+- Has a patrol mode that faces in random directions ever couple of seconds.
+- Targets are acquired by LOS, filtered by FOV; could use a narrow far and wide short FOV.
+- Movement will be the most complicated system, shouldn't just beeline to team 1.
 ### Pathing
-- Used within the ai but should be considered distinct.
+- Used by the ai but should be considered distinct.
 - [Made with Deltin's pathmap editor](https://github.com/ItsDeltin/Pathmap-editor)
-- May need to fork to reduce the element count. [fork](https://github.com/SlenderFox/Pathmap-editor-gutted).
+- [Made a fork to reduce the element count.](https://github.com/SlenderFox/Pathmap-editor-gutted).
 #### Attributes
 Edges between nodes have a list of attributes for each direction.
 
--1 is always impassable.
+-1 is impassable without a special attribute to bypass.
 
 ##### All heroes
 0. Jump.
