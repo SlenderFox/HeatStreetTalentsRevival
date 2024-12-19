@@ -983,7 +983,6 @@ if (HasSpawned(EventPlayer()))
 		HealingModificationRev.ReceiversDamagersAndDamagePercent
 	);
 	pIsCombatant = true;
-	// ??
 	pSpectatedPlayer = EventPlayer();
 	pAbBoughtAbilitiesString = "";
 	pHealthPercent = 100;
@@ -1365,10 +1364,11 @@ Team.Team1
 if (pDownedStartT)
 if (pDownedStartT + 1 < TotalTimeElapsed())
 {
-	# Ignores height when reviving
+	# Revive area is a cylinder
 	pRevivers = gCombatants.Filter(
 		p => !p.pDownedStartT
 		&& !(p.pIsInvisible % 3)
+		// Check horizontal distance
 		&& DistanceBetween(
 			EventPlayer(),
 			Vector(
@@ -1377,6 +1377,7 @@ if (pDownedStartT + 1 < TotalTimeElapsed())
 				p.Position().Z
 			)
 		) <= 3
+		// Check vertical distance
 		&& AbsoluteValue(EventPlayer().Position().Y - p.Position().Y) <= 3
 		&& (
 			HeroOf(p) == Hero.Mei
@@ -1387,7 +1388,9 @@ if (pDownedStartT + 1 < TotalTimeElapsed())
 	if (CountOf(pRevivers))
 	{
 		pIsReviveSlow = pRevivers.IsTrueForAll(
-			p => p.pActiveAbIsCloaked || HasStatus(p, Status.Invincible) || HasStatus(p, Status.PhasedOut)
+			p => p.pActiveAbIsCloaked
+			|| HasStatus(p, Status.Invincible)
+			|| HasStatus(p, Status.PhasedOut)
 		);
 		pReviveTimer += (gIsHardModeEnabled || gIsApocalyptic ? 0.667 : 1) * (pPerkGoldenHour ? 2 : 1) * (pIsReviveSlow ? 2.5 : 5);
 		if (pReviveTimer >= 100)
