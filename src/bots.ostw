@@ -6,8 +6,8 @@ import "pathfinding/pathfinding.ostw";
 // Spawning of bots should be primarily handled by the gamemode.
 // Could use the slot of the bot for addressing.
 
-// I have 14 max unique skins.
-// I can have 18 dummy bots in total, with 9 unique skins.
+// I can have 19 dummy bots in total.
+// I have 15 max unique skins with 5 reserved for players for a total of 10 for dummies.
 
 // Should the friendly bot be defined and managed here?
 globalvar Player friendlyBot;
