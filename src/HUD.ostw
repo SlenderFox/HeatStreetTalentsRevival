@@ -1,0 +1,98 @@
+/** All HUD display elements go here
+*/
+
+import "team1.ostw";
+
+String[] progressBarStrings: ["□□□□□", "▣□□□□", "■□□□□", "■▣□□□", "■■□□□", "■■▣□□", "■■■□□", "■■■▣□", "■■■■□", "■■■■▣", "■■■■■"];
+
+void SetupHUD()
+{
+	// -1
+	// ObjectiveDescription Timer
+	// 0
+	// TDM score HUD
+	// 1
+	SetObjectiveDescription(
+		AllPlayers(),
+		<"Heat Street Talents Revival [WSCODE 4.0.0] | <0>", CurrentMap()>
+	);
+	# Hide the TDM score HUD.
+	CreateHudText(
+		AllPlayers(),
+		Text: "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+		Location: Location.Top,
+	);
+
+	//// TODO Place warning messages about team 2 and maybe spectators.
+	//if (NumberOfSlots(Team.Team1) > 5)
+	//{
+	//	CreateHudText(
+	//		AllPlayers(),
+	//		"\n\n\n\n\n\n\n\n\n\n\n\n\n\n     Too many player slots! Set Max Team 1 Players to 5 or lower and restart.     \n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+	//		Location: Location.Top,
+	//		SortOrder: -1000,
+	//		HeaderColor: Color.Yellow,
+	//	);
+	//}
+}
+
+Color TeamDisplayColour()
+{
+	return downedStartTime
+		? Color.Red
+		: isChangingHeroes || NormalizedHealth(EventPlayer()) >= 0.5
+			? LocalPlayer() == EventPlayer()
+				? Color.Green
+				: Color.SkyBlue
+			: Color.Orange;
+}
+
+void CreateTeamDisplay()
+{
+	CreateHudText(
+		VisibleTo: AllPlayers(Team.Team1),
+		Header: <
+			"<0><1>",
+			HeroIconString(EventPlayer().Hero()),
+			downedStartTime && reviveProgress
+				? progressBarStrings[RoundToInteger(reviveProgress / 10, Rounding.Down)]
+				: ""
+		>,
+		Subheader: <
+			"<0> <1> <2>",
+			EventPlayer(),
+			//pAbPriority ? ["(A)", "(B)", "(C)"][pAbPriority - 1] : "",
+			//InBuyMenu ? "(In Shop)" : ""
+			"Priority",
+			"Shop"
+		>,
+		Text: <
+			"<0><1>",
+			downedStartTime
+				? reviveProgress
+					? "Being Revived"
+					: "Downed"
+				: isChangingHeroes
+					? "Changing Heroes"
+					: <
+						"<0> HP",
+						RoundToInteger(EventPlayer().Health(), Rounding.Up)
+					>,
+			", $0"
+		>,
+		Location: Location.Left,
+		SortOrder: LocalPlayer() == EventPlayer() ? -1 : SlotOf(EventPlayer()),
+		HeaderColor: TeamDisplayColour(),
+		SubheaderColor: TeamDisplayColour(),
+		TextColor: TeamDisplayColour(),
+		Reevaluation: HudTextRev.VisibleToSortOrderStringAndColor,
+		Spectators: Spectators.VisibleAlways
+	);
+}
+
+rule: "[HUD] Create all player HUD elements"
+Event.OngoingPlayer
+Team.Team1
+{
+	CreateTeamDisplay();
+}

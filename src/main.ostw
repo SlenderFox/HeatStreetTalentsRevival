@@ -8,6 +8,7 @@ import "pathfinding/pathfinding.ostw";
 import "bots.ostw";
 import "gamemodes/invasion.ostw";
 import "team1.ostw";
+import "HUD.ostw";
 import "debug.ostw";
 
 void LoadSettings()
@@ -44,37 +45,6 @@ void SelectGamemode()
 	{
 		gamemode = gamemode.Random();
 	}
-}
-
-void SetupHUD()
-{
-	// -1
-	// ObjectiveDescription Timer
-	// 0
-	// TDM score HUD
-	// 1
-	SetObjectiveDescription(
-		AllPlayers(),
-		<"Heat Street Talents Revival [WSCODE 4.0.0] | <0>", CurrentMap()>
-	);
-	# Hide the TDM score HUD.
-	CreateHudText(
-		AllPlayers(),
-		Text: "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
-		Location: Location.Top,
-	);
-
-	//// TODO Place warning messages about team 2 and maybe spectators.
-	//if (NumberOfSlots(Team.Team1) > 5)
-	//{
-	//	CreateHudText(
-	//		AllPlayers(),
-	//		"\n\n\n\n\n\n\n\n\n\n\n\n\n\n     Too many player slots! Set Max Team 1 Players to 5 or lower and restart.     \n\n\n\n\n\n\n\n\n\n\n\n\n\n",
-	//		Location: Location.Top,
-	//		SortOrder: -1000,
-	//		HeaderColor: Color.Yellow,
-	//	);
-	//}
 }
 
 void SkipAssembleHeroes()

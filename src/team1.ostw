@@ -6,6 +6,7 @@ import "shared.ostw";
 playervar Number downedStartTime;
 playervar Number reviveProgress;
 playervar Player[] reviverList;
+playervar Boolean isChangingHeroes;
 
 void disable_player() playervar "[TEAM 1 SUBROUTINE] Disable Player"
 {
