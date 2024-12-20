@@ -232,10 +232,11 @@ rule: "[DEBUG] Automatically revive host"
 Event.OngoingPlayer
 Team.Team1
 if (isHost)
-if (EventPlayer().downedStartTime)
+if (host.downedStartTime)
+if (button(Button.Reload))
 {
-	# Syncs with auto heal
-	Wait(5);
+	//# Syncs with auto heal
+	//Wait(5);
 	enable_player();
 	ClearStatus(EventPlayer(), Status.PhasedOut);
 	ClearStatus(EventPlayer(), Status.Invincible);
