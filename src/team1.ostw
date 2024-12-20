@@ -1,11 +1,11 @@
 /** All of team 1's (player team's) functionalities.
 */
 
+import "shared.ostw";
+
 playervar Number downedStartTime;
 playervar Number reviveProgress;
 playervar Player[] reviverList;
-
-import "shared.ostw";
 
 void disable_player() playervar "[TEAM 1 SUBROUTINE] Disable Player"
 {
@@ -33,6 +33,20 @@ void enable_player() playervar "[TEAM 1 SUBROUTINE] Enable Player"
 	AllowButton(EventPlayer(), Button.Ultimate);
 }
 
+rule: "[TEAM 1] Initialise player effects"
+Event.OngoingPlayer
+Team.Team1
+{
+	CreateEffect(
+		downedStartTime ? AllPlayers() : [],
+		Effect.Ring,
+		Color.Yellow,
+		EventPlayer(),
+		3,
+		EffectRev.VisibleTo
+	);
+}
+
 rule: "[TEAM 1] Player downing"
 Event.OnDeath
 Team.Team1
@@ -54,6 +68,7 @@ Team.Team1
 	Wait(0.033, WaitBehavior.RestartWhenTrue);
 	SetPlayerHealth(EventPlayer(), one);
 	SetStatus(EventPlayer(), null, Status.PhasedOut, 9999);
+	DisableMovementCollisionWithPlayers(EventPlayer());
 }
 
 rule: "[TEAM 1] Revive downed player"
@@ -76,12 +91,13 @@ if (downedStartTime + one < TotalTimeElapsed())
 		) <= 3
 		// Check vertical distance
 		&& AbsoluteValue(EventPlayer().Position().Y - p.Position().Y) <= 3
-		// Ignore line of sight check for mei
-		&& (
-			HeroOf(p) == Hero.Mei
-			&& IsUsingAbility1(p)
-			|| IsInLineOfSight(EventPlayer(), p, BarrierLOS.NoBarriersBlock)
-		)
+		// I have no idea what this does, maybe LOS used to not work with ice block?
+		//&& (
+		//	HeroOf(p) == Hero.Mei
+		//	&& IsUsingAbility1(p)
+		//	|| IsInLineOfSight(EventPlayer(), p, BarrierLOS.NoBarriersBlock)
+		//)
+		&& IsInLineOfSight(EventPlayer(), p, BarrierLOS.EnemyBarriersBlock)
 	);
 
 	# At least one person is reviving
@@ -100,6 +116,7 @@ if (downedStartTime + one < TotalTimeElapsed())
 			EnableMessages(EventPlayer());
 			ClearStatus(EventPlayer(), Status.PhasedOut);
 			ClearStatus(EventPlayer(), Status.Invincible);
+			EnableMovementCollisionWithPlayers(EventPlayer());
 		}
 	}
 	else
