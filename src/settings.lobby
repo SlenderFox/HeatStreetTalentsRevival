@@ -29,7 +29,7 @@
 	"Heroes": {
 		"Team 1": {
 			"General": {
-				"Ability Cooldown Time": 0
+				"Ability Cooldown Time": 5
 			},
 			"Mauga": {
 				"Health": 20
