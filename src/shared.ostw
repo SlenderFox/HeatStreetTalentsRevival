@@ -30,3 +30,14 @@ void RecoveryTeleport(Player pPlayer = EventPlayer(), Vector pPosition = null) "
 		Teleport(pPlayer, pPosition);
 	}
 }
+
+Vector positionUnderPlayer(in Player pPlayer)
+{
+	return RayCastHitPosition(
+		pPlayer.EyePosition(),
+		pPlayer.Position() + Vector(0, -1000, 0),
+		null,
+		null,
+		false
+	);
+}

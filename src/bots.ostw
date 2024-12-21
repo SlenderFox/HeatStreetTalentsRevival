@@ -63,13 +63,7 @@ if (
 	# Pause updates if server is being overloaded
 	WaitUntil(ServerLoadAverage() < 230, 999);
 	# Set the destination as the ground under the player.
-	pfDestination = RayCastHitPosition(
-		following.EyePosition(),
-		following.Position() + Vector(0, -1000, 0),
-		null,
-		null,
-		false
-	);
+	pfDestination = positionUnderPlayer(following);
 	# Avoid spamming destination updates
 	Wait(1);
 	LoopIfConditionIsTrue();

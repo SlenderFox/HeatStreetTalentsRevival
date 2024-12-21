@@ -51,6 +51,7 @@ Team.Team1
 rule: "[TEAM 1] Player downing"
 Event.OnDeath
 Team.Team1
+if (isChangingHeroes == false)
 {
 	if (!downedStartTime)
 	{
@@ -134,4 +135,25 @@ if (downedStartTime + one < TotalTimeElapsed())
 
 	Wait(0.2, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
+}
+
+rule: "[TEAM 1] Changing heroes"
+Event.OngoingPlayer
+Team.Team1
+if (EventPlayer().IsButtonHeld(Button.Reload))
+{
+	Wait(0.4, WaitBehavior.AbortWhenFalse);
+	AbortIf(downedStartTime);
+	isChangingHeroes = true;
+	# Sets the position as the ground under the player to avoid spawning them midair
+	Vector position! = positionUnderPlayer(EventPlayer());
+	Vector facing! = EventPlayer().FacingDirection();
+	SetAllowedHeroes(EventPlayer(), Hero.Brigitte);
+	SetAllowedHeroes(EventPlayer(), Hero.Orisa);
+	SetAllowedHeroes(EventPlayer(), AllHeroes());
+	Wait(0.1);
+	WaitUntil(HasSpawned(EventPlayer()), 9999);
+	Teleport(EventPlayer(), position);
+	SetFacing(EventPlayer(), facing);
+	isChangingHeroes = false;
 }
