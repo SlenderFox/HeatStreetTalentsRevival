@@ -104,3 +104,24 @@ if (
 	StopFacing();
 	target = null;
 }
+
+// TODO Replace
+Player TEMP_firstPlayer()
+{
+	return AllPlayers(Team.Team1).Filter(p => !p.IsDummy()).First;
+}
+
+rule: "[BOTS] Friendly bot force revive player"
+Event.OngoingPlayer
+if (isDummy)
+if (EventPlayer() == friendlyBot)
+# Will need to be changed
+if (TEMP_firstPlayer().downedStartTime)
+{
+	while (TEMP_firstPlayer().downedStartTime)
+	{
+		# Continuously update the destination every second to make sure the bot stays in the revive circle
+		friendlyBot.pfDestination = TEMP_firstPlayer().Position();
+		Wait(1);
+	}
+}
