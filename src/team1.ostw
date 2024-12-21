@@ -58,6 +58,7 @@ Team.Team1
 		disable_player();
 		DisableMessages(EventPlayer());
 		reviveProgress = zero;
+		StartScalingPlayer(EventPlayer(), 0.1, false);
 	}
 	if (EventWasEnvironment())
 	{ RecoveryTeleport(); }
@@ -70,6 +71,17 @@ Team.Team1
 	SetPlayerHealth(EventPlayer(), one);
 	SetStatus(EventPlayer(), null, Status.PhasedOut, 9999);
 	DisableMovementCollisionWithPlayers(EventPlayer());
+}
+
+void RevivePlayer(in Player pPlayer)
+{
+	SmallMessage(AllPlayers(), <" <0> has been revived!", pPlayer>);
+	pPlayer.downedStartTime = zero;
+	EnableMessages(pPlayer);
+	ClearStatus(pPlayer, Status.PhasedOut);
+	ClearStatus(pPlayer, Status.Invincible);
+	EnableMovementCollisionWithPlayers(pPlayer);
+	StopScalingPlayer(pPlayer);
 }
 
 rule: "[TEAM 1] Revive downed player"
@@ -111,13 +123,8 @@ if (downedStartTime + one < TotalTimeElapsed())
 
 		if (reviveProgress >= 100)
 		{
-			SmallMessage(AllPlayers(), <" <0> has been revived!", EventPlayer()>);
-			downedStartTime = zero;
 			enable_player();
-			EnableMessages(EventPlayer());
-			ClearStatus(EventPlayer(), Status.PhasedOut);
-			ClearStatus(EventPlayer(), Status.Invincible);
-			EnableMovementCollisionWithPlayers(EventPlayer());
+			RevivePlayer(EventPlayer());
 		}
 	}
 	else

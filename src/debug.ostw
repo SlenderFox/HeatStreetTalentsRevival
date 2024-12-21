@@ -228,17 +228,13 @@ if (button(Button.Interact))
 	}
 }
 
-rule: "[DEBUG] Automatically revive host"
+rule: "[DEBUG] Manually revive host"
 Event.OngoingPlayer
 Team.Team1
 if (isHost)
 if (host.downedStartTime)
 if (button(Button.Reload))
 {
-	//# Syncs with auto heal
-	//Wait(5);
 	enable_player();
-	ClearStatus(EventPlayer(), Status.PhasedOut);
-	ClearStatus(EventPlayer(), Status.Invincible);
-	downedStartTime = zero;
+	RevivePlayer(host);
 }
