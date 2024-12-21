@@ -40,11 +40,12 @@ rule: "[DEBUG] Display debug information on top left"
 	CreateHudText(
 		HOST,
 		Text: <
-			"load: c:<0>% a:<1>% p:<2>%\nposition: <3>\n<4>",
+			"load: c:<0>% a:<1>% p:<2>%\nposition: <3>\n<4>\n<5>\n                  ",
 			ServerLoad() * loadScaler,
 			ServerLoadAverage() * loadScaler,
 			ServerLoadPeak() * loadScaler,
 			HOST_POS,
+			["Invasion", "High Value Target", "Domination"][gGamemode],
 			gInControlMode ? "Control mode" : ""
 		>,
 		Location: Location.Right
