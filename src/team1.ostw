@@ -18,7 +18,7 @@ void disable_player() playervar "[TEAM 1 SUBROUTINE] Disable Player"
 	SetMeleeEnabled(EventPlayer(), false);
 	SetJumpEnabled(EventPlayer(), false);
 	SetCrouchEnabled(EventPlayer(), false);
-	DisallowButton(EventPlayer(), Button.Ultimate);
+	//DisallowButton(EventPlayer(), Button.Ultimate);
 }
 
 void enable_player() playervar "[TEAM 1 SUBROUTINE] Enable Player"
@@ -31,7 +31,7 @@ void enable_player() playervar "[TEAM 1 SUBROUTINE] Enable Player"
 	SetMeleeEnabled(EventPlayer(), true);
 	SetJumpEnabled(EventPlayer(), true);
 	SetCrouchEnabled(EventPlayer(), true);
-	AllowButton(EventPlayer(), Button.Ultimate);
+	//AllowButton(EventPlayer(), Button.Ultimate);
 }
 
 rule: "[TEAM 1] Initialise player effects"
