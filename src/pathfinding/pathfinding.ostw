@@ -288,7 +288,7 @@ void pfProgressEventPlayer() playervar "【PF Core Subroutine】☞ Progress eve
 		// Do not use zero, this is already optimised with FirstOf()
 		# Any rules watching these with the matching condition will activate.
 		pfAttributes = pfLoadedMap.neighbours[pfPath.First].FilteredArray(
-			segment => segment[0] == pfCurrentNodeIndex
+			segment => segment.First == pfCurrentNodeIndex
 		).First.Last;
 	}
 	else
@@ -433,7 +433,7 @@ void aStar()
 		{
 			// Do not use zero, this is already optimised with FirstOf()
 			# The neighbor index to be used like `pfLoadedMap.nodes[neighborI]`.
-			Number neighborI = neighbor[0];
+			Number neighborI = neighbor.First;
 			Number scoreIndex = scores.Map(s => s.nodeIndex).IndexOf(neighborI);
 			Number[] neighborAttributes: <Number[]>neighbor[one];
 			# Ensure that the path to the neighbor is enabled.
@@ -530,7 +530,8 @@ if (pfAttributes.Contains(zero))
 
 rule: "【Generated】Custom pathfinding rule #2"
 Event.OngoingPlayer
-if (pfAttributes.Contains(one))
+# Do not optimise, breaks attribute check
+if (pfAttributes.Contains(1))
 {
 	pfLookAtDestination();
 	Wait(0.3);
