@@ -11,7 +11,7 @@ import "team1.ostw";
 import "HUD.ostw";
 import "debug.ostw";
 
-void LoadSettings()
+void Credits()
 {
 	// Cannot use number optimisation
 	Any credits = WorkshopSettingCombo(" Heat Street Talents Revival", "Credits", 0, ["<Click here>", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful", "Josbird"], 0);
@@ -21,30 +21,19 @@ void SelectGamemode()
 {
 	// Cannot use number optimisation
 	if (WorkshopSettingToggle("Enabled gamemodes", "Invasion", true, 0))
-	{
-		gGamemode.ModAppend(HS_Gamemode.Invasion);
-	}
+	{ gGamemode.ModAppend(HS_Gamemode.Invasion); }
 	// Cannot use number optimisation
-	if (WorkshopSettingToggle("Enabled gamemodes", "High Value Target", true, 1))
-	{
-		gGamemode.ModAppend(HS_Gamemode.HighValueTarget);
-	}
+	if (WorkshopSettingToggle("Enabled gamemodes", "High Value Target", false, 1))
+	{ gGamemode.ModAppend(HS_Gamemode.HighValueTarget); }
 	// Cannot use number optimisation
-	if (WorkshopSettingToggle("Enabled gamemodes", "Domination", true, 2))
-	{
-		gGamemode.ModAppend(HS_Gamemode.Domination);
-	}
+	if (WorkshopSettingToggle("Enabled gamemodes", "Domination", false, 2))
+	{ gGamemode.ModAppend(HS_Gamemode.Domination); }
 
 	# If the player disabled all modes, treat it as all modes enabled.
-	if (CountOf(gGamemode) == ZERO)
-	{
-		//gamemode = [HS_Gamemode.Invasion, HS_Gamemode.HighValueTarget, HS_Gamemode.Domination].Random();
-		gGamemode = <HS_Gamemode>RandomInteger(ZERO, 2);
-	}
+	if (CountOf(gGamemode))
+	{ gGamemode = gGamemode.Random(); }
 	else
-	{
-		gGamemode = gGamemode.Random();
-	}
+	{ gGamemode = <HS_Gamemode>RandomInteger(ZERO, 2); }
 }
 
 void SkipAssembleHeroes()
@@ -57,16 +46,23 @@ void SkipAssembleHeroes()
 rule: "[MAIN] Setup" -100
 {
 	EnableInspectorRecording();
-	LoadSettings();
+	Credits();
 	SelectGamemode();
+	SkipAssembleHeroes();
+	//DisableRespawning(AllPlayers());
+	SetupHUD();
+	# Respawning should be managed by the workshop.
+	SetRespawnMaxTime(AllPlayers(), 9999);
 	# Allows the timer to be used for custom gamemode.
 	DisableCompletion();
 	DisableScoring();
 	# Announcer will still say 'fight' at the start of the match.
 	DisableAnnouncer();
-	//DisableRespawning(AllPlayers());
-	SetupHUD();
-	SkipAssembleHeroes();
-	# Respawning should be managed by the workshop.
-	SetRespawnMaxTime(AllPlayers(), 9999);
+	//DisableScoreboard(AllPlayers());
+
+	//while (true)
+	//{
+	//	SetMatchTime(TotalTimeElapsed());
+	//	Wait(0.05);
+	//}
 }
