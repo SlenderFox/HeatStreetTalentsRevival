@@ -268,6 +268,8 @@ Edges between nodes have a list of attributes for each direction.
 0. Venture drill dash.
 0. Widowmaker grapple.
 0. Winston leap.
+### Bosses
+- Ability where if a boss is low on health it kills all the minions around itself and absorbs their health, healing the boss.
 ### Heroes
 - Tiers can either be more challenging variants of the same hero, or a way to group heroes by difficulty.
 - Could potentially do both?
