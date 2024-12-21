@@ -8,6 +8,8 @@ enum HS_Gamemode
 	Domination // Capture zones
 }
 
+String GAMEMODE_STRING: ["Invasion", "High Value Target", "Domination"][gGamemode];
+
 Boolean IS_DUMMY: IsDummyBot(EventPlayer());
 
 // For element optimisation

@@ -14,7 +14,11 @@ void SetupHUD()
 	// 1
 	SetObjectiveDescription(
 		AllPlayers(),
-		<"Heat Street Talents Revival [WSCODE 4.0.0] | <0>", CurrentMap()>
+		<
+			"Heat Street Talents Revival [WSCODE 4.0.0] | <0> | <1>",
+			CurrentMap(),
+			GAMEMODE_STRING
+		>
 	);
 	# Hide the TDM score HUD.
 	CreateHudText(
