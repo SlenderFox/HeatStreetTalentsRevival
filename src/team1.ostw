@@ -3,14 +3,14 @@
 
 import "shared.ostw";
 
-playervar Number downedStartTime;
-playervar Number reviveProgress;
-playervar Player[] reviverList;
-playervar Boolean isChangingHeroes;
+playervar Number pDownedStartTime;
+playervar Number pReviveProgress;
+playervar Player[] pReviverList;
+playervar Boolean pIsChangingHeroes;
 
-void disable_player() playervar "[TEAM 1 SUBROUTINE] Disable Player"
+void DisablePlayer() playervar "[TEAM 1 SUBROUTINE] Disable Player"
 {
-	ForceThrottle(EventPlayer(), zero, 0.1, zero, 0.1, zero, 0.1);
+	ForceThrottle(EventPlayer(), ZERO, 0.1, ZERO, 0.1, ZERO, 0.1);
 	SetPrimaryFireEnabled(EventPlayer(), false);
 	SetSecondaryFireEnabled(EventPlayer(), false);
 	SetAbility1Enabled(EventPlayer(), false);
@@ -21,7 +21,7 @@ void disable_player() playervar "[TEAM 1 SUBROUTINE] Disable Player"
 	//DisallowButton(EventPlayer(), Button.Ultimate);
 }
 
-void enable_player() playervar "[TEAM 1 SUBROUTINE] Enable Player"
+void EnablePlayer() playervar "[TEAM 1 SUBROUTINE] Enable Player"
 {
 	StopForcingThrottle(EventPlayer());
 	SetPrimaryFireEnabled(EventPlayer(), true);
@@ -39,7 +39,7 @@ Event.OngoingPlayer
 Team.Team1
 {
 	CreateEffect(
-		downedStartTime ? AllPlayers() : [],
+		pDownedStartTime ? AllPlayers() : [],
 		Effect.Ring,
 		Color.Yellow,
 		EventPlayer(),
@@ -51,14 +51,14 @@ Team.Team1
 rule: "[TEAM 1] Player downing"
 Event.OnDeath
 Team.Team1
-if (isChangingHeroes == false)
+if (pIsChangingHeroes == false)
 {
-	if (!downedStartTime)
+	if (!pDownedStartTime)
 	{
-		downedStartTime = TotalTimeElapsed();
-		disable_player();
+		pDownedStartTime = TotalTimeElapsed();
+		DisablePlayer();
 		DisableMessages(EventPlayer());
-		reviveProgress = zero;
+		pReviveProgress = ZERO;
 		StartScalingPlayer(EventPlayer(), 0.1, false);
 	}
 	if (EventWasEnvironment())
@@ -69,7 +69,7 @@ if (isChangingHeroes == false)
 	SetStatus(EventPlayer(), null, Status.Invincible, 9999);
 	// 0.05
 	Wait(0.033, WaitBehavior.RestartWhenTrue);
-	SetPlayerHealth(EventPlayer(), one);
+	SetPlayerHealth(EventPlayer(), ONE);
 	SetStatus(EventPlayer(), null, Status.PhasedOut, 9999);
 	DisableMovementCollisionWithPlayers(EventPlayer());
 }
@@ -77,7 +77,7 @@ if (isChangingHeroes == false)
 void RevivePlayer(in Player pPlayer)
 {
 	SmallMessage(AllPlayers(), <" <0> has been revived!", pPlayer>);
-	pPlayer.downedStartTime = zero;
+	pPlayer.pDownedStartTime = ZERO;
 	EnableMessages(pPlayer);
 	ClearStatus(pPlayer, Status.PhasedOut);
 	ClearStatus(pPlayer, Status.Invincible);
@@ -88,12 +88,12 @@ void RevivePlayer(in Player pPlayer)
 rule: "[TEAM 1] Revive downed player"
 Event.OngoingPlayer
 Team.Team1
-if (downedStartTime)
-if (downedStartTime + one < TotalTimeElapsed())
+if (pDownedStartTime)
+if (pDownedStartTime + ONE < TotalTimeElapsed())
 {
 	# Revive area is a cylinder
-	reviverList = AllPlayers(Team.Team1).Filter(
-		p => !p.downedStartTime
+	pReviverList = AllPlayers(Team.Team1).Filter(
+		p => !p.pDownedStartTime
 		// Check horizontal distance
 		&& DistanceBetween(
 			EventPlayer(),
@@ -115,22 +115,22 @@ if (downedStartTime + one < TotalTimeElapsed())
 	);
 
 	# At least one person is reviving
-	if (CountOf(reviverList))
+	if (CountOf(pReviverList))
 	{
-		reviveProgress += reviverList.IsTrueForAll(
+		pReviveProgress += pReviverList.IsTrueForAll(
 			p => HasStatus(p, Status.Invincible)
 			|| HasStatus(p, Status.PhasedOut)
 		) ? 2.5 : 5;
 
-		if (reviveProgress >= 100)
+		if (pReviveProgress >= 100)
 		{
-			enable_player();
+			EnablePlayer();
 			RevivePlayer(EventPlayer());
 		}
 	}
 	else
 	{
-		reviveProgress = zero;
+		pReviveProgress = ZERO;
 	}
 
 	Wait(0.2, WaitBehavior.IgnoreCondition);
@@ -143,8 +143,8 @@ Team.Team1
 if (EventPlayer().IsButtonHeld(Button.Reload))
 {
 	Wait(0.4, WaitBehavior.AbortWhenFalse);
-	AbortIf(downedStartTime);
-	isChangingHeroes = true;
+	AbortIf(pDownedStartTime);
+	pIsChangingHeroes = true;
 	# Sets the position as the ground under the player to avoid spawning them midair
 	Vector position! = positionUnderPlayer(EventPlayer());
 	Vector facing! = EventPlayer().FacingDirection();
@@ -155,5 +155,5 @@ if (EventPlayer().IsButtonHeld(Button.Reload))
 	WaitUntil(HasSpawned(EventPlayer()), 9999);
 	Teleport(EventPlayer(), position);
 	SetFacing(EventPlayer(), facing);
-	isChangingHeroes = false;
+	pIsChangingHeroes = false;
 }

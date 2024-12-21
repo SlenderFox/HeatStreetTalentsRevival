@@ -5,17 +5,27 @@
  * Modified by SlenderFox
 */
 
-globalvar Boolean IsNoclipping = false;
+globalvar Boolean gIsNoclipping = false;
+
+Boolean IS_MOVING: ThrottleOf(EventPlayer()) != Vector(0, 0, 0)
+	|| (
+		IsButtonHeld(EventPlayer(), Button.Crouch)
+		|| IsButtonHeld(EventPlayer(), Button.Jump)
+	)
+	&& !(
+		IsButtonHeld(EventPlayer(), Button.Crouch)
+		&& IsButtonHeld(EventPlayer(), Button.Jump)
+	);
 
 rule: "[NOCLIP] Start noclipping"
 Event.OngoingPlayer
-if (isHost)
-if (IsNoclipping)
+if (IS_HOST)
+if (gIsNoclipping)
 {
-	SetGravity(EventPlayer(), zero);
+	SetGravity(EventPlayer(), ZERO);
 	DisableMovementCollisionWithEnvironment(EventPlayer(), true);
 	DisableMovementCollisionWithPlayers(EventPlayer());
-	SetMoveSpeed(EventPlayer(), zero);
+	SetMoveSpeed(EventPlayer(), ZERO);
 	DisallowButton(EventPlayer(), Button.Jump);
 	DisallowButton(EventPlayer(), Button.Crouch);
 	DisallowButton(EventPlayer(), Button.Ability1);
@@ -23,8 +33,8 @@ if (IsNoclipping)
 
 rule: "[NOCLIP] Stop noclipping"
 Event.OngoingPlayer
-if (isHost)
-if (IsNoclipping == false)
+if (IS_HOST)
+if (gIsNoclipping == false)
 {
 	SetGravity(EventPlayer(), 100);
 	EnableMovementCollisionWithEnvironment(EventPlayer());
@@ -35,21 +45,11 @@ if (IsNoclipping == false)
 	AllowButton(EventPlayer(), Button.Ability1);
 }
 
-Boolean moving: ThrottleOf(EventPlayer()) != Vector(0, 0, 0)
-	|| (
-		IsButtonHeld(EventPlayer(), Button.Crouch)
-		|| IsButtonHeld(EventPlayer(), Button.Jump)
-	)
-	&& !(
-		IsButtonHeld(EventPlayer(), Button.Crouch)
-		&& IsButtonHeld(EventPlayer(), Button.Jump)
-	);
-
 rule: "[NOCLIP] Noclip propulsion"
 Event.OngoingPlayer
-if (isHost)
-if (IsNoclipping)
-if (moving)
+if (IS_HOST)
+if (gIsNoclipping)
+if (IS_MOVING)
 {
 	ApplyImpulse(
 		EventPlayer(),
@@ -79,9 +79,9 @@ if (moving)
 
 rule: "[NOCLIP] Noclip air resistance"
 Event.OngoingPlayer
-if (isHost)
-if (IsNoclipping)
-if (moving == false)
+if (IS_HOST)
+if (gIsNoclipping)
+if (IS_MOVING == false)
 if (SpeedOf(EventPlayer()) > 0.01)
 {
 	ApplyImpulse(

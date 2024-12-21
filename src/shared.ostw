@@ -8,34 +8,34 @@ enum HS_Gamemode
 	Domination // Capture zones
 }
 
-Boolean isDummy: IsDummyBot(EventPlayer());
+Boolean IS_DUMMY: IsDummyBot(EventPlayer());
 
 // For element optimisation
 // Doesn't work in workshop settings
 // Provides no benefit in vectors
-Number zero: false;
-Number one: true;
+Number ZERO: false;
+Number ONE: true;
 
-globalvar Number i;
-globalvar HS_Gamemode | HS_Gamemode[] gamemode;
+globalvar Number gIter;
+globalvar HS_Gamemode | HS_Gamemode[] gGamemode;
 
-void RecoveryTeleport(Player pPlayer = EventPlayer(), Vector pPosition = null) "[SHARED COROUTINE] Recovery Teleport"
+void RecoveryTeleport(Player _player = EventPlayer(), Vector _position = null) "[SHARED COROUTINE] Recovery Teleport"
 {
-	if (pPosition == null)
+	if (_position == null)
 	{
-		Teleport(pPlayer, NearestWalkablePosition(EventPlayer()));
+		Teleport(_player, NearestWalkablePosition(EventPlayer()));
 	}
 	else
 	{
-		Teleport(pPlayer, pPosition);
+		Teleport(_player, _position);
 	}
 }
 
-Vector positionUnderPlayer(in Player pPlayer)
+Vector positionUnderPlayer(in Player _player)
 {
 	return RayCastHitPosition(
-		pPlayer.EyePosition(),
-		pPlayer.Position() + Vector(0, -1000, 0),
+		_player.EyePosition(),
+		_player.Position() + Vector(0, -1000, 0),
 		null,
 		null,
 		false

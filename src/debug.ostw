@@ -5,30 +5,30 @@ import "pathfinding/pathfinding.ostw";
 import "bots.ostw";
 import "noclip.ostw";
 
-globalvar Player enemyTestBot;
-globalvar Boolean inControlMode;
+globalvar Player gEnemyTestBot;
+globalvar Boolean gInControlMode;
 
-Player host: HostPlayer();
-Boolean isHost: EventPlayer() == host;
-Vector hostPos: host.Position();
-Vector hostEye: host.EyePosition();
-Vector hostFacing: host.FacingDirection();
-Vector hostTarget: RayCastHitPosition(hostEye, hostEye + hostFacing * 100, null, null, false);
-Boolean hostIsCrouching: host.IsButtonHeld(Button.Crouch);
+Player HOST: HostPlayer();
+Boolean IS_HOST: EventPlayer() == HOST;
+Vector HOST_POS: HOST.Position();
+Vector HOST_EYE: HOST.EyePosition();
+Vector HOST_FACING: HOST.FacingDirection();
+Vector HOST_TARGET: RayCastHitPosition(HOST_EYE, HOST_EYE + HOST_FACING * 100, null, null, false);
+Boolean HOST_IS_CROUCHING: HOST.IsButtonHeld(Button.Crouch);
 
-Boolean button(Button _button): host.IsButtonHeld(_button);
+Boolean BUTTON(Button _button): HOST.IsButtonHeld(_button);
 
-Boolean holdingButtonFriendly: button(Button.Ultimate);
-Boolean holdingButtonEnemy: button(Button.Ability2);
+Boolean HOLDING_BUTTON_FRIENDLY: BUTTON(Button.Ultimate);
+Boolean HOLDING_BUTTON_ENEMY: BUTTON(Button.Ability2);
 
 void SelectTestBot() "[DEBUG SUBROUTINE] Select test bot"
 {
-	if (enemyTestBot == null)
+	if (gEnemyTestBot == null)
 	{
-		enemyTestBot = AllPlayers(Team.Team2)
+		gEnemyTestBot = AllPlayers(Team.Team2)
 			.Filter(p => p.IsDummy())
 			.Sort(p => SlotOf(p)).First;
-		StartForcingDummyBotName(enemyTestBot, "<<TEST BOT>>");
+		StartForcingDummyBotName(gEnemyTestBot, "<<TEST BOT>>");
 	}
 }
 
@@ -36,14 +36,14 @@ rule: "[DEBUG] Display debug information on top left"
 {
 	Number loadScaler: 0.3921;
 	CreateHudText(
-		host,
+		HOST,
 		Text: <
 			"load: c:<0>% a:<1>% p:<2>%\nposition: <3>\n<4>",
 			ServerLoad() * loadScaler,
 			ServerLoadAverage() * loadScaler,
 			ServerLoadPeak() * loadScaler,
-			hostPos,
-			inControlMode ? "Control mode" : ""
+			HOST_POS,
+			gInControlMode ? "Control mode" : ""
 		>,
 		Location: Location.Right
 	);
@@ -51,75 +51,75 @@ rule: "[DEBUG] Display debug information on top left"
 
 rule: "[DEBUG] Host init"
 Event.OngoingPlayer
-if (isHost)
+if (IS_HOST)
 {
 	//DisallowButton(host, Button.PrimaryFire);
 	//DisallowButton(host, Button.SecondaryFire);
 	//DisallowButton(host, Button.Melee);
 	//DisallowButton(host, Button.Ability1);
-	DisallowButton(host, Button.Ability2);
-	DisallowButton(host, Button.Ultimate);
-	SetRespawnMaxTime(host, 2);
+	DisallowButton(HOST, Button.Ability2);
+	DisallowButton(HOST, Button.Ultimate);
+	SetRespawnMaxTime(HOST, 2);
 }
 
 rule: "[DEBUG] Toggle noclip"
 Event.OngoingPlayer
-if (isHost)
-if (inControlMode == false)
-if (button(Button.Interact))
+if (IS_HOST)
+if (gInControlMode == false)
+if (BUTTON(Button.Interact))
 {
-	IsNoclipping = !IsNoclipping;
+	gIsNoclipping = !gIsNoclipping;
 }
 
 rule: "[DEBUG] Toggle control mode"
 Event.OngoingPlayer
-if (isHost)
-if (hostIsCrouching)
+if (IS_HOST)
+if (HOST_IS_CROUCHING)
 {
-	inControlMode = true;
-	DisallowButton(host, Button.Melee);
-	DisallowButton(host, Button.PrimaryFire);
-	DisallowButton(host, Button.SecondaryFire);
-	WaitUntil(!hostIsCrouching, 9999);
-	inControlMode = false;
-	AllowButton(host, Button.Melee);
-	AllowButton(host, Button.PrimaryFire);
-	AllowButton(host, Button.SecondaryFire);
+	gInControlMode = true;
+	DisallowButton(HOST, Button.Melee);
+	DisallowButton(HOST, Button.PrimaryFire);
+	DisallowButton(HOST, Button.SecondaryFire);
+	WaitUntil(!HOST_IS_CROUCHING, 9999);
+	gInControlMode = false;
+	AllowButton(HOST, Button.Melee);
+	AllowButton(HOST, Button.PrimaryFire);
+	AllowButton(HOST, Button.SecondaryFire);
 }
 
 rule: "[DEBUG] Bot information display"
 Event.OngoingPlayer
-if (isDummy)
+if (IS_DUMMY)
 if (
-	EventPlayer() == friendlyBot
-	|| EventPlayer() == enemyTestBot
+	EventPlayer() == gFriendlyBot
+	|| EventPlayer() == gEnemyTestBot
 )
 {
 	CreateInWorldText(
-		host,
+		HOST,
 		<
 			"Targeting: <0>\nFollowing: <1>\nDestination: <2><3><4>",
-			EventPlayer().target,
-			EventPlayer().following,
-			EventPlayer().pfDestination,
-			EventPlayer().pfIsPathfinding
+			EventPlayer().pTarget,
+			EventPlayer().pFollowing,
+			EventPlayer().PF_pDestination,
+			EventPlayer().PF_pIsPathfinding
 				? <
 					"\nPathing\nWalkingTo: <0>",
-					EventPlayer().pfWalkingToPosition
+					EventPlayer().PF_pWalkingToPosition
 				>
 				: "",
-			EventPlayer().downedStartTime ? "\nDowned" : ""
+			EventPlayer().pDownedStartTime ? "\nDowned" : ""
 		>,
 		EventPlayer().EyePosition() + Vector(0, 1, 0),
-		one,
+		ONE,
 		Clipping.DoNotClip,
 		InworldTextRev.VisibleToPositionAndString
 	);
 
 	CreateBeamEffect(
-		EventPlayer().pfIsPathfinding ? host : [],
+		EventPlayer().PF_pIsPathfinding ? HOST : [],
 		BeamType.OrisaHaltTendrilBeam,
-		EventPlayer().pfDestination,
+		EventPlayer().PF_pDestination,
 		EventPlayer().EyePosition(),
 		Team.Team1,
 		EffectRev.VisibleToPositionAndRadius
@@ -128,113 +128,113 @@ if (
 
 rule: "[DEBUG] Teleport enemy dummy bot"
 Event.OngoingPlayer
-if (isHost)
-if (inControlMode == false)
-if (holdingButtonEnemy)
+if (IS_HOST)
+if (gInControlMode == false)
+if (HOLDING_BUTTON_ENEMY)
 {
 	SelectTestBot();
 
-	if (!enemyTestBot.IsAlive())
+	if (!gEnemyTestBot.IsAlive())
 	{
-		RespawnBot(enemyTestBot);
+		RespawnBot(gEnemyTestBot);
 		Wait(0.033);
 		# Reset facing direction to +X
-		SetFacing(enemyTestBot, Left(), Relative.ToWorld);
+		SetFacing(gEnemyTestBot, Left(), Relative.ToWorld);
 	}
 
-	Teleport(enemyTestBot, hostTarget);
+	Teleport(gEnemyTestBot, HOST_TARGET);
 }
 
 rule: "[DEBUG] Teleport friendly dummy bot"
 Event.OngoingPlayer
-if (isHost)
-if (inControlMode == false)
-if (holdingButtonFriendly)
+if (IS_HOST)
+if (gInControlMode == false)
+if (HOLDING_BUTTON_FRIENDLY)
 {
-	if (!friendlyBot.IsAlive())
+	if (!gFriendlyBot.IsAlive())
 	{
-		RespawnBot(friendlyBot);
+		RespawnBot(gFriendlyBot);
 		Wait(0.033);
 		# Reset facing direction to +X
-		SetFacing(friendlyBot, Left(), Relative.ToWorld);
+		SetFacing(gFriendlyBot, Left(), Relative.ToWorld);
 	}
 
-	Teleport(friendlyBot, hostTarget);
+	Teleport(gFriendlyBot, HOST_TARGET);
 }
 
 rule: "[DEBUG] Enemy dummy pathfinding"
 Event.OngoingPlayer
-if (isHost)
-if (inControlMode)
-if (holdingButtonEnemy)
+if (IS_HOST)
+if (gInControlMode)
+if (HOLDING_BUTTON_ENEMY)
 {
-	enemyTestBot.pfDestination = hostTarget;
+	gEnemyTestBot.PF_pDestination = HOST_TARGET;
 }
 
 rule: "[DEBUG] Friendly dummy pathfinding"
 Event.OngoingPlayer
-if (isHost)
-if (inControlMode)
-if (holdingButtonFriendly)
+if (IS_HOST)
+if (gInControlMode)
+if (HOLDING_BUTTON_FRIENDLY)
 {
-	friendlyBot.pfDestination = hostTarget;
+	gFriendlyBot.PF_pDestination = HOST_TARGET;
 }
 
 rule: "[DEBUG] Toggle enemy dummy facing"
 Event.OngoingPlayer
-if (isHost)
-if (inControlMode)
-if (button(Button.SecondaryFire))
+if (IS_HOST)
+if (gInControlMode)
+if (BUTTON(Button.SecondaryFire))
 {
 	SelectTestBot();
 
-	if (enemyTestBot.target != null)
+	if (gEnemyTestBot.pTarget != null)
 	{
-		enemyTestBot.target = null;
-		StopFacing(enemyTestBot);
+		gEnemyTestBot.pTarget = null;
+		StopFacing(gEnemyTestBot);
 		# Reset facing direction to +X
-		SetFacing(enemyTestBot, Left(), Relative.ToWorld);
+		SetFacing(gEnemyTestBot, Left(), Relative.ToWorld);
 	}
 	else
 	{
-		enemyTestBot.target = friendlyBot;
+		gEnemyTestBot.pTarget = gFriendlyBot;
 	}
 }
 
 rule: "[DEBUG] Make enemy dummy shoot"
 Event.OngoingPlayer
-if (isHost)
-if (inControlMode)
-if (button(Button.PrimaryFire))
+if (IS_HOST)
+if (gInControlMode)
+if (BUTTON(Button.PrimaryFire))
 {
-	StartHoldingButton(enemyTestBot, Button.PrimaryFire);
-	WaitUntil(!(button(Button.PrimaryFire) && inControlMode), 120);
-	StopHoldingButton(enemyTestBot, Button.PrimaryFire);
+	StartHoldingButton(gEnemyTestBot, Button.PrimaryFire);
+	WaitUntil(!(BUTTON(Button.PrimaryFire) && gInControlMode), 120);
+	StopHoldingButton(gEnemyTestBot, Button.PrimaryFire);
 }
 
 rule: "[DEBUG] Toggle friendly dummy follow"
 Event.OngoingPlayer
-if (isHost)
-if (inControlMode)
-if (button(Button.Interact))
+if (IS_HOST)
+if (gInControlMode)
+if (BUTTON(Button.Interact))
 {
-	if (friendlyBot.following != null)
+	if (gFriendlyBot.pFollowing != null)
 	{
-		friendlyBot.following = null;
+		gFriendlyBot.pFollowing = null;
 	}
 	else
 	{
-		friendlyBot.following = host;
+		gFriendlyBot.pFollowing = HOST;
 	}
 }
 
 rule: "[DEBUG] Manually revive host"
 Event.OngoingPlayer
 Team.Team1
-if (isHost)
-if (host.downedStartTime)
-if (button(Button.Reload))
+if (IS_HOST)
+if (HOST.pDownedStartTime)
+if (BUTTON(Button.Reload))
 {
-	enable_player();
-	RevivePlayer(host);
+	EnablePlayer();
+	RevivePlayer(HOST);
 }

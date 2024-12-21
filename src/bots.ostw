@@ -10,35 +10,35 @@ import "pathfinding/pathfinding.ostw";
 // I have 15 max unique skins with 5 reserved for players for a total of 10 for dummies.
 
 // Should the friendly bot be defined and managed here?
-globalvar Player friendlyBot;
-globalvar Number botQuota;
-playervar Player target;
-playervar Player following;
+globalvar Player gFriendlyBot;
+globalvar Number gBotQuota;
+playervar Player pTarget;
+playervar Player pFollowing;
 
-void RespawnBot(in Player pDummy)
+void RespawnBot(in Player _dummy)
 {
 	# Cannot use resurrect as it breaks custom game health settings
-	Respawn(pDummy);
+	Respawn(_dummy);
 	# Minimum time before teleport can function after calling respawn
 	Wait(0.033);
-	Teleport(pDummy);
+	Teleport(_dummy);
 }
 
 rule: "[BOTS] Create all the dummy bots" -10
 {
 	# Create friendly bot
-	friendlyBot = CreateDummyBot(
+	gFriendlyBot = CreateDummyBot(
 		Hero.Mauga,
 		Team.Team1,
 		6,
 		Vector(0, 0, 0),
 		null
 	);
-	friendlyBot.pfPlayerAttributes = [zero, one];
-	StartForcingDummyBotName(friendlyBot, "Puipui");
+	gFriendlyBot.PF_pPlayerAttributes = [ZERO, ONE];
+	StartForcingDummyBotName(gFriendlyBot, "Puipui");
 
 	# Create enemy bots
-	for (i = zero; i < 17; i++)
+	for (gIter = ZERO; gIter < 17; gIter++)
 	{
 		CreateDummyBot(
 			Hero.Soldier76,
@@ -46,24 +46,24 @@ rule: "[BOTS] Create all the dummy bots" -10
 			-1,
 			Vector(0, -1000, 0),
 			null
-		).pfPlayerAttributes = [zero, one, 6, 10, 20];
+		).PF_pPlayerAttributes = [ZERO, ONE, 6, 10, 20];
 	}
 }
 
 rule: "[BOTS] Following"
 Event.OngoingPlayer
-if (isDummy)
-if (following != null)
+if (IS_DUMMY)
+if (pFollowing != null)
 # Horizontal distance to following position is more than 10
 if (
 	(PositionOf() * Vector(1, 0, 1))
-		.DistanceTo(following.Position() * Vector(1, 0, 1)) > 10
+		.DistanceTo(pFollowing.Position() * Vector(1, 0, 1)) > 10
 )
 {
 	# Pause updates if server is being overloaded
 	WaitUntil(ServerLoadAverage() < 230, 999);
 	# Set the destination as the ground under the player.
-	pfDestination = positionUnderPlayer(following);
+	PF_pDestination = positionUnderPlayer(pFollowing);
 	# Avoid spamming destination updates
 	Wait(1);
 	LoopIfConditionIsTrue();
@@ -71,12 +71,12 @@ if (
 
 rule: "[BOTS] Facing"
 Event.OngoingPlayer
-if (isDummy)
-if (target != null)
+if (IS_DUMMY)
+if (pTarget != null)
 {
 	StartFacing(
 		EventPlayer(),
-		DirectionTowards(EyePosition(), target.EyePosition()),
+		DirectionTowards(EyePosition(), pTarget.EyePosition()),
 		500,
 		Relative.ToWorld,
 		FacingRev.DirectionAndTurnRate
@@ -85,18 +85,18 @@ if (target != null)
 
 rule: "[BOTS] Target LOS check"
 Event.OngoingPlayer
-if (isDummy)
-if (target != null)
+if (IS_DUMMY)
+if (pTarget != null)
 if (
 	IsInLineOfSight(
 		EyePosition(),
-		target.EyePosition(),
+		pTarget.EyePosition(),
 		BarrierLOS.NoBarriersBlock
 	) == false
 )
 {
 	StopFacing();
-	target = null;
+	pTarget = null;
 }
 
 // TODO Replace
@@ -107,15 +107,15 @@ Player TEMP_firstPlayer()
 
 rule: "[BOTS] Friendly bot force revive player"
 Event.OngoingPlayer
-if (isDummy)
-if (EventPlayer() == friendlyBot)
+if (IS_DUMMY)
+if (EventPlayer() == gFriendlyBot)
 # Will need to be changed
-if (TEMP_firstPlayer().downedStartTime)
+if (TEMP_firstPlayer().pDownedStartTime)
 {
-	while (TEMP_firstPlayer().downedStartTime)
+	while (TEMP_firstPlayer().pDownedStartTime)
 	{
 		# Continuously update the destination every second to make sure the bot stays in the revive circle
-		friendlyBot.pfDestination = TEMP_firstPlayer().Position();
+		gFriendlyBot.PF_pDestination = TEMP_firstPlayer().Position();
 		Wait(1);
 	}
 }

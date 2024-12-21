@@ -22,28 +22,28 @@ void SelectGamemode()
 	// Cannot use number optimisation
 	if (WorkshopSettingToggle("Enabled gamemodes", "Invasion", true, 0))
 	{
-		gamemode.ModAppend(HS_Gamemode.Invasion);
+		gGamemode.ModAppend(HS_Gamemode.Invasion);
 	}
 	// Cannot use number optimisation
 	if (WorkshopSettingToggle("Enabled gamemodes", "High Value Target", true, 1))
 	{
-		gamemode.ModAppend(HS_Gamemode.HighValueTarget);
+		gGamemode.ModAppend(HS_Gamemode.HighValueTarget);
 	}
 	// Cannot use number optimisation
 	if (WorkshopSettingToggle("Enabled gamemodes", "Domination", true, 2))
 	{
-		gamemode.ModAppend(HS_Gamemode.Domination);
+		gGamemode.ModAppend(HS_Gamemode.Domination);
 	}
 
 	# If the player disabled all modes, treat it as all modes enabled.
-	if (CountOf(gamemode) == zero)
+	if (CountOf(gGamemode) == ZERO)
 	{
 		//gamemode = [HS_Gamemode.Invasion, HS_Gamemode.HighValueTarget, HS_Gamemode.Domination].Random();
-		gamemode = <HS_Gamemode>RandomInteger(zero, 2);
+		gGamemode = <HS_Gamemode>RandomInteger(ZERO, 2);
 	}
 	else
 	{
-		gamemode = gamemode.Random();
+		gGamemode = gGamemode.Random();
 	}
 }
 
@@ -51,7 +51,7 @@ void SkipAssembleHeroes()
 {
 	SetMatchTime(3);
 	WaitUntil(IsGameInProgress(), 3.5);
-	SetMatchTime(zero);
+	SetMatchTime(ZERO);
 }
 
 rule: "[MAIN] Setup" -100
