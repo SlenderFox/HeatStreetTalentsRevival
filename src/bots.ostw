@@ -16,15 +16,6 @@ playervar Player pTarget;
 playervar Player pFollowing;
 playervar Boolean pIsBoss;
 
-void RespawnBot(in Player _dummy)
-{
-	# Cannot use resurrect as it breaks custom game health settings
-	Respawn(_dummy);
-	# Minimum time before teleport can function after calling respawn
-	Wait(0.033);
-	Teleport(_dummy);
-}
-
 rule: "[BOTS] Create all the dummy bots" -10
 {
 	# Create friendly bot
@@ -48,6 +39,7 @@ rule: "[BOTS] Create all the dummy bots" -10
 			Vector(0, -1000, 0),
 			null
 		).PF_pPlayerAttributes = [ZERO, ONE, 6, 10, 20];
+		StartForcingDummyBotName(LastCreatedEntity(), "Dummy Bot");
 	}
 }
 

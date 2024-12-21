@@ -138,7 +138,7 @@ if (HOLDING_BUTTON_ENEMY)
 
 	if (!gEnemyTestBot.IsAlive())
 	{
-		RespawnBot(gEnemyTestBot);
+		Respawn(gEnemyTestBot);
 		Wait(0.033);
 		# Reset facing direction to +X
 		SetFacing(gEnemyTestBot, Left(), Relative.ToWorld);
@@ -155,7 +155,7 @@ if (HOLDING_BUTTON_FRIENDLY)
 {
 	if (!gFriendlyBot.IsAlive())
 	{
-		RespawnBot(gFriendlyBot);
+		Respawn(gFriendlyBot);
 		Wait(0.033);
 		# Reset facing direction to +X
 		SetFacing(gFriendlyBot, Left(), Relative.ToWorld);
