@@ -8,8 +8,7 @@
 		"Max Spectators": 1,
 		"Return To Lobby": "Never",
 		"Swap Teams After Match": false,
-		"Allow Players Who Are In Queue": true,
-		"Data Center Preference": "Australia 3"
+		"Allow Players Who Are In Queue": true
 	},
 	"Modes": {
 		"All": {
@@ -17,8 +16,8 @@
 			"Hero Limit": "Off",
 			"Kill Cam": false,
 			"Kill Feed": false,
-			"Score To Win": 9,
-			"Spawn Health Packs": "Enabled"
+			"Spawn Health Packs": "Enabled",
+			"Tank Role Passive Health Bonus": "Disabled"
 		},
 		"Team Deathmatch": {
 			"Enabled Maps": [
