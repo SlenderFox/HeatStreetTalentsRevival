@@ -40,11 +40,16 @@ rule: "[DEBUG] Display debug information on top left"
 	CreateHudText(
 		HOST,
 		Text: <
-			"load: c:<0>% a:<1>% p:<2>%\nposition: <3>\n<4>\n                  ",
+			"load: c:<0>% a:<1>% p:<2>%\nposition: <3>\n<4>\n<5>\n                  ",
 			ServerLoad() * loadScaler,
 			ServerLoadAverage() * loadScaler,
 			ServerLoadPeak() * loadScaler,
 			HOST_POS,
+			<
+				"<0> vs <1>",
+				NumberOfPlayers(Team.Team1),
+				NumberOfPlayers(Team.Team2)
+			>,
 			gInControlMode ? "Control mode" : ""
 		>,
 		Location: Location.Right
@@ -152,6 +157,7 @@ Event.OngoingPlayer
 if (IS_HOST)
 if (gInControlMode == false)
 if (HOLDING_BUTTON_FRIENDLY)
+if (gFriendlyBot)
 {
 	if (!gFriendlyBot.IsAlive())
 	{
@@ -239,4 +245,31 @@ if (BUTTON(Button.Reload))
 {
 	EnablePlayer();
 	RevivePlayer(HOST);
+}
+
+//> TEMPORARY FOR TESTING
+globalvar Player gTempBot;
+
+rule: "[DEBUG] Temp add bot"
+Event.OngoingPlayer
+Team.Team1
+if (IS_HOST)
+if (IsCommunicating(HOST, Communication.Yes))
+{
+	gTempBot = CreateDummyBot(
+		Hero.Soldier76,
+		Team.Team1,
+		-1,
+		Vector(0, 0, 0),
+		null
+	);
+}
+
+rule: "[DEBUG] Temp remove bot"
+Event.OngoingPlayer
+Team.Team1
+if (IS_HOST)
+if (IsCommunicating(HOST, Communication.No))
+{
+	DestroyDummyBot(gTempBot);
 }

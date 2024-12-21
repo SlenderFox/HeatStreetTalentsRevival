@@ -1,0 +1,41 @@
+/** Contains the code required to manage workshop settings.
+*/
+
+import "shared.ostw";
+
+globalvar Hero gFriendlyBotHero;
+
+void Credits()
+{
+	// Cannot use number optimisation
+	Any credits = WorkshopSettingCombo(" Heat Street Talents Revival", "Credits", 0, ["<Click here>", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful", "Josbird"], 0);
+}
+
+void SelectGamemode()
+{
+	// Cannot use number optimisation
+	if (WorkshopSettingToggle("Enabled gamemodes", "Invasion", true, 0))
+	{ gGamemode.ModAppend(HS_Gamemode.Invasion); }
+	// Cannot use number optimisation
+	if (WorkshopSettingToggle("Enabled gamemodes", "High Value Target", false, 1))
+	{ gGamemode.ModAppend(HS_Gamemode.HighValueTarget); }
+	// Cannot use number optimisation
+	if (WorkshopSettingToggle("Enabled gamemodes", "Domination", false, 2))
+	{ gGamemode.ModAppend(HS_Gamemode.Domination); }
+
+	# If the player disabled all modes, treat it as all modes enabled.
+	if (CountOf(gGamemode))
+	{ gGamemode = gGamemode.Random(); }
+	else
+	{ gGamemode = <HS_Gamemode>RandomInteger(ZERO, 2); }
+}
+
+void SelectFriendlyBot()
+{
+	gFriendlyBotHero = WorkshopSettingHero(
+		"Generic",
+		"Friendly Bot Hero",
+		Hero.Mauga,
+		0
+	);
+}

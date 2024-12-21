@@ -16,19 +16,8 @@ playervar Player pTarget;
 playervar Player pFollowing;
 playervar Boolean pIsBoss;
 
-rule: "[BOTS] Create all the dummy bots" -10
+rule: "[BOTS] Create the enemy dummy bots" -10
 {
-	# Create friendly bot
-	gFriendlyBot = CreateDummyBot(
-		Hero.Mauga,
-		Team.Team1,
-		6,
-		Vector(0, 0, 0),
-		null
-	);
-	gFriendlyBot.PF_pPlayerAttributes = [ZERO, ONE];
-	StartForcingDummyBotName(gFriendlyBot, "Puipui");
-
 	# Create enemy bots
 	for (gIter = ZERO; gIter < 17; gIter++)
 	{
@@ -41,6 +30,24 @@ rule: "[BOTS] Create all the dummy bots" -10
 		).PF_pPlayerAttributes = [ZERO, ONE, 6, 10, 20];
 		StartForcingDummyBotName(LastCreatedEntity(), "Dummy Bot");
 	}
+}
+
+rule: "[BOTS] Create friendly bot if there is only one player in the match"
+# Cannot be optimised, need to match to exactly 1
+if (NumberOfPlayers(Team.Team1) == 1)
+{
+	# Create friendly bot
+	gFriendlyBot = CreateDummyBot(
+		gFriendlyBotHero,
+		Team.Team1,
+		6,
+		Vector(0, 0, 0),
+		null
+	);
+	gFriendlyBot.PF_pPlayerAttributes = [ZERO, ONE];
+	//StartForcingDummyBotName(gFriendlyBot, "Puipui");
+	WaitUntil(NumberOfPlayers(Team.Team1) > 2, 9999);
+	DestroyDummyBot(gFriendlyBot);
 }
 
 rule: "[BOTS] Following"
