@@ -1,4 +1,4 @@
-/** All HUD display elements go here
+/** All generic HUD display elements go here
 */
 
 import "team1.ostw";

@@ -2,3 +2,27 @@
  * On destruction a boss enemy spawns.
  * The boss can use the same dummy as the portal.
 */
+
+import "../shared.ostw";
+import "../bots.ostw";
+
+// Mark one bot as the portal.
+// Select a position to place the portal in.
+// Damage phases.
+// Spawn boss at the end, reuse dummy.
+// Health bar HUD element.
+// Portal effects.
+
+globalvar Player gIVBoss;
+
+rule: "[INVASION] Initialise gamemode"
+if (gGamemode == HS_Gamemode.Invasion)
+{
+	// TODO remove debug check
+	gIVBoss = AllPlayers(Team.Team2)
+		.Filter(p => p.IsDummy() && !p.pIsTestBot)
+		.Sort(p => SlotOf(p)).First;
+	gIVBoss.pIsBoss = true;
+	StartForcingDummyBotName(gIVBoss, "Invasion Boss");
+	ForcePlayerHero(gIVBoss, Hero.WreckingBall);
+}

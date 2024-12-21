@@ -14,6 +14,7 @@ globalvar Player gFriendlyBot;
 globalvar Number gBotQuota;
 playervar Player pTarget;
 playervar Player pFollowing;
+playervar Boolean pIsBoss;
 
 void RespawnBot(in Player _dummy)
 {
