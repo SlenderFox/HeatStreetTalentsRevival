@@ -19,10 +19,11 @@ String GAMEMODE_STRING: ["Invasion", "High Value Target", "Domination"][gGamemod
 
 Boolean IS_DUMMY: IsDummyBot(EventPlayer());
 
-// For element optimisation
-// Doesn't work in workshop settings
-// Provides no benefit in vectors
+// For element optimisation.
+// Doesn't work in workshop settings.
+// Provides no benefit in vectors.
 Number ZERO: false;
+# Should not be used to compare values.
 Number ONE: true;
 
 globalvar Number gIter;

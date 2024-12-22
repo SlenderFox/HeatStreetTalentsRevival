@@ -310,7 +310,8 @@ void PF_UpdateNodeMeta() playervar "【PF Core Subroutine】☞ Update node meta
 	if (PF_pCurrentNodeIndex != -1)
 	{ PF_pActiveNode = PF_pCurrentNodeIndex; }
 
-	if (PF_pStuckOnNode == ONE)
+	// Shouldn't be optimised, need to compare directly to the value
+	if (PF_pStuckOnNode == 1)
 	{ PF_pStuckOnNode = ZERO; }
 
 	# Update the pathfinding start time.
