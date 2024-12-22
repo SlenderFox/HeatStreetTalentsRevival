@@ -115,7 +115,7 @@ if (BUTTON_NOCLIP)
 	DisallowButton(HOST, Button.Ability2);
 	DisallowButton(HOST, Button.Ultimate);
 	DisallowButton(HOST, Button.Interact);
-	Wait(1);
+	Wait(0.3);
 	WaitUntil(BUTTON_NOCLIP && BUTTON_CONTROL, 9999);
 	pInControlMode = false;
 	pIsNoclipping = false;
