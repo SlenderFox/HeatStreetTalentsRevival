@@ -18,7 +18,7 @@ Vector HOST_TARGET: RayCastHitPosition(HOST_EYE, HOST_EYE + HOST_FACING * 100, n
 
 Boolean BUTTON(Button _button): HOST.IsButtonHeld(_button);
 
-Boolean BUTTON_CONTROL: HOST.IsButtonHeld(Button.Crouch);
+Boolean BUTTON_CONTROL: BUTTON(Button.Crouch);
 Boolean BUTTON_NOCLIP: BUTTON(Button.Interact);
 Boolean BUTTON_FRIENDLY: BUTTON(Button.Ultimate);
 Boolean BUTTON_ENEMY: BUTTON(Button.Ability2);
