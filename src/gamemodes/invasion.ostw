@@ -3,8 +3,8 @@
  * The boss can use the same dummy as the portal.
 */
 
-import "../shared.ostw";
 import "../bots.ostw";
+import "../gamestate.ostw";
 
 // Mark one bot as the portal.
 // Select a position to place the portal in.
@@ -12,6 +12,8 @@ import "../bots.ostw";
 // Spawn boss at the end, reuse dummy.
 // Health bar HUD element.
 // Portal effects.
+
+globalvar Vector gPortalPosition = Vector(-6, 3, 6);
 
 globalvar Player gIVBoss;
 
@@ -24,5 +26,54 @@ if (gGamemode == HS_Gamemode.Invasion)
 		.Sort(p => SlotOf(p)).First;
 	gIVBoss.pIsBoss = true;
 	StartForcingDummyBotName(gIVBoss, "Invasion Boss");
+	SetGravity(gIVBoss, ZERO);
+	DisableMovementCollisionWithPlayers(gIVBoss);
+	SetKnockbackReceived(gIVBoss, 0);
+	SetMoveSpeed(gIVBoss, ZERO);
+	SetJumpEnabled(gIVBoss, false);
+	SetCrouchEnabled(gIVBoss, false);
+	SetMeleeEnabled(gIVBoss, false);
+	SetPrimaryFireEnabled(gIVBoss, false);
+	SetSecondaryFireEnabled(gIVBoss, false);
+	// Possibly do something with adaptive shields?
+	//SetAbility2Enabled(gIVBoss, false);
+	// Possibly do something with mines?
+	//SetUltimateAbilityEnabled(gIVBoss, false);
+}
+
+rule: "[INVASION] Setup portal when gamestate changes to inprogress"
+Event.OngoingPlayer
+if (gGamemode == HS_Gamemode.Invasion)
+if (gGameState == GameState.Inprogress)
+if (EventPlayer().pIsBoss)
+{
+	Teleport(gIVBoss, gPortalPosition);
+	Wait(0.033);
 	ForcePlayerHero(gIVBoss, Hero.WreckingBall);
+	Wait(0.25);
+	SetStatus(EventPlayer(), null, Status.Frozen, 9999);
+}
+
+rule: "[INVASION] Make sure wrecking ball portal stays put"
+Event.OngoingPlayer
+if (gGamemode == HS_Gamemode.Invasion)
+if (EventPlayer().pIsBoss)
+if (EventPlayer().IsAlive())
+if (IsInAlternateForm(EventPlayer()) == false)
+{
+	# Quite dumb but will continually make sure ball stays frozen in ball form
+	PressButton(EventPlayer(), Button.Ability1);
+	Wait(0.5);
+	LoopIfConditionIsTrue();
+}
+
+rule: "[INVASION] Clear sleeping status from portal"
+Event.OngoingPlayer
+if (gGamemode == HS_Gamemode.Invasion)
+if (EventPlayer().pIsBoss)
+if (EventPlayer().IsAlive())
+if (HasStatus(EventPlayer(), Status.Asleep))
+{
+	// Doesn't seem to work.
+	ClearStatus(EventPlayer(), Status.Asleep);
 }
