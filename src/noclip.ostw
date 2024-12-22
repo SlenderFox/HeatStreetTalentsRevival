@@ -5,7 +5,7 @@
  * Modified by SlenderFox
 */
 
-globalvar Boolean gIsNoclipping = false;
+playervar Boolean pIsNoclipping = false;
 
 Boolean IS_MOVING: ThrottleOf(EventPlayer()) != Vector(0, 0, 0)
 	|| (
@@ -20,7 +20,7 @@ Boolean IS_MOVING: ThrottleOf(EventPlayer()) != Vector(0, 0, 0)
 rule: "[NOCLIP] Start noclipping"
 Event.OngoingPlayer
 if (IS_HOST)
-if (gIsNoclipping)
+if (pIsNoclipping)
 {
 	SetGravity(EventPlayer(), ZERO);
 	DisableMovementCollisionWithEnvironment(EventPlayer(), true);
@@ -34,7 +34,7 @@ if (gIsNoclipping)
 rule: "[NOCLIP] Stop noclipping"
 Event.OngoingPlayer
 if (IS_HOST)
-if (gIsNoclipping == false)
+if (pIsNoclipping == false)
 {
 	SetGravity(EventPlayer(), 100);
 	EnableMovementCollisionWithEnvironment(EventPlayer());
@@ -48,7 +48,7 @@ if (gIsNoclipping == false)
 rule: "[NOCLIP] Noclip propulsion"
 Event.OngoingPlayer
 if (IS_HOST)
-if (gIsNoclipping)
+if (pIsNoclipping)
 if (IS_MOVING)
 {
 	ApplyImpulse(
@@ -80,7 +80,7 @@ if (IS_MOVING)
 rule: "[NOCLIP] Noclip air resistance"
 Event.OngoingPlayer
 if (IS_HOST)
-if (gIsNoclipping)
+if (pIsNoclipping)
 if (IS_MOVING == false)
 if (SpeedOf(EventPlayer()) > 0.01)
 {

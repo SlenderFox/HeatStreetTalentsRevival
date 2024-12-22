@@ -18,6 +18,7 @@ void DisablePlayer() playervar "[TEAM 1 SUBROUTINE] Disable Player"
 	SetMeleeEnabled(EventPlayer(), false);
 	SetJumpEnabled(EventPlayer(), false);
 	SetCrouchEnabled(EventPlayer(), false);
+	SetUltimateAbilityEnabled(EventPlayer(), false);
 	//DisallowButton(EventPlayer(), Button.Ultimate);
 }
 
@@ -31,6 +32,7 @@ void EnablePlayer() playervar "[TEAM 1 SUBROUTINE] Enable Player"
 	SetMeleeEnabled(EventPlayer(), true);
 	SetJumpEnabled(EventPlayer(), true);
 	SetCrouchEnabled(EventPlayer(), true);
+	SetUltimateAbilityEnabled(EventPlayer(), true);
 	//AllowButton(EventPlayer(), Button.Ultimate);
 }
 
