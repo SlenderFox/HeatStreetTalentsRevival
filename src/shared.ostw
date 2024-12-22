@@ -8,6 +8,13 @@ enum HS_Gamemode
 	Domination // Capture zones
 }
 
+enum GameState
+{
+	Pregame,
+	Inprogress,
+	Interround
+}
+
 String GAMEMODE_STRING: ["Invasion", "High Value Target", "Domination"][gGamemode];
 
 Boolean IS_DUMMY: IsDummyBot(EventPlayer());
@@ -20,6 +27,7 @@ Number ONE: true;
 
 globalvar Number gIter;
 globalvar HS_Gamemode | HS_Gamemode[] gGamemode;
+globalvar GameState gGameState = GameState.Pregame;
 
 void RecoveryTeleport(Player _player = EventPlayer(), Vector _position = null) "[SHARED COROUTINE] Recovery Teleport"
 {
