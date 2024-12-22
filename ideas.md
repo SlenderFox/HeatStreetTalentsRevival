@@ -200,6 +200,7 @@ Look into ways to get it working with:
 - Is very strong at dealing with crowds of squishies.
 - Useless against bosses.
 - Could do something interesting with his ranged attack.
+- Kills reset jump pack.
 #### Wrecking Ball
 - Will be extremely strong if enemies have no stuns or hinders.
 - Incendiary rounds would not increases his strength much but be fun to use. Risks overlapping with Mauga.
