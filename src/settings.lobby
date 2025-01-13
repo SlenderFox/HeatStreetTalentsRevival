@@ -28,7 +28,8 @@
 	"Heroes": {
 		"Team 1": {
 			"General": {
-				"Ability Cooldown Time": 5
+				"Ability Cooldown Time": 5,
+				"Spawn With Ultimate Ready": true
 			},
 			"Mauga": {
 				"Health": 20
