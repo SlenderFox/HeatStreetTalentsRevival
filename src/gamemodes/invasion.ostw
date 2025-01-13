@@ -12,68 +12,127 @@ import "../gamestate.ostw";
 // Spawn boss at the end, reuse dummy.
 // Health bar HUD element.
 // Portal effects.
+// Will need a case to prevent rein charge interaction
 
-globalvar Vector gPortalPosition = Vector(-6, 3, 6);
+globalvar Vector gPortalPosition = Vector(-6, 0.5, 6);
 
+# Global reference to the portal boss
 globalvar Player gIVBoss;
 
 rule: "[INVASION] Initialise gamemode"
 if (gGamemode == HS_Gamemode.Invasion)
 {
-	// TODO remove debug check
+	// TODO remove debug check (pIsTestBot)
 	gIVBoss = AllPlayers(Team.Team2)
 		.Filter(p => p.IsDummy() && !p.pIsTestBot)
 		.Sort(p => SlotOf(p)).First;
 	gIVBoss.pIsBoss = true;
 	StartForcingDummyBotName(gIVBoss, "Invasion Boss");
-	SetGravity(gIVBoss, ZERO);
-	DisableMovementCollisionWithPlayers(gIVBoss);
-	SetKnockbackReceived(gIVBoss, 0);
-	SetMoveSpeed(gIVBoss, ZERO);
-	SetJumpEnabled(gIVBoss, false);
-	SetCrouchEnabled(gIVBoss, false);
-	SetMeleeEnabled(gIVBoss, false);
-	SetPrimaryFireEnabled(gIVBoss, false);
-	SetSecondaryFireEnabled(gIVBoss, false);
-	// Possibly do something with adaptive shields?
-	//SetAbility2Enabled(gIVBoss, false);
-	// Possibly do something with mines?
-	//SetUltimateAbilityEnabled(gIVBoss, false);
 }
 
 rule: "[INVASION] Setup portal when gamestate changes to inprogress"
 Event.OngoingPlayer
+Team.Team2
 if (gGamemode == HS_Gamemode.Invasion)
+//> If the portal bot is reused as the end of round boss, then this will cause issues.
 if (gGameState == GameState.Inprogress)
 if (EventPlayer().pIsBoss)
 {
-	Teleport(gIVBoss, gPortalPosition);
+	# Need to set all the bot settings here every round
+	//> Reconsider this, should players be able to stand on the portal?
+	DisableMovementCollisionWithPlayers(EventPlayer());
+	SetMoveSpeed(EventPlayer(), ZERO);
+	SetGravity(EventPlayer(), ZERO);
+	SetKnockbackReceived(EventPlayer(), ZERO);
+	SetJumpEnabled(EventPlayer(), false);
+	SetCrouchEnabled(EventPlayer(), false);
+	SetMeleeEnabled(EventPlayer(), false);
+	SetPrimaryFireEnabled(EventPlayer(), false);
+	SetSecondaryFireEnabled(EventPlayer(), false);
+	// Possibly do something with adaptive shields?
+	//SetAbility2Enabled(EventPlayer(), false);
+	// Possibly do something with mines?
+	//SetUltimateAbilityEnabled(EventPlayer(), false);
+
+	# Lock the bot at the portal location, works for everything except charge
+	StartForcingPlayerPosition(EventPlayer(), gPortalPosition, false);
+	# Necessary delay
 	Wait(0.033);
-	ForcePlayerHero(gIVBoss, Hero.WreckingBall);
-	Wait(0.25);
-	SetStatus(EventPlayer(), null, Status.Frozen, 9999);
+	# Start forcing the hero since it will have been different in the previous round
+	ForcePlayerHero(EventPlayer(), Hero.WreckingBall);
 }
 
-rule: "[INVASION] Make sure wrecking ball portal stays put"
+rule: "[INVASION] Make sure wrecking ball portal stays in ball form"
 Event.OngoingPlayer
+Team.Team2
+Player.WreckingBall
 if (gGamemode == HS_Gamemode.Invasion)
 if (EventPlayer().pIsBoss)
 if (EventPlayer().IsAlive())
 if (IsInAlternateForm(EventPlayer()) == false)
 {
-	# Quite dumb but will continually make sure ball stays frozen in ball form
 	PressButton(EventPlayer(), Button.Ability1);
 	Wait(0.5);
 	LoopIfConditionIsTrue();
 }
 
-rule: "[INVASION] Clear sleeping status from portal"
-Event.OngoingPlayer
+rule: "[INVASION] Make portal immune to sleep"
+Event.OnDamageTaken
+Team.Team2
+Player.WreckingBall
 if (gGamemode == HS_Gamemode.Invasion)
 if (EventPlayer().pIsBoss)
-if (EventPlayer().IsAlive())
-if (HasStatus(EventPlayer(), Status.Asleep))
-{
-	// Doesn't seem to work.
-	ClearStatus(EventPlayer(), Status.Asleep);
-}
+if (Attacker().Hero() == Hero.Ana)
+if (EventAbility() == Button.Ability1)
+{ SetStatus(EventPlayer(), null, Status.PhasedOut, 0.016); }
+
+rule: "[INVASION] Make portal immediately recover from knockdown"
+Event.OngoingPlayer
+Team.Team2
+Player.WreckingBall
+if (gGamemode == HS_Gamemode.Invasion)
+if (EventPlayer().pIsBoss)
+if (HasStatus(EventPlayer(), Status.KnockedDown))
+{ ClearStatus(EventPlayer(), Status.KnockedDown); }
+
+//rule: "[INVASION] Make portal immune to stomp"
+//Event.OnDamageTaken
+//Team.Team2
+//Player.WreckingBall
+//if (gGamemode == HS_Gamemode.Invasion)
+//if (EventPlayer().pIsBoss)
+//if (Attacker().Hero() == Hero.Mauga)
+//if (EventAbility() == Button.Ability1)
+//{ ClearStatus(EventPlayer(), Status.KnockedDown); }
+
+//rule: "[INVASION] Make portal immune to earthshatter"
+//Event.OnDamageTaken
+//Team.Team2
+//Player.WreckingBall
+//if (gGamemode == HS_Gamemode.Invasion)
+//if (EventPlayer().pIsBoss)
+//if (Attacker().Hero() == Hero.Reinhardt)
+//if (EventAbility() == Button.Ultimate)
+//{ ClearStatus(EventPlayer(), Status.KnockedDown); }
+
+// This should be generalised to all bosses
+rule: "[INVASION] Make portal immune to charge"
+Event.PlayerDealtKnockback
+Team.Team1
+Player.Reinhardt
+if (gGamemode == HS_Gamemode.Invasion)
+if (Victim().pIsBoss)
+# This somehow registers as the pin connecting
+if (EventAbility() == null)
+{ CancelPrimaryAction(EventPlayer()); }
+
+// This should be generalised to all bosses
+rule: "[INVASION] Make portal immune to hook"
+Event.OnDamageTaken
+Team.Team2
+Player.WreckingBall
+if (gGamemode == HS_Gamemode.Invasion)
+if (EventPlayer().pIsBoss)
+if (Attacker().Hero() == Hero.Roadhog)
+if (EventAbility() == Button.Ability1)
+{ CancelPrimaryAction(Attacker()); }
