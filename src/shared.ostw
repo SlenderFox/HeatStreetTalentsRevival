@@ -15,13 +15,9 @@ globalvar Number gIter;
 void RecoveryTeleport(Player _player = EventPlayer(), Vector _position = null) "[SHARED COROUTINE] Recovery Teleport"
 {
 	if (_position == null)
-	{
-		Teleport(_player, NearestWalkablePosition(EventPlayer()));
-	}
+	{ Teleport(_player, NearestWalkablePosition(EventPlayer())); }
 	else
-	{
-		Teleport(_player, _position);
-	}
+	{ Teleport(_player, _position); }
 }
 
 Vector positionUnderPlayer(in Player _player)
