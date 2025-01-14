@@ -438,9 +438,13 @@ void AStar()
 			Number scoreIndex = scores.Map(s => s.nodeIndex).IndexOf(neighborI);
 			Number[] neighborAttributes: <Number[]>neighbor[ONE];
 			# Ensure that the path to the neighbor is enabled.
+			//if (
+			//	neighborAttributes.Length == ZERO
+			//	|| neighborAttributes.IsTrueForAny(a => PF_pPlayerAttributes.Contains(a))
+			//)
 			if (
 				neighborAttributes.Length == ZERO
-				|| neighborAttributes.IsTrueForAny(a => PF_pPlayerAttributes.Contains(a))
+				|| IsTrueForAny(neighborAttributes, PF_pPlayerAttributes.Contains(ArrayElement()))
 			)
 			{
 				Number score = scores[current].gScore + PF_gLoadedMap.nodes[currentNodeIndex].DistanceTo(PF_gLoadedMap.nodes[neighborI]);
