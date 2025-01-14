@@ -108,13 +108,27 @@ if (EventAbility() == null)
 	SetStatus(EventPlayer(), Victim(), Status.KnockedDown, 1.2);
 }
 
-// This should be generalised to all bosses
-rule: "[INVASION] Make portal immune to hook"
-Event.OnDamageTaken
-Team.Team2
-Player.WreckingBall
-if (gGamemode == HS_Gamemode.Invasion)
-if (EventPlayer().pIsBoss)
-if (Attacker().Hero() == Hero.Roadhog)
+// This is generalised to all bosses
+rule: "[INVASION] Make roadhog pull himself towards the boss"
+Event.OnDamageDealt
+Team.Team1
+Player.Roadhog
+if (Victim().pIsBoss)
 if (EventAbility() == Button.Ability1)
-{ CancelPrimaryAction(Attacker()); }
+{
+	Wait(0.4);
+	AbortIf(
+		!IsInLineOfSight(
+			Victim(),
+			EventPlayer(),
+			BarrierLOS.EnemyBarriersBlock
+		)
+	);
+	ApplyImpulse(
+		EventPlayer(),
+		DirectionTowards(EventPlayer(), Victim()),
+		(DistanceBetween(EventPlayer(), Victim()) - 3.2) * 4.5,
+		Relative.ToWorld,
+		ContraryMotion.Cancel
+	);
+}
