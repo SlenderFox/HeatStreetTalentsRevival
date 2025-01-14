@@ -27,6 +27,6 @@ globalvar HS_Gamemode | HS_Gamemode[] gGamemode;
 
 rule: "[GAMESTATE] Temp automatically change gamestate after a bit"
 {
-	Wait(15);
+	Wait(10);
 	gGameState = GameState.Inprogress;
 }
