@@ -3,9 +3,9 @@
 
 enum GameState
 {
-	Pregame,
-	Inprogress,
-	Interround
+	InProgress,
+	PreGame,
+	InterRound
 }
 
 enum HS_Gamemode
@@ -17,12 +17,12 @@ enum HS_Gamemode
 
 String GAMEMODE_STRING: ["Invasion", "High Value Target", "Domination"][gGamemode];
 String GAMESTATE_STRING: ["Pregame", "Inprogress", "Interround"][gGameState];
-Number INTERROUND_LENGTH: 20;
+Number FORCE_START_COUNTDOWN_LENGTH: 20;
 
-globalvar GameState gGameState = GameState.Pregame;
+globalvar GameState gGameState = GameState.PreGame;
 globalvar HS_Gamemode | HS_Gamemode[] gGamemode;
 globalvar Number gRound = ZERO;
-globalvar Number gInterroundTimer = ZERO;
+globalvar Number gPreRoundTimer = ZERO;
 
 playervar Boolean pReady = false;
 
@@ -32,9 +32,9 @@ playervar Boolean pReady = false;
 // Or each gamemode changes the gamestate themselves.
 
 rule: "[GAMESTATE] Start the game when every player is ready"
+if (gGameState)
 # Cannot use element optimisation
 if (NumberOfPlayers(Team.Team1) > 0)
-//if (AllPlayers(Team.Team1).IsTrueForAll(p => p.IsDummyBot() || p.pReady))
 if (
 	IsTrueForAll(
 		AllPlayers(Team.Team1),
@@ -42,30 +42,52 @@ if (
 	)
 )
 {
-	Wait(2, WaitBehavior.AbortWhenFalse);
-	gGameState = GameState.Inprogress;
+	# Grace period if the player is by themself
+	if (gFriendlyBot != null)
+	{ Wait(2, WaitBehavior.AbortWhenFalse); }
+
+	gGameState = GameState.InProgress;
+	gPreRoundTimer = ZERO;
+	AllPlayers().pReady = false;
 }
 
 rule: "[GAMESTATE] Player readying up"
 Event.OngoingPlayer
 Team.Team1
-if (gGameState == GameState.Pregame)
+if (gGameState)
 if (IsButtonHeld(EventPlayer(), Button.Interact))
 {
 	Wait(0.4, WaitBehavior.AbortWhenFalse);
-	EventPlayer().pReady = true;
-	BigMessage(EventPlayer(), "Readied");
+	pReady = !pReady;
+	if (pReady)
+	{ Communicate(EventPlayer(), Communication.Ready); }
 }
 
-rule: "[GAMESTATE] Round over"
-if (gGameState == GameState.Interround)
+rule: "[GAMESTATE] Countdown if at least one person is ready"
+if (AllPlayers(Team.Team1).IsTrueForAny(p => p.pReady))
 {
-	gInterroundTimer = INTERROUND_LENGTH;
-	# Cannot use element optimisation
-	while (gInterroundTimer > 0)
+	gPreRoundTimer = FORCE_START_COUNTDOWN_LENGTH;
+	while (gGameState)
 	{
-		Wait(0.1);
-		gInterroundTimer -= 0.1;
+		Wait(ONE);
+		gPreRoundTimer -= ONE;
+
+		# If everyone has unreadied, abort countdown
+		if (
+			IsTrueForAll(
+				AllPlayers(Team.Team1),
+				!ArrayElement().pReady
+			)
+		)
+		{
+			gPreRoundTimer = ZERO;
+			Abort();
+		}
+
+		if (gPreRoundTimer == ZERO)
+		{
+			gGameState = GameState.InProgress;
+			AllPlayers().pReady = false;
+		}
 	}
-	gGameState = GameState.Inprogress;
 }

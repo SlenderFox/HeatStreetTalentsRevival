@@ -34,7 +34,7 @@ Event.OngoingPlayer
 Team.Team2
 if (gGamemode == HS_Gamemode.Invasion)
 //> If the portal bot is reused as the end of round boss, then this will cause issues.
-if (gGameState == GameState.Inprogress)
+if (gGameState == false)
 if (EventPlayer().pIsBoss)
 {
 	BigMessage(AllPlayers(Team.Team1), "Find and destroy the portal");
@@ -103,6 +103,4 @@ Team.Team2
 Player.WreckingBall
 if (gGamemode == HS_Gamemode.Invasion)
 if (EventPlayer().pIsBoss)
-{
-	gGameState = GameState.Interround;
-}
+{ gGameState = GameState.InterRound; }
