@@ -182,13 +182,14 @@ if (Victim().pIsBoss)
 if (EventAbility() == Button.Ability1)
 {
 	Wait(0.4);
-	AbortIf(
-		!IsInLineOfSight(
+	AbortIf(!(
+		IsInLineOfSight(
 			Victim(),
 			EventPlayer(),
 			BarrierLOS.EnemyBarriersBlock
 		)
-	);
+		&& Victim().IsAlive()
+	));
 	ApplyImpulse(
 		EventPlayer(),
 		DirectionTowards(EventPlayer(), Victim()),
