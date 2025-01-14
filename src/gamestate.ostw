@@ -16,7 +16,7 @@ enum HS_Gamemode
 }
 
 String GAMEMODE_STRING: ["Invasion", "High Value Target", "Domination"][gGamemode];
-String GAMESTATE_STRING: ["Pregame", "Inprogress", "Interround"][gGameState];
+String GAMESTATE_STRING: ["Inprogress", "Pregame", "Interround"][gGameState];
 Number FORCE_START_COUNTDOWN_LENGTH: 20;
 
 globalvar GameState gGameState = GameState.PreGame;
