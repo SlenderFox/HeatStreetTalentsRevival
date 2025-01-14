@@ -149,7 +149,7 @@ if (EventPlayer().IsButtonHeld(Button.Reload))
 	AbortIf(pDownedStartTime);
 	pIsChangingHeroes = true;
 	# Sets the position as the ground under the player to avoid spawning them midair
-	Vector position! = positionUnderPlayer(EventPlayer());
+	Vector position! = PositionUnderPlayer(EventPlayer());
 	Vector facing! = EventPlayer().FacingDirection();
 	SetAllowedHeroes(EventPlayer(), Hero.Brigitte);
 	SetAllowedHeroes(EventPlayer(), Hero.Orisa);

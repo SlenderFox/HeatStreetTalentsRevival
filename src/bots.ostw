@@ -64,7 +64,7 @@ if (
 	# Pause updates if server is being overloaded
 	WaitUntil(ServerLoadAverage() < 230, 999);
 	# Set the destination as the ground under the player.
-	PF_pDestination = positionUnderPlayer(pFollowing);
+	PF_pDestination = PositionUnderPlayer(pFollowing);
 	# Avoid spamming destination updates
 	Wait(1);
 	LoopIfConditionIsTrue();
