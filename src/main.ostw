@@ -20,12 +20,18 @@ void SkipAssembleHeroes()
 	SetMatchTime(ZERO);
 }
 
-rule: "[MAIN] Setup" -100
+void Settings()
 {
-	EnableInspectorRecording();
 	Credits();
 	SelectGamemode();
 	SelectFriendlyBot();
+	SelectNumberOfRounds();
+}
+
+rule: "[MAIN] Setup" -100
+{
+	EnableInspectorRecording();
+	Settings();
 	SkipAssembleHeroes();
 	//DisableRespawning(AllPlayers());
 	SetupHUD();

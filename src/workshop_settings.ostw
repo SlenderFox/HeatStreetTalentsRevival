@@ -2,6 +2,7 @@
 */
 
 import "shared.ostw";
+import "gamestate.ostw";
 
 globalvar Hero gFriendlyBotHero;
 
@@ -38,4 +39,9 @@ void SelectFriendlyBot()
 		Hero.Mauga,
 		0
 	);
+}
+
+void SelectNumberOfRounds()
+{
+	gMaxRounds = WorkshopSettingInteger("Generic", "Round count", 15, 1, 50, 1);
 }

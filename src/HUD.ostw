@@ -70,10 +70,11 @@ void CreateTeamDisplay()
 			"<0> <1><2><3>",
 			EventPlayer(),
 			"", //pAbPriority ? ["(A) ", "(B) ", "(C) "][pAbPriority - 1] : "",
-			gGameState
-				? EventPlayer().pReady
-					? "Ready " : "Not Ready "
-				: "",
+			gRoundInProgress
+				? ""
+				: EventPlayer().pReady
+					? "Ready "
+					: "Not Ready ",
 			"" //InBuyMenu ? "(In shop)" : ""
 		>,
 		Text: <
