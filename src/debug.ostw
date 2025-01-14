@@ -260,30 +260,3 @@ if (BUTTON_REVIVE)
 	EnablePlayer();
 	RevivePlayer(HOST);
 }
-
-//> TEMPORARY FOR TESTING
-globalvar Player gTempBot;
-
-rule: "[DEBUG] Temp add bot"
-Event.OngoingPlayer
-Team.Team1
-if (IS_HOST)
-if (IsCommunicating(HOST, Communication.Yes))
-{
-	gTempBot = CreateDummyBot(
-		Hero.Soldier76,
-		Team.Team1,
-		-1,
-		Vector(0, 0, 0),
-		null
-	);
-}
-
-rule: "[DEBUG] Temp remove bot"
-Event.OngoingPlayer
-Team.Team1
-if (IS_HOST)
-if (IsCommunicating(HOST, Communication.No))
-{
-	DestroyDummyBot(gTempBot);
-}
