@@ -156,13 +156,14 @@ if (
 	}
 
 	if (
-		gElevatorNodes.IsTrueForAny(
-			n => DistanceBetween(
+		IsTrueForAny(
+			gElevatorNodes,
+			DistanceBetween(
 				EventPlayer(),
 				Vector(
-					XOf(n),
+					XOf(ArrayElement()),
 					YOf(EventPlayer().Position()),
-					ZOf(n)
+					ZOf(ArrayElement())
 				)
 			) < 1.5
 		)
@@ -688,13 +689,14 @@ if (
 	);
 
 	if (
-		gElevatorNodes.IsTrueForAny(
-			n => DistanceBetween(
+		IsTrueForAny(
+			gElevatorNodes,
+			DistanceBetween(
 				EventPlayer(),
 				Vector(
-					XOf(n),
+					XOf(ArrayElement()),
 					EventPlayer().Position().Y,
-					ZOf(n)
+					ZOf(ArrayElement())
 				)
 			) < 1.5
 		)

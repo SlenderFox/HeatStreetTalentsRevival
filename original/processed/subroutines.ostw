@@ -240,11 +240,25 @@ void teleport_to_free_spawn() "Subroutine: Teleport to free Spawn"
 		gTemp2 = MappedArray(gSpawnPosList, false);
 		for (gIterator = 0; CountOf(gSpawnPosList); 1)
 		{
-			if (gCombatants.IsTrueForAny(p => IsInLineOfSight(gSpawnPosList[gIterator] + Up(), p.EyePosition(), BarrierLOS.NoBarriersBlock)))
+			if (
+				IsTrueForAny(
+					gCombatants,
+					IsInLineOfSight(
+						gSpawnPosList[gIterator] + Up(),
+						EyePosition(ArrayElement()),
+						BarrierLOS.NoBarriersBlock
+					)
+				)
+			)
 			{
 				gTemp2[gIterator] = 2;
 			}
-			else if (gCombatants.IsTrueForAny(p => DistanceBetween(gSpawnPosList[gIterator], p) <= 10))
+			else if (
+				IsTrueForAny(
+					gCombatants,
+					DistanceBetween(gSpawnPosList[gIterator], ArrayElement()) <= 10
+				)
+			)
 			{
 				gTemp2[gIterator] = 1;
 			}
