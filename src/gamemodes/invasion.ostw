@@ -94,16 +94,19 @@ if (EventPlayer().pIsBoss)
 if (HasStatus(EventPlayer(), Status.KnockedDown))
 { ClearStatus(EventPlayer(), Status.KnockedDown); }
 
-// This should be generalised to all bosses
-rule: "[INVASION] Make portal immune to charge"
+// This is generalised to all bosses
+rule: "[INVASION] Prevent Reinhardt from pinning the boss"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Reinhardt
-if (gGamemode == HS_Gamemode.Invasion)
 if (Victim().pIsBoss)
 # This somehow registers as the pin connecting
 if (EventAbility() == null)
-{ CancelPrimaryAction(EventPlayer()); }
+{
+	Damage(Victim(), EventPlayer(), 100);
+	CancelPrimaryAction(EventPlayer());
+	SetStatus(EventPlayer(), Victim(), Status.KnockedDown, 1.2);
+}
 
 // This should be generalised to all bosses
 rule: "[INVASION] Make portal immune to hook"
