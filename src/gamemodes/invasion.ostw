@@ -13,7 +13,7 @@ import "../gamestate.ostw";
 // Health bar HUD element.
 // Portal effects.
 
-globalvar Vector gPortalPosition = Vector(-6, 0.5, 6);
+globalvar Vector gPortalPosition = Vector(-6, 3, 6);
 
 # Global reference to the portal boss
 globalvar Player gIVBoss;
@@ -52,7 +52,7 @@ if (EventPlayer().pIsBoss)
 	//SetAbility2Enabled(EventPlayer(), false);
 	// Possibly do something with mines?
 	//SetUltimateAbilityEnabled(EventPlayer(), false);
-
+	StartScalingPlayer(EventPlayer(), 2, false);
 	# Lock the bot at the portal location, works for everything except charge
 	StartForcingPlayerPosition(EventPlayer(), gPortalPosition, false);
 	# Necessary delay
