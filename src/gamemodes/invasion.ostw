@@ -12,7 +12,6 @@ import "../gamestate.ostw";
 // Spawn boss at the end, reuse dummy.
 // Health bar HUD element.
 // Portal effects.
-// Will need a case to prevent rein charge interaction
 
 globalvar Vector gPortalPosition = Vector(-6, 0.5, 6);
 
@@ -94,26 +93,6 @@ if (gGamemode == HS_Gamemode.Invasion)
 if (EventPlayer().pIsBoss)
 if (HasStatus(EventPlayer(), Status.KnockedDown))
 { ClearStatus(EventPlayer(), Status.KnockedDown); }
-
-//rule: "[INVASION] Make portal immune to stomp"
-//Event.OnDamageTaken
-//Team.Team2
-//Player.WreckingBall
-//if (gGamemode == HS_Gamemode.Invasion)
-//if (EventPlayer().pIsBoss)
-//if (Attacker().Hero() == Hero.Mauga)
-//if (EventAbility() == Button.Ability1)
-//{ ClearStatus(EventPlayer(), Status.KnockedDown); }
-
-//rule: "[INVASION] Make portal immune to earthshatter"
-//Event.OnDamageTaken
-//Team.Team2
-//Player.WreckingBall
-//if (gGamemode == HS_Gamemode.Invasion)
-//if (EventPlayer().pIsBoss)
-//if (Attacker().Hero() == Hero.Reinhardt)
-//if (EventAbility() == Button.Ultimate)
-//{ ClearStatus(EventPlayer(), Status.KnockedDown); }
 
 // This should be generalised to all bosses
 rule: "[INVASION] Make portal immune to charge"
