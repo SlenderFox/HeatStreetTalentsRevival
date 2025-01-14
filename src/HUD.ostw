@@ -15,9 +15,10 @@ void SetupHUD()
 	SetObjectiveDescription(
 		AllPlayers(),
 		<
-			"Heat Street Talents Revival [WSCODE 4.0.0] | <0> | <1>",
+			"Heat Street Talents Revival [WSCODE 4.0.0] | <0> | <1> | <2>",
 			CurrentMap(),
-			GAMEMODE_STRING
+			GAMEMODE_STRING,
+			GAMESTATE_STRING
 		>
 	);
 	# Hide the TDM score HUD.
@@ -51,6 +52,9 @@ Color TeamDisplayColour()
 			: Color.Orange;
 }
 
+# The top left hud element that lists all players and information about them.
+#
+# Uses EventPlayer().
 void CreateTeamDisplay()
 {
 	CreateHudText(
@@ -63,12 +67,14 @@ void CreateTeamDisplay()
 				: ""
 		>,
 		Subheader: <
-			"<0> <1> <2>",
+			"<0> <1><2><3>",
 			EventPlayer(),
-			//pAbPriority ? ["(A)", "(B)", "(C)"][pAbPriority - 1] : "",
-			//InBuyMenu ? "(In Shop)" : ""
-			"Priority",
-			"Shop"
+			"(X) ", //pAbPriority ? ["(A) ", "(B) ", "(C) "][pAbPriority - 1] : "",
+			gGameState == GameState.Pregame
+				? EventPlayer().pReady
+					? "Ready " : "Not Ready "
+				: "",
+			"(Not in shop)" //InBuyMenu ? "(In shop)" : ""
 		>,
 		Text: <
 			"<0><1>",
@@ -82,7 +88,7 @@ void CreateTeamDisplay()
 						"<0> HP",
 						RoundToInteger(EventPlayer().Health(), Rounding.Up)
 					>,
-			", $0"
+			" $0"
 		>,
 		Location: Location.Left,
 		SortOrder: LocalPlayer() == EventPlayer() ? -1 : SlotOf(EventPlayer()),

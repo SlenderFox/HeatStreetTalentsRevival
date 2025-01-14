@@ -16,17 +16,43 @@ enum HS_Gamemode
 }
 
 String GAMEMODE_STRING: ["Invasion", "High Value Target", "Domination"][gGamemode];
+String GAMESTATE_STRING: ["Pregame", "Inprogress", "Interround"][gGameState];
 
 globalvar GameState gGameState = GameState.Pregame;
 globalvar HS_Gamemode | HS_Gamemode[] gGamemode;
+globalvar Number gRound = ZERO;
+
+playervar Boolean pReady = false;
 
 // Handle changing from pregame to inprogress
 // How should going between inprogress and interround go?
 // Each gamemode can possibly set a flag when they want to end the round.
 // Or each gamemode changes the gamestate themselves.
 
-rule: "[GAMESTATE] Temp automatically change gamestate after a bit"
+rule: "[GAMESTATE] Start the game when every player is ready"
+# Cannot use element optimisation
+if (NumberOfPlayers(Team.Team1) > 0)
+//if (AllPlayers(Team.Team1).IsTrueForAll(p => p.IsDummyBot() || p.pReady))
+if (
+	IsTrueForAll(
+		AllPlayers(Team.Team1),
+		IsDummyBot(ArrayElement()) || ArrayElement().pReady
+	)
+)
 {
-	Wait(10);
+	Wait(2, WaitBehavior.AbortWhenFalse);
+	BigMessage(AllPlayers(), "Starting");
+	Wait(2);
 	gGameState = GameState.Inprogress;
+}
+
+rule: "[GAMESTATE] Player readying up"
+Event.OngoingPlayer
+Team.Team1
+if (gGameState == GameState.Pregame)
+if (IsButtonHeld(EventPlayer(), Button.Interact))
+{
+	Wait(0.4, WaitBehavior.AbortWhenFalse);
+	EventPlayer().pReady = true;
+	BigMessage(EventPlayer(), "Readied!");
 }
