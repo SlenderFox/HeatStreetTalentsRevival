@@ -2,6 +2,7 @@
 */
 
 import "shared.ostw";
+import "gamemodes/invasion.ostw";
 
 playervar Number pDownedStartTime;
 playervar Number pReviveProgress;
@@ -158,4 +159,41 @@ if (EventPlayer().IsButtonHeld(Button.Reload))
 	Teleport(EventPlayer(), position);
 	SetFacing(EventPlayer(), facing);
 	pIsChangingHeroes = false;
+}
+
+rule: "[TEAM 1] Prevent Reinhardt from pinning the boss"
+Event.PlayerDealtKnockback
+Team.Team1
+Player.Reinhardt
+if (Victim().pIsBoss)
+# This somehow registers as the pin connecting
+if (EventAbility() == null)
+{
+	Damage(Victim(), EventPlayer(), 100);
+	CancelPrimaryAction(EventPlayer());
+	SetStatus(EventPlayer(), Victim(), Status.KnockedDown, 1.2);
+}
+
+rule: "[TEAM 1] Make roadhog pull himself towards the boss"
+Event.OnDamageDealt
+Team.Team1
+Player.Roadhog
+if (Victim().pIsBoss)
+if (EventAbility() == Button.Ability1)
+{
+	Wait(0.4);
+	AbortIf(
+		!IsInLineOfSight(
+			Victim(),
+			EventPlayer(),
+			BarrierLOS.EnemyBarriersBlock
+		)
+	);
+	ApplyImpulse(
+		EventPlayer(),
+		DirectionTowards(EventPlayer(), Victim()),
+		(DistanceBetween(EventPlayer(), Victim()) - 3.2) * 4.5,
+		Relative.ToWorld,
+		ContraryMotion.Cancel
+	);
 }
