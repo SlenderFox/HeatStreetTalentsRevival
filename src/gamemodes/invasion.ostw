@@ -37,6 +37,7 @@ if (gGamemode == HS_Gamemode.Invasion)
 if (gGameState == GameState.Inprogress)
 if (EventPlayer().pIsBoss)
 {
+	BigMessage(AllPlayers(Team.Team1), "Find and destroy the portal");
 	# Need to set all the bot settings here every round
 	//> Reconsider this, should players be able to stand on the portal?
 	DisableMovementCollisionWithPlayers(EventPlayer());
@@ -55,6 +56,8 @@ if (EventPlayer().pIsBoss)
 	StartScalingPlayer(EventPlayer(), 2, false);
 	# Lock the bot at the portal location, works for everything except charge
 	StartForcingPlayerPosition(EventPlayer(), gPortalPosition, false);
+	//> Can be removed once end of round boss is implemented
+	Respawn(EventPlayer());
 	# Necessary delay
 	Wait(0.033);
 	# Start forcing the hero since it will have been different in the previous round
@@ -93,3 +96,13 @@ if (gGamemode == HS_Gamemode.Invasion)
 if (EventPlayer().pIsBoss)
 if (HasStatus(EventPlayer(), Status.KnockedDown))
 { ClearStatus(EventPlayer(), Status.KnockedDown); }
+
+rule: "[INVASION] TEMP End round when portal dies"
+Event.OnDeath
+Team.Team2
+Player.WreckingBall
+if (gGamemode == HS_Gamemode.Invasion)
+if (EventPlayer().pIsBoss)
+{
+	gGameState = GameState.Interround;
+}

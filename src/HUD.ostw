@@ -15,10 +15,12 @@ void SetupHUD()
 	SetObjectiveDescription(
 		AllPlayers(),
 		<
-			"Heat Street Talents Revival [WSCODE 4.0.0] | <0> | <1> | <2>",
-			CurrentMap(),
-			GAMEMODE_STRING,
-			GAMESTATE_STRING
+			"Heat Street Talents Revival [WSCODE 4.0.0] | <0> | <1><2>",
+			EvaluateOnce(CurrentMap()),
+			EvaluateOnce(GAMEMODE_STRING),
+			gGameState == GameState.Interround
+				? <" - <0>", gInterroundTimer>
+				: ""
 		>
 	);
 	# Hide the TDM score HUD.

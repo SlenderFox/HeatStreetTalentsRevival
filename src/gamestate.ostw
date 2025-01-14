@@ -17,10 +17,12 @@ enum HS_Gamemode
 
 String GAMEMODE_STRING: ["Invasion", "High Value Target", "Domination"][gGamemode];
 String GAMESTATE_STRING: ["Pregame", "Inprogress", "Interround"][gGameState];
+Number INTERROUND_LENGTH: 20;
 
 globalvar GameState gGameState = GameState.Pregame;
 globalvar HS_Gamemode | HS_Gamemode[] gGamemode;
 globalvar Number gRound = ZERO;
+globalvar Number gInterroundTimer = ZERO;
 
 playervar Boolean pReady = false;
 
@@ -41,8 +43,6 @@ if (
 )
 {
 	Wait(2, WaitBehavior.AbortWhenFalse);
-	BigMessage(AllPlayers(), "Starting");
-	Wait(2);
 	gGameState = GameState.Inprogress;
 }
 
@@ -54,5 +54,18 @@ if (IsButtonHeld(EventPlayer(), Button.Interact))
 {
 	Wait(0.4, WaitBehavior.AbortWhenFalse);
 	EventPlayer().pReady = true;
-	BigMessage(EventPlayer(), "Readied!");
+	BigMessage(EventPlayer(), "Readied");
+}
+
+rule: "[GAMESTATE] Round over"
+if (gGameState == GameState.Interround)
+{
+	gInterroundTimer = INTERROUND_LENGTH;
+	# Cannot use element optimisation
+	while (gInterroundTimer > 0)
+	{
+		Wait(0.1);
+		gInterroundTimer -= 0.1;
+	}
+	gGameState = GameState.Inprogress;
 }

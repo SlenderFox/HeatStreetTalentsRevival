@@ -51,11 +51,16 @@ rule: "[DEBUG] Display debug information on top left"
 			ServerLoadPeak() * loadScaler,
 			HOST_POS,
 			<
-				"<0> vs <1>",
+				"<0>: <1> vs <2>",
+				GAMESTATE_STRING,
 				NumberOfPlayers(Team.Team1),
 				NumberOfPlayers(Team.Team2)
 			>,
-			HOST.pInControlMode ? "Control mode" : ""
+			HOST.pInControlMode
+				? HOST.pIsNoclipping
+					? "control mode: noclipping"
+					: "control mode"
+				: ""
 		>,
 		Location: Location.Right
 	);
