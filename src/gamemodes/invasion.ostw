@@ -59,7 +59,7 @@ if (EventPlayer().pIsBoss)
 	//> Can be removed once end of round boss is implemented
 	Respawn(EventPlayer());
 	# Necessary delay
-	Wait(0.033);
+	Wait(0.05);
 	# Start forcing the hero since it will have been different in the previous round
 	ForcePlayerHero(EventPlayer(), Hero.WreckingBall);
 }
@@ -97,10 +97,49 @@ if (EventPlayer().pIsBoss)
 if (HasStatus(EventPlayer(), Status.KnockedDown))
 { ClearStatus(EventPlayer(), Status.KnockedDown); }
 
-rule: "[INVASION] TEMP End round when portal dies"
+rule: "[INVASION] Destroying portal spawns boss"
 Event.OnDeath
 Team.Team2
 Player.WreckingBall
 if (gGamemode == HS_Gamemode.Invasion)
 if (EventPlayer().pIsBoss)
-{ gGameState = GameState.InterRound; }
+{
+	BigMessage(AllPlayers(Team.Team1), "Portal destroyed");
+	EnableMovementCollisionWithPlayers(EventPlayer());
+	SetMoveSpeed(EventPlayer(), 100);
+	SetGravity(EventPlayer(), 100);
+	SetKnockbackReceived(EventPlayer(), 100);
+	SetJumpEnabled(EventPlayer(), true);
+	SetCrouchEnabled(EventPlayer(), true);
+	SetMeleeEnabled(EventPlayer(), true);
+	SetPrimaryFireEnabled(EventPlayer(), true);
+	SetSecondaryFireEnabled(EventPlayer(), true);
+	// Possibly do something with adaptive shields?
+	//SetAbility2Enabled(EventPlayer(), false);
+	// Possibly do something with mines?
+	//SetUltimateAbilityEnabled(EventPlayer(), false);
+	StartScalingPlayer(EventPlayer(), 1.5, false);
+	Wait(1);
+	Respawn(EventPlayer());
+	# Necessary delay
+	Wait(0.05);
+	StopForcingPlayerPosition(EventPlayer());
+	# Start forcing the hero since it will have been different in the previous round
+	ForcePlayerHero(
+		EventPlayer(),
+		RandomValueInArray(
+			RemoveFromArray(AllHeroes(), Hero.WreckingBall)
+		)
+	);
+}
+
+rule: "[INVASION] End round when non-portal boss dies"
+Event.OnDeath
+Team.Team2
+if (gGamemode == HS_Gamemode.Invasion)
+if (gGameState != GameState.PreGame)
+if (EventPlayer().pIsBoss)
+if (EventPlayer().Hero() != Hero.WreckingBall)
+{
+	gGameState = GameState.InterRound;
+}
