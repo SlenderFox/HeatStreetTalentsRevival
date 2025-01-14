@@ -1,6 +1,7 @@
 /** Compilation entry point.
  * Handles operation of the game.
 */
+
 import "settings.lobby";
 
 import "shared.ostw";
