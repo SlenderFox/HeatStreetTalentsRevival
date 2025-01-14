@@ -21,8 +21,8 @@ Number FORCE_START_COUNTDOWN_LENGTH: 20;
 
 globalvar GameState gGameState = GameState.PreGame;
 globalvar HS_Gamemode | HS_Gamemode[] gGamemode;
-globalvar Number gRound = ZERO;
-globalvar Number gPreRoundTimer = ZERO;
+globalvar Number gRound;
+globalvar Number gPreRoundTimer;
 
 playervar Boolean pReady = false;
 
