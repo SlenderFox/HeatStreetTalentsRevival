@@ -328,7 +328,8 @@ Edges between nodes have a list of attributes for each direction.
 - Everything in her kit is difficult to implement.
 - Ult has potential to be interesting.
 ##### Lifeweaver
-- No.
+- Tree could be cool.
+- Every other ability would not work/be difficult to implement.
 ##### Lucio
 - Yes.
 - Wallride is likely impossible to implement.
@@ -408,6 +409,8 @@ Edges between nodes have a list of attributes for each direction.
 - Swinging is basically impossible to implement.
 - Ground slam follows in suit.
 - Probably can be reserved entirely for the portal.
+- Detonator, slowly rolls towards players. Uses ult when close then immediately dies dealing damage to enemies around him.
+- Could be good for bunker busting.
 ##### Zarya
 - Is projected barrier possible?
 - Could support a boss enemy or be a boss enemy herself.
