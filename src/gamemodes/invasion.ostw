@@ -140,6 +140,4 @@ if (gGamemode == HS_Gamemode.Invasion)
 if (gCurrentRound)
 if (EventPlayer().pIsBoss)
 if (EventPlayer().Hero() != Hero.WreckingBall)
-{
-	gRoundInProgress = false;
-}
+{ gRoundInProgress = false; }

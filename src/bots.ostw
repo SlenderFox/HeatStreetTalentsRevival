@@ -100,23 +100,20 @@ if (
 	pTarget = null;
 }
 
-// TODO Replace
-Player TEMP_firstPlayer()
-{
-	return AllPlayers(Team.Team1).Filter(p => !p.IsDummy()).First;
-}
+# This requires that there only be one person on the team beside the dummy.
+Player Human_Player()
+{ return AllPlayers(Team.Team1).Filter(p => !p.IsDummy()).First; }
 
 rule: "[BOTS] Friendly bot force revive player"
 Event.OngoingPlayer
 if (IS_DUMMY)
 if (EventPlayer() == gFriendlyBot)
-# Will need to be changed
-if (TEMP_firstPlayer().pDownedStartTime)
+if (Human_Player().pDownedStartTime)
 {
-	while (TEMP_firstPlayer().pDownedStartTime)
+	while (Human_Player().pDownedStartTime)
 	{
 		# Continuously update the destination every second to make sure the bot stays in the revive circle
-		gFriendlyBot.PF_pDestination = TEMP_firstPlayer().Position();
+		gFriendlyBot.PF_pDestination = Human_Player().Position();
 		Wait(1);
 	}
 }
