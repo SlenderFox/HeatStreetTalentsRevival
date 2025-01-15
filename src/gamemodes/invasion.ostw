@@ -12,9 +12,11 @@ import "../gamestate.ostw";
 // Spawn boss at the end, reuse dummy.
 // Health bar HUD element.
 // Portal effects.
+// Sombra is an issue: EMP.
 
 Number PORTAL_HEALTH: 200;
 Number PORTAL_SIZE_SCALAR: 2;
+Number PORTAL_PHASES: 3;
 Number BOSS_SIZE_SCALAR: 1.5;
 Number BOSS_HEALTH_SCALAR: 100;
 Number BOSS_KNOCKBACK_SCALAR: 50;
@@ -46,7 +48,7 @@ if (gGamemode == HS_Gamemode.Invasion)
 if (gRoundInProgress)
 if (EventPlayer().pIsBoss)
 {
-	gPhase = 2;
+	gPhase = PORTAL_PHASES - 1;
 	BigMessage(AllPlayers(Team.Team1), "Find and destroy the portal");
 	# Need to set all the bot settings here every round
 	//> Reconsider this, should players be able to stand on the portal?
@@ -129,10 +131,8 @@ if (gPhase)
 {
 	SetPlayerHealth(EventPlayer(), EventPlayer().MaxHealth());
 	if (gPhase == 1)
-	{
-		ClearStatus(EventPlayer(), Status.Unkillable);
-	}
-	gPhase -= 1;
+	{ ClearStatus(EventPlayer(), Status.Unkillable); }
+	gPhase -= ONE;
 }
 
 rule: "[INVASION] Destroying portal spawns boss"
