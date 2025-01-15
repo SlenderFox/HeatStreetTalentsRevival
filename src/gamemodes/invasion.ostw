@@ -13,10 +13,19 @@ import "../gamestate.ostw";
 // Health bar HUD element.
 // Portal effects.
 
+Number PORTAL_HEALTH: 200;
+Number PORTAL_SIZE_SCALAR: 2;
+Number BOSS_SIZE_SCALAR: 1.5;
+Number BOSS_HEALTH_SCALAR: 100;
+Number BOSS_KNOCKBACK_SCALAR: 50;
+Number BOSS_SPEED_SCALAR: 100;
+Number BOSS_HEALING_SCALAR: 20;
+
 globalvar Vector gPortalPosition = Vector(-6, 3, 6);
 
 # Global reference to the portal boss
 globalvar Player gIVBoss;
+globalvar Number gPhase;
 
 rule: "[INVASION] Initialise gamemode"
 if (gGamemode == HS_Gamemode.Invasion)
@@ -29,7 +38,7 @@ if (gGamemode == HS_Gamemode.Invasion)
 	StartForcingDummyBotName(gIVBoss, "Invasion Boss");
 }
 
-rule: "[INVASION] Setup portal when gamestate changes to inprogress"
+rule: "[INVASION] Setup portal when round starts"
 Event.OngoingPlayer
 Team.Team2
 if (gGamemode == HS_Gamemode.Invasion)
@@ -37,13 +46,15 @@ if (gGamemode == HS_Gamemode.Invasion)
 if (gRoundInProgress)
 if (EventPlayer().pIsBoss)
 {
+	gPhase = 2;
 	BigMessage(AllPlayers(Team.Team1), "Find and destroy the portal");
 	# Need to set all the bot settings here every round
 	//> Reconsider this, should players be able to stand on the portal?
 	DisableMovementCollisionWithPlayers(EventPlayer());
-	SetMoveSpeed(EventPlayer(), ZERO);
 	SetGravity(EventPlayer(), ZERO);
+	SetMoveSpeed(EventPlayer(), ZERO);
 	SetKnockbackReceived(EventPlayer(), ZERO);
+	SetHealingReceived(EventPlayer(), ZERO);
 	SetJumpEnabled(EventPlayer(), false);
 	SetCrouchEnabled(EventPlayer(), false);
 	SetMeleeEnabled(EventPlayer(), false);
@@ -53,7 +64,7 @@ if (EventPlayer().pIsBoss)
 	//SetAbility2Enabled(EventPlayer(), false);
 	// Possibly do something with mines?
 	//SetUltimateAbilityEnabled(EventPlayer(), false);
-	StartScalingPlayer(EventPlayer(), 2, false);
+	StartScalingPlayer(EventPlayer(), PORTAL_SIZE_SCALAR, false);
 	# Lock the bot at the portal location, works for everything except charge
 	StartForcingPlayerPosition(EventPlayer(), gPortalPosition, false);
 	//> Can be removed once end of round boss is implemented
@@ -62,6 +73,16 @@ if (EventPlayer().pIsBoss)
 	Wait(0.05);
 	# Start forcing the hero since it will have been different in the previous round
 	ForcePlayerHero(EventPlayer(), Hero.WreckingBall);
+	# This reduces ball down to 7 health, mostly removing armour health
+	SetMaxHealth(EventPlayer(), ZERO);
+	AddHealthPoolToPlayer(
+		EventPlayer(),
+		HealthType.Health,
+		PORTAL_HEALTH - 7,
+		true,
+		false
+	);
+	SetStatus(EventPlayer(), null, Status.Unkillable, 9999);
 }
 
 rule: "[INVASION] Make sure wrecking ball portal stays in ball form"
@@ -97,6 +118,23 @@ if (EventPlayer().pIsBoss)
 if (HasStatus(EventPlayer(), Status.KnockedDown))
 { ClearStatus(EventPlayer(), Status.KnockedDown); }
 
+rule: "[INVASION] Portal damage phases"
+Event.OnDamageTaken
+Team.Team2
+Player.WreckingBall
+if (gGamemode == HS_Gamemode.Invasion)
+if (EventPlayer().pIsBoss)
+if (NormalizedHealth(EventPlayer()) < 0.01)
+if (gPhase)
+{
+	SetPlayerHealth(EventPlayer(), EventPlayer().MaxHealth());
+	if (gPhase == 1)
+	{
+		ClearStatus(EventPlayer(), Status.Unkillable);
+	}
+	gPhase -= 1;
+}
+
 rule: "[INVASION] Destroying portal spawns boss"
 Event.OnDeath
 Team.Team2
@@ -106,9 +144,10 @@ if (EventPlayer().pIsBoss)
 {
 	BigMessage(AllPlayers(Team.Team1), "Portal destroyed");
 	EnableMovementCollisionWithPlayers(EventPlayer());
-	SetMoveSpeed(EventPlayer(), 100);
 	SetGravity(EventPlayer(), 100);
-	SetKnockbackReceived(EventPlayer(), 100);
+	SetMoveSpeed(EventPlayer(), BOSS_SPEED_SCALAR);
+	SetKnockbackReceived(EventPlayer(), BOSS_KNOCKBACK_SCALAR);
+	SetHealingReceived(EventPlayer(), BOSS_HEALING_SCALAR);
 	SetJumpEnabled(EventPlayer(), true);
 	SetCrouchEnabled(EventPlayer(), true);
 	SetMeleeEnabled(EventPlayer(), true);
@@ -118,12 +157,13 @@ if (EventPlayer().pIsBoss)
 	//SetAbility2Enabled(EventPlayer(), false);
 	// Possibly do something with mines?
 	//SetUltimateAbilityEnabled(EventPlayer(), false);
-	StartScalingPlayer(EventPlayer(), 1.5, false);
-	Wait(1);
+	StartScalingPlayer(EventPlayer(), BOSS_SIZE_SCALAR, false);
+	RemoveAllHealthPoolsFromPlayer(EventPlayer());
+	SetMaxHealth(EventPlayer(), BOSS_HEALTH_SCALAR);
+	Wait(ONE);
 	Respawn(EventPlayer());
 	# Necessary delay
 	Wait(0.05);
-	StopForcingPlayerPosition(EventPlayer());
 	# Start forcing the hero since it will have been different in the previous round
 	ForcePlayerHero(
 		EventPlayer(),
@@ -131,6 +171,8 @@ if (EventPlayer().pIsBoss)
 			RemoveFromArray(AllHeroes(), Hero.WreckingBall)
 		)
 	);
+	Wait(ONE);
+	StopForcingPlayerPosition(EventPlayer());
 }
 
 rule: "[INVASION] End round when non-portal boss dies"
