@@ -149,7 +149,7 @@ rule: "[DEBUG] Teleport enemy dummy bot"
 Event.OngoingPlayer
 if (IS_HOST)
 if (pInControlMode)
-if (BUTTON_CONTROL == false)
+if (BUTTON_CONTROL)
 if (BUTTON_ENEMY)
 {
 	SelectTestBot();
@@ -169,7 +169,7 @@ rule: "[DEBUG] Teleport friendly dummy bot"
 Event.OngoingPlayer
 if (IS_HOST)
 if (pInControlMode)
-if (BUTTON_CONTROL == false)
+if (BUTTON_CONTROL)
 if (BUTTON_FRIENDLY)
 if (gFriendlyBot)
 {
@@ -188,7 +188,7 @@ rule: "[DEBUG] Enemy dummy pathfinding"
 Event.OngoingPlayer
 if (IS_HOST)
 if (pInControlMode)
-if (BUTTON_CONTROL)
+if (BUTTON_CONTROL == false)
 if (BUTTON_ENEMY)
 {
 	gEnemyTestBot.PF_pDestination = HOST_TARGET;
@@ -198,7 +198,7 @@ rule: "[DEBUG] Friendly dummy pathfinding"
 Event.OngoingPlayer
 if (IS_HOST)
 if (pInControlMode)
-if (BUTTON_CONTROL)
+if (BUTTON_CONTROL == false)
 if (BUTTON_FRIENDLY)
 {
 	gFriendlyBot.PF_pDestination = HOST_TARGET;
