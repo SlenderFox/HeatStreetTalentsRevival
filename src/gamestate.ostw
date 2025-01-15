@@ -87,3 +87,8 @@ if (AllPlayers(Team.Team1).IsTrueForAny(p => p.pReady))
 		}
 	}
 }
+
+rule: "[GAMESTATE] End game once final round has been completed"
+if (gCurrentRound == gMaxRounds)
+if (gRoundInProgress == false)
+{ DeclareTeamVictory(Team.Team1); }
