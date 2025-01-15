@@ -13,14 +13,30 @@ void iv_defend_portal() "IV Subroutine: Defend Portal"
 		async! play_incoming_sound_twice();
 		pAbVar2 = TotalTimeElapsed() + 10;
 	}
-	gTemp2 = PlayersWithinRadius(gIvDomObjectivePos, 15, Team.Team1, RadiusLOS.Surfaces).Filter(
+	gTemp2 = PlayersWithinRadius(
+		gIvDomObjectivePos,
+		15,
+		Team.Team1,
+		RadiusLOS.Surfaces
+	).Filter(
 		p => p.pIsCombatant
 		&& !HasStatus(p, Status.PhasedOut)
 		&& IsInLineOfSight(EventPlayer(), p, BarrierLOS.EnemyBarriersBlock)
 	);
 	for (gIterator = 0; CountOf(gTemp2); 1)
 	{
-		ApplyImpulse(gTemp2[gIterator], DirectionFromAngles(HorizontalAngleFromDirection(VectorTowards(gIvDomObjectivePos, gTemp2[gIterator])), -20), 25, Relative.ToWorld, ContraryMotion.CancelXYZ);
+		ApplyImpulse(
+			gTemp2[gIterator],
+			DirectionFromAngles(
+				HorizontalAngleFromDirection(
+					VectorTowards(gIvDomObjectivePos, gTemp2[gIterator])
+				),
+				-20
+			),
+			25,
+			Relative.ToWorld,
+			ContraryMotion.CancelXYZ
+		);
 	}
 	gTemp1 = RandomInteger(0, 5);
 	if (gTemp1 == 5 && gWaveNumber >= 7)
@@ -36,8 +52,22 @@ void iv_defend_portal() "IV Subroutine: Defend Portal"
 	{
 		PressButton(EventPlayer(), Button.Ability1);
 	}
-	PlayEffect(AllPlayers(Team.All), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
-	PlayEffect(AllPlayers(Team.All), PlayEffect.BadExplosion, gTemp1 == 5 && gWaveNumber >= 7 ? Color.Purple : Color.Red, gIvDomObjectivePos + 1.11 * Up(), 10);
+	PlayEffect(
+		AllPlayers(Team.All),
+		PlayEffect.ExplosionSound,
+		Color.White,
+		EventPlayer(),
+		200
+	);
+	PlayEffect(
+		AllPlayers(Team.All),
+		PlayEffect.BadExplosion,
+		gTemp1 == 5 && gWaveNumber >= 7
+			? Color.Purple
+			: Color.Red,
+		gIvDomObjectivePos + 1.11 * Up(),
+		10
+	);
 }
 
 rule: "IV Team 2 Slot 0: Create Portal Entities"
@@ -45,12 +75,92 @@ Event.OngoingPlayer
 Team.Team2
 Player.Slot0
 {
-	CreateProgressBarHudText(gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2 ? AllPlayers() : [], gObjectivePhaseNumber == 1 ? 200 * NormalizedHealth(EventPlayer()) : gObjectiveProgress, gObjectivePhaseNumber == 1 ? "Destroy the Portal" : "Portal closing", Location.Top, -97, gObjectivePhaseNumber == 1 ? gSpecialSpawnsCount > 0 ? Color.Blue : CustomColor(Max(200, 255 - (TotalTimeElapsed() - pAbVar2) * 165), Max(0, 255 - (TotalTimeElapsed() - pAbVar2) * 765), Max(19, 255 - (TotalTimeElapsed() - pAbVar2) * 708), 255) : Color.Yellow, Color.White, ProgressBarHudEvaluation.VisibleToValuesAndColor, Spectators.DefaultVisibility);
-	CreateIcon(gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2 ? AllPlayers() : [], gIvDomObjectivePos + 2 * Up(), Icon.ExclamationMark, IconRev.VisibleToAndPosition, Color.Yellow, true);
-	CreateInWorldText(gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2 ? AllPlayers() : [], gObjectivePhaseNumber == 1 ? "Destroy the Portal" : "Portal closing", gIvDomObjectivePos + 1.7 * Up(), 1.5, Clipping.DoNotClip, InworldTextRev.VisibleToPositionAndString, Color.Yellow, Spectators.DefaultVisibility);
-	CreateEffect(gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2 ? AllPlayers() : [], Effect.Sphere, gObjectivePhaseNumber == 1 ? Color.Red : Color.Yellow, gIvDomObjectivePos + 1.11 * Up(), 0.85 + (gObjectivePhaseNumber == 1 ? 0 : 0.3 * SineFromRadians(6 * TotalTimeElapsed())), EffectRev.VisibleToPositionRadiusAndColor);
-	CreateEffect(gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2 ? AllPlayers() : [], Effect.BadAura, Color.Red, gIvDomObjectivePos + 1.11 * Up(), 1, EffectRev.VisibleToPositionAndRadius);
-	CreateEffect(gObjectivePhaseNumber == 1 && (pAbVar2 >= TotalTimeElapsed() || gSpecialSpawnsCount > 0) ? AllPlayers() : [], Effect.LightShaft, Color.White, gIvDomObjectivePos - 2 * Up(), 1, EffectRev.VisibleToPositionAndRadius);
+	CreateProgressBarHudText(
+		gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2
+			? AllPlayers()
+			: [],
+		gObjectivePhaseNumber == 1
+			? 200 * NormalizedHealth(EventPlayer())
+			: gObjectiveProgress,
+		gObjectivePhaseNumber == 1
+			? "Destroy the Portal"
+			: "Portal closing",
+		Location.Top,
+		-97,
+		gObjectivePhaseNumber == 1
+			? gSpecialSpawnsCount > 0
+				? Color.Blue
+				: CustomColor(
+					Max(200, 255 - (TotalTimeElapsed() - pAbVar2) * 165),
+					Max(0, 255 - (TotalTimeElapsed() - pAbVar2) * 765),
+					Max(19, 255 - (TotalTimeElapsed() - pAbVar2) * 708),
+					255
+				)
+			: Color.Yellow,
+		Color.White,
+		ProgressBarHudEvaluation.VisibleToValuesAndColor,
+		Spectators.DefaultVisibility
+	);
+	CreateIcon(
+		gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2
+			? AllPlayers()
+			: [],
+		gIvDomObjectivePos + 2 * Up(),
+		Icon.ExclamationMark,
+		IconRev.VisibleToAndPosition,
+		Color.Yellow,
+		true
+	);
+	CreateInWorldText(
+		gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2
+			? AllPlayers()
+			: [],
+		gObjectivePhaseNumber == 1
+			? "Destroy the Portal"
+			: "Portal closing",
+		gIvDomObjectivePos + 1.7 * Up(),
+		1.5,
+		Clipping.DoNotClip,
+		InworldTextRev.VisibleToPositionAndString,
+		Color.Yellow,
+		Spectators.DefaultVisibility
+	);
+	CreateEffect(
+		gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2
+			? AllPlayers()
+			: [],
+		Effect.Sphere,
+		gObjectivePhaseNumber == 1
+			? Color.Red
+			: Color.Yellow,
+		gIvDomObjectivePos + 1.11 * Up(),
+		0.85 + (
+			gObjectivePhaseNumber == 1
+				? 0
+				: 0.3 * SineFromRadians(6 * TotalTimeElapsed())
+		),
+		EffectRev.VisibleToPositionRadiusAndColor
+	);
+	CreateEffect(
+		gObjectivePhaseNumber == 1 || gObjectivePhaseNumber == 2
+			? AllPlayers()
+			: [],
+		Effect.BadAura,
+		Color.Red,
+		gIvDomObjectivePos + 1.11 * Up(),
+		1,
+		EffectRev.VisibleToPositionAndRadius
+	);
+	CreateEffect(
+		gObjectivePhaseNumber == 1 && (pAbVar2 >= TotalTimeElapsed() || gSpecialSpawnsCount > 0)
+			? AllPlayers()
+			: [],
+		Effect.LightShaft,
+		Color.White,
+		gIvDomObjectivePos - 2 * Up(),
+		1,
+		EffectRev.VisibleToPositionAndRadius
+	);
 }
 
 rule: "IV Team 2 Torbjörn: Start Portal Mode, Open (Phase 1), Breakpoint End Time (2), Set Health to half to remove armour"
@@ -72,7 +182,18 @@ Team.Team2
 Player.Torbjorn
 if (IsUsingUltimate(EventPlayer()))
 {
-	SetFacing(EventPlayer(), DirectionTowards(EventPlayer().EyePosition(), Vector(RandomInteger(-500, 500), RandomInteger(-500, 500), RandomInteger(-500, 500))), Relative.ToWorld);
+	SetFacing(
+		EventPlayer(),
+		DirectionTowards(
+			EventPlayer().EyePosition(),
+			Vector(
+				RandomInteger(-500, 500),
+				RandomInteger(-500, 500),
+				RandomInteger(-500, 500)
+			)
+		),
+		Relative.ToWorld
+	);
 	PressButton(EventPlayer(), Button.PrimaryFire);
 	Wait(0.25, WaitBehavior.IgnoreCondition);
 	LoopIfConditionIsTrue();
@@ -94,8 +215,20 @@ if (NormalizedHealth(EventPlayer()) <= 0.333)
 	gObjectivePhaseNumber = 2;
 	iv_defend_portal();
 	upgrade_health_and_healing();
-	PlayEffect(AllPlayers(), PlayEffect.BadExplosion, Color.Red, gIvDomObjectivePos + 1.11 * Up(), 10);
-	PlayEffect(AllPlayers(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 200);
+	PlayEffect(
+		AllPlayers(),
+		PlayEffect.BadExplosion,
+		Color.Red,
+		gIvDomObjectivePos + 1.11 * Up(),
+		10
+	);
+	PlayEffect(
+		AllPlayers(),
+		PlayEffect.ExplosionSound,
+		Color.White,
+		EventPlayer(),
+		200
+	);
 	BigMessage(AllPlayers(), "Portal is closing! Gained bonus health");
 	StopForcingPlayerPosition(EventPlayer());
 	EnableMovementCollisionWithEnvironment(EventPlayer());
@@ -136,7 +269,12 @@ if (gObjectivePhaseNumber == 1)
 if (pAbVar2 >= TotalTimeElapsed() || gSpecialSpawnsCount > 0)
 {
 	SetDamageReceived(EventPlayer(), 5);
-	WaitUntil(!(gObjectivePhaseNumber == 1 && (pAbVar2 >= TotalTimeElapsed() || gSpecialSpawnsCount > 0)), 99999);
+	WaitUntil(
+		!(
+			gObjectivePhaseNumber == 1 && (pAbVar2 >= TotalTimeElapsed() || gSpecialSpawnsCount > 0)
+		),
+		99999
+	);
 	SetDamageReceived(EventPlayer(), 50);
 }
 
@@ -148,10 +286,33 @@ if (gGamemode == 0)
 if (gObjectivePhaseNumber == 1)
 if (EventPlayer().IsFiringSecondary())
 {
-	if (DistanceBetween(EventPlayer().EyePosition(), gIvDomObjectivePos + 1.11 * Up()) <= 20 && IsInLineOfSight(EventPlayer().EyePosition(), gIvDomObjectivePos + 1.11 * Up(), BarrierLOS.NoBarriersBlock))
+	if (
+		DistanceBetween(
+			EventPlayer().EyePosition(),
+			gIvDomObjectivePos + 1.11 * Up()
+		) <= 20 && IsInLineOfSight(
+			EventPlayer().EyePosition(),
+			gIvDomObjectivePos + 1.11 * Up(),
+			BarrierLOS.NoBarriersBlock
+		)
+	)
 	{
 		# If Facing ray intersects sphere
-		if (DistanceBetween(gIvDomObjectivePos + 1.11 * Up(), EventPlayer().EyePosition() + Max(0, DotProduct(EventPlayer().FacingDirection(), VectorTowards(EventPlayer().EyePosition(), gIvDomObjectivePos + 1.11 * Up()))) * EventPlayer().FacingDirection()) <= 0.85)
+		if (
+			DistanceBetween(
+				gIvDomObjectivePos + 1.11 * Up(),
+				EventPlayer().EyePosition() + Max(
+					0,
+					DotProduct(
+						EventPlayer().FacingDirection(),
+						VectorTowards(
+							EventPlayer().EyePosition(),
+							gIvDomObjectivePos + 1.11 * Up()
+						)
+					)
+				) * EventPlayer().FacingDirection()
+			) <= 0.85
+		)
 		{
 			Damage(PlayersInSlot(0, Team.Team2), EventPlayer(), 9.6);
 		}
