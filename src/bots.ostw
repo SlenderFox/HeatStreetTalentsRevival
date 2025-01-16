@@ -10,9 +10,10 @@ import "pathfinding/pathfinding.ostw";
 // I can have 19 dummy bots in total.
 // I have 15 max unique skins with 5 reserved for players for a total of 10 for dummies.
 
+globalvar Number gBotQuota;
+globalvar Player gLonePlayer;
 // Should the friendly bot be defined and managed here?
 globalvar Player gFriendlyBot;
-globalvar Number gBotQuota;
 playervar Player pTarget;
 playervar Player pFollowing;
 playervar Boolean pIsBoss;
@@ -46,9 +47,12 @@ if (NumberOfPlayers(Team.Team1) == 1)
 		null
 	);
 	gFriendlyBot.PF_pPlayerAttributes = [ZERO, ONE];
+	gLonePlayer = AllPlayers(Team.Team1).Filter(p => !p.IsDummy()).First;
+	gFriendlyBot.pFollowing = gLonePlayer;
 	//StartForcingDummyBotName(gFriendlyBot, "Puipui");
 	WaitUntil(NumberOfPlayers(Team.Team1) > 2, 9999);
 	DestroyDummyBot(gFriendlyBot);
+	gLonePlayer = null;
 }
 
 rule: "[BOTS] Following"
@@ -111,20 +115,17 @@ if (
 	pTarget = null;
 }
 
-# This requires that there only be one person on the team beside the dummy.
-Player Human_Player()
-{ return AllPlayers(Team.Team1).Filter(p => !p.IsDummy()).First; }
-
 rule: "[BOTS] Friendly bot force revive player"
 Event.OngoingPlayer
+Team.Team1
 if (IS_DUMMY)
 if (EventPlayer() == gFriendlyBot)
-if (Human_Player().pDownedStartTime)
+if (gLonePlayer.pDownedStartTime)
 {
-	while (Human_Player().pDownedStartTime)
+	while (gLonePlayer.pDownedStartTime)
 	{
 		# Continuously update the destination every second to make sure the bot stays in the revive circle
-		gFriendlyBot.PF_pDestination = Human_Player().Position();
+		gFriendlyBot.PF_pDestination = gLonePlayer.Position();
 		Wait(ONE);
 	}
 }
