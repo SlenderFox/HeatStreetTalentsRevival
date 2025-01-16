@@ -1,6 +1,8 @@
 /** All generic HUD display elements go here
 */
 
+// Spacing char " "
+
 import "team1.ostw";
 
 String[] PROGRESS_BAR_STRINGS: ["□□□□□", "▣□□□□", "■□□□□", "■▣□□□", "■■□□□", "■■▣□□", "■■■□□", "■■■▣□", "■■■■□", "■■■■▣", "■■■■■"];
