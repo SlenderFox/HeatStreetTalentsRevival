@@ -23,7 +23,7 @@ Number BOSS_KNOCKBACK_SCALAR: 50;
 Number BOSS_SPEED_SCALAR: 100;
 Number BOSS_HEALING_SCALAR: 20;
 
-globalvar Vector gPortalPosition;
+globalvar Vector gPortalPosition = Vector(-6, 3, 6);
 
 # Global reference to the portal boss
 globalvar Player gIVBoss;
@@ -33,13 +33,15 @@ rule: "[INVASION] Initialise gamemode"
 if (gGamemode == HS_Gamemode.Invasion)
 {
 	# Done this way so Kanezaka kinda works
-	gPortalPosition = NearestWalkablePosition(Vector(-6, 3, 6)) + Vector(0, 3, 0);
+	if (CurrentMap() == Map.Kanezaka)
+	{ gPortalPosition = NearestWalkablePosition(Vector(-6, 3, 6)) + Vector(0, 3, 0); }
 	// TODO remove debug check (pIsTestBot)
 	gIVBoss = AllPlayers(Team.Team2)
 		.Filter(p => p.IsDummy() && !p.pIsTestBot)
 		.Sort(p => SlotOf(p)).First;
 	gIVBoss.pIsBoss = true;
 	StartForcingDummyBotName(gIVBoss, "Invasion Boss");
+	PreloadHero(gIVBoss, Hero.WreckingBall);
 }
 
 rule: "[INVASION] Setup portal when round starts"
