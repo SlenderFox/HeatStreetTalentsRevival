@@ -75,9 +75,9 @@ if (pIsBoss == false)
 		OppositeTeamOf(EventPlayer().Team())
 	).Filter(p =>
 		!p.pDownedStartTime
-			&& IsInLineOfSight(EventPlayer(), p, BarrierLOS.NoBarriersBlock)
+			&& IsInLineOfSight(EyePosition(), p.EyePosition(), BarrierLOS.NoBarriersBlock)
 	).Sort(p =>
-		DistanceBetween(EventPlayer(), p)
+		DistanceBetween(EyePosition(), p.EyePosition())
 	).First;
 	Wait(2);
 	LoopIfConditionIsTrue();
