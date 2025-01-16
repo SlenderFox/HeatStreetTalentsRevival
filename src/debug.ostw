@@ -82,7 +82,7 @@ if (
 			pTarget,
 			pFollowing,
 			PF_pDestination,
-			UpdateEveryFrame(PF_pIsPathfinding
+			PF_pIsPathfinding
 				? <
 					"\nPathing (<0>|<1>)<2>\nWalking To: <3>",
 					VelocityOf().Magnitude,
@@ -90,7 +90,7 @@ if (
 					PF_pIsStuck ? ": Stuck" : "",
 					PF_pWalkingToPosition
 				>
-				: ""),
+				: "",
 			pDownedStartTime ? "\nDowned" : ""
 		>,
 		EyePosition() + Vector(0, 1, 0),
