@@ -42,7 +42,7 @@ if (NumberOfPlayers(Team.Team1) == 1)
 		gFriendlyBotHero,
 		Team.Team1,
 		6,
-		Vector(0, 0, 0),
+		NearestWalkablePosition(Vector(0, 0, 0)),
 		null
 	);
 	gFriendlyBot.PF_pPlayerAttributes = [ZERO, ONE];
