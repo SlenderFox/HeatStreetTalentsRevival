@@ -37,7 +37,8 @@
 		},
 		"Team 2": {
 			"General": {
-				"Health": 50
+				"Health": 50,
+				"Damage Dealt": 50
 			}
 		}
 	},
