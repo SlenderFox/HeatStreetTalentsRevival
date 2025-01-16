@@ -207,20 +207,20 @@ if (PF_pWalkingToPosition)
 	# Smooth step
 	else if (
 		PF_pPath.Length == 2
-		&& EventPlayer().DistanceTo(PF_pSavedTarget) < PF_pWalkingToPosition.DistanceTo(PF_pSavedTarget)
-		&& IsInLineOfSight(PositionOf() + Up() * 0.25, PF_pSavedTarget + Up() * 0.25)
+			&& EventPlayer().DistanceTo(PF_pSavedTarget) < PF_pWalkingToPosition.DistanceTo(PF_pSavedTarget)
+			&& IsInLineOfSight(PositionOf() + Up() * 0.25, PF_pSavedTarget + Up() * 0.25)
 	)
 	{ PF_ProgressEventPlayer(); }
 	# Recovery
 	else if (
 		EventPlayer().DistanceTo(PF_pWalkingToPosition) > .25
-		&& PF_pIsStuck
-			|| PF_pWalkingFromPosition.DistanceTo(PF_pWalkingToPosition) - 5.5 * 0.9 * (TotalTimeElapsed() - PF_pStartTime) < ZERO
-		&& !HasStatus(EventPlayer(), Status.Rooted)
-		&& !HasStatus(EventPlayer(), Status.Frozen)
-		&& !HasStatus(EventPlayer(), Status.Asleep)
-		&& !HasStatus(EventPlayer(), Status.KnockedDown)
-		&& !HasStatus(EventPlayer(), Status.Stunned)
+			&& PF_pIsStuck
+				|| PF_pWalkingFromPosition.DistanceTo(PF_pWalkingToPosition) - 5.5 * 0.9 * (TotalTimeElapsed() - PF_pStartTime) < ZERO
+			&& !HasStatus(EventPlayer(), Status.Rooted)
+			&& !HasStatus(EventPlayer(), Status.Frozen)
+			&& !HasStatus(EventPlayer(), Status.Asleep)
+			&& !HasStatus(EventPlayer(), Status.KnockedDown)
+			&& !HasStatus(EventPlayer(), Status.Stunned)
 	)
 	{
 		if (PF_pCurrentNodeIndex == -1)
@@ -248,9 +248,9 @@ if (PF_pWalkingToPosition)
 	# Shift destination
 	else if (
 		PF_pWalkingToPosition != PF_pDestination
-		&& PF_pCurrentNodeIndex == -1
-		&& PF_pSavedTarget.DistanceTo(PF_pDestination) < 5
-		&& IsInLineOfSight(PF_pSavedTarget + Up(), PF_pDestination + Up())
+			&& PF_pCurrentNodeIndex == -1
+			&& PF_pSavedTarget.DistanceTo(PF_pDestination) < 5
+			&& IsInLineOfSight(PF_pSavedTarget + Up(), PF_pDestination + Up())
 	)
 	{ PF_pWalkingToPosition = PF_pDestination; }
 
