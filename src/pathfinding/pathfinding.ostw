@@ -63,6 +63,7 @@ playervar Number PF_pStuckOnNode;
 playervar Boolean PF_pWasBroadcasted;
 # Is the player failing to walk?
 playervar Boolean PF_pIsStuck;
+playervar Number PF_pRollingAvVelocity;
 
 rule: "【PF Core】Prepare loaded map"
 {
@@ -158,13 +159,13 @@ Event.OngoingPlayer
 if (IS_DUMMY)
 if (PF_pIsPathfinding)
 if (PF_pWalkingToPosition)
-# Horizontal distance to current position is less than 0.4.
+# Horizontal distance to current position is less than 1.
 if (
 	(PositionOf() * Vector(1, 0, 1))
-		.DistanceTo(PF_pWalkingToPosition * Vector(1, 0, 1)) <= 0.4
+		.DistanceTo(PF_pWalkingToPosition * Vector(1, 0, 1)) <= 1
 )
-# Vertical distance to current position is less than 1.5.
-if (PositionOf().Y - PF_pWalkingToPosition.Y~Abs() <= 1.5)
+# Vertical distance to current position is less than 1.
+if (PositionOf().Y - PF_pWalkingToPosition.Y~Abs() <= 1)
 {
 	if (PF_pPath.Length > ZERO && PF_pCurrentNodeIndex != -1)
 	{
@@ -258,20 +259,46 @@ if (PF_pWalkingToPosition)
 	LoopIfConditionIsTrue();
 }
 
+rule: "【PF Core】Rolling average velocity"
+Event.OngoingPlayer
+if (IS_DUMMY)
+if (PF_pIsPathfinding)
+{
+	PF_pRollingAvVelocity += VelocityOf().Magnitude;
+	PF_pRollingAvVelocity /= 2;
+	Wait(0.1);
+	LoopIfConditionIsTrue();
+	PF_pRollingAvVelocity = 0;
+}
+
 rule: "【PF Core】Check throttle"
 Event.OngoingPlayer
 if (IS_DUMMY)
 if (PF_pIsPathfinding)
-if (VelocityOf().Magnitude < 3)
+if (PF_pRollingAvVelocity < 3)
 {
 	Wait(2.1, WaitBehavior.AbortWhenFalse);
 	PF_pIsStuck = true;
 	WaitUntil(
 		!PF_pWalkingToPosition
 		|| !PF_pIsPathfinding
-		|| VelocityOf().Magnitude >= 3, 9999
+		|| PF_pRollingAvVelocity >= 3, 9999
 	);
 	PF_pIsStuck = false;
+}
+
+rule: "【PF Additional】Melee and jump if stuck"
+Event.OngoingPlayer
+if (IS_DUMMY)
+if (PF_pIsPathfinding)
+if (PF_pIsStuck)
+{
+	PF_LookAtDestination();
+	Wait(0.2);
+	PressButton(EventPlayer(), Button.Melee);
+	StopFacing();
+	Wait(0.5, WaitBehavior.AbortWhenFalse);
+	PressButton(EventPlayer(), Button.Jump);
 }
 
 void PF_ProgressEventPlayer() playervar "【PF Core Subroutine】☞ Progress event player"

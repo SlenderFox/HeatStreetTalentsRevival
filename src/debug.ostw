@@ -79,28 +79,31 @@ if (
 		HOST,
 		<
 			"Targeting: <0>\nFollowing: <1>\nDestination: <2><3><4>",
-			EventPlayer().pTarget,
-			EventPlayer().pFollowing,
-			EventPlayer().PF_pDestination,
-			EventPlayer().PF_pIsPathfinding
+			pTarget,
+			pFollowing,
+			PF_pDestination,
+			UpdateEveryFrame(PF_pIsPathfinding
 				? <
-					"\nPathing\nWalkingTo: <0>",
-					EventPlayer().PF_pWalkingToPosition
+					"\nPathing (<0>|<1>)<2>\nWalking To: <3>",
+					VelocityOf().Magnitude,
+					PF_pRollingAvVelocity,
+					PF_pIsStuck ? ": Stuck" : "",
+					PF_pWalkingToPosition
 				>
-				: "",
-			EventPlayer().pDownedStartTime ? "\nDowned" : ""
+				: ""),
+			pDownedStartTime ? "\nDowned" : ""
 		>,
-		EventPlayer().EyePosition() + Vector(0, 1, 0),
+		EyePosition() + Vector(0, 1, 0),
 		ONE,
 		Clipping.DoNotClip,
 		InworldTextRev.VisibleToPositionAndString
 	);
 
 	CreateBeamEffect(
-		EventPlayer().PF_pIsPathfinding ? HOST : [],
+		PF_pIsPathfinding ? HOST : [],
 		BeamType.OrisaHaltTendrilBeam,
-		EventPlayer().PF_pDestination,
-		EventPlayer().EyePosition(),
+		PF_pDestination,
+		EyePosition(),
 		Team.Team1,
 		EffectRev.VisibleToPositionAndRadius
 	);
