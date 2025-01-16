@@ -20,6 +20,7 @@ void RecoveryTeleport(Player _player = EventPlayer(), Vector _position = null) "
 	{ Teleport(_player, _position); }
 }
 
+# Currently vestigial
 Vector PositionUnderPlayer(in Player _player)
 {
 	return RayCastHitPosition(
