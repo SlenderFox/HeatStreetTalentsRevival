@@ -143,6 +143,10 @@ if (pDownedStartTime + ONE < TotalTimeElapsed())
 rule: "[TEAM 1] Changing heroes"
 Event.OngoingPlayer
 Team.Team1
+# Cannot change heroes while downed
+if (EventPlayer().pDownedStartTime == false)
+# Cannot changes heroes during round
+if (gRoundInProgress == false)
 if (EventPlayer().IsButtonHeld(Button.Reload))
 {
 	Wait(0.4, WaitBehavior.AbortWhenFalse);
@@ -151,14 +155,19 @@ if (EventPlayer().IsButtonHeld(Button.Reload))
 	# Sets the position as the ground under the player to avoid spawning them midair
 	Vector position! = NearestWalkablePosition(EventPlayer());
 	Vector facing! = EventPlayer().FacingDirection();
+	Hero previousHero = EventPlayer().Hero();
 	SetAllowedHeroes(EventPlayer(), Hero.Brigitte);
 	SetAllowedHeroes(EventPlayer(), Hero.Orisa);
 	SetAllowedHeroes(EventPlayer(), AllHeroes());
 	Wait(0.1);
-	WaitUntil(HasSpawned(EventPlayer()), 9999);
+	WaitUntil(HasSpawned(EventPlayer()) || gRoundInProgress, 9999);
+	if (!HasSpawned(EventPlayer()))
+	{ ForcePlayerHero(EventPlayer(), previousHero); }
 	Teleport(EventPlayer(), position);
 	SetFacing(EventPlayer(), facing);
 	pIsChangingHeroes = false;
+	Wait(0.033);
+	StopForcingHero(EventPlayer());
 }
 
 rule: "[TEAM 1] Prevent Reinhardt from pinning the boss"
