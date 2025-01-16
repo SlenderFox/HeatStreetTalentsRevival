@@ -55,22 +55,33 @@ rule: "[BOTS] Following"
 Event.OngoingPlayer
 if (IS_DUMMY)
 if (pFollowing != null)
-# Horizontal distance to following position is more than 10
+# Horizontal distance to following position is more than 8 or vertical is more than 5 while not airborne
 if (
-	(PositionOf() * Vector(1, 0, 1))
-		.DistanceTo(pFollowing.Position() * Vector(1, 0, 1)) > 10
+	(
+		PositionOf() * Vector(1, 0, 1)
+	).DistanceTo(
+		pFollowing.Position() * Vector(1, 0, 1)
+	) > 8
+	|| (
+		(
+			PositionOf() * Vector(0, 1, 0)
+		).DistanceTo(
+			pFollowing.Position() * Vector(0, 1, 0)
+		) > 3
+		&& !pFollowing.IsInAir()
+	)
 )
 {
 	# Pause updates if server is being overloaded
 	WaitUntil(ServerLoadAverage() < 230, 999);
 	# Set the destination as the ground under the player.
-	PF_pDestination = PositionUnderPlayer(pFollowing);
+	PF_pDestination = NearestWalkablePosition(pFollowing);
 	# Avoid spamming destination updates
 	Wait(ONE);
 	LoopIfConditionIsTrue();
 }
 
-rule: "[BOTS] Facing"
+rule: "[BOTS] Start facing target"
 Event.OngoingPlayer
 if (IS_DUMMY)
 if (pTarget != null)
@@ -84,7 +95,7 @@ if (pTarget != null)
 	);
 }
 
-rule: "[BOTS] Target LOS check"
+rule: "[BOTS] Stop targeting player once LOS is broken"
 Event.OngoingPlayer
 if (IS_DUMMY)
 if (pTarget != null)
