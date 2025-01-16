@@ -21,11 +21,11 @@ void RecoveryTeleport(Player _player = EventPlayer(), Vector _position = null) "
 }
 
 # Currently vestigial
-Vector PositionUnderPlayer(in Player _player)
+Vector PositionUnder(in Player | Vector _input)
 {
 	return RayCastHitPosition(
-		_player.EyePosition(),
-		_player.Position() + Vector(0, -1000, 0),
+		_input + Vector(0, 1, 0),
+		_input + Vector(0, -1000, 0),
 		null,
 		null,
 		false
