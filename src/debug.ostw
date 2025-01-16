@@ -25,7 +25,7 @@ Boolean BUTTON_FRIENDLY: BUTTON(Button.Ultimate);
 Boolean BUTTON_ENEMY: BUTTON(Button.Ability2);
 Boolean BUTTON_REVIVE: BUTTON(Button.Reload);
 Boolean BUTTON_SHOOT: BUTTON(Button.PrimaryFire);
-Boolean BUTTON_FACING: BUTTON(Button.SecondaryFire);
+//Boolean BUTTON_FACING: BUTTON(Button.SecondaryFire);
 
 void SelectTestBot() "[DEBUG SUBROUTINE] Select test bot"
 {
@@ -187,7 +187,7 @@ if (gFriendlyBot)
 	Teleport(gFriendlyBot, HOST_TARGET);
 }
 
-rule: "[DEBUG] Enemy dummy pathfinding"
+rule: "[DEBUG] Force enemy dummy pathfinding"
 Event.OngoingPlayer
 if (IS_HOST)
 if (pInControlMode)
@@ -197,7 +197,7 @@ if (BUTTON_ENEMY)
 	gEnemyTestBot.PF_pDestination = HOST_TARGET;
 }
 
-rule: "[DEBUG] Friendly dummy pathfinding"
+rule: "[DEBUG] Force friendly dummy pathfinding"
 Event.OngoingPlayer
 if (IS_HOST)
 if (pInControlMode)
@@ -207,27 +207,27 @@ if (BUTTON_FRIENDLY)
 	gFriendlyBot.PF_pDestination = HOST_TARGET;
 }
 
-rule: "[DEBUG] Toggle enemy dummy facing"
-Event.OngoingPlayer
-if (IS_HOST)
-if (pInControlMode)
-if (BUTTON_CONTROL == false)
-if (BUTTON_FACING)
-{
-	SelectTestBot();
+//rule: "[DEBUG] Toggle enemy dummy facing"
+//Event.OngoingPlayer
+//if (IS_HOST)
+//if (pInControlMode)
+//if (BUTTON_CONTROL == false)
+//if (BUTTON_FACING)
+//{
+//	SelectTestBot();
 
-	if (gEnemyTestBot.pTarget != null)
-	{
-		gEnemyTestBot.pTarget = null;
-		StopFacing(gEnemyTestBot);
-		# Reset facing direction to +X
-		SetFacing(gEnemyTestBot, Left(), Relative.ToWorld);
-	}
-	else
-	{
-		gEnemyTestBot.pTarget = gFriendlyBot;
-	}
-}
+//	if (gEnemyTestBot.pTarget != null)
+//	{
+//		gEnemyTestBot.pTarget = null;
+//		StopFacing(gEnemyTestBot);
+//		# Reset facing direction to +X
+//		SetFacing(gEnemyTestBot, Left(), Relative.ToWorld);
+//	}
+//	else
+//	{
+//		gEnemyTestBot.pTarget = gFriendlyBot;
+//	}
+//}
 
 rule: "[DEBUG] Make enemy dummy shoot"
 Event.OngoingPlayer
@@ -241,22 +241,22 @@ if (BUTTON_SHOOT)
 	StopHoldingButton(gEnemyTestBot, Button.PrimaryFire);
 }
 
-rule: "[DEBUG] Toggle friendly dummy follow"
-Event.OngoingPlayer
-if (IS_HOST)
-if (pInControlMode)
-if (BUTTON_CONTROL)
-if (BUTTON_FACING)
-{
-	if (gFriendlyBot.pFollowing != null)
-	{
-		gFriendlyBot.pFollowing = null;
-	}
-	else
-	{
-		gFriendlyBot.pFollowing = HOST;
-	}
-}
+//rule: "[DEBUG] Toggle friendly dummy follow"
+//Event.OngoingPlayer
+//if (IS_HOST)
+//if (pInControlMode)
+//if (BUTTON_CONTROL)
+//if (BUTTON_FACING)
+//{
+//	if (gFriendlyBot.pFollowing != null)
+//	{
+//		gFriendlyBot.pFollowing = null;
+//	}
+//	else
+//	{
+//		gFriendlyBot.pFollowing = HOST;
+//	}
+//}
 
 rule: "[DEBUG] Manually revive host"
 Event.OngoingPlayer
