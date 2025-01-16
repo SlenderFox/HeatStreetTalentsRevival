@@ -63,6 +63,26 @@ if (
 	LoopIfConditionIsTrue();
 }
 
+//> Eventually can really upgrade this to intelligently select a target.
+// Currently just pick the closest.
+rule: "[BOTS] Target acquisition"
+Event.OngoingPlayer
+if (IS_DUMMY)
+//if (pTarget == null)
+if (pIsBoss == false)
+{
+	pTarget = AllLivingPlayers(
+		OppositeTeamOf(EventPlayer().Team())
+	).Filter(p =>
+		!p.pDownedStartTime
+			&& IsInLineOfSight(EventPlayer(), p, BarrierLOS.NoBarriersBlock)
+	).Sort(p =>
+		DistanceBetween(EventPlayer(), p)
+	).First;
+	Wait(2);
+	LoopIfConditionIsTrue();
+}
+
 rule: "[BOTS] Start facing target"
 Event.OngoingPlayer
 if (IS_DUMMY)
