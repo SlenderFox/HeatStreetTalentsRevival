@@ -223,8 +223,9 @@ Look into ways to get it working with:
 - They also have a confidence number.
 - The ai uses this to determine if it should perform certain actions: ```if (aggressiveness - (1-confidence) > action_weight)```
 - Certain ai types should try to cut enemies off (flankers).
+- Could mark certain nodes as "key nodes" used for important movements such as rotations and flanking.
 - Lower tier enemies will try to hang near higher tier enemies to support them.
-- Looking at an enemy who is targeting you has a chance to make them start strafing, decreasing with range.
+- Looking at an enemy who is targeting you has a chance to make them start strafing, increasing with range.
 - Abilities can be marked as offensive, defensive, evasive, supportive to be applicable to a generic weighted system.
 - Has a patrol mode that faces in random directions ever couple of seconds.
 - Targets are acquired by LOS, filtered by FOV; could use a narrow far and wide short FOV.
