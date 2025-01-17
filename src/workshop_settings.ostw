@@ -4,36 +4,71 @@
 import "shared.ostw";
 import "gamestate.ostw";
 
-globalvar Hero gFriendlyBotHero;
+globalvar Hero g_friendlyBotHero;
 
 void Credits()
 {
 	// Cannot use number optimisation
-	Any credits = WorkshopSettingCombo(" Heat Street Talents Revival", "Credits", 0, ["<Click here>", "ItsDeltin", "LemonAid", "Shingen", "LtVictory", "SgtMoody", "Developful", "Josbird"], 0);
+	Any credits = WorkshopSettingCombo(
+		" Heat Street Talents Revival",
+		"Credits",
+		0,
+		[
+			"<Click here>",
+			"ItsDeltin",
+			"LemonAid",
+			"Shingen",
+			"LtVictory",
+			"SgtMoody",
+			"Developful",
+			"Josbird"
+		],
+		0
+	);
 }
 
 void SelectGamemode()
 {
 	// Cannot use number optimisation
-	if (WorkshopSettingToggle("Enabled gamemodes", "Invasion", true, 0))
-	{ gGamemode.ModAppend(HS_Gamemode.Invasion); }
+	if (
+		WorkshopSettingToggle(
+			"Enabled gamemodes",
+			"Invasion",
+			true,
+			0
+		)
+	)
+	{ g_gamemode.ModAppend(Gamemode_HS.Invasion); }
 	// Cannot use number optimisation
-	if (WorkshopSettingToggle("Enabled gamemodes", "High Value Target", false, 1))
-	{ gGamemode.ModAppend(HS_Gamemode.HighValueTarget); }
-	// Cannot use number optimisation
-	if (WorkshopSettingToggle("Enabled gamemodes", "Domination", false, 2))
-	{ gGamemode.ModAppend(HS_Gamemode.Domination); }
+	if (
+		WorkshopSettingToggle(
+			"Enabled gamemodes",
+			"High Value Target",
+			false,
+			1
+		)
+	)
+	{ g_gamemode.ModAppend(Gamemode_HS.HighValueTarget); }
+	if (
+		WorkshopSettingToggle(
+			"Enabled gamemodes",
+			"Domination",
+			false,
+			2
+		)
+	)
+	{ g_gamemode.ModAppend(Gamemode_HS.Domination); }
 
 	# If the player disabled all modes, treat it as all modes enabled.
-	if (CountOf(gGamemode))
-	{ gGamemode = gGamemode.Random(); }
+	if (CountOf(g_gamemode))
+	{ g_gamemode = g_gamemode.Random(); }
 	else
-	{ gGamemode = <HS_Gamemode>RandomInteger(ZERO, 2); }
+	{ g_gamemode = <Gamemode_HS>RandomInteger(ZERO, 2); }
 }
 
 void SelectFriendlyBot()
 {
-	gFriendlyBotHero = WorkshopSettingHero(
+	g_friendlyBotHero = WorkshopSettingHero(
 		"Generic",
 		"Friendly Bot Hero",
 		Hero.Mauga,
@@ -43,5 +78,12 @@ void SelectFriendlyBot()
 
 void SelectNumberOfRounds()
 {
-	gMaxRounds = WorkshopSettingInteger("Generic", "Round count", 15, 1, 50, 1);
+	g_maxRounds = WorkshopSettingInteger(
+		"Generic",
+		"Round count",
+		15,
+		1,
+		50,
+		1
+	);
 }

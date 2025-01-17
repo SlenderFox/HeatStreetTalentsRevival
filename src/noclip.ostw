@@ -5,9 +5,11 @@
  * Modified by SlenderFox
 */
 
-playervar Boolean pIsNoclipping = false;
+playervar Boolean p_isNoclipping = false;
 
-Boolean IS_MOVING: ThrottleOf(EventPlayer()) != Vector(0, 0, 0)
+Boolean IsMoving()
+{
+	return ThrottleOf(EventPlayer()) != Vector(0, 0, 0)
 	|| (
 		IsButtonHeld(EventPlayer(), Button.Crouch)
 		|| IsButtonHeld(EventPlayer(), Button.Jump)
@@ -16,11 +18,12 @@ Boolean IS_MOVING: ThrottleOf(EventPlayer()) != Vector(0, 0, 0)
 		IsButtonHeld(EventPlayer(), Button.Crouch)
 		&& IsButtonHeld(EventPlayer(), Button.Jump)
 	);
+}
 
 rule: "[NOCLIP] Start noclipping"
 Event.OngoingPlayer
 if (IS_HOST)
-if (pIsNoclipping)
+if (p_isNoclipping)
 {
 	SetGravity(EventPlayer(), ZERO);
 	DisableMovementCollisionWithEnvironment(EventPlayer(), true);
@@ -34,7 +37,7 @@ if (pIsNoclipping)
 rule: "[NOCLIP] Stop noclipping"
 Event.OngoingPlayer
 if (IS_HOST)
-if (pIsNoclipping == false)
+if (p_isNoclipping == false)
 {
 	SetGravity(EventPlayer(), 100);
 	EnableMovementCollisionWithEnvironment(EventPlayer());
@@ -48,8 +51,8 @@ if (pIsNoclipping == false)
 rule: "[NOCLIP] Noclip propulsion"
 Event.OngoingPlayer
 if (IS_HOST)
-if (pIsNoclipping)
-if (IS_MOVING)
+if (p_isNoclipping)
+if (IsMoving())
 {
 	ApplyImpulse(
 		EventPlayer(),
@@ -80,8 +83,8 @@ if (IS_MOVING)
 rule: "[NOCLIP] Noclip air resistance"
 Event.OngoingPlayer
 if (IS_HOST)
-if (pIsNoclipping)
-if (IS_MOVING == false)
+if (p_isNoclipping)
+if (IsMoving() == false)
 if (SpeedOf(EventPlayer()) > 0.01)
 {
 	ApplyImpulse(

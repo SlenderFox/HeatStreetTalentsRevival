@@ -20,7 +20,7 @@ void SetupHUD()
 			"Heat Street Talents Revival [WSCODE 4.0.0] | <0> | <1><2>",
 			EvaluateOnce(CurrentMap()),
 			EvaluateOnce(GAMEMODE_STRING),
-			gPreRoundTimer ? <" - <0>", gPreRoundTimer> : ""
+			g_preRoundTimer ? <" - <0>", g_preRoundTimer> : ""
 		>
 	);
 	# Hide the TDM score HUD.
@@ -45,9 +45,9 @@ void SetupHUD()
 
 Color TeamDisplayColour()
 {
-	return pDownedStartTime
+	return p_downedStartTime
 		? Color.Red
-		: pIsChangingHeroes || NormalizedHealth(EventPlayer()) >= 0.5
+		: p_isChangingHeroes || NormalizedHealth(EventPlayer()) >= 0.5
 			? LocalPlayer() == EventPlayer()
 				? Color.Green
 				: Color.SkyBlue
@@ -64,28 +64,28 @@ void CreateTeamDisplay()
 		Header: <
 			"<0><1>",
 			HeroIconString(EventPlayer().Hero()),
-			pDownedStartTime && pReviveProgress
-				? PROGRESS_BAR_STRINGS[RoundToInteger(pReviveProgress / 10, Rounding.Down)]
+			p_downedStartTime && p_reviveProgress
+				? PROGRESS_BAR_STRINGS[RoundToInteger(p_reviveProgress / 10, Rounding.Down)]
 				: ""
 		>,
 		Subheader: <
 			"<0> <1><2><3>",
 			EventPlayer(),
 			"", //pAbPriority ? ["(A) ", "(B) ", "(C) "][pAbPriority - 1] : "",
-			gRoundInProgress
+			g_roundInProgress
 				? ""
-				: EventPlayer().pReady
+				: EventPlayer().p_ready
 					? "Ready "
 					: "Not Ready ",
 			"" //InBuyMenu ? "(In shop)" : ""
 		>,
 		Text: <
 			"<0><1>",
-			pDownedStartTime
-				? pReviveProgress
+			p_downedStartTime
+				? p_reviveProgress
 					? "Being Revived"
 					: "Downed"
-				: pIsChangingHeroes
+				: p_isChangingHeroes
 					? "Changing Heroes"
 					: <
 						"<0> HP",
@@ -106,6 +106,4 @@ void CreateTeamDisplay()
 rule: "[HUD] Create all player HUD elements"
 Event.OngoingPlayer
 Team.Team1
-{
-	CreateTeamDisplay();
-}
+{ CreateTeamDisplay(); }

@@ -4,10 +4,10 @@
 import "shared.ostw";
 import "gamemodes/invasion.ostw";
 
-playervar Number pDownedStartTime;
-playervar Number pReviveProgress;
-playervar Player[] pReviverList;
-playervar Boolean pIsChangingHeroes;
+playervar Number p_downedStartTime;
+playervar Number p_reviveProgress;
+playervar Player[] p_reviverList;
+playervar Boolean p_isChangingHeroes;
 
 void DisablePlayer() playervar "[TEAM 1 SUBROUTINE] Disable Player"
 {
@@ -42,7 +42,7 @@ Event.OngoingPlayer
 Team.Team1
 {
 	CreateEffect(
-		pDownedStartTime ? AllPlayers() : [],
+		p_downedStartTime ? AllPlayers() : [],
 		Effect.Ring,
 		Color.Yellow,
 		EventPlayer(),
@@ -54,14 +54,14 @@ Team.Team1
 rule: "[TEAM 1] Player downing"
 Event.OnDeath
 Team.Team1
-if (pIsChangingHeroes == false)
+if (p_isChangingHeroes == false)
 {
-	if (!pDownedStartTime)
+	if (!p_downedStartTime)
 	{
-		pDownedStartTime = TotalTimeElapsed();
+		p_downedStartTime = TotalTimeElapsed();
 		DisablePlayer();
 		DisableMessages(EventPlayer());
-		pReviveProgress = ZERO;
+		p_reviveProgress = ZERO;
 		StartScalingPlayer(EventPlayer(), 0.1, false);
 	}
 	if (EventWasEnvironment())
@@ -80,7 +80,7 @@ if (pIsChangingHeroes == false)
 void RevivePlayer(in Player pPlayer)
 {
 	SmallMessage(AllPlayers(), <" <0> has been revived!", pPlayer>);
-	pPlayer.pDownedStartTime = ZERO;
+	pPlayer.p_downedStartTime = ZERO;
 	EnableMessages(pPlayer);
 	ClearStatus(pPlayer, Status.PhasedOut);
 	ClearStatus(pPlayer, Status.Invincible);
@@ -91,41 +91,41 @@ void RevivePlayer(in Player pPlayer)
 rule: "[TEAM 1] Revive downed player"
 Event.OngoingPlayer
 Team.Team1
-if (pDownedStartTime)
-if (pDownedStartTime + ONE < TotalTimeElapsed())
+if (p_downedStartTime)
+if (p_downedStartTime + ONE < TotalTimeElapsed())
 {
 	# Revive area is a cylinder
-	pReviverList = AllPlayers(Team.Team1).Filter(
-		p => !p.pDownedStartTime
-		// Check horizontal distance
-		&& DistanceBetween(
-			EventPlayer(),
-			Vector(
-				p.Position().X,
-				EventPlayer().Position().Y,
-				p.Position().Z
-			)
-		) <= 3
-		// Check vertical distance
-		&& AbsoluteValue(EventPlayer().Position().Y - p.Position().Y) <= 3
-		// I have no idea what this does, maybe LOS used to not work with ice block?
-		//&& (
-		//	HeroOf(p) == Hero.Mei
-		//	&& IsUsingAbility1(p)
-		//	|| IsInLineOfSight(EventPlayer(), p, BarrierLOS.NoBarriersBlock)
-		//)
-		&& IsInLineOfSight(EventPlayer(), p, BarrierLOS.EnemyBarriersBlock)
+	p_reviverList = AllPlayers(Team.Team1).Filter(
+		p => !p.p_downedStartTime
+			// Check horizontal distance
+			&& DistanceBetween(
+				EventPlayer(),
+				Vector(
+					p.Position().X,
+					EventPlayer().Position().Y,
+					p.Position().Z
+				)
+			) <= 3
+			// Check vertical distance
+			&& AbsoluteValue(EventPlayer().Position().Y - p.Position().Y) <= 3
+			// I have no idea what this does, maybe LOS used to not work with ice block?
+			//&& (
+			//	HeroOf(p) == Hero.Mei
+			//	&& IsUsingAbility1(p)
+			//	|| IsInLineOfSight(EventPlayer(), p, BarrierLOS.NoBarriersBlock)
+			//)
+			&& IsInLineOfSight(EventPlayer(), p, BarrierLOS.EnemyBarriersBlock)
 	);
 
 	# At least one person is reviving
-	if (CountOf(pReviverList))
+	if (CountOf(p_reviverList))
 	{
-		pReviveProgress += pReviverList.IsTrueForAll(
+		p_reviveProgress += p_reviverList.IsTrueForAll(
 			p => HasStatus(p, Status.Invincible)
 			|| HasStatus(p, Status.PhasedOut)
 		) ? 2.5 : 5;
 
-		if (pReviveProgress >= 100)
+		if (p_reviveProgress >= 100)
 		{
 			EnablePlayer();
 			RevivePlayer(EventPlayer());
@@ -133,7 +133,7 @@ if (pDownedStartTime + ONE < TotalTimeElapsed())
 	}
 	else
 	{
-		pReviveProgress = ZERO;
+		p_reviveProgress = ZERO;
 	}
 
 	Wait(0.2, WaitBehavior.IgnoreCondition);
@@ -144,14 +144,14 @@ rule: "[TEAM 1] Changing heroes"
 Event.OngoingPlayer
 Team.Team1
 # Cannot change heroes while downed
-if (EventPlayer().pDownedStartTime == false)
+if (EventPlayer().p_downedStartTime == false)
 # Cannot changes heroes during round
-if (gRoundInProgress == false)
+if (g_roundInProgress == false)
 if (EventPlayer().IsButtonHeld(Button.Reload))
 {
 	Wait(0.4, WaitBehavior.AbortWhenFalse);
-	AbortIf(pDownedStartTime);
-	pIsChangingHeroes = true;
+	AbortIf(p_downedStartTime);
+	p_isChangingHeroes = true;
 	# Sets the position as the ground under the player to avoid spawning them midair
 	Vector position! = NearestWalkablePosition(EventPlayer());
 	Vector facing! = EventPlayer().FacingDirection();
@@ -160,12 +160,12 @@ if (EventPlayer().IsButtonHeld(Button.Reload))
 	SetAllowedHeroes(EventPlayer(), Hero.Orisa);
 	SetAllowedHeroes(EventPlayer(), AllHeroes());
 	Wait(0.1);
-	WaitUntil(HasSpawned(EventPlayer()) || gRoundInProgress, 9999);
+	WaitUntil(HasSpawned(EventPlayer()) || g_roundInProgress, 9999);
 	if (!HasSpawned(EventPlayer()))
 	{ ForcePlayerHero(EventPlayer(), previousHero); }
 	Teleport(EventPlayer(), position);
 	SetFacing(EventPlayer(), facing);
-	pIsChangingHeroes = false;
+	p_isChangingHeroes = false;
 	Wait(0.033);
 	StopForcingHero(EventPlayer());
 }
@@ -174,7 +174,7 @@ rule: "[TEAM 1] Prevent Reinhardt from pinning the boss"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Reinhardt
-if (Victim().pIsBoss)
+if (Victim().p_isBoss)
 # This somehow registers as the pin connecting
 if (EventAbility() == null)
 {
@@ -200,7 +200,7 @@ rule: "[TEAM 1] Make roadhog pull himself towards the boss"
 Event.OnDamageDealt
 Team.Team1
 Player.Roadhog
-if (Victim().pIsBoss)
+if (Victim().p_isBoss)
 if (EventAbility() == Button.Ability1)
 {
 	if (Victim().Hero() == Hero.WreckingBall)
@@ -209,14 +209,16 @@ if (EventAbility() == Button.Ability1)
 		Abort();
 	}
 	Wait(0.3);
-	AbortIf(!(
-		IsInLineOfSight(
-			Victim(),
-			EventPlayer(),
-			BarrierLOS.EnemyBarriersBlock
+	AbortIf(
+		!(
+			IsInLineOfSight(
+				Victim(),
+				EventPlayer(),
+				BarrierLOS.EnemyBarriersBlock
+			)
+			&& Victim().IsAlive()
 		)
-		&& Victim().IsAlive()
-	));
+	);
 
 	StartForcingPlayerPosition(Victim(), Victim(), false);
 	ApplyImpulse(

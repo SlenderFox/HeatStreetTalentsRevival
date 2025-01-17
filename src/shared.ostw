@@ -10,7 +10,7 @@ Number ZERO: false;
 # Should not be used to compare values.
 Number ONE: true;
 
-globalvar Number gIter;
+globalvar Number g_iter;
 
 void RecoveryTeleport(Player _player = EventPlayer(), Vector _position = null) "[SHARED COROUTINE] Recovery Teleport"
 {

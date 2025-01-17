@@ -1,24 +1,24 @@
 /** As the name implies, this file hands the gamestate.
 */
 
-enum HS_Gamemode
+enum Gamemode_HS
 {
 	Invasion, // Portal
 	HighValueTarget, // Roaming boss
 	Domination // Capture zones
 }
 
-String GAMEMODE_STRING: ["Invasion", "High Value Target", "Domination"][gGamemode];
-String GAMESTATE_STRING: gRoundInProgress ? "Inprogress" : "Interround";
+String GAMEMODE_STRING: ["Invasion", "High Value Target", "Domination"][g_gamemode];
+String GAMESTATE_STRING: g_roundInProgress ? "Inprogress" : "Interround";
 Number FORCE_START_COUNTDOWN_LENGTH: 20;
 
-globalvar Boolean gRoundInProgress = false;
-globalvar HS_Gamemode | HS_Gamemode[] gGamemode;
-globalvar Number gMaxRounds;
-globalvar Number gCurrentRound;
-globalvar Number gPreRoundTimer;
+globalvar Boolean g_roundInProgress = false;
+globalvar Gamemode_HS | Gamemode_HS[] g_gamemode;
+globalvar Number g_maxRounds;
+globalvar Number g_currentRound;
+globalvar Number g_preRoundTimer;
 
-playervar Boolean pReady = false;
+playervar Boolean p_ready = false;
 
 // Handle changing from pregame to inprogress
 // How should going between inprogress and interround go?
@@ -26,69 +26,69 @@ playervar Boolean pReady = false;
 // Or each gamemode changes the gamestate themselves.
 
 rule: "[GAMESTATE] Start the game when every player is ready"
-if (gRoundInProgress == false)
+if (g_roundInProgress == false)
 # Cannot use element optimisation
 if (NumberOfPlayers(Team.Team1) > 0)
 if (
 	IsTrueForAll(
 		AllPlayers(Team.Team1),
-		IsDummyBot(ArrayElement()) || ArrayElement().pReady
+		IsDummyBot(ArrayElement()) || ArrayElement().p_ready
 	)
 )
 {
 	# Grace period if the player is by themself
-	if (gFriendlyBot != null)
+	if (g_friendlyBot != null)
 	{ Wait(2, WaitBehavior.AbortWhenFalse); }
 
-	gPreRoundTimer = ZERO;
-	gCurrentRound += ONE;
-	gRoundInProgress = true;
-	AllPlayers().pReady = false;
+	g_preRoundTimer = ZERO;
+	g_currentRound += ONE;
+	g_roundInProgress = true;
+	AllPlayers().p_ready = false;
 }
 
 rule: "[GAMESTATE] Player readying up"
 Event.OngoingPlayer
 Team.Team1
-if (gRoundInProgress == false)
+if (g_roundInProgress == false)
 if (IsButtonHeld(EventPlayer(), Button.Interact))
 {
 	Wait(0.4, WaitBehavior.AbortWhenFalse);
-	pReady = !pReady;
-	if (pReady)
+	p_ready = !p_ready;
+	if (p_ready)
 	{ Communicate(EventPlayer(), Communication.Ready); }
 }
 
 rule: "[GAMESTATE] Countdown if at least one person is ready"
-if (AllPlayers(Team.Team1).IsTrueForAny(p => p.pReady))
+if (AllPlayers(Team.Team1).IsTrueForAny(p => p.p_ready))
 {
-	gPreRoundTimer = FORCE_START_COUNTDOWN_LENGTH;
-	while (gRoundInProgress == false)
+	g_preRoundTimer = FORCE_START_COUNTDOWN_LENGTH;
+	while (g_roundInProgress == false)
 	{
 		Wait(ONE);
-		gPreRoundTimer -= ONE;
+		g_preRoundTimer -= ONE;
 
 		# If everyone has unreadied, abort countdown
 		if (
 			IsTrueForAll(
 				AllPlayers(Team.Team1),
-				!ArrayElement().pReady
+				!ArrayElement().p_ready
 			)
 		)
 		{
-			gPreRoundTimer = ZERO;
+			g_preRoundTimer = ZERO;
 			Abort();
 		}
 
-		if (gPreRoundTimer == ZERO)
+		if (g_preRoundTimer == ZERO)
 		{
-			gCurrentRound += ONE;
-			gRoundInProgress = true;
-			AllPlayers().pReady = false;
+			g_currentRound += ONE;
+			g_roundInProgress = true;
+			AllPlayers().p_ready = false;
 		}
 	}
 }
 
 rule: "[GAMESTATE] End game once final round has been completed"
-if (gCurrentRound == gMaxRounds)
-if (gRoundInProgress == false)
+if (g_currentRound == g_maxRounds)
+if (g_roundInProgress == false)
 { DeclareTeamVictory(Team.Team1); }

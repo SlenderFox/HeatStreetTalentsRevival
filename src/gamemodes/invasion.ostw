@@ -23,36 +23,36 @@ Number BOSS_KNOCKBACK_SCALAR: 50;
 Number BOSS_SPEED_SCALAR: 100;
 Number BOSS_HEALING_SCALAR: 20;
 
-globalvar Vector gPortalPosition = Vector(-6, 3, 6);
+globalvar Vector g_portalPosition = Vector(-6, 3, 6);
 
 # Global reference to the portal boss
-globalvar Player gIVBoss;
-globalvar Number gPhase;
+globalvar Player g_invasionBoss;
+globalvar Number g_portalPhase;
 
 rule: "[INVASION] Initialise gamemode"
-if (gGamemode == HS_Gamemode.Invasion)
+if (g_gamemode == Gamemode_HS.Invasion)
 {
 	# Done this way so Kanezaka kinda works
 	if (CurrentMap() == Map.Kanezaka)
-	{ gPortalPosition = NearestWalkablePosition(Vector(-6, 3, 6)) + Vector(0, 3, 0); }
+	{ g_portalPosition = NearestWalkablePosition(Vector(-6, 3, 6)) + Vector(0, 3, 0); }
 	// TODO remove debug check (pIsTestBot)
-	gIVBoss = AllPlayers(Team.Team2)
-		.Filter(p => p.IsDummy() && !p.pIsTestBot)
+	g_invasionBoss = AllPlayers(Team.Team2)
+		.Filter(p => p.IsDummy() && !p.p_isTestBot)
 		.Sort(p => SlotOf(p)).First;
-	gIVBoss.pIsBoss = true;
-	StartForcingDummyBotName(gIVBoss, "Invasion Boss");
-	PreloadHero(gIVBoss, Hero.WreckingBall);
+	g_invasionBoss.p_isBoss = true;
+	StartForcingDummyBotName(g_invasionBoss, "Invasion Boss");
+	PreloadHero(g_invasionBoss, Hero.WreckingBall);
 }
 
 rule: "[INVASION] Setup portal when round starts"
 Event.OngoingPlayer
 Team.Team2
-if (gGamemode == HS_Gamemode.Invasion)
+if (g_gamemode == Gamemode_HS.Invasion)
 //> If the portal bot is reused as the end of round boss, then this will cause issues.
-if (gRoundInProgress)
-if (EventPlayer().pIsBoss)
+if (g_roundInProgress)
+if (EventPlayer().p_isBoss)
 {
-	gPhase = PORTAL_PHASES - 1;
+	g_portalPhase = PORTAL_PHASES - 1;
 	BigMessage(AllPlayers(Team.Team1), "Find and destroy the portal");
 	# Need to set all the bot settings here every round
 	//> Reconsider this, should players be able to stand on the portal?
@@ -72,7 +72,7 @@ if (EventPlayer().pIsBoss)
 	//SetUltimateAbilityEnabled(EventPlayer(), false);
 	StartScalingPlayer(EventPlayer(), PORTAL_SIZE_SCALAR, false);
 	# Lock the bot at the portal location, works for everything except charge
-	StartForcingPlayerPosition(EventPlayer(), gPortalPosition, false);
+	StartForcingPlayerPosition(EventPlayer(), g_portalPosition, false);
 	# Necessary delay
 	Wait(0.05);
 	# Start forcing the hero since it will have been different in the previous round
@@ -93,8 +93,8 @@ rule: "[INVASION] Make sure wrecking ball portal stays in ball form"
 Event.OngoingPlayer
 Team.Team2
 Player.WreckingBall
-if (gGamemode == HS_Gamemode.Invasion)
-if (EventPlayer().pIsBoss)
+if (g_gamemode == Gamemode_HS.Invasion)
+if (EventPlayer().p_isBoss)
 if (EventPlayer().IsAlive())
 if (IsInAlternateForm(EventPlayer()) == false)
 {
@@ -107,8 +107,8 @@ rule: "[INVASION] Make portal immune to sleep"
 Event.OnDamageTaken
 Team.Team2
 Player.WreckingBall
-if (gGamemode == HS_Gamemode.Invasion)
-if (EventPlayer().pIsBoss)
+if (g_gamemode == Gamemode_HS.Invasion)
+if (EventPlayer().p_isBoss)
 if (Attacker().Hero() == Hero.Ana)
 if (EventAbility() == Button.Ability1)
 { SetStatus(EventPlayer(), null, Status.PhasedOut, 0.016); }
@@ -117,8 +117,8 @@ rule: "[INVASION] Make portal immediately recover from knockdown"
 Event.OngoingPlayer
 Team.Team2
 Player.WreckingBall
-if (gGamemode == HS_Gamemode.Invasion)
-if (EventPlayer().pIsBoss)
+if (g_gamemode == Gamemode_HS.Invasion)
+if (EventPlayer().p_isBoss)
 if (HasStatus(EventPlayer(), Status.KnockedDown))
 { ClearStatus(EventPlayer(), Status.KnockedDown); }
 
@@ -126,23 +126,23 @@ rule: "[INVASION] Portal damage phases"
 Event.OnDamageTaken
 Team.Team2
 Player.WreckingBall
-if (gGamemode == HS_Gamemode.Invasion)
-if (EventPlayer().pIsBoss)
+if (g_gamemode == Gamemode_HS.Invasion)
+if (EventPlayer().p_isBoss)
 if (NormalizedHealth(EventPlayer()) < 0.01)
-if (gPhase)
+if (g_portalPhase)
 {
 	SetPlayerHealth(EventPlayer(), EventPlayer().MaxHealth());
-	if (gPhase == 1)
+	if (g_portalPhase == 1)
 	{ ClearStatus(EventPlayer(), Status.Unkillable); }
-	gPhase -= ONE;
+	g_portalPhase -= ONE;
 }
 
 rule: "[INVASION] Destroying portal spawns boss"
 Event.OnDeath
 Team.Team2
 Player.WreckingBall
-if (gGamemode == HS_Gamemode.Invasion)
-if (EventPlayer().pIsBoss)
+if (g_gamemode == Gamemode_HS.Invasion)
+if (EventPlayer().p_isBoss)
 {
 	BigMessage(AllPlayers(Team.Team1), "Portal destroyed");
 	EnableMovementCollisionWithPlayers(EventPlayer());
@@ -180,8 +180,8 @@ if (EventPlayer().pIsBoss)
 rule: "[INVASION] End round when non-portal boss dies"
 Event.OnDeath
 Team.Team2
-if (gGamemode == HS_Gamemode.Invasion)
-if (gCurrentRound)
-if (EventPlayer().pIsBoss)
+if (g_gamemode == Gamemode_HS.Invasion)
+if (g_currentRound)
+if (EventPlayer().p_isBoss)
 if (EventPlayer().Hero() != Hero.WreckingBall)
-{ gRoundInProgress = false; }
+{ g_roundInProgress = false; }

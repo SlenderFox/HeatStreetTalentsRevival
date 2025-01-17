@@ -12,17 +12,19 @@ import "pathfinding/pathfinding.ostw";
 
 Number FOLLOWING_DISTANCE: 8;
 
-globalvar Number gBotQuota;
-globalvar Player gLonePlayer;
-globalvar Player gFriendlyBot;
-playervar Player pTarget;
-playervar Player pFollowing;
-playervar Boolean pIsBoss;
+globalvar Number g_botQuota;
+globalvar Player g_lonePlayer;
+globalvar Player g_friendlyBot;
 
+playervar Player p_target;
+playervar Player p_following;
+playervar Boolean p_isBoss;
+
+//> Should I do it this way? Maybe it's better to create them once the round starts.
 rule: "[BOTS] Create the enemy dummy bots" -10
 {
 	# Create enemy bots
-	for (gIter = ZERO; gIter < 17; gIter++)
+	for (g_iter = ZERO; g_iter < 17; g_iter++)
 	{
 		CreateDummyBot(
 			Hero.Soldier76,
@@ -30,7 +32,7 @@ rule: "[BOTS] Create the enemy dummy bots" -10
 			-1,
 			Vector(0, -1000, 0),
 			null
-		).PF_pPlayerAttributes = [ZERO, ONE, 6, 10, 20];
+		).p_playerAttributes_PF = [ZERO, ONE, 6, 10, 20];
 		StartForcingDummyBotName(LastCreatedEntity(), "Dummy Bot");
 	}
 }
@@ -41,12 +43,12 @@ rule: "[BOTS] Target acquisition"
 Event.OngoingPlayer
 if (IS_DUMMY)
 //if (pTarget == null)
-if (pIsBoss == false)
+if (p_isBoss == false)
 {
-	pTarget = AllLivingPlayers(
+	p_target = AllLivingPlayers(
 		OppositeTeamOf(EventPlayer().Team())
 	).Filter(p =>
-		!p.pDownedStartTime
+		!p.p_downedStartTime
 			&& IsInLineOfSight(EyePosition(), p.EyePosition(), BarrierLOS.NoBarriersBlock)
 	).Sort(p =>
 		DistanceBetween(EyePosition(), p.EyePosition())
@@ -58,11 +60,11 @@ if (pIsBoss == false)
 rule: "[BOTS] Start facing target"
 Event.OngoingPlayer
 if (IS_DUMMY)
-if (pTarget != null)
+if (p_target != null)
 {
 	StartFacing(
 		EventPlayer(),
-		DirectionTowards(EyePosition(), pTarget.EyePosition()),
+		DirectionTowards(EyePosition(), p_target.EyePosition()),
 		500,
 		Relative.ToWorld,
 		FacingRev.DirectionAndTurnRate
@@ -72,42 +74,42 @@ if (pTarget != null)
 rule: "[BOTS] Stop targeting player once LOS is broken"
 Event.OngoingPlayer
 if (IS_DUMMY)
-if (pTarget != null)
+if (p_target != null)
 if (
 	IsInLineOfSight(
 		EyePosition(),
-		pTarget.EyePosition(),
+		p_target.EyePosition(),
 		BarrierLOS.NoBarriersBlock
 	) == false
 )
 {
 	StopFacing();
-	pTarget = null;
+	p_target = null;
 }
 
 rule: "[BOTS] Friendly bot following"
 Event.OngoingPlayer
 Team.Team1
 # if (IS_DUMMY) Dummy is implied
-if (EventPlayer() == gFriendlyBot)
-if (pFollowing != null)
+if (EventPlayer() == g_friendlyBot)
+if (p_following != null)
 # Either horizontal distance is too far, or vertical distance is too far while not airborne
 if (
 	DistanceBetween(
 		PositionOf() * Vector(1, 0, 1),
-		pFollowing.Position() * Vector(1, 0, 1)
+		p_following.Position() * Vector(1, 0, 1)
 	) > FOLLOWING_DISTANCE
-	|| !pFollowing.IsInAir()
+	|| !p_following.IsInAir()
 		&& DistanceBetween(
 			PositionOf() * Vector(0, 1, 0),
-			pFollowing.Position() * Vector(0, 1, 0)
+			p_following.Position() * Vector(0, 1, 0)
 		) > 3
 )
 {
 	# Pause updates if server is being overloaded
 	WaitUntil(ServerLoadAverage() < 230, 999);
 	# Set the destination as the ground under the player.
-	PF_pDestination = NearestWalkablePosition(pFollowing);
+	p_destination_PF = NearestWalkablePosition(p_following);
 	# Avoid spamming destination updates
 	Wait(ONE);
 	LoopIfConditionIsTrue();
@@ -120,33 +122,33 @@ rule: "[BOTS] Create friendly bot if there is only one player in the match"
 if (NumberOfPlayers(Team.Team1) == 1)
 {
 	# Create friendly bot
-	gFriendlyBot = CreateDummyBot(
-		gFriendlyBotHero,
+	g_friendlyBot = CreateDummyBot(
+		g_friendlyBotHero,
 		Team.Team1,
 		6,
 		NearestWalkablePosition(Vector(0, 0, 0)),
 		null
 	);
-	gFriendlyBot.PF_pPlayerAttributes = [ZERO, ONE];
-	gLonePlayer = AllPlayers(Team.Team1).Filter(p => !p.IsDummy()).First;
-	gFriendlyBot.pFollowing = gLonePlayer;
+	g_friendlyBot.p_playerAttributes_PF = [ZERO, ONE];
+	g_lonePlayer = AllPlayers(Team.Team1).Filter(p => !p.IsDummy()).First;
+	g_friendlyBot.p_following = g_lonePlayer;
 	//StartForcingDummyBotName(gFriendlyBot, "Puipui");
 	WaitUntil(NumberOfPlayers(Team.Team1) > 2, 9999);
-	DestroyDummyBot(gFriendlyBot);
-	gLonePlayer = null;
+	DestroyDummyBot(g_friendlyBot);
+	g_lonePlayer = null;
 }
 
 rule: "[BOTS] Friendly bot force revive player"
 Event.OngoingPlayer
 Team.Team1
 # if (IS_DUMMY) Dummy is implied
-if (EventPlayer() == gFriendlyBot)
-if (gLonePlayer.pDownedStartTime)
+if (EventPlayer() == g_friendlyBot)
+if (g_lonePlayer.p_downedStartTime)
 {
-	while (gLonePlayer.pDownedStartTime)
+	while (g_lonePlayer.p_downedStartTime)
 	{
 		# Continuously update the destination every second to make sure the bot stays in the revive circle
-		gFriendlyBot.PF_pDestination = gLonePlayer.Position();
+		g_friendlyBot.p_destination_PF = g_lonePlayer.Position();
 		Wait(ONE);
 	}
 }
