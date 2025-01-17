@@ -39,19 +39,15 @@ if (IS_DUMMY)
 if (pFollowing != null)
 # Horizontal distance to following position is more than 8 or vertical is more than 5 while not airborne
 if (
-	(
-		PositionOf() * Vector(1, 0, 1)
-	).DistanceTo(
+	DistanceBetween(
+		PositionOf() * Vector(1, 0, 1),
 		pFollowing.Position() * Vector(1, 0, 1)
 	) > 8
-	|| (
-		(
-			PositionOf() * Vector(0, 1, 0)
-		).DistanceTo(
+	|| !pFollowing.IsInAir()
+		&& DistanceBetween(
+			PositionOf() * Vector(0, 1, 0),
 			pFollowing.Position() * Vector(0, 1, 0)
 		) > 3
-		&& !pFollowing.IsInAir()
-	)
 )
 {
 	# Pause updates if server is being overloaded
