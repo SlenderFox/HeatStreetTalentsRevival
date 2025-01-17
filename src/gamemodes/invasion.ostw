@@ -35,10 +35,9 @@ if (g_gamemode == Gamemode_HS.Invasion)
 	# Done this way so Kanezaka kinda works
 	if (CurrentMap() == Map.Kanezaka)
 	{ g_portalPosition = NearestWalkablePosition(Vector(-6, 3, 6)) + Vector(0, 3, 0); }
-	// TODO remove debug check (pIsTestBot)
-	g_invasionBoss = AllPlayers(Team.Team2)
-		.Filter(p => p.IsDummy() && !p.p_isTestBot)
-		.Sort(p => SlotOf(p)).First;
+
+	g_reserved += 1;
+	g_invasionBoss = PlayersInSlot(0, Team.Team2);
 	g_invasionBoss.p_isBoss = true;
 	StartForcingDummyBotName(g_invasionBoss, "Invasion Boss");
 	PreloadHero(g_invasionBoss, Hero.WreckingBall);

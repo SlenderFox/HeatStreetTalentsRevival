@@ -10,11 +10,15 @@ import "pathfinding/pathfinding.ostw";
 // I can have 19 dummy bots in total.
 // I have 15 max unique skins with 5 reserved for players for a total of 10 for dummies.
 
+Number MAX_BOTS: 19;
+Number UNIQUE_BOTS: 10;
 Number FOLLOWING_DISTANCE: 8;
 
-globalvar Number g_botQuota;
 globalvar Player g_lonePlayer;
 globalvar Player g_friendlyBot;
+globalvar Number g_botCount;
+# Gamemodes can reserve a number bots to be used for special cases, these bots will not be used for cannonfodder spawning
+globalvar Number g_reserved;
 
 playervar Player p_target;
 playervar Player p_following;

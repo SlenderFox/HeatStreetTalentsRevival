@@ -8,7 +8,6 @@ import "noclip.ostw";
 
 globalvar Player g_enemyTestBot;
 playervar Boolean p_inControlMode;
-playervar Boolean p_isTestBot;
 
 Player HOST: HostPlayer();
 Boolean IS_HOST: EventPlayer() == HOST;
@@ -32,12 +31,11 @@ void SendToHost(in String _message)
 
 void SelectTestBot() "[DEBUG SUBROUTINE] Select test bot"
 {
-	if (g_enemyTestBot == null)
+	if (g_enemyTestBot == null || g_enemyTestBot.p_isBoss)
 	{
 		g_enemyTestBot = AllPlayers(Team.Team2)
 			.Filter(p => p.IsDummy() && !p.p_isBoss)
 			.Sort(p => SlotOf(p)).First;
-		g_enemyTestBot.p_isTestBot = true;
 		StartForcingDummyBotName(g_enemyTestBot, "<<TEST BOT>>");
 	}
 }
