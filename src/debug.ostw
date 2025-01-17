@@ -73,28 +73,25 @@ rule: "[DEBUG] Display debug information on top left"
 rule: "[DEBUG] Bot information display"
 Event.OngoingPlayer
 if (IS_DUMMY)
-if (
-	EventPlayer() == g_friendlyBot
-	|| EventPlayer() == g_enemyTestBot
-)
 {
 	CreateInWorldText(
 		HOST,
 		<
-			"Targeting: <0>\nFollowing: <1>\nDestination: <2><3><4>",
-			p_target,
-			p_following,
-			p_destination_PF,
+			"Slot: <0> Boss: <1><2><3><4><5><6>",
+			SlotOf(),
+			p_isBoss ? "true" : "false",
+			p_target ? <"\nTarget: <0>", p_target> : "",
+			p_following ? <"\nFollowing: <0>", p_following> : "",
 			p_isPathfinding_PF
 				? <
-					"\nPathing (<0>|<1>)<2>\nWalking To: <3>",
+					"\nPathing (<0>|<1>)<2>",
 					VelocityOf().Magnitude,
 					p_rollingAvVelocity_PF,
-					p_isStuck_PF ? ": Stuck" : "",
-					p_walkingToPosition_PF
+					p_isStuck_PF ? ": Stuck" : ""
 				>
 				: "",
-			p_downedStartTime ? "\nDowned" : ""
+			p_destination_PF ? <"\nDestination: <0>", p_destination_PF> : "",
+			p_isPathfinding_PF ? <"\nWalking to: <0>", p_walkingToPosition_PF> : ""
 		>,
 		EyePosition() + Vector(0, 1, 0),
 		ONE,
