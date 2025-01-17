@@ -97,14 +97,14 @@ if (IS_DUMMY)
 		InworldTextRev.VisibleToPositionAndString
 	);
 
-	CreateBeamEffect(
-		p_isPathfinding_PF ? HOST : [],
-		BeamType.OrisaHaltTendrilBeam,
-		p_destination_PF,
-		EyePosition(),
-		Team.Team1,
-		EffectRev.VisibleToPositionAndRadius
-	);
+	//CreateBeamEffect(
+	//	p_isPathfinding_PF ? HOST : [],
+	//	BeamType.OrisaHaltTendrilBeam,
+	//	p_destination_PF,
+	//	EyePosition(),
+	//	Team.Team1,
+	//	EffectRev.VisibleToPositionAndRadius
+	//);
 }
 
 //------ MANUAL RULES ------
