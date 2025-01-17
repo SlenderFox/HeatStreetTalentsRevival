@@ -20,7 +20,7 @@ void SetupHUD()
 			"Heat Street Talents Revival [WSCODE 4.0.0] | <0> | <1><2>",
 			EvaluateOnce(CurrentMap()),
 			EvaluateOnce(GAMEMODE_STRING),
-			g_preRoundTimer ? <" - <0>", g_preRoundTimer> : ""
+			g_preRoundTimer ? <" - <0>", g_preRoundTimer> : @""
 		>
 	);
 	# Hide the TDM score HUD.
@@ -66,18 +66,18 @@ void CreateTeamDisplay()
 			HeroIconString(EventPlayer().Hero()),
 			p_downedStartTime && p_reviveProgress
 				? PROGRESS_BAR_STRINGS[RoundToInteger(p_reviveProgress / 10, Rounding.Down)]
-				: ""
+				: @""
 		>,
 		Subheader: <
 			"<0> <1><2><3>",
 			EventPlayer(),
-			"", //pAbPriority ? ["(A) ", "(B) ", "(C) "][pAbPriority - 1] : "",
+			@"", //pAbPriority ? ["(A) ", "(B) ", "(C) "][pAbPriority - 1] : @"",
 			g_roundInProgress
-				? ""
+				? @""
 				: EventPlayer().p_ready
 					? "Ready "
 					: "Not Ready ",
-			"" //InBuyMenu ? "(In shop)" : ""
+			@"" //InBuyMenu ? "(In shop)" : @""
 		>,
 		Text: <
 			"<0><1>",
