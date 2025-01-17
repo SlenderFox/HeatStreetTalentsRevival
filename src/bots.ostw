@@ -10,6 +10,8 @@ import "pathfinding/pathfinding.ostw";
 // I can have 19 dummy bots in total.
 // I have 15 max unique skins with 5 reserved for players for a total of 10 for dummies.
 
+Number FOLLOWING_DISTANCE: 8;
+
 globalvar Number gBotQuota;
 globalvar Player gLonePlayer;
 globalvar Player gFriendlyBot;
@@ -31,32 +33,6 @@ rule: "[BOTS] Create the enemy dummy bots" -10
 		).PF_pPlayerAttributes = [ZERO, ONE, 6, 10, 20];
 		StartForcingDummyBotName(LastCreatedEntity(), "Dummy Bot");
 	}
-}
-
-rule: "[BOTS] Following"
-Event.OngoingPlayer
-if (IS_DUMMY)
-if (pFollowing != null)
-# Horizontal distance to following position is more than 8 or vertical is more than 5 while not airborne
-if (
-	DistanceBetween(
-		PositionOf() * Vector(1, 0, 1),
-		pFollowing.Position() * Vector(1, 0, 1)
-	) > 8
-	|| !pFollowing.IsInAir()
-		&& DistanceBetween(
-			PositionOf() * Vector(0, 1, 0),
-			pFollowing.Position() * Vector(0, 1, 0)
-		) > 3
-)
-{
-	# Pause updates if server is being overloaded
-	WaitUntil(ServerLoadAverage() < 230, 999);
-	# Set the destination as the ground under the player.
-	PF_pDestination = NearestWalkablePosition(pFollowing);
-	# Avoid spamming destination updates
-	Wait(ONE);
-	LoopIfConditionIsTrue();
 }
 
 //> Eventually can really upgrade this to intelligently select a target.
@@ -109,6 +85,34 @@ if (
 	pTarget = null;
 }
 
+rule: "[BOTS] Friendly bot following"
+Event.OngoingPlayer
+Team.Team1
+# if (IS_DUMMY) Dummy is implied
+if (EventPlayer() == gFriendlyBot)
+if (pFollowing != null)
+# Either horizontal distance is too far, or vertical distance is too far while not airborne
+if (
+	DistanceBetween(
+		PositionOf() * Vector(1, 0, 1),
+		pFollowing.Position() * Vector(1, 0, 1)
+	) > FOLLOWING_DISTANCE
+	|| !pFollowing.IsInAir()
+		&& DistanceBetween(
+			PositionOf() * Vector(0, 1, 0),
+			pFollowing.Position() * Vector(0, 1, 0)
+		) > 3
+)
+{
+	# Pause updates if server is being overloaded
+	WaitUntil(ServerLoadAverage() < 230, 999);
+	# Set the destination as the ground under the player.
+	PF_pDestination = NearestWalkablePosition(pFollowing);
+	# Avoid spamming destination updates
+	Wait(ONE);
+	LoopIfConditionIsTrue();
+}
+
 //------ FRIENDLY BOT RULES ------
 
 rule: "[BOTS] Create friendly bot if there is only one player in the match"
@@ -135,7 +139,7 @@ if (NumberOfPlayers(Team.Team1) == 1)
 rule: "[BOTS] Friendly bot force revive player"
 Event.OngoingPlayer
 Team.Team1
-if (IS_DUMMY)
+# if (IS_DUMMY) Dummy is implied
 if (EventPlayer() == gFriendlyBot)
 if (gLonePlayer.pDownedStartTime)
 {

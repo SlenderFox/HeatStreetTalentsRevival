@@ -27,6 +27,11 @@ Boolean BUTTON_REVIVE: BUTTON(Button.Reload);
 Boolean BUTTON_SHOOT: BUTTON(Button.PrimaryFire);
 //Boolean BUTTON_FACING: BUTTON(Button.SecondaryFire);
 
+void SendToHost(in String message)
+{
+	SmallMessage(HOST, " " + message);
+}
+
 void SelectTestBot() "[DEBUG SUBROUTINE] Select test bot"
 {
 	if (gEnemyTestBot == null)
