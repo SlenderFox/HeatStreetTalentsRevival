@@ -41,11 +41,12 @@ rule: "[BOTS] Create the enemy dummy bots" -10
 	}
 }
 
-//> Eventually can really upgrade this to intelligently select a target.
+//> Eventually, upgrade this to intelligently select a target.
 // Currently just pick the closest.
 rule: "[BOTS] Target acquisition"
 Event.OngoingPlayer
 if (IS_DUMMY)
+if (IsAlive())
 //if (pTarget == null)
 if (p_isBoss == false)
 {
@@ -64,6 +65,7 @@ if (p_isBoss == false)
 rule: "[BOTS] Start facing target"
 Event.OngoingPlayer
 if (IS_DUMMY)
+if (IsAlive())
 if (p_target != null)
 {
 	StartFacing(
@@ -78,6 +80,7 @@ if (p_target != null)
 rule: "[BOTS] Stop targeting player once LOS is broken"
 Event.OngoingPlayer
 if (IS_DUMMY)
+if (IsAlive())
 if (p_target != null)
 if (
 	IsInLineOfSight(
@@ -117,6 +120,15 @@ if (
 	# Avoid spamming destination updates
 	Wait(ONE);
 	LoopIfConditionIsTrue();
+}
+
+rule: "[BOTS] Removing target and follow when dead"
+Event.OnDeath
+if (IS_DUMMY)
+{
+	p_target = null;
+	if (TeamOf() == Team.Team2)
+	{ p_following = null; }
 }
 
 //------ FRIENDLY BOT RULES ------
