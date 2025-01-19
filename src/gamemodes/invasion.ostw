@@ -52,7 +52,6 @@ if (g_roundInProgress)
 if (p_botType == BotType_HS.Portal)
 {
 	g_portalPhase = PORTAL_PHASES - 1;
-	g_invasionBoss.p_botType = BotType_HS.Portal;
 	BigMessage(AllPlayers(Team.Team1), "Find and destroy the portal");
 	# Need to set all the bot settings here every round
 	//> Reconsider this, should players be able to stand on the portal?
@@ -144,7 +143,6 @@ Player.WreckingBall
 if (g_gamemode == Gamemode_HS.Invasion)
 if (p_botType == BotType_HS.Portal)
 {
-	p_botType = BotType_HS.Boss;
 	BigMessage(AllPlayers(Team.Team1), "Portal destroyed");
 	EnableMovementCollisionWithPlayers();
 	SetGravity(EventPlayer(), 100);
@@ -165,6 +163,7 @@ if (p_botType == BotType_HS.Portal)
 	SetMaxHealth(EventPlayer(), BOSS_HEALTH_SCALAR);
 	Wait(ONE);
 	Respawn();
+	p_botType = BotType_HS.Boss;
 	# Necessary delay
 	Wait(0.05);
 	# Start forcing the hero since it will have been different in the previous round
@@ -183,6 +182,6 @@ if (g_gamemode == Gamemode_HS.Invasion)
 if (g_currentRound)
 if (p_botType == BotType_HS.Boss)
 {
-	p_botType = BotType_HS.Portal;
 	g_roundInProgress = false;
+	p_botType = BotType_HS.Portal;
 }
