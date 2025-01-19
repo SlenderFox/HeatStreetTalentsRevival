@@ -6,9 +6,6 @@ import "pathfinding/pathfinding.ostw";
 import "bots.ostw";
 import "noclip.ostw";
 
-globalvar Player g_enemyTestBot;
-playervar Boolean p_inControlMode;
-
 Player HOST: HostPlayer();
 Boolean IS_HOST: EventPlayer() == HOST;
 Vector HOST_POS: HOST.Position();
@@ -25,6 +22,17 @@ Boolean BUTTON_ENEMY: BUTTON(Button.Ability2);
 Boolean BUTTON_REVIVE: BUTTON(Button.Reload);
 Boolean BUTTON_SHOOT: BUTTON(Button.PrimaryFire);
 //Boolean BUTTON_FACING: BUTTON(Button.SecondaryFire);
+
+
+globalvar Player g_enemyTestBot;
+playervar Boolean p_inControlMode;
+
+// Floating damage numbers
+playervar Number p_damageGiven;
+playervar Boolean p_damageWasCritical;
+playervar Hero p_lastDamaged;
+playervar Vector p_damagePos;
+playervar Number p_damageTimer;
 
 void SendToHost(in String _message)
 { SmallMessage(HOST, " " + _message); }
@@ -261,3 +269,53 @@ if (BUTTON_REVIVE)
 	EnablePlayer();
 	RevivePlayer(HOST);
 }
+
+rule: "[DEBUG] Floating hitpoints - Init"
+Event.OngoingPlayer
+Team.Team1
+{
+	CreateInWorldText(
+		VisibleTo: p_damageTimer > 0 ? EventPlayer() : [],
+		Header: RoundToInteger(p_damageGiven, Rounding.Down),
+		Position: p_damagePos,
+		Scale: 2,
+		Clipping: Clipping.ClipAgainstSurfaces,
+		Reevaluation: InworldTextRev.VisibleToPositionStringAndColor,
+		TextColor: p_damageWasCritical ? Color.Yellow : Color.Red,
+		Spectators: Spectators.DefaultVisibility
+	);
+}
+
+rule: "[DEBUG] Floating hitpoints - Damage given"
+Event.OnDamageDealt
+Team.Team1
+{
+	# Reset damage accumulation if target has changed
+	if (p_lastDamaged != Victim())
+	{ p_damageGiven = 0; }
+
+	p_damageGiven += EventDamage();
+	p_damageTimer = 2;
+
+	# Count down the display timer
+	ChaseVariableOverTime(p_damageTimer, 0, 2, TimeChaseReevaluation.None);
+
+	p_damagePos = Victim().EyePosition() + Vector(0, 0.5, 0);
+
+	# Slowly raise the position of the damage number
+	ChaseVariableOverTime(
+		p_damagePos,
+		p_damagePos + Vector(0, 2, 0),
+		2,
+		TimeChaseReevaluation.None
+	);
+
+	p_damageWasCritical = EventWasCriticalHit();
+	p_lastDamaged = Victim();
+}
+
+rule: "[DEBUG] Floating hitpoints - Finished"
+Event.OngoingPlayer
+Team.Team1
+if (p_damageTimer <= 0)
+{ p_damageGiven = 0; }
