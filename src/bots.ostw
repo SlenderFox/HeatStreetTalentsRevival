@@ -103,9 +103,7 @@ if (
 
 rule: "[BOTS] Friendly bot following"
 Event.OngoingPlayer
-Team.Team1
-# if (IS_DUMMY) Dummy is implied
-if (EventPlayer() == g_friendlyBot)
+if (IS_DUMMY)
 if (p_following != null)
 # Either horizontal distance is too far, or vertical distance is too far while not airborne
 if (
