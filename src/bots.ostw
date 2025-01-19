@@ -26,9 +26,6 @@ Number FOLLOWING_DISTANCE: 8;
 
 globalvar Player g_lonePlayer;
 globalvar Player g_friendlyBot;
-globalvar Number g_botCount;
-# Gamemodes can reserve a number bots to be used for special cases, these bots will not be used for cannonfodder spawning
-globalvar Number g_reserved;
 
 playervar Player p_target;
 playervar Player p_following;
@@ -47,6 +44,18 @@ if (CountOf(AllPlayers(Team.Team2)) < MAX_BOTS)
 	).p_playerAttributes_PF = [ZERO, ONE, 6, 10, 20];
 	StartForcingDummyBotName(LastCreatedEntity(), "Dummy Bot");
 	LoopIfConditionIsTrue();
+}
+
+rule: "[BOTS] First attempt at spawning"
+Event.OngoingPlayer
+Team.Team2
+if (g_roundInProgress)
+if (IsAlive() == false)
+if (p_botType == BotType_HS.Normal)
+{
+	Respawn();
+	Wait(ONE);
+	p_following = g_invasionBoss;
 }
 
 //> Eventually, upgrade this to intelligently select a target.

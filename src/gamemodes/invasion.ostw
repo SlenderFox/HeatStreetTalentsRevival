@@ -36,7 +36,6 @@ if (g_gamemode == Gamemode_HS.Invasion)
 	if (CurrentMap() == Map.Kanezaka)
 	{ g_portalPosition = NearestWalkablePosition(Vector(-6, 3, 6)) + Vector(0, 3, 0); }
 
-	g_reserved += 1;
 	g_invasionBoss = PlayersInSlot(0, Team.Team2);
 	g_invasionBoss.p_botType = BotType_HS.Portal;
 	StartForcingDummyBotName(g_invasionBoss, "Invasion Boss");
