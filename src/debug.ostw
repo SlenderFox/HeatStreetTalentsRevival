@@ -290,6 +290,7 @@ Team.Team1
 rule: "[DEBUG] Floating hitpoints - Damage given"
 Event.OnDamageDealt
 Team.Team1
+if (Victim() != EventPlayer())
 {
 	# Reset damage accumulation if target has changed
 	if (p_lastDamaged != Victim())
