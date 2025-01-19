@@ -63,6 +63,7 @@ if (p_isChangingHeroes == false)
 		DisableMessages(EventPlayer());
 		p_reviveProgress = ZERO;
 		StartScalingPlayer(EventPlayer(), 0.1, false);
+		p_stuckVelocityThreshold = 0.3;
 	}
 	if (EventWasEnvironment())
 	{ RecoveryTeleport(); }
@@ -129,6 +130,7 @@ if (p_downedStartTime + ONE < TotalTimeElapsed())
 		{
 			EnablePlayer();
 			RevivePlayer(EventPlayer());
+			p_stuckVelocityThreshold = 3;
 		}
 	}
 	else

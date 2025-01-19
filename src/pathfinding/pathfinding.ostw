@@ -64,6 +64,7 @@ playervar Boolean p_wasBroadcasted_PF;
 # Is the player failing to walk?
 playervar Boolean p_isStuck_PF;
 playervar Number p_rollingAvVelocity_PF;
+playervar Number p_stuckVelocityThreshold = 3;
 
 rule: "【PF Core】Prepare loaded map"
 {
@@ -288,14 +289,14 @@ rule: "【PF Core】Check throttle"
 Event.OngoingPlayer
 if (IS_DUMMY)
 if (p_isPathfinding_PF)
-if (p_rollingAvVelocity_PF < 3)
+if (p_rollingAvVelocity_PF < p_stuckVelocityThreshold)
 {
 	Wait(2.1, WaitBehavior.AbortWhenFalse);
 	p_isStuck_PF = true;
 	WaitUntil(
 		!p_walkingToPosition_PF
 		|| !p_isPathfinding_PF
-		|| p_rollingAvVelocity_PF >= 3, 9999
+		|| p_rollingAvVelocity_PF >= p_stuckVelocityThreshold, 9999
 	);
 	p_isStuck_PF = false;
 }
