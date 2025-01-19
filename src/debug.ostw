@@ -60,11 +60,12 @@ rule: "[DEBUG] Display debug information on top left"
 			ServerLoadPeak() * loadScaler,
 			HOST_POS,
 			<
-				"<0> (<1>): <2> vs <3>",
+				"<0> (<1>): <2>/<3> (<4>)",
 				GAMESTATE_STRING,
 				g_currentRound,
-				NumberOfPlayers(Team.Team1),
-				NumberOfPlayers(Team.Team2)
+				CountOf(AllLivingPlayers(Team.Team2)),
+				MAX_BOTS,
+				g_reserved
 			>,
 			HOST.p_inControlMode
 				? HOST.p_isNoclipping
