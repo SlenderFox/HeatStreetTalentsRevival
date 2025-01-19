@@ -19,7 +19,8 @@ enum BotType_HS
 
 String BOTTYPE_STRING: ["Normal", "Boss", "Portal"][p_botType];
 
-Number MAX_BOTS: 19;
+// One less than limit so there is room for friendlybot
+Number MAX_BOTS: 18;
 Number UNIQUE_BOTS: 10;
 Number FOLLOWING_DISTANCE: 8;
 
@@ -35,19 +36,17 @@ playervar BotType_HS p_botType;
 
 //> Should I do it this way? Maybe it's better to create them once the round starts.
 rule: "[BOTS] Create the enemy dummy bots" -10
+if (CountOf(AllPlayers(Team.Team2)) < MAX_BOTS)
 {
-	# Create enemy bots
-	for (g_iter = ZERO; g_iter < 17; g_iter++)
-	{
-		CreateDummyBot(
-			Hero.Soldier76,
-			Team.Team2,
-			-1,
-			Vector(0, -1000, 0),
-			null
-		).p_playerAttributes_PF = [ZERO, ONE, 6, 10, 20];
-		StartForcingDummyBotName(LastCreatedEntity(), "Dummy Bot");
-	}
+	CreateDummyBot(
+		Hero.Soldier76,
+		Team.Team2,
+		-1,
+		Vector(0, -1000, 0),
+		null
+	).p_playerAttributes_PF = [ZERO, ONE, 6, 10, 20];
+	StartForcingDummyBotName(LastCreatedEntity(), "Dummy Bot");
+	LoopIfConditionIsTrue();
 }
 
 //> Eventually, upgrade this to intelligently select a target.
