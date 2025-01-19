@@ -38,7 +38,7 @@ if (g_gamemode == Gamemode_HS.Invasion)
 
 	g_reserved += 1;
 	g_invasionBoss = PlayersInSlot(0, Team.Team2);
-	g_invasionBoss.p_isBoss = true;
+	g_invasionBoss.p_botType = BotType_HS.Portal;
 	StartForcingDummyBotName(g_invasionBoss, "Invasion Boss");
 	PreloadHero(g_invasionBoss, Hero.WreckingBall);
 }
@@ -49,13 +49,14 @@ Team.Team2
 if (g_gamemode == Gamemode_HS.Invasion)
 //> If the portal bot is reused as the end of round boss, then this will cause issues.
 if (g_roundInProgress)
-if (EventPlayer().p_isBoss)
+if (p_botType == BotType_HS.Portal)
 {
 	g_portalPhase = PORTAL_PHASES - 1;
+	g_invasionBoss.p_botType = BotType_HS.Portal;
 	BigMessage(AllPlayers(Team.Team1), "Find and destroy the portal");
 	# Need to set all the bot settings here every round
 	//> Reconsider this, should players be able to stand on the portal?
-	DisableMovementCollisionWithPlayers(EventPlayer());
+	DisableMovementCollisionWithPlayers();
 	SetGravity(EventPlayer(), ZERO);
 	SetMoveSpeed(EventPlayer(), ZERO);
 	SetKnockbackReceived(EventPlayer(), ZERO);
@@ -93,9 +94,9 @@ Event.OngoingPlayer
 Team.Team2
 Player.WreckingBall
 if (g_gamemode == Gamemode_HS.Invasion)
-if (EventPlayer().p_isBoss)
-if (EventPlayer().IsAlive())
-if (IsInAlternateForm(EventPlayer()) == false)
+if (p_botType == BotType_HS.Portal)
+if (IsAlive())
+if (IsInAlternateForm() == false)
 {
 	PressButton(EventPlayer(), Button.Ability1);
 	Wait(0.5);
@@ -107,7 +108,7 @@ Event.OnDamageTaken
 Team.Team2
 Player.WreckingBall
 if (g_gamemode == Gamemode_HS.Invasion)
-if (EventPlayer().p_isBoss)
+if (p_botType == BotType_HS.Portal)
 if (Attacker().Hero() == Hero.Ana)
 if (EventAbility() == Button.Ability1)
 { SetStatus(EventPlayer(), null, Status.PhasedOut, 0.016); }
@@ -117,7 +118,7 @@ Event.OngoingPlayer
 Team.Team2
 Player.WreckingBall
 if (g_gamemode == Gamemode_HS.Invasion)
-if (EventPlayer().p_isBoss)
+if (p_botType == BotType_HS.Portal)
 if (HasStatus(EventPlayer(), Status.KnockedDown))
 { ClearStatus(EventPlayer(), Status.KnockedDown); }
 
@@ -126,7 +127,7 @@ Event.OnDamageTaken
 Team.Team2
 Player.WreckingBall
 if (g_gamemode == Gamemode_HS.Invasion)
-if (EventPlayer().p_isBoss)
+if (p_botType == BotType_HS.Portal)
 if (NormalizedHealth(EventPlayer()) < 0.01)
 if (g_portalPhase)
 {
@@ -141,10 +142,11 @@ Event.OnDeath
 Team.Team2
 Player.WreckingBall
 if (g_gamemode == Gamemode_HS.Invasion)
-if (EventPlayer().p_isBoss)
+if (p_botType == BotType_HS.Portal)
 {
+	p_botType = BotType_HS.Boss;
 	BigMessage(AllPlayers(Team.Team1), "Portal destroyed");
-	EnableMovementCollisionWithPlayers(EventPlayer());
+	EnableMovementCollisionWithPlayers();
 	SetGravity(EventPlayer(), 100);
 	SetMoveSpeed(EventPlayer(), BOSS_SPEED_SCALAR);
 	SetKnockbackReceived(EventPlayer(), BOSS_KNOCKBACK_SCALAR);
@@ -159,21 +161,19 @@ if (EventPlayer().p_isBoss)
 	// Possibly do something with mines?
 	//SetUltimateAbilityEnabled(EventPlayer(), false);
 	StartScalingPlayer(EventPlayer(), BOSS_SIZE_SCALAR, false);
-	RemoveAllHealthPoolsFromPlayer(EventPlayer());
+	RemoveAllHealthPoolsFromPlayer();
 	SetMaxHealth(EventPlayer(), BOSS_HEALTH_SCALAR);
 	Wait(ONE);
-	Respawn(EventPlayer());
+	Respawn();
 	# Necessary delay
 	Wait(0.05);
 	# Start forcing the hero since it will have been different in the previous round
 	ForcePlayerHero(
 		EventPlayer(),
-		RandomValueInArray(
-			RemoveFromArray(AllHeroes(), Hero.WreckingBall)
-		)
+		AllHeroes().Random()
 	);
 	Wait(ONE);
-	StopForcingPlayerPosition(EventPlayer());
+	StopForcingPlayerPosition();
 }
 
 rule: "[INVASION] End round when non-portal boss dies"
@@ -181,6 +181,8 @@ Event.OnDeath
 Team.Team2
 if (g_gamemode == Gamemode_HS.Invasion)
 if (g_currentRound)
-if (EventPlayer().p_isBoss)
-if (EventPlayer().Hero() != Hero.WreckingBall)
-{ g_roundInProgress = false; }
+if (p_botType == BotType_HS.Boss)
+{
+	p_botType = BotType_HS.Portal;
+	g_roundInProgress = false;
+}

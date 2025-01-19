@@ -31,10 +31,10 @@ void SendToHost(in String _message)
 
 void SelectTestBot() "[DEBUG SUBROUTINE] Select test bot"
 {
-	if (g_enemyTestBot == null || g_enemyTestBot.p_isBoss)
+	if (g_enemyTestBot == null || g_enemyTestBot.p_botType != BotType_HS.Normal)
 	{
 		g_enemyTestBot = AllPlayers(Team.Team2)
-			.Filter(p => p.IsDummy() && !p.p_isBoss)
+			.Filter(p => p.IsDummy() && p.p_botType == BotType_HS.Normal)
 			.Sort(p => SlotOf(p)).First;
 		StartForcingDummyBotName(g_enemyTestBot, "<<TEST BOT>>");
 	}
@@ -75,9 +75,9 @@ if (IS_DUMMY)
 	CreateInWorldText(
 		HOST,
 		<
-			"Slot: <0> Boss: <1><2><3><4><5><6>",
+			"Slot: <0> Bot Type: <1><2><3><4><5><6>",
 			SlotOf(),
-			p_isBoss ? "true" : "false",
+			BOTTYPE_STRING,
 			p_target ? <"\nTarget: <0>", p_target> : @"",
 			p_following ? <"\nFollowing: <0>", p_following> : @"",
 			p_isPathfinding_PF

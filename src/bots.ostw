@@ -10,6 +10,15 @@ import "pathfinding/pathfinding.ostw";
 // I can have 19 dummy bots in total.
 // I have 15 max unique skins with 5 reserved for players for a total of 10 for dummies.
 
+enum BotType_HS
+{
+	Normal,
+	Boss,
+	Portal
+}
+
+String BOTTYPE_STRING: ["Normal", "Boss", "Portal"][p_botType];
+
 Number MAX_BOTS: 19;
 Number UNIQUE_BOTS: 10;
 Number FOLLOWING_DISTANCE: 8;
@@ -22,7 +31,7 @@ globalvar Number g_reserved;
 
 playervar Player p_target;
 playervar Player p_following;
-playervar Boolean p_isBoss;
+playervar BotType_HS p_botType;
 
 //> Should I do it this way? Maybe it's better to create them once the round starts.
 rule: "[BOTS] Create the enemy dummy bots" -10
@@ -47,8 +56,7 @@ rule: "[BOTS] Target acquisition"
 Event.OngoingPlayer
 if (IS_DUMMY)
 if (IsAlive())
-//if (pTarget == null)
-if (p_isBoss == false)
+if (p_botType != BotType_HS.Portal)
 {
 	p_target = AllLivingPlayers(
 		OppositeTeamOf(EventPlayer().Team())

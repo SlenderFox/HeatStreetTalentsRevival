@@ -176,7 +176,7 @@ rule: "[TEAM 1] Prevent Reinhardt from pinning the boss"
 Event.PlayerDealtKnockback
 Team.Team1
 Player.Reinhardt
-if (Victim().p_isBoss)
+if (Victim().p_botType != BotType_HS.Normal)
 # This somehow registers as the pin connecting
 if (EventAbility() == null)
 {
@@ -202,7 +202,7 @@ rule: "[TEAM 1] Make roadhog pull himself towards the boss"
 Event.OnDamageDealt
 Team.Team1
 Player.Roadhog
-if (Victim().p_isBoss)
+if (Victim().p_botType != BotType_HS.Normal)
 if (EventAbility() == Button.Ability1)
 {
 	if (Victim().Hero() == Hero.WreckingBall)
